@@ -41,13 +41,13 @@ class CityController extends Controller
             return response()->json([
                 'error' => 'false',
                 'plane' => $cities
-            ]);
+            ], 200);
 
         } catch (\Throwable $throwable) {
             return response()->json([
                 'error' => 'true',
                 'message' => $throwable->getMessage()
-            ]); 
+            ], 500); 
         }
 
     }

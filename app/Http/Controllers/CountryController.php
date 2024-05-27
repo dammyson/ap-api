@@ -21,13 +21,13 @@ class CountryController extends Controller
             return response()->json([
                 'error' => 'false',
                 'country' => $country
-            ]);
+            ], 201);
 
         } catch (\Throwable $throwable) {
             return response()->json([
                 'error' => 'true',
                 'message' => $throwable->getMessage()
-            ]);
+            ], 500);
         }
 
     }
