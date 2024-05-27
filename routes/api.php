@@ -24,7 +24,7 @@ Route::group(['prefix' => 'user'], function () use ($router) {
 
 Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
-    Route::get('/country', [CityController::class, 'indexCountry']);
+    Route::get('/country', [CountryController::class, 'indexCountry']);
     Route::post('/country', [CountryController::class, 'storeCountry']);
     Route::get('/city', [CityController::class, 'indexCity']);
     Route::post('/city', [CityController::class, 'storeCity']);
