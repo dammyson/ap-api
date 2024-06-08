@@ -18,11 +18,13 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
+        User::factory()->create([
+            'user_name' => 'TestUser',
+            'email' => 'test@example.com',
+            'phone_number' => '08166219698',
+            'peace_id' => 34,
+            'password' => bcrypt('solomon001')
+        ]);
 
            // Disable foreign key checks to avoid issues during seeding
                 Schema::disableForeignKeyConstraints();

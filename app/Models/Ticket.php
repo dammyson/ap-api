@@ -14,7 +14,7 @@ class Ticket extends Model
 
     protected $guarded = [];
 
-    protected $with = ['flight', "user"];
+    protected $with = ['flight', "passenger"];
 
     public function getStatusAttribute($value)
     {
@@ -41,8 +41,15 @@ class Ticket extends Model
         return $this->belongsTo(Flight::class);
     }
 
-    public function user()
+    public function ticketTypes()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(FlightTicketType::class);
     }
+
+   // Define the relationship
+   public function passenger()
+   {
+       return $this->belongsTo(Passenger::class);
+   }
+
 }
