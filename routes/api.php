@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CityController;
@@ -31,7 +32,11 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::get('/plane', [PlaneController::class, 'indexPlane']);
     Route::post('/plane', [PlaneController::class, 'storePlane']);
 
+    Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
+
 });
+
+Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();

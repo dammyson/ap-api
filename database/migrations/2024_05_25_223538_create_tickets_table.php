@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_id")->constrained()->cascadeOnDelete();
+            $table->foreignId("passenger_id")->constrained()->cascadeOnDelete();
             $table->foreignId("flight_id")->constrained()->cascadeOnDelete();
             $table->string("seat_number");
             $table->tinyInteger("status")->default(0)->comment("0: pendding, 1: accepted, 2: canceled");
