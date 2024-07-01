@@ -14,7 +14,8 @@ class RegisterController extends Controller
     public function clientRegister(Request $request)
     {
         $request->validate([
-            'user_name' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
             'email' => 'required|email',
             'phone_number' => 'required|numeric|digits:11',
             'password' => 'required|string|min:4|max:4|confirmed',
@@ -23,7 +24,8 @@ class RegisterController extends Controller
 
         try {
             $create = User::create([
-                'user_name' => $request->input('user_name'),
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
                 'email' => $request->input('email'),
                 'phone_number' => $request->input('phone_number'),
                 'password' => Hash::make($request->input('password')),
@@ -42,8 +44,6 @@ class RegisterController extends Controller
         $data['user'] =  $create;
         $data['token'] =  $create->createToken('Nova')->accessToken;
         // $data['token_plainText'] = $data['token']->plainTextToken;
-
-      
 
         return response()->json(['error' => false, 'message' => 'Client registration successful. Verification code sent to your email.', 'data' => $data], 201);
 

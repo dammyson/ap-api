@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FlightTicketType extends Model
+class GameRule extends Model
 {
     use HasFactory;
-    protected $with = ['ticketType'];
 
-    public function ticketType()
+    protected $fillable = ['game_id', 'rule'];
+
+    public function game()
     {
-        return $this->belongsTo(TicketType::class);
+        return $this->belongsTo(Game::class);
     }
 }

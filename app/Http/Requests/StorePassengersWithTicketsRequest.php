@@ -35,7 +35,7 @@ class StorePassengersWithTicketsRequest extends FormRequest
             'passengers.*.tickets.*.flight_id' => 'required|exists:flights,id',
             'passengers.*.tickets.*.seat_number' => 'required|string|max:255',
             'passengers.*.tickets.*.status' => 'required|integer|in:0,1,2',
-            'passengers.*.tickets.*.ticket_type_id' => 'required|exists:flight_ticket_types,id', // Add this line
+            'passengers.*.tickets.*.flight_ticket_type_id' => 'required|exists:flight_ticket_types,id', // Add this line
         ];
 
         // Additional rules for adults

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('passengers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->index();
             $table->string('title');
             $table->string('user_category'); 
             $table->string('first_name');
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->string('sex');
             $table->string('country');
             $table->string('passport_number')->nullable();
+            $table->boolean('is_lead')->default(false);
             $table->boolean('is_blind')->default(false);
             $table->boolean('is_deaf')->default(false);
             $table->boolean('needs_mobility_assistance')->default(false);
