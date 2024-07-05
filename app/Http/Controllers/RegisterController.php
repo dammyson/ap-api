@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\CreateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -11,16 +12,8 @@ use Illuminate\Support\Facades\Mail;
 class RegisterController extends Controller
 {
     //
-    public function clientRegister(Request $request)
+    public function userRegister(CreateUserRequest $request)
     {
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email',
-            'phone_number' => 'required|numeric|digits:11',
-            'password' => 'required|string|min:4|max:4|confirmed',
-            'peace_id' => 'required|numeric'
-        ]);
 
         try {
             $create = User::create([
@@ -29,21 +22,16 @@ class RegisterController extends Controller
                 'email' => $request->input('email'),
                 'phone_number' => $request->input('phone_number'),
                 'password' => Hash::make($request->input('password')),
-                'peace_id' => $request->input('peace_id')
+                'peace_id' => $request->input('peace_id'),
             ]);
 
-            // Generate a random verification code
-            // $verificationCode = $this->generateVerificationCode();
-
-            // Send verification email
-            // $this->sendVerificationCode($create->email, $verificationCode);
+          
         } catch (\Exception $exception) {
             return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
         }
 
         $data['user'] =  $create;
         $data['token'] =  $create->createToken('Nova')->accessToken;
-        // $data['token_plainText'] = $data['token']->plainTextToken;
 
         return response()->json(['error' => false, 'message' => 'Client registration successful. Verification code sent to your email.', 'data' => $data], 201);
 
@@ -110,15 +98,6 @@ class RegisterController extends Controller
         try {
             
             $user = User::where('email', $request->input('email'))->firstOrFail();
-            
-            // $user = User::where('email', $request->email)->first();
-
-            // if (!$user) {
-            //     return response()->json([
-            //         "error" => "true",
-            //         "message" => "user not found"
-            //     ], 404);
-            // }
 
             if ( $user->otp !== $request->otp ) {
                 return response()->json([
@@ -163,7 +142,6 @@ class RegisterController extends Controller
                             "message" => "user not found"
                         ], 404);
                     }
-            // $user = User::where('email', $request->input('email'))->firstOrFail();
     
             if (!$user->can_change_password) {
                 return response()->json(['error' => true, 'message' => 'please verify otp first'], 500);
@@ -172,13 +150,10 @@ class RegisterController extends Controller
     
     
             $user->password =  $validated["new_password"];
-            // $user->can_change_password = false;
             $user->save();
     
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
-            // $user::update([
-            //     "password" => $validated["new_password"]
-            // ]);
+           
 
         } catch (\Throwable $throwable) {
             return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
@@ -205,7 +180,6 @@ class RegisterController extends Controller
                             "message" => "user not found"
                         ], 404);
                     }
-            // $user = User::where('email', $request->input('email'))->firstOrFail();
     
             if (!Hash::check($validated["current_password"], $user->password)) {
                 return response()->json(['error' => true, 'message' => 'Invalid password'], 500);
@@ -215,9 +189,7 @@ class RegisterController extends Controller
             $user->save();
     
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
-            // $user::update([
-            //     "password" => $validated["new_password"]
-            // ]);
+           
 
         } catch (\Throwable $throwable) {
             return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);

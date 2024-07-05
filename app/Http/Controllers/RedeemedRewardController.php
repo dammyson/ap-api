@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Reward\StoreRedeemedRewardRequest;
+use App\Http\Requests\Reward\UpdateRedeemedRewardRequest;
+use App\Http\Requests\Reward\UpdateUserRewardRequest;
 use App\Models\RedeemedReward;
-use Illuminate\Http\Request;
 
 class RedeemedRewardController extends Controller
 {
@@ -12,15 +14,9 @@ class RedeemedRewardController extends Controller
         return response()->json(RedeemedReward::with('reward', 'user')->get());
     }
 
-    public function store(Request $request)
+    public function store(StoreRedeemedRewardRequest $request)
     {
-        $validated = $request->validate([
-            'reward_id' => 'required|exists:rewards,id',
-            'user_id' => 'required|exists:users,id',
-            'redeemed_at' => 'required|date',
-        ]);
-
-        $redeemedReward = RedeemedReward::create($validated);
+        $redeemedReward = RedeemedReward::create($request->validated());
 
         return response()->json($redeemedReward, 201);
     }
@@ -30,15 +26,10 @@ class RedeemedRewardController extends Controller
         return response()->json($redeemedReward->load('reward', 'user'));
     }
 
-    public function update(Request $request, RedeemedReward $redeemedReward)
+    public function update(UpdateRedeemedRewardRequest $request, RedeemedReward $redeemedReward)
     {
-        $validated = $request->validate([
-            'reward_id' => 'required|exists:rewards,id',
-            'user_id' => 'required|exists:users,id',
-            'redeemed_at' => 'required|date',
-        ]);
 
-        $redeemedReward->update($validated);
+        $redeemedReward->update($request->validated());
 
         return response()->json($redeemedReward);
     }

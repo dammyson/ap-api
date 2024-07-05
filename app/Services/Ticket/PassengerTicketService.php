@@ -39,6 +39,7 @@ class PassengerTicketService
             $totalCost = 0;
             $user = auth()->user();
 
+
             // Create an invoice
             $invoice = Invoice::create([
                 'number' => $this->generateInvoiceNumber(),
@@ -52,6 +53,7 @@ class PassengerTicketService
                 'user_id' => $user->id,
                 'invoice_id'=> $invoice->id,
             ]);
+
 
             foreach ($passengersData as $passengerData) {
                 $passenger = Passenger::create([
@@ -73,10 +75,12 @@ class PassengerTicketService
                     'user_category' => $passengerData['user_category'],
                 ]);
 
+            
                 foreach ($passengerData['tickets'] as $ticketData) {
                     $ticketType = FlightTicketType::
                        where('ticket_type_id', $ticketData['flight_ticket_type_id'])
                         ->where('flight_id', $ticketData['flight_id'])->firstOrFail();
+                    // dd('I got here');
 
                     $ticket = Ticket::create([
                         'passenger_id' => $passenger->id,

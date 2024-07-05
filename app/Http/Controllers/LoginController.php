@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\UserLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -9,13 +10,8 @@ use App\Models\User;
 class LoginController extends Controller
 {
     //
-    public function login(Request $request)
+    public function login(UserLoginRequest $request)
     {
-        $validated = $request->validate([
-            'credential' => 'required|email',
-            'password' => 'required',
-        ]);
-
         try{
             // $user = User::where('email', $request->credential);
             $user = User::where(function ($query) use ($request) {
@@ -28,7 +24,7 @@ class LoginController extends Controller
             }
             // $newpassword = $validated['password'];
             // dd($newpassword);
-            if (Hash::check($validated["password"], $user->password)) {
+            if (Hash::check($request["password"], $user->password)) {
                 $data['user'] = $user;
                 $data['token'] = $user->createToken('Nova')->accessToken;
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePassengersWithTicketsRequest;
-use App\Http\Requests\UpdatePassengersWithTicketsRequest;
+use App\Http\Requests\Passenger\StorePassengersWithTicketsRequest;
+use App\Http\Requests\Passenger\UpdatePassengersWithTicketsRequest;
 use App\Services\Ticket\PassengerTicketService;
 use Illuminate\Http\Request;
 
