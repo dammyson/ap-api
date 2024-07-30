@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Passenger\SearchFlightRequest;
 use App\Models\Airport;
 use App\Models\Flight;
 use App\Models\FlightTicketType;
@@ -13,17 +14,8 @@ class FlightController extends Controller
     /**
      * Search for flights based on provided criteria.
      */
-    public function searchFlights(Request $request)
+    public function searchFlights(SearchFlightRequest $request)
     {
-        $request->validate([
-            'departure_date' => 'required|date',
-            'arrival_date' => 'required|date',
-            'passengers' => 'required|integer|min:1',
-            'round_trip' => 'required|boolean',
-            'departure_airport' => 'required|string',
-            'arrival_airport' => 'required|string',
-        ]);
-
         $departureDate = Carbon::parse($request->input('departure_date'));
         $arrivalDate = Carbon::parse($request->input('arrival_date'));
         $passengers = $request->input('passengers');

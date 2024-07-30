@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Game\StoreGameRuleRequest;
+use App\Http\Requests\Game\UpdateGameRule;
 use App\Models\GameRule;
-use Illuminate\Http\Request;
 
 class GameRuleController extends Controller
 {
@@ -11,14 +12,10 @@ class GameRuleController extends Controller
         return response()->json(GameRule::with('game')->get());
     }
 
-    public function store(Request $request)
+    public function store(StoreGameRuleRequest $request)
     {
-        $validated = $request->validate([
-            'game_id' => 'required|exists:games,id',
-            'rule' => 'required|string',
-        ]);
 
-        $gameRule = GameRule::create($validated);
+        $gameRule = GameRule::create($request->validated());
 
         return response()->json($gameRule, 201);
     }
@@ -28,14 +25,10 @@ class GameRuleController extends Controller
         return response()->json($gameRule->load('game'));
     }
 
-    public function update(Request $request, GameRule $gameRule)
+    public function update(UpdateGameRule $request, GameRule $gameRule)
     {
-        $validated = $request->validate([
-            'game_id' => 'required|exists:games,id',
-            'rule' => 'required|string',
-        ]);
 
-        $gameRule->update($validated);
+        $gameRule->update($request->validated());
 
         return response()->json($gameRule);
     }

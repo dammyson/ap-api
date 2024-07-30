@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class FlightTicketType extends Model
 {
     use HasFactory;
+    
     protected $with = ['ticketType'];
 
     public function ticketType()

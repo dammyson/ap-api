@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Game\StoreGamePlayRequest;
+use App\Http\Requests\Game\UpdateGamePlayRequest;
 use App\Models\GamePlay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,16 +14,10 @@ class GamePlayController extends Controller
         return response()->json(GamePlay::with('game', 'user')->get());
     }
 
-    public function store(Request $request)
+    public function store(StoreGamePlayRequest $request)
     {
-        $validated = $request->validate([
-            'game_id' => 'required|exists:games,id',
-            'user_id' => 'required|exists:users,id',
-            'score' => 'required|integer',
-            'played_at' => 'required|date',
-        ]);
 
-        $gamePlay = GamePlay::create($validated);
+        $gamePlay = GamePlay::create($request->validated());
 
         return response()->json($gamePlay, 201);
     }
@@ -31,16 +27,10 @@ class GamePlayController extends Controller
         return response()->json($gamePlay->load('game', 'user'));
     }
 
-    public function update(Request $request, GamePlay $gamePlay)
+    public function update(UpdateGamePlayRequest $request, GamePlay $gamePlay)
     {
-        $validated = $request->validate([
-            'game_id' => 'required|exists:games,id',
-            'user_id' => 'required|exists:users,id',
-            'score' => 'required|integer',
-            'played_at' => 'required|date',
-        ]);
 
-        $gamePlay->update($validated);
+        $gamePlay->update($request->validated());
 
         return response()->json($gamePlay);
     }
@@ -53,28 +43,28 @@ class GamePlayController extends Controller
     }
 
 
-        public function gameLeaderboard($gameId)
-        {
-            $leaderboard = GamePlay::select('user_id', DB::raw('SUM(score) as total_score'))
-                ->where('game_id', $gameId)
-                ->groupBy('user_id')
-                ->orderBy('total_score', 'desc')
-                ->with('user') // Assuming you have a relationship with the User model
-                ->get();
-    
-            return response()->json($leaderboard);
-        }
-    
-        public function overallLeaderboard()
-        {
-            $leaderboard = GamePlay::select('user_id', DB::raw('SUM(score) as total_score'))
-                ->groupBy('user_id')
-                ->orderBy('total_score', 'desc')
-                ->with('user') // Assuming you have a relationship with the User model
-                ->get();
-    
-            return response()->json($leaderboard);
-        }
+    public function gameLeaderboard($gameId)
+    {
+        $leaderboard = GamePlay::select('user_id', DB::raw('SUM(score) as total_score'))
+            ->where('game_id', $gameId)
+            ->groupBy('user_id')
+            ->orderBy('total_score', 'desc')
+            ->with('user') // Assuming you have a relationship with the User model
+            ->get();
+
+        return response()->json($leaderboard);
+    }
+
+    public function overallLeaderboard()
+    {
+        $leaderboard = GamePlay::select('user_id', DB::raw('SUM(score) as total_score'))
+            ->groupBy('user_id')
+            ->orderBy('total_score', 'desc')
+            ->with('user') // Assuming you have a relationship with the User model
+            ->get();
+
+        return response()->json($leaderboard);
+    }
 }
 
 

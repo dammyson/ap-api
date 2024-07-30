@@ -20,10 +20,10 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone_number');
             $table->integer('otp')->nullable();
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->text('mobile_token')->nullable();
             $table->boolean('can_change_password')->default(false);
-            $table->bigInteger('peace_id');
+            $table->string('peace_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AirportController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ use App\Http\Controllers\RedeemedRewardController;
 
 
 Route::group(['prefix' => 'user'], function () use ($router) {
-    $router->post('register', [RegisterController::class, 'clientRegister']);
+    $router->post('register', [RegisterController::class, 'userRegister']);
     $router->post('forgot-password', [RegisterController::class, 'forgotPassword']);
     $router->post('verify/otp', [RegisterController::class, 'verifyOtp']);
     $router->post('reset/password', [RegisterController::class, 'resetPassword']);
@@ -37,6 +38,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('/city', [CityController::class, 'storeCity']);
     Route::get('/plane', [PlaneController::class, 'indexPlane']);
     Route::post('/plane', [PlaneController::class, 'storePlane']);
+    Route::get('/airport', [AirportController::class, 'indexAirport']);
+    Route::post('/airport', [AirportController::class, 'storeAirport']);
 
     Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
     Route::post('/tickets/update-seats', [TicketController::class, 'updateSeats']);

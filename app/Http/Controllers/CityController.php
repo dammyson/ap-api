@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SuperAdmin\StoreCityRequest;
 use App\Models\City;
 use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
     //
-    public function storeCity(Request $request) {
-        $request->validate([
-            "name" => 'required|string',
-            "country_id" => 'required|integer' 
-        ]);
+    public function storeCity(StoreCityRequest $request) {
 
         try {
             $city = City::create([

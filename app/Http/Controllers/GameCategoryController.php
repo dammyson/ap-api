@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Game\StoreGameCategoryRequest;
+use App\Http\Requests\Game\UpdateGameCategoryRequest;
 use App\Models\GameCategory;
-use Illuminate\Http\Request;
 
 class GameCategoryController extends Controller
 {
@@ -12,14 +13,9 @@ class GameCategoryController extends Controller
         return response()->json(GameCategory::all());
     }
 
-    public function store(Request $request)
+    public function store(StoreGameCategoryRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
-        $gameCategory = GameCategory::create($validated);
+        $gameCategory = GameCategory::create($request->validated());
 
         return response()->json($gameCategory, 201);
     }
@@ -29,14 +25,10 @@ class GameCategoryController extends Controller
         return response()->json($gameCategory);
     }
 
-    public function update(Request $request, GameCategory $gameCategory)
+    public function update(UpdateGameCategoryRequest $request, GameCategory $gameCategory)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
-        $gameCategory->update($validated);
+       
+        $gameCategory->update($request->validated());
 
         return response()->json($gameCategory);
     }

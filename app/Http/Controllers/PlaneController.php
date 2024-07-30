@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SuperAdmin\StorePlaneRequest;
 use App\Models\Plane;
 use Illuminate\Http\Request;
 
 class PlaneController extends Controller
 {
     //
-    public function storePlane(Request $request) {
-        $request->validate([
-            'name' => 'required|string',
-            'code' => 'required|string',
-            'capacity' => 'required|string'
-            
-        ]);
+    public function storePlane(StorePlaneRequest $request) {
 
         try {
             $plane = Plane::create([
