@@ -38,18 +38,18 @@ class RegisterController extends Controller
     }
 
     protected function sendMail($to_name, $to_email, $otp) {
-        //  $data = ['name' => $to_name, 'body' => 'Airpeace Otp', 'otp' => $otp];
+         $data = ['name' => $to_name, 'body' => 'Airpeace Otp', 'otp' => $otp];
 
-        //  Mail::send('sendmail', $data, 
-        //  function($message) use($to_name, $to_email) {
-        //      $message->to($to_email, $to_name);
-        //      $message->subject('Reset Password mail');
-        //      // This line below might not be necessary as they are 
-        //      // already configured from our config/mail.php script
-        //      //$message->from('Ocelot Group', 'Mail to reset password');
-        //  }
+         Mail::send('sendmail', $data, 
+         function($message) use($to_name, $to_email) {
+             $message->to($to_email, $to_name);
+             $message->subject('Reset Password mail');
+             // This line below might not be necessary as they are 
+             // already configured from our config/mail.php script
+             $message->from('Ocelot Group', 'Mail to reset password');
+         }
 
-    //  );
+     );
     }
 
     protected function generateOtp() {
@@ -59,8 +59,8 @@ class RegisterController extends Controller
            $otp .= $num;
         }
 
-        // return (int)$otp;
-        return 1111;
+        return (int)$otp;
+
     }
 
 
@@ -118,9 +118,7 @@ class RegisterController extends Controller
         } catch (\Throwable $throwable) {
             return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
         
-        }
-
-           
+        }   
 
     }
 
@@ -132,8 +130,7 @@ class RegisterController extends Controller
         ]);
 
         try {
-            
-            
+             
             $user = User::where('email', $request->email)->first();
             
             if (!$user) {
@@ -170,7 +167,6 @@ class RegisterController extends Controller
         ]);
 
         try {
-            
             
             $user = User::where('email', $request->email)->first();
             
