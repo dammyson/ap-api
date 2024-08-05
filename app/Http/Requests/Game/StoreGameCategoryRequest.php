@@ -23,8 +23,7 @@ class StoreGameCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'game_category_id' => 'required|exists:game_categories,id',
+            'description' => 'nullable|string'
         ];
     }
 }
