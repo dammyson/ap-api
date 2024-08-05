@@ -30,17 +30,24 @@ Route::group(['prefix' => 'user'], function () use ($router) {
     $router->post('login', [LoginController::class, 'login']);
 });
 
+Route::middleware('auth:api')->group(function () {
+    Route::group(['prefix' => 'admin/'], function () {
+        Route::post('/country', [CountryController::class, 'storeCountry']);
+        Route::post('/city', [CityController::class, 'storeCity']);
+        Route::post('/plane', [PlaneController::class, 'storePlane']);
+        Route::post('game-categories', [GameCategoryController::class, 'store']);
+        Route::post('games', [GameController::class, 'store']);
+    });
+});
+
+
 Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);
-    Route::post('/country', [CountryController::class, 'storeCountry']);
     Route::get('/city', [CityController::class, 'indexCity']);
-    Route::post('/city', [CityController::class, 'storeCity']);
     Route::get('/plane', [PlaneController::class, 'indexPlane']);
-    Route::post('/plane', [PlaneController::class, 'storePlane']);
     Route::get('/airport', [AirportController::class, 'indexAirport']);
     Route::post('/airport', [AirportController::class, 'storeAirport']);
-
     Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
     Route::post('/tickets/update-seats', [TicketController::class, 'updateSeats']);
     Route::get('/booking', [BookingController::class, 'getBooking']);
@@ -50,13 +57,11 @@ Route::group(["middleware" => ["auth:api"]], function () {
 Route::group(["middleware" => ["auth:api"]], function () {
 
     Route::get('game-categories', [GameCategoryController::class, 'index']);
-    Route::post('game-categories', [GameCategoryController::class, 'store']);
     Route::get('game-categories/{gameCategory}', [GameCategoryController::class, 'show']);
     Route::put('game-categories/{gameCategory}', [GameCategoryController::class, 'update']);
     Route::delete('game-categories/{gameCategory}', [GameCategoryController::class, 'destroy']);
 
     Route::get('games', [GameController::class, 'index']);
-    Route::post('games', [GameController::class, 'store']);
     Route::get('games/{game}', [GameController::class, 'show']);
     Route::put('games/{game}', [GameController::class, 'update']);
     Route::delete('games/{game}', [GameController::class, 'destroy']);
