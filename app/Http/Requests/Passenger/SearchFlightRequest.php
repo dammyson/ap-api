@@ -25,9 +25,10 @@ class SearchFlightRequest extends FormRequest
             'departure_date' => 'required|date',
             'arrival_date' => 'required|date',
             'passengers' => 'required|integer|min:1',
-            'round_trip' => 'required|boolean',
+            'trip_type' => 'required|string|in:ONE_WAY,ROUND_TRIP,MULTI_DIRECTIONAL',
             'departure_airport' => 'required|string',
             'arrival_airport' => 'required|string',
+            'passenger_type' => 'required|string',
         ];
     }
 }

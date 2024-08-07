@@ -21,6 +21,11 @@ use App\Http\Controllers\RewardController;
 use App\Http\Controllers\RedeemedRewardController;
 
 
+
+Route::get('/soap', [FlightController::class, 'callSoapApi']);
+
+
+
 Route::group(['prefix' => 'user'], function () use ($router) {
     $router->post('register', [RegisterController::class, 'userRegister']);
     $router->post('forgot-password', [RegisterController::class, 'forgotPassword']);

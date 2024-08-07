@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+
 use Illuminate\Support\ServiceProvider;
 use App\Services\Ticket\PassengerTicketService;
 use App\Services\Transaction\Transactions;
