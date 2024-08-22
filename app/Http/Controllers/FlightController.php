@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Services\Http\SoapClientService;
 use App\Services\Soap\SoapRequestBuilder;
+use App\Http\Requests\Ticket\VoidTicketPricingRequest;
+use App\Services\Soap\VoidTicketRequestBuilder;
 
 class FlightController extends Controller
 {
@@ -17,15 +19,21 @@ class FlightController extends Controller
     protected $craneAncillaryOTASoapService;
     protected $soapRequestBuilder;
 
+    
     public function __construct(SoapRequestBuilder $soapRequestBuilder)
     {
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->soapRequestBuilder = $soapRequestBuilder;
     }
+
+    
+
     /**
      * Search for flights based on provided criteria.
      */
+
+    
     public function searchFlights(SearchFlightRequest $request)
     {
         $departureDateTime = $request->input('departure_date');
@@ -40,7 +48,8 @@ class FlightController extends Controller
 
         if($request->input('trip_type') == "ONE_WAY"){
             $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $passengerTypeCode, $quantity, $tripType);  
-        }else{
+            dd($xml);
+        } else {
             $xml = $this->soapRequestBuilder->GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $passengerTypeCode, $quantity, $tripType,  $ArrivalDateTime);  
         }
          
@@ -58,12 +67,6 @@ class FlightController extends Controller
         }
 
     }
-
-
-    public function groupFaresByCabin( $fareInfoList)
-    {
-        $groupedFares = null;
-       
-        return $groupedFares;
-    }
+    
 }
+

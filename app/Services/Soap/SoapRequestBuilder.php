@@ -109,3 +109,4 @@ class SoapRequestBuilder
       return $xml;
    }
 }
+
