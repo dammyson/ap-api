@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\CreateUserRequest;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -37,6 +41,35 @@ class RegisterController extends Controller
 
     }
 
+    public function changePassword(ChangePasswordRequest $request) {
+
+        try {
+            
+            $user = User::where('email', $request->input("email"))->first();
+            
+            if (!$user) {
+                    return response()->json([
+                            "error" => "true",
+                            "message" => "user not found"
+                        ], 404);
+                    }
+    
+            if (!Hash::check($request->input("current_password"), $user->password)) {
+                return response()->json(['error' => true, 'message' => 'Invalid password'], 500);
+            }
+    
+            $user->password =  $request->input("new_password");
+            $user->save();
+    
+            return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
+           
+
+        } catch (\Throwable $throwable) {
+            return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
+        }
+
+    }
+
     protected function sendMail($to_name, $to_email, $otp) {
          $data = ['name' => $to_name, 'body' => 'Airpeace Otp', 'otp' => $otp];
 
@@ -64,10 +97,7 @@ class RegisterController extends Controller
     }
 
 
-    public function forgotPassword(Request $request) {
-        $request->validate([
-            'email' => 'required|email'
-        ]);
+    public function forgotPassword(ForgotPasswordRequest $request) {
 
         $user = User::where('email', $request->email)->first();
 
@@ -89,11 +119,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function verifyOtp(Request $request) {
-        $request->validate([
-            'email'=> 'required|email',
-            'otp' => 'required|min:4|max:4'
-        ]);
+    public function verifyOtp(VerifyOtpRequest $request) {
 
         try {
             
@@ -122,13 +148,7 @@ class RegisterController extends Controller
 
     }
 
-    public function resetPassword(Request $request) {
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'new_password' => 'required|min:4|max:4|confirmed',
-
-        ]);
-
+    public function resetPassword(ResetPasswordRequest $request) {
         try {
              
             $user = User::where('email', $request->email)->first();
@@ -146,7 +166,7 @@ class RegisterController extends Controller
             }
     
     
-            $user->password =  $validated["new_password"];
+            $user->password =  $request->input("new_password");
             $user->save();
     
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
@@ -158,38 +178,5 @@ class RegisterController extends Controller
 
     }
 
-    public function changePassword(Request $request) {
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'current_password' => 'required',
-            'new_password' => 'required|min:4|max:4|confirmed',
 
-        ]);
-
-        try {
-            
-            $user = User::where('email', $request->email)->first();
-            
-            if (!$user) {
-                    return response()->json([
-                            "error" => "true",
-                            "message" => "user not found"
-                        ], 404);
-                    }
-    
-            if (!Hash::check($validated["current_password"], $user->password)) {
-                return response()->json(['error' => true, 'message' => 'Invalid password'], 500);
-            }
-    
-            $user->password =  $validated["new_password"];
-            $user->save();
-    
-            return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
-           
-
-        } catch (\Throwable $throwable) {
-            return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
-        }
-
-    }
 }

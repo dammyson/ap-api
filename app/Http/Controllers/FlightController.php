@@ -19,15 +19,21 @@ class FlightController extends Controller
     protected $craneAncillaryOTASoapService;
     protected $soapRequestBuilder;
 
+    
     public function __construct(SoapRequestBuilder $soapRequestBuilder)
     {
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->soapRequestBuilder = $soapRequestBuilder;
     }
+
+    
+
     /**
      * Search for flights based on provided criteria.
      */
+
+    
     public function searchFlights(SearchFlightRequest $request)
     {
         $departureDateTime = $request->input('departure_date');
