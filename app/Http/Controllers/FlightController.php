@@ -42,7 +42,7 @@ class FlightController extends Controller
         $originLocationCode = $request->input('arrival_airport');
         $passengerTypeCode = $request->input('passenger_type');
         $quantity = $request->input('passengers');
-        $tripType = $request->input('trip_type');;
+        $tripType = $request->input('trip_type');
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
 
