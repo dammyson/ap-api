@@ -63,6 +63,7 @@ class FlightController extends Controller
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList, $quantity);
                 $rt = new \stdClass();
                 $rt->departure = $result0;
+                $result = $rt;
             } else {
                 $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity);
