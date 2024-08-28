@@ -12,28 +12,38 @@ use Illuminate\Http\Request;
 
 class GetAvailabilityController extends Controller
 {
-    //
+
+    protected $craneOTASoapService;
+    protected $craneAncillaryOTASoapService;    
     protected $getAvailabilityBuilder;
 
     public function __construct(GetAvailabilityBuilder $getAvailabilityBuilder)
     {
-        $this->getAvailabilityBuilder = $getAvailabilityBuilder;
+        $this->getAvailabilityBuilder = $getAvailabilityBuilder; 
+        $this->craneOTASoapService = app('CraneOTASoapService');
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');  
+        
     }
 
     public function getAvailabilityGeneralParameters() {
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailabilityGeneralParameters';
         $xml = $this->getAvailabilityBuilder->getAvailabilityGeneralParameters();
-        dd($xml);
+        
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
     }
+
+
     public function getAvailabilityRT(GetAvailabilityRTRequest $request) {
         $originDateOffsetOne = $request->input('originDateOffsetOne'); 
-        $originDepartureDateTimeOne = $request->input('originDateOffsetOne'); 
-        $originDestinationLocationCode = $request->input('originDateOffsetOne');
-        $flexibleFaresOnlyOne = $request->input('originDateOffsetOne');
-        $includeInterlineFlightsOne = $request->input('originDateOffsetOne'); 
-        $openFlightOne = $request->input('originDateOffsetOne');
-        $originLocationCodeOne = $request->input('originDateOffsetOne'); 
+        $originDepartureDateTimeOne = $request->input('originDepartureDateTimeOne'); 
+        $originDestinationLocationCode = $request->input('originDestinationLocationCode');
+        $flexibleFaresOnlyOne = $request->input('flexibleFaresOnlyOne');
+        $includeInterlineFlightsOne = $request->input('includeInterlineFlightsOne'); 
+        $openFlightOne = $request->input('openFlightOne');
+        $originLocationCodeOne = $request->input('originLocationCodeOne'); 
         $originDataOffsetTwo = $request->input('originDataOffsetTwo'); 
-        $originDepartureDateTimeTwo = $request->input('originDataOffsetTwo');
+        $originDepartureDateTimeTwo = $request->input('originDepartureDateTimeTwo');
         $destinationLocationCodeTwo = $request->input('destinationLocationCodeTwo'); 
         $flexibleFaresOnlyTwo = $request->input('flexibleFaresOnlyTwo'); 
         $includeInterlineFlightsTwo = $request->input('includeInterlineFlightsTwo');
@@ -42,6 +52,8 @@ class GetAvailabilityController extends Controller
         $travelerInformationCode = $request->input('travelerInformationCode'); 
         $travelerQuantity = $request->input('travelerQuantity');
         $tripType = $request->input('tripType');
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
 
         $xml = $this->getAvailabilityBuilder->getAvailabilityRT(
             $originDateOffsetOne, 
@@ -63,7 +75,9 @@ class GetAvailabilityController extends Controller
             $tripType
         );
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
     }
 
     public function getAvailabilityOW(GetAvailabilityOWRequest $request) {
@@ -78,6 +92,8 @@ class GetAvailabilityController extends Controller
         $passengerQuantity = $request->input('passengerQuantity'); 
         $tripType = $request->input('tripType');
 
+        $function = "http://impl.soap.ws.crane.hititcs.com/GetAvailability";
+
         $xml = $this->getAvailabilityBuilder->getAvailabilityOW(
             $originDateOffset, 
             $departureDateTime, 
@@ -91,7 +107,8 @@ class GetAvailabilityController extends Controller
             $tripType
         );
 
-        dd($xml);
+        $response =  $this->craneOTASoapService->run($function, $xml);
+        dd($response);
     }
 
     public function getAvailabilityMD(GetAvailabilityMDRequest $request) {
@@ -113,6 +130,8 @@ class GetAvailabilityController extends Controller
         $passengerQuantity = $request->input('passengerQuantity');
         $tripType = $request->input('tripType');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
+
         $xml = $this->getAvailabilityBuilder->getAvailabilityMD(
             $originDataOffsetOne, 
             $departureDateTimeOne,
@@ -133,7 +152,8 @@ class GetAvailabilityController extends Controller
             $tripType
         );
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
     }
 
     public function getAvailabilityTwoA(GetAvailabilityTwoARequest $request){
@@ -152,6 +172,8 @@ class GetAvailabilityController extends Controller
         $infantQuantity = $request->input('infantQuantity'); 
         $tripType = $request->input('tripType');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
+
         $xml = $this->getAvailabilityBuilder->getAvailabilityTwoA(
             $dataOffset, 
             $departureDateTime, 
@@ -168,7 +190,8 @@ class GetAvailabilityController extends Controller
             $infantQuantity, 
             $tripType
         );
-
-        dd($xml);
+        
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
     }
 }

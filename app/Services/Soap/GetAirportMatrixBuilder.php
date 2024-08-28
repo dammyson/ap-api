@@ -11,12 +11,12 @@ class GetAirportMatrixBuilder {
             <soapenv:Body>
                <impl:GetAirPortMatrix>
                <AirPortMatrixRequest>
-               <clientInformation>
-               <clientIP>129.0.0.1</clientIP>
-               <member>false</member>
-               <password>SCINTILLA</password>
-               <userName>SCINTILLA</userName>
-               </clientInformation>
+                    <clientInformation>
+                    <clientIP>129.0.0.1</clientIP>
+                    <member>false</member>
+                    <password>SCINTILLA</password>
+                    <userName>SCINTILLA</userName>
+                    </clientInformation>
                </AirPortMatrixRequest>
                </impl:GetAirPortMatrix>
             </soapenv:Body>

@@ -10,14 +10,14 @@ class GetAvailabilityBuilder {
                <soapenv:Header/>
                <soapenv:Body>
                <impl:GetAvailabilityGeneralParameters>
-               <AvailabilityGeneralParametersRequest>
-               <clientInformation>
-               <clientIP>129.0.0.1</clientIP>
-               <member>false</member>
-               <password>SCINTILLA</password>
-               <userName>SCINTILLA</userName>
-               </clientInformation>
-               </AvailabilityGeneralParametersRequest>
+                  <AvailabilityGeneralParametersRequest>
+                  <clientInformation>
+                     <clientIP>129.0.0.1</clientIP>
+                     <member>false</member>
+                     <password>SCINTILLA</password>
+                     <userName>SCINTILLA</userName>
+                  </clientInformation>
+                  </AvailabilityGeneralParametersRequest>
                </impl:GetAvailabilityGeneralParameters>
                </soapenv:Body>
             </soapenv:Envelope>';
@@ -114,7 +114,7 @@ class GetAvailabilityBuilder {
         $passengerQuantity, 
         $tripType
     ) {
-        $xml ='<?xml version="1.0" encoding="UTF-8"?>
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
            <soapenv:Header/>
            <soapenv:Body>
@@ -178,7 +178,7 @@ class GetAvailabilityBuilder {
         $tripType
     ) {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
-        soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
            <soapenv:Header/>
               <soapenv:Body>
               <impl:GetAvailability>
@@ -192,7 +192,7 @@ class GetAvailabilityBuilder {
                     </clientInformation>
                     <originDestinationInformationList>
                        <dateOffset>' . htmlspecialchars($originDataOffsetOne, ENT_XML1, 'UTF-8') . '</dateOffset>
-                       <departureDateTime>' . htmlspecialchars($departureDateTimeOne, ENT_XML1, 'UTF-8') . '/departureDateTime>
+                       <departureDateTime>' . htmlspecialchars($departureDateTimeOne, ENT_XML1, 'UTF-8') . '</departureDateTime>
                        <destinationLocation>
                           <locationCode>' . htmlspecialchars($destinationLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
                        </destinationLocation>

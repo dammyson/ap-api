@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\AutoCancelBookingJob;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 
@@ -17,4 +18,10 @@ class BookingController extends Controller
 
        return response()->json($booking);
     } 
+
+    public function bookOnHold(Request $request, Booking $booking) {
+        // dump('I ran before the job');
+
+        AutoCancelBookingJob::dispatch($booking)->delay(now()->addMinutes(5));
+    }
 }

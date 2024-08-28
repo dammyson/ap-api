@@ -11,10 +11,14 @@ use Illuminate\Http\Request;
 
 class CreateBookingController extends Controller
 {
+    protected $craneOTASoapService;
+    protected $craneAncillaryOTASoapService;
     protected $createBookingBuilder;
 
     public function __construct(CreateBookingBuilder $createBookingBuilder) {
         $this->createBookingBuilder = $createBookingBuilder;
+        $this->craneOTASoapService = app('CraneOTASoapService');
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
     }
 
     public function createBookingRT(CreateBookingRTRequest $request) {
@@ -187,6 +191,8 @@ class CreateBookingController extends Controller
         $paymentType = $request->input('paymentType');
         $primaryPayment = $request->input('primaryPayment');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
+
         $xml = $this->createBookingBuilder->createBookingRT(
             $bookingFlightActionCode,
             $bookingFlightCabin,
@@ -358,7 +364,9 @@ class CreateBookingController extends Controller
             $primaryPayment
         );
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
     }
 
     public function createBookingTwoA(CreateBookingTwoARequest $request){
@@ -492,6 +500,8 @@ class CreateBookingController extends Controller
         $ticketedServiceQuantityTwo = $request->input('ticketedServiceQuantityTwo');
         $ticketedStatusTwo = $request->input('ticketedStatusTwo'); 
 
+        $function = "http://impl.soap.ws.crane.hititcs.com/CreateBooking";
+
         $xml = $this->createBookingBuilder->createBookingTwoA(
             $actionCode,
             $cabin,
@@ -624,7 +634,10 @@ class CreateBookingController extends Controller
             $ticketedStatusTwo
         );
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
+
     }
 
     public function createBookingOW(createBookingOWRequest $request) {
@@ -722,6 +735,8 @@ class CreateBookingController extends Controller
         $requestPurpose = $request->input('requestPurpose');
 
 
+        $function = "http://impl.soap.ws.crane.hititcs.com/CreateBooking";
+
         $xml = $this->createBookingBuilder->createBookingOW(
             $actionCode,
             $bookingClassCabin,
@@ -817,6 +832,7 @@ class CreateBookingController extends Controller
             $requestPurpose
         );
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
     }
 }

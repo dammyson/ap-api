@@ -14,14 +14,18 @@ use App\Http\Requests\Test\GetAvailability\GetAvailabilityOWRequest;
 class GetAirExtraChargesAndProductsController extends Controller
 {
     protected $getAirExtraChargesAndProductBuilder;
+    protected $craneOTASoapService;
+    protected $craneAncillaryOTASoapService;
 
     public function __construct(GetAirExtraChargesAndProductBuilder $getAirExtraChargesAndProductBuilder)
     {
         $this->getAirExtraChargesAndProductBuilder = $getAirExtraChargesAndProductBuilder;
+        $this->craneOTASoapService = app('CraneOTASoapService');
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');  
     }
 
 
-    public function getAirExtraChargesAndProductRT(GetExtraChargesAndProductRtRequest $request) {
+    public function getAirExtraChargesAndProductsRT(GetExtraChargesAndProductRtRequest $request) {
         $bookingClassCabinOne = $request->input('bookingClassCabinOne'); 
         $bookingClassResBookDesigCodeOne = $request->input('bookingClassResBookDesigCodeOne'); 
         $bookingClassResBookDesigQuantityOne = $request->input('bookingClassResBookDesigQuantityOne'); 
@@ -59,8 +63,8 @@ class GetAirExtraChargesAndProductsController extends Controller
         $departureAirportCityLocationNameOne = $request->input('departureAirportCityLocationNameOne'); 
         $departureAirportCityLocationNameLanguageOne = $request->input('departureAirportCityLocationNameLanguageOne'); 
         $departureAirportCountryLocationCodeOne = $request->input('departureAirportCountryLocationCodeOne'); 
-        $departureCountryLocationNameOne = $request->input('departureCountryLocationNameOne'); 
-        $departureCountryLocationNameLanguageOne = $request->input('departureCountryLocationNameLanguageOne');
+        $departureAirportCountryLocationNameOne = $request->input('departureAirportCountryLocationNameOne'); 
+        $departureAirportCountryLocationNameLanguageOne = $request->input('departureAirportCountryLocationNameLanguageOne');
         $departureAirportCountryCurrencyCodeOne = $request->input('departureAirportCountryCurrencyCodeOne'); 
         $departureAirportCodeContextOne = $request->input('departureAirportCodeContextOne'); 
         $departureAirportLanguageOne = $request->input('departureAirportLanguageOne'); 
@@ -117,7 +121,7 @@ class GetAirExtraChargesAndProductsController extends Controller
         $arrivalAirportCityLocationNameTwo = $request->input('arrivalAirportCityLocationNameTwo'); 
         $arrivalAirportCityLocationNameLanguageTwo = $request->input('arrivalAirportCityLocationNameLanguageTwo'); 
         $arrivalAirportCountryLocationCodeTwo = $request->input('arrivalAirportCountryLocationCodeTwo');
-        $arrivalAirportCountryLocatoinNameTwo = $request->input('arrivalAirportCountryLocatoinNameTwo'); 
+        $arrivalAirportCountryLocationNameTwo = $request->input('arrivalAirportCountryLocationNameTwo'); 
         $arrivalAirportCountryLocationNameLangaugeTwo = $request->input('arrivalAirportCountryLocationNameLangaugeTwo'); 
         $arrivalAirportCountryCurrencyCodeTwo = $request->input('arrivalAirportCountryCurrencyCodeTwo'); 
         $arrivalAirportCodeContextTwo = $request->input('arrivalAirportCodeContextTwo'); 
@@ -131,8 +135,8 @@ class GetAirExtraChargesAndProductsController extends Controller
         $departureAirportCityLocationNameTwo = $request->input('departureAirportCityLocationNameTwo'); 
         $departureAirportCityLocationNameLanguageTwo = $request->input('departureAirportCityLocationNameLanguageTwo'); 
         $departureAirportCountryLocationCodeTwo = $request->input('departureAirportCountryLocationCodeTwo'); 
-        $departureCountryLocationNameTwo = $request->input('departureCountryLocationNameTwo'); 
-        $departureCountryLocationNameLanguageTwo = $request->input('departureCountryLocationNameLanguageTwo');
+        $departureAirportCountryLocationNameTwo = $request->input('departureAirportCountryLocationNameTwo'); 
+        $departureAirportCountryLocationNameLanguageTwo = $request->input('departureAirportCountryLocationNameLanguageTwo');
         $departureAirportCountryCurrencyCodeTwo = $request->input('departureAirportCountryCurrencyCodeTwo'); 
         $departureAirportCodeContextTwo = $request->input('departureAirportCodeContextTwo'); 
         $departureAirportLanguageTwo = $request->input('departureAirportLanguageTwo'); 
@@ -170,6 +174,9 @@ class GetAirExtraChargesAndProductsController extends Controller
         $passengerTypeCode = $request->input('passengerTypeCode'); 
         $quantity = $request->input('quantity'); 
         $tripType = $request->input('tripType');
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAirExtraChargesAndProducts';
+
 
         $xml = $this->getAirExtraChargesAndProductBuilder->getAirExtraChargesAndProductsRT(
             $bookingClassCabinOne, 
@@ -209,8 +216,8 @@ class GetAirExtraChargesAndProductsController extends Controller
             $departureAirportCityLocationNameOne, 
             $departureAirportCityLocationNameLanguageOne, 
             $departureAirportCountryLocationCodeOne, 
-            $departureCountryLocationNameOne, 
-            $departureCountryLocationNameLanguageOne,
+            $departureAirportCountryLocationNameOne,  
+            $departureAirportCountryLocationNameLanguageOne,
             $departureAirportCountryCurrencyCodeOne, 
             $departureAirportCodeContextOne, 
             $departureAirportLanguageOne, 
@@ -267,7 +274,7 @@ class GetAirExtraChargesAndProductsController extends Controller
             $arrivalAirportCityLocationNameTwo, 
             $arrivalAirportCityLocationNameLanguageTwo, 
             $arrivalAirportCountryLocationCodeTwo,
-            $arrivalAirportCountryLocatoinNameTwo, 
+            $arrivalAirportCountryLocationNameTwo, 
             $arrivalAirportCountryLocationNameLangaugeTwo, 
             $arrivalAirportCountryCurrencyCodeTwo, 
             $arrivalAirportCodeContextTwo, 
@@ -281,8 +288,8 @@ class GetAirExtraChargesAndProductsController extends Controller
             $departureAirportCityLocationNameTwo, 
             $departureAirportCityLocationNameLanguageTwo, 
             $departureAirportCountryLocationCodeTwo, 
-            $departureCountryLocationNameTwo, 
-            $departureCountryLocationNameLanguageTwo,
+            $departureAirportCountryLocationNameTwo, 
+            $departureAirportCountryLocationNameLanguageTwo,
             $departureAirportCountryCurrencyCodeTwo, 
             $departureAirportCodeContextTwo, 
             $departureAirportLanguageTwo, 
@@ -322,7 +329,22 @@ class GetAirExtraChargesAndProductsController extends Controller
             $tripType
         );
     
-        dd($xml);
+        try {
+
+           
+            $response = $this->craneOTASoapService->run($function, $xml);
+
+            dd($response);
+
+        } catch( \Throwable $th) {
+            return response()->json([
+                'error' => false,
+                'message' => $th->getMessage()
+
+            ]);
+        }
+       
+        
     }
 
    
@@ -344,7 +366,7 @@ class GetAirExtraChargesAndProductsController extends Controller
         $fareReferenceNameOne = $request->input('fareReferenceNameOne');
         $flightSegmentSequenceOne = $request->input('flightSegmentSequenceOne'); 
         $portTaxOne = $request->input('portTaxOne'); 
-        $resBookDesigCodeOne = $request->input(''); 
+        $resBookDesigCodeOne = $request->input('resBookDesigCodeOne'); 
         $airlineCodeOne = $request->input('airlineCodeOne'); 
         $companyFullNameOne = $request->input('companyFullNameOne'); 
         $arrivalAirportCityLocationCodeOne = $request->input('arrivalAirportCityLocationCodeOne');
@@ -365,7 +387,7 @@ class GetAirExtraChargesAndProductsController extends Controller
         $departureAirportCityLocationNameOne = $request->input('departureAirportCityLocationNameOne');
         $departureAirportCityLocationNameLanguageOne = $request->input('departureAirportCityLocationNameLanguageOne'); 
         $departureAirportCountryLocationCodeOne = $request->input('departureAirportCountryLocationCodeOne'); 
-        $departureAirportCountryLocationNameOne = $request->input('departureAirportCountryLocationNameOne');
+        $departureAirportCountryLocationNameOne  = $request->input('departureAirportCountryLocationNameOne');
         $departureAirportCountryLocationNameLanguageOne = $request->input('departureAirportCountryLocationNameLanguageOne'); 
         $departureAirportCountryCurrencyCodeOne = $request->input('departureAirportCountryCurrencyCodeOne'); 
         $departureAirportCodeContextOne = $request->input('departureAirportCodeContextOne');
@@ -476,7 +498,10 @@ class GetAirExtraChargesAndProductsController extends Controller
         $passengerTypeCode = $request->input('passengerTypeCode');
         $passengerTypeQuantity = $request->input('passengerTypeQuantity');
         $tripType = $request->input('tripType');
+       
         
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAirExtraChargesAndProducts';
+
 
         $xml = $this->getAirExtraChargesAndProductBuilder->getAirExtraChargesAndProductMD(
             $bookingClassCabinOne,
@@ -629,7 +654,11 @@ class GetAirExtraChargesAndProductsController extends Controller
             $tripType
         );
 
-        dd($xml);
+        // dd($xml);
+        // dd($request->input('departureAirportCountryLocationNameOne'));
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
     
     }
 
@@ -715,6 +744,8 @@ class GetAirExtraChargesAndProductsController extends Controller
         $quantityThree = $request->input('quantityThree'); 
         $tripType = $request->input('tripType');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAirExtraChargesAndProducts';
+
         $xml = $this->getAirExtraChargesAndProductBuilder->getExtraChargesAndProductTwoA(
             $bookingClassCabin, 
             $bookingClassResBookDesigCode, 
@@ -798,7 +829,9 @@ class GetAirExtraChargesAndProductsController extends Controller
             $tripType
         );
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
     }
 
 
@@ -880,6 +913,8 @@ class GetAirExtraChargesAndProductsController extends Controller
         $quantity = $request->input('quantity');
         $tripType = $request->input('tripType');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAirExtraChargesAndProducts';
+        
         $xml = $this->getAirExtraChargesAndProductBuilder->getExtraChargesAndProductOW(
             $bookingClassCabin,
             $bookingClassResBookDesigCode,
@@ -959,7 +994,9 @@ class GetAirExtraChargesAndProductsController extends Controller
             $tripType
         );
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
     }
     
 

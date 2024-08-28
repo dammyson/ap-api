@@ -100,7 +100,7 @@ class GetAirExtraChargesAndProductBuilder {
         $arrivalAirportCityLocationNameTwo, 
         $arrivalAirportCityLocationNameLanguageTwo, 
         $arrivalAirportCountryLocationCodeTwo,
-        $arrivalAirportCountryLocatoinNameTwo, 
+        $arrivalAirportCountryLocationNameTwo, 
         $arrivalAirportCountryLocationNameLangaugeTwo, 
         $arrivalAirportCountryCurrencyCodeTwo, 
         $arrivalAirportCodeContextTwo, 
@@ -155,11 +155,11 @@ class GetAirExtraChargesAndProductBuilder {
         $tripType
      
     ) {
-      $xml = '<?xml version="1.0" encoding="UTF-8"?> 
+      $xml = '<?xml version="1.0" encoding="UTF-8"?>  
       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
          <soapenv:Header/>
-            <soapenv:Body>
-               <impl:GetAirExtraChargesAndProducts>
+         <soapenv:Body>
+            <impl:GetAirExtraChargesAndProducts>
                <AirExtraChargesAndProductsRequest>
                   <clientInformation>
                      <clientIP>129.0.0.1</clientIP>
@@ -169,14 +169,14 @@ class GetAirExtraChargesAndProductBuilder {
                      <preferredCurrency>NGN</preferredCurrency>
                   </clientInformation>
                   <bookFlightSegmentList>
-                  <addOnSegment/>
-                  <bookingClass>
-                     <cabin>' . htmlspecialchars($bookingClassCabinOne, ENT_XML1, 'UTF-8') . '</cabin>
-                     <resBookDesigCode>' . htmlspecialchars($bookingClassResBookDesigCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
-                     <resBookDesigQuantity>' . htmlspecialchars($bookingClassResBookDesigQuantityOne, ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
-                     <resBookDesigStatusCode>' . htmlspecialchars($bookingClassResBookDesigStatusCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigStatusCode>
-                  </bookingClass>
-                  <fareInfo>
+                     <addOnSegment/>
+                     <bookingClass>
+                        <cabin>' . htmlspecialchars($bookingClassCabinOne, ENT_XML1, 'UTF-8') . '</cabin>
+                        <resBookDesigCode>' . htmlspecialchars($bookingClassResBookDesigCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                        <resBookDesigQuantity>' . htmlspecialchars($bookingClassResBookDesigQuantityOne, ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
+                        <resBookDesigStatusCode>' . htmlspecialchars($bookingClassResBookDesigStatusCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigStatusCode>
+                     </bookingClass>
+                     <fareInfo>
                      <cabin>' . htmlspecialchars($fareInfoCabinOne, ENT_XML1, 'UTF-8') . '</cabin>
                      <cabinClassCode>' . htmlspecialchars($fareInfoCabinClassCodeOne, ENT_XML1, 'UTF-8') . '</cabinClassCode>
                      <fareBaggageAllowance>
@@ -189,18 +189,18 @@ class GetAirExtraChargesAndProductBuilder {
                      </fareBaggageAllowance>
                      <fareGroupName>' . htmlspecialchars($fareGroupNameOne, ENT_XML1, 'UTF-8') . '</fareGroupName>
                      <fareReferenceCode>' . htmlspecialchars($fareReferenceCodeOne, ENT_XML1, 'UTF-8') . '</fareReferenceCode>
-                     <fareReferenceID>' . htmlspecialchars($fareReferenceIDOne, ENT_XML1, 'UTF-8') . '</fareReferenceID> 
+                     <fareReferenceID>' . htmlspecialchars($fareReferenceIDOne, ENT_XML1, 'UTF-8') . '</fareReferenceID>
                      <fareReferenceName>' . htmlspecialchars($fareReferenceNameOne, ENT_XML1, 'UTF-8') . '</fareReferenceName>
                      <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceOne, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
                      <portTax>' . htmlspecialchars($portTaxOne, ENT_XML1, 'UTF-8') . '</portTax>
                      <resBookDesigCode>' . htmlspecialchars($fareInfoResBookDesigCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
-                  </fareInfo>
-                  <flightSegment>
+                     </fareInfo>
+                     <flightSegment>
                      <airline>
-                        <code>' . htmlspecialchars($airlineCodeOne, ENT_XML1, 'UTF-8') . '</code>
-                        <companyFullName>' . htmlspecialchars($companyFullNameOne, ENT_XML1, 'UTF-8') . '</companyFullName>
+                     <code>' . htmlspecialchars($airlineCodeOne, ENT_XML1, 'UTF-8') . '</code>
+                     <companyFullName>' . htmlspecialchars($companyFullNameOne, ENT_XML1, 'UTF-8') . '</companyFullName>
                      </airline>
-                        <arrivalAirport>
+                     <arrivalAirport>
                         <cityInfo>
                            <city>
                               <locationCode>' . htmlspecialchars($arrivalAirportCityLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
@@ -287,9 +287,9 @@ class GetAirExtraChargesAndProductBuilder {
                         <code/>
                         <explanation/>
                      </trafficRestriction>
-                  </flightSegment>
-                  <involuntaryPermissionGiven/>
-                  <sequenceNumber/>
+                     </flightSegment>
+                     <involuntaryPermissionGiven/>
+                     <sequenceNumber/>
                   </bookFlightSegmentList>
                   <bookFlightSegmentList>
                   <addOnSegment/>
@@ -300,138 +300,138 @@ class GetAirExtraChargesAndProductBuilder {
                      <resBookDesigStatusCode>' . htmlspecialchars($bookingClassResBookDesigStatusCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigStatusCode>
                   </bookingClass>
                   <fareInfo>
-                     <cabin>' . htmlspecialchars($fareInfoCabinTwo, ENT_XML1, 'UTF-8') . '</cabin>
-                     <cabinClassCode>' . htmlspecialchars($fareInfoCabinClassCodeTwo, ENT_XML1, 'UTF-8') . '</cabinClassCode>
-                     <fareBaggageAllowance>
-                        <allowanceType>' . htmlspecialchars($fareBaggageAllowedTypeTwo, ENT_XML1, 'UTF-8') . '</allowanceType>
-                        <maxAllowedPieces>' . htmlspecialchars($fareBaggageMaxAllowedPiecesTwo, ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
-                        <maxAllowedWeight>
-                           <unitOfMeasureCode>' . htmlspecialchars($unitOfMeasureCodeTwo, ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
-                           <weight>' . htmlspecialchars($weightTwo, ENT_XML1, 'UTF-8') . '</weight>
-                        </maxAllowedWeight>
-                     </fareBaggageAllowance>
-                     <fareGroupName> ' . htmlspecialchars($fareGroupNameTwo, ENT_XML1, 'UTF-8') . ' </fareGroupName>
-                     <fareReferenceCode>' . htmlspecialchars($fareReferenceCodeTwo, ENT_XML1, 'UTF-8') . '</fareReferenceCode>
-                     <fareReferenceID> ' . htmlspecialchars($fareReferenceIDTwo, ENT_XML1, 'UTF-8') . ' </fareReferenceID>
-                     <fareReferenceName>' . htmlspecialchars($fareReferenceNameTwo, ENT_XML1, 'UTF-8') . '</fareReferenceName>
-                     <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceTwo, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                     <portTax>' . htmlspecialchars($portTaxTwo, ENT_XML1, 'UTF-8') . '</portTax>
-                     <resBookDesigCode>' . htmlspecialchars($fareInfoResBookDesigCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                  <cabin>' . htmlspecialchars($fareInfoCabinTwo, ENT_XML1, 'UTF-8') . '</cabin>
+                  <cabinClassCode>' . htmlspecialchars($fareInfoCabinClassCodeTwo, ENT_XML1, 'UTF-8') . '</cabinClassCode>
+                  <fareBaggageAllowance>
+                     <allowanceType>' . htmlspecialchars($fareBaggageAllowedTypeTwo, ENT_XML1, 'UTF-8') . '</allowanceType>
+                     <maxAllowedPieces>' . htmlspecialchars($fareBaggageMaxAllowedPiecesTwo, ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
+                     <maxAllowedWeight>
+                        <unitOfMeasureCode>' . htmlspecialchars($unitOfMeasureCodeTwo, ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
+                        <weight>' . htmlspecialchars($weightTwo, ENT_XML1, 'UTF-8') . '</weight>
+                     </maxAllowedWeight>
+                  </fareBaggageAllowance>
+                  <fareGroupName>' . htmlspecialchars($fareGroupNameTwo, ENT_XML1, 'UTF-8') . '</fareGroupName>
+                  <fareReferenceCode>' . htmlspecialchars($fareReferenceCodeTwo, ENT_XML1, 'UTF-8') . '</fareReferenceCode>
+                  <fareReferenceID>' . htmlspecialchars($fareReferenceIDTwo, ENT_XML1, 'UTF-8') . '</fareReferenceID>
+                  <fareReferenceName>' . htmlspecialchars($fareReferenceNameTwo, ENT_XML1, 'UTF-8') . '</fareReferenceName>
+                  <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceTwo, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                  <portTax>' . htmlspecialchars($portTaxTwo, ENT_XML1, 'UTF-8') . '</portTax>
+                  <resBookDesigCode>' . htmlspecialchars($fareInfoResBookDesigCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
                   </fareInfo>
                   <flightSegment>
-                     <airline>
-                        <code>' . htmlspecialchars($airlineCodeTwo, ENT_XML1, 'UTF-8') . '</code>
-                        <companyFullName>' . htmlspecialchars($companyFullNameTwo, ENT_XML1, 'UTF-8') . '</companyFullName>
-                     </airline>
-                     <arrivalAirport>
-                        <cityInfo>
-                           <city>
-                              <locationCode>' . htmlspecialchars($arrivalAirportCityLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                              <locationName>' . htmlspecialchars($arrivalAirportCityLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                              <locationNameLanguage>' . htmlspecialchars($arrivalAirportCityLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
-                           </city>
-                           <country>
-                              <locationCode>' . htmlspecialchars($arrivalAirportCountryLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                              <locationName>' . htmlspecialchars($arrivalAirportCountryLocatoinNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                              <locationNameLanguage>' . htmlspecialchars($arrivalAirportCountryLocationNameLangaugeTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
-                              <currency>
-                                 <code>' . htmlspecialchars($arrivalAirportCountryCurrencyCodeTwo, ENT_XML1, 'UTF-8') . '</code>
-                              </currency>
-                           </country>
-                        </cityInfo>
-                        <codeContext>' . htmlspecialchars($arrivalAirportCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
-                        <language>' . htmlspecialchars($arrivalAirportLanguageTwo, ENT_XML1, 'UTF-8') . '</language>
-                        <locationCode>' . htmlspecialchars($arrivalAirportLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                        <locationName>' . htmlspecialchars($arrivalAirportLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                        <timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfoTwo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
-                     </arrivalAirport>
-                     <arrivalDateTime>' . htmlspecialchars($arrivalDateTimeTwo, ENT_XML1, 'UTF-8') . '</arrivalDateTime>
-                     <arrivalDateTimeUTC>' . htmlspecialchars($arrivalDateTimeUTCTwo, ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
-                     <departureAirport>
-                        <cityInfo>
-                           <city>
-                              <locationCode>' . htmlspecialchars($departureAirportCityLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                              <locationName>' . htmlspecialchars($departureAirportCityLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                              <locationNameLanguage>' . htmlspecialchars($departureAirportCityLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
-                           </city>
-                           <country>
-                              <locationCode>' . htmlspecialchars($departureAirportCountryLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                              <locationName>' . htmlspecialchars($departureAirportCountryLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                              <locationNameLanguage>' . htmlspecialchars($departureAirportCountryLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
-                              <currency>
-                                 <code>' . htmlspecialchars($departureAirportCountryCurrencyCodeTwo, ENT_XML1, 'UTF-8') . '</code>
-                              </currency>
-                           </country>
-                        </cityInfo>
-                        <codeContext>' . htmlspecialchars($departureAirportCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
-                        <language>' . htmlspecialchars($departureAirportLanguageTwo, ENT_XML1, 'UTF-8') . '</language>
-                        <locationCode>' . htmlspecialchars($departureAirportLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                        <locationName>' . htmlspecialchars($departureAirportLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                        <timeZoneInfo>' . htmlspecialchars($departureAirportTimeZoneInfoTwo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
-                     </departureAirport>
-                     <departureDateTime>' . htmlspecialchars($departureDateTimeTwo, ENT_XML1, 'UTF-8') . '</departureDateTime>
-                     <departureDateTimeUTC>' . htmlspecialchars($departureDateTimeUTCTwo, ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
-                     <flightNumber>' . htmlspecialchars($flightNumberTwo, ENT_XML1, 'UTF-8') . '</flightNumber>
-                     <flightSegmentID>' . htmlspecialchars($flightSegmentIDTwo, ENT_XML1, 'UTF-8') . '</flightSegmentID>
-                     <ondControlled>' . htmlspecialchars($ondControlledTwo, ENT_XML1, 'UTF-8') . '</ondControlled>
-                     <sector>' . htmlspecialchars($sectorTwo, ENT_XML1, 'UTF-8') . '</sector>
-                     <accumulatedDuration/>
-                     <codeshare>' . htmlspecialchars($codeShareTwo, ENT_XML1, 'UTF-8') . '</codeshare>
-                     <distance>' . htmlspecialchars($distanceTwo, ENT_XML1, 'UTF-8') . '</distance>
-                     <equipment>
-                        <airEquipType>' . htmlspecialchars($airEquipTypeTwo, ENT_XML1, 'UTF-8') . '</airEquipType>
-                        <changeofGauge>' . htmlspecialchars($changeOfGaugeTwo, ENT_XML1, 'UTF-8') . '</changeofGauge>
-                     </equipment>
-                     <flightNotes>
-                        <deiCode>' . htmlspecialchars($flightNotesDeiCodeFour, ENT_XML1, 'UTF-8') . '</deiCode>
-                        <explanation>' . htmlspecialchars($flightNotesExplanationFour, ENT_XML1, 'UTF-8') . '</explanation>
-                        <note>' . htmlspecialchars($flightNotesNoteFour, ENT_XML1, 'UTF-8') . '</note>
-                     </flightNotes>
-                     <flightNotes>
-                        <deiCode>' . htmlspecialchars($flightNotesDeiCodeFive, ENT_XML1, 'UTF-8') . '</deiCode>
-                        <explanation>' . htmlspecialchars($flightNotesExplanationFive, ENT_XML1, 'UTF-8') . '</explanation>
-                        <note>' . htmlspecialchars($flightNotesNoteFive, ENT_XML1, 'UTF-8') . '</note>
-                     </flightNotes>
-                     <flightNotes>
-                        <deiCode>' . htmlspecialchars($flightNotesDeiCodeSix, ENT_XML1, 'UTF-8') . '</deiCode>
-                        <explanation>' . htmlspecialchars($flightNotesExplanationSix, ENT_XML1, 'UTF-8') . '</explanation>
-                        <note>' . htmlspecialchars($flightNotesNoteSix, ENT_XML1, 'UTF-8') . '</note>
-                     </flightNotes>
-                     <flownMileageQty>' . htmlspecialchars($flownMileageQtyTwo, ENT_XML1, 'UTF-8') . '</flownMileageQty>
-                     <groundDuration/>
-                     <iatciFlight>' . htmlspecialchars($iatciFlightTwo, ENT_XML1, 'UTF-8') . '</iatciFlight>
-                     <journeyDuration>' . htmlspecialchars($journeyDurationTwo, ENT_XML1, 'UTF-8') . '</journeyDuration>
-                     <onTimeRate>' . htmlspecialchars($onTimeRateTwo, ENT_XML1, 'UTF-8') . '</onTimeRate>
-                     <remark>' . htmlspecialchars($remarkTwo, ENT_XML1, 'UTF-8') . '</remark>
-                     <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequiredTwo, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
-                     <stopQuantity>' . htmlspecialchars($stopQuantityTwo, ENT_XML1, 'UTF-8') . '</stopQuantity>
-                     <ticketType>' . htmlspecialchars($ticketTypeTwo, ENT_XML1, 'UTF-8') . '</ticketType>
-                     <trafficRestriction>
-                        <code/>
-                        <explanation/>
-                     </trafficRestriction>
+                  <airline>
+                     <code>' . htmlspecialchars($airlineCodeTwo, ENT_XML1, 'UTF-8') . '</code>
+                     <companyFullName>' . htmlspecialchars($companyFullNameTwo, ENT_XML1, 'UTF-8') . '</companyFullName>
+                  </airline>
+                  <arrivalAirport>
+                     <cityInfo>
+                        <city>
+                           <locationCode>' . htmlspecialchars($arrivalAirportCityLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
+                           <locationName>' . htmlspecialchars($arrivalAirportCityLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
+                           <locationNameLanguage>' . htmlspecialchars($arrivalAirportCityLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                        </city>
+                        <country>
+                           <locationCode>' . htmlspecialchars($arrivalAirportCountryLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
+                           <locationName>' . htmlspecialchars($arrivalAirportCountryLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
+                           <locationNameLanguage>' . htmlspecialchars($arrivalAirportCountryLocationNameLangaugeTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                           <currency>
+                              <code>' . htmlspecialchars($arrivalAirportCountryCurrencyCodeTwo, ENT_XML1, 'UTF-8') . '</code>
+                           </currency>
+                        </country>
+                     </cityInfo>
+                     <codeContext>' . htmlspecialchars($arrivalAirportCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
+                     <language>' . htmlspecialchars($arrivalAirportLanguageTwo, ENT_XML1, 'UTF-8') . '</language>
+                     <locationCode>' . htmlspecialchars($arrivalAirportLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
+                     <locationName>' . htmlspecialchars($arrivalAirportLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
+                     <timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfoTwo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                  </arrivalAirport>
+                  <arrivalDateTime>' . htmlspecialchars($arrivalDateTimeTwo, ENT_XML1, 'UTF-8') . '</arrivalDateTime>
+                  <arrivalDateTimeUTC>' . htmlspecialchars($arrivalDateTimeUTCTwo, ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
+                  <departureAirport>
+                     <cityInfo>
+                     <city>
+                        <locationCode>' . htmlspecialchars($departureAirportCityLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
+                        <locationName>' . htmlspecialchars($departureAirportCityLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
+                        <locationNameLanguage>' . htmlspecialchars($departureAirportCityLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                     </city>
+                     <country>
+                        <locationCode>' . htmlspecialchars($departureAirportCountryLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
+                        <locationName>' . htmlspecialchars($departureAirportCountryLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
+                        <locationNameLanguage>' . htmlspecialchars($departureAirportCountryLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                        <currency>
+                           <code>' . htmlspecialchars($departureAirportCountryCurrencyCodeTwo, ENT_XML1, 'UTF-8') . '</code>
+                        </currency>
+                     </country>
+                     </cityInfo>
+                     <codeContext>' . htmlspecialchars($departureAirportCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
+                     <language>' . htmlspecialchars($departureAirportLanguageTwo, ENT_XML1, 'UTF-8') . '</language>
+                     <locationCode>' . htmlspecialchars($departureAirportLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
+                     <locationName>' . htmlspecialchars($departureAirportLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
+                     <timeZoneInfo>' . htmlspecialchars($departureAirportTimeZoneInfoTwo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                  </departureAirport>
+                  <departureDateTime>' . htmlspecialchars($departureDateTimeTwo, ENT_XML1, 'UTF-8') . '</departureDateTime>
+                  <departureDateTimeUTC>' . htmlspecialchars($departureDateTimeUTCTwo, ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
+                  <flightNumber>' . htmlspecialchars($flightNumberTwo, ENT_XML1, 'UTF-8') . '</flightNumber>
+                  <flightSegmentID>' . htmlspecialchars($flightSegmentIDTwo, ENT_XML1, 'UTF-8') . '</flightSegmentID>
+                  <ondControlled>' . htmlspecialchars($ondControlledTwo, ENT_XML1, 'UTF-8') . '</ondControlled>
+                  <sector>' . htmlspecialchars($sectorTwo, ENT_XML1, 'UTF-8') . '</sector>
+                  <accumulatedDuration/>
+                  <codeshare>' . htmlspecialchars($codeShareTwo, ENT_XML1, 'UTF-8') . '</codeshare>
+                  <distance>' . htmlspecialchars($distanceTwo, ENT_XML1, 'UTF-8') . '</distance>
+                  <equipment>
+                     <airEquipType>' . htmlspecialchars($airEquipTypeTwo, ENT_XML1, 'UTF-8') . '</airEquipType>
+                     <changeofGauge>' . htmlspecialchars($changeOfGaugeTwo, ENT_XML1, 'UTF-8') . '</changeofGauge>
+                  </equipment>
+                  <flightNotes>
+                     <deiCode>' . htmlspecialchars($flightNotesDeiCodeFour, ENT_XML1, 'UTF-8') . '</deiCode>
+                     <explanation>' . htmlspecialchars($flightNotesExplanationFour, ENT_XML1, 'UTF-8') . '</explanation>
+                     <note>' . htmlspecialchars($flightNotesNoteFour, ENT_XML1, 'UTF-8') . '</note>
+                  </flightNotes>
+                  <flightNotes>
+                     <deiCode>' . htmlspecialchars($flightNotesDeiCodeFive, ENT_XML1, 'UTF-8') . '</deiCode>
+                     <explanation>' . htmlspecialchars($flightNotesExplanationFive, ENT_XML1, 'UTF-8') . '</explanation>
+                     <note>' . htmlspecialchars($flightNotesNoteFive, ENT_XML1, 'UTF-8') . '</note>
+                  </flightNotes>
+                  <flightNotes>
+                     <deiCode>' . htmlspecialchars($flightNotesDeiCodeSix, ENT_XML1, 'UTF-8') . '</deiCode>
+                     <explanation>' . htmlspecialchars($flightNotesExplanationSix, ENT_XML1, 'UTF-8') . '</explanation>
+                     <note>' . htmlspecialchars($flightNotesNoteSix, ENT_XML1, 'UTF-8') . '</note>
+                  </flightNotes>
+                  <flownMileageQty>' . htmlspecialchars($flownMileageQtyTwo, ENT_XML1, 'UTF-8') . '</flownMileageQty>
+                  <groundDuration/>
+                  <iatciFlight>' . htmlspecialchars($iatciFlightTwo , ENT_XML1, 'UTF-8') . '</iatciFlight>
+                  <journeyDuration>' . htmlspecialchars($journeyDurationTwo, ENT_XML1, 'UTF-8') . '</journeyDuration>
+                  <onTimeRate>' . htmlspecialchars($onTimeRateTwo, ENT_XML1, 'UTF-8') . '</onTimeRate>
+                  <remark>' . htmlspecialchars($remarkTwo, ENT_XML1, 'UTF-8') . '</remark>
+                  <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequiredTwo, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
+                  <stopQuantity>' . htmlspecialchars($stopQuantityTwo, ENT_XML1, 'UTF-8') . '</stopQuantity>
+                  <ticketType>' . htmlspecialchars($ticketTypeTwo, ENT_XML1, 'UTF-8') . '</ticketType>
+                  <trafficRestriction>
+                  <code/>
+                  <explanation/>
+                  </trafficRestriction>
                   </flightSegment>
                   <involuntaryPermissionGiven/>
                   <sequenceNumber/>
                   </bookFlightSegmentList>
                   <frequentFlyerRedemption/>
                   <journeyStartLocation>
-                     <locationCode>' . htmlspecialchars($journeyStartLocationCode, ENT_XML1, 'UTF-8') . '</locationCode>
+                  <locationCode>' . htmlspecialchars($journeyStartLocationCode, ENT_XML1, 'UTF-8') . '</locationCode>
                   </journeyStartLocation>
                   <travelerInformation>
-                  <passengerTypeQuantityList>
-                  <hasStrecher/>
-                  <passengerType>
+                     <passengerTypeQuantityList>
+                     <hasStrecher/>
+                     <passengerType>
                      <code>' . htmlspecialchars($passengerTypeCode, ENT_XML1, 'UTF-8') . '</code>
-                  </passengerType>
+                     </passengerType>
                      <quantity>' . htmlspecialchars($quantity, ENT_XML1, 'UTF-8') . '</quantity>
-                  </passengerTypeQuantityList>
+                     </passengerTypeQuantityList>
                   </travelerInformation>
                   <tripType>' . htmlspecialchars($tripType, ENT_XML1, 'UTF-8') . '</tripType>
-                  </AirExtraChargesAndProductsRequest>
+               </AirExtraChargesAndProductsRequest>
             </impl:GetAirExtraChargesAndProducts>
-        </soapenv:Body>
-        </soapenv:Envelope>';
+         </soapenv:Body>
+         </soapenv:Envelope>';
         return $xml;
     }
 
@@ -824,6 +824,7 @@ class GetAirExtraChargesAndProductBuilder {
       $tripType 
 
     ) {
+
         $xml = '<?xml version="1.0" encoding="UTF-8"?> 
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
            <soapenv:Header/>
@@ -957,7 +958,7 @@ class GetAirExtraChargesAndProductBuilder {
               <bookFlightSegmentList>
               <addOnSegment/>
               <bookingClass>
-                 <cabin>BUSINESS' . htmlspecialchars($bookingClassCabinTwo, ENT_XML1, 'UTF-8') . '</cabin>
+                 <cabin>' . htmlspecialchars($bookingClassCabinTwo, ENT_XML1, 'UTF-8') . '</cabin>
                  <resBookDesigCode>' . htmlspecialchars($bookingClassResBookDesigCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
                  <resBookDesigQuantity>' . htmlspecialchars($bookingClassResBookDesigQuantityTwo, ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
                  <resBookDesigStatusCode>' . htmlspecialchars($bookingClassResBookDesigStatusCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigStatusCode>

@@ -59,7 +59,7 @@ class GetExtraChargesAndProductRtRequest extends FormRequest
             "departureAirportCityLocationNameOne" => "required|string", 
             "departureAirportCityLocationNameLanguageOne" => "required|string", 
             "departureAirportCountryLocationCodeOne" => "required|string", 
-            "departureAirportCountryLocationNameOne" => "required|string", 
+            "departureAirportCountryLocationNameOne" => "required|string",  
             "departureAirportCountryLocationNameLanguageOne" => "required|string",
             "departureAirportCountryCurrencyCodeOne" => "required|string", 
             "departureAirportCodeContextOne" => "required|string", 
@@ -117,7 +117,7 @@ class GetExtraChargesAndProductRtRequest extends FormRequest
             "arrivalAirportCityLocationNameTwo" => "required|string", 
             "arrivalAirportCityLocationNameLanguageTwo" => "required|string", 
             "arrivalAirportCountryLocationCodeTwo" => "required|string",
-            "arrivalAirportCountryLocatoinNameTwo" => "required|string", 
+            "arrivalAirportCountryLocationNameTwo" => "required|string", 
             "arrivalAirportCountryLocationNameLangaugeTwo" => "required|string", 
             "arrivalAirportCountryCurrencyCodeTwo" => "required|string", 
             "arrivalAirportCodeContextTwo" => "required|string", 
@@ -169,7 +169,7 @@ class GetExtraChargesAndProductRtRequest extends FormRequest
             "journeyStartLocationCode" => "required|string",
             "passengerTypeCode" => "required|string", 
             "quantity" => "required|string", 
-            "tripType" => "required|string",
+            "tripType" => "required|string"
         ];
     }
 }

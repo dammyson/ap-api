@@ -12,19 +12,27 @@ use Illuminate\Http\Request;
 
 class BookingRequestController extends Controller
 {
+    protected $craneOTASoapService;
+    protected $craneAncillaryOTASoapService;
     protected $bookingBuilder;
     
     public function __construct(BookingBuilder $bookingBuilder)
     {
-      $this->bookingBuilder = $bookingBuilder;  
+      $this->bookingBuilder = $bookingBuilder; 
+      $this->craneOTASoapService = app('CraneOTASoapService');
+      $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');  
     }
 
     public function retrievePNRHistory(RetrievePNRHistoryRequest $request) {
         $id = $request->input('ID');
        
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAirBookingHistory';
+
         $xml = $this->bookingBuilder->retrievePNRHistory($id);
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
 
     }   
 
@@ -32,9 +40,13 @@ class BookingRequestController extends Controller
     public function RetrieveTicketHistory(RetrieveTicketHistoryRequest $request) {
         $bookingReferenceID = $request->input('bookingReferenceID');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetTicketHistory';
+
         $xml = $this->bookingBuilder->RetrieveTicketHistory($bookingReferenceID);
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
     }
 
     public function readBookingTK(ReadBookingTkRequest $request) {
@@ -47,6 +59,8 @@ class BookingRequestController extends Controller
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID'); 
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/ReadBooking';
+
         $xml = $this->bookingBuilder->readBookingTK(
             $companyCityCode, 
             $companyCode, 
@@ -58,19 +72,25 @@ class BookingRequestController extends Controller
             $referenceID
         );
 
-        dd($xml);
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
     }
 
     public function readBooking(ReadBookingRequest $request) {
         $ID = $request->input('ID');
         $passengerSurname = $request->input('passengerSurname');
 
+        $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+
         $xml = $this->bookingBuilder->readBooking(
             $ID, 
             $passengerSurname
         );
+        
+        $response = $this->craneOTASoapService->run($function, $xml);
 
-        dd($xml);
+        dd($response);
     }
        
 }

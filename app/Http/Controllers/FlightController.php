@@ -38,8 +38,8 @@ class FlightController extends Controller
     {
         $departureDateTime = $request->input('departure_date');
         $ArrivalDateTime = $request->input('arrival_date');
-        $destinationLocationCode = $request->input('departure_airport');
-        $originLocationCode = $request->input('arrival_airport');
+        $originLocationCode = $request->input('departure_airport');
+        $destinationLocationCode = $request->input('arrival_airport');
         $passengerTypeCode = $request->input('passenger_type');
         $quantity = $request->input('passengers');
         $tripType = $request->input('trip_type');
@@ -48,7 +48,14 @@ class FlightController extends Controller
 
 
         if ($request->input('trip_type') == "ONE_WAY") {
-            $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $passengerTypeCode, $quantity, $tripType);
+            $xml = $this->soapRequestBuilder->GetFlightOneWay(
+                $departureDateTime, 
+                $destinationLocationCode, 
+                $originLocationCode, 
+                $passengerTypeCode, 
+                $quantity, 
+                $tripType
+            );
         } else {
             $xml = $this->soapRequestBuilder->GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $passengerTypeCode, $quantity, $tripType,  $ArrivalDateTime);
         }
@@ -64,6 +71,7 @@ class FlightController extends Controller
                 $rt = new \stdClass();
                 $rt->departure = $result0;
                 $result = $rt;
+            
             } else {
                 $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity);

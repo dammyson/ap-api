@@ -38,7 +38,11 @@ class RegisterController extends Controller
         $data['user'] =  $create;
         $data['token'] =  $create->createToken('Nova')->accessToken;
 
-        return response()->json(['error' => false, 'message' => 'Client registration successful. Verification code sent to your email.', 'data' => $data], 201);
+        return response()->json([
+            'error' => false, 
+            'message' => 'Client registration successful. Verification code sent to your email.', 
+            'data' => $data
+        ], 201);
 
     }
 

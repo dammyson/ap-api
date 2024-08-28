@@ -20,6 +20,9 @@ use App\Http\Controllers\GameRuleController;
 use App\Http\Controllers\RegisterController;
 use App\Services\Soap\VoidTicketRequestBuilder;
 use App\Http\Controllers\GameCategoryController;
+use App\Http\Controllers\Payment\FlutterwavePaymentController;
+use App\Http\Controllers\Payment\PaystackPaymentController;
+use App\Http\Controllers\Payment\PayzeepPaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Test\SeatMapController;
 use App\Http\Controllers\RedeemedRewardController;
@@ -110,7 +113,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
         });
 
         Route::group(["prefix" => "get-air-extra-charges-and-products"], function() {
-            Route::post('rt', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductRT']);
+            Route::post('rt', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductsRT']);
             Route::post('md', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductMD']);
             Route::post('two-a', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductTwoA']);
             Route::post('ow', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductOW']);
@@ -153,6 +156,14 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
     Route::post('/tickets/update-seats', [TicketController::class, 'updateSeats']);
     Route::get('/booking', [BookingController::class, 'getBooking']);
+
+    Route::post('/paystack-checkout/pay', [PaystackPaymentController::class, 'initializePayment']);
+    Route::get('/paystack-checkout/callback', [PaystackPaymentController::class, 'paymentCallback']);
+    Route::post('payzeep/pay', [PayzeepPaymentController::class, 'initializePayment']);
+    Route::post('payzeep/callback', [PayzeepPaymentController::class, 'paymentCallback']);
+    Route::post('flutter-wave/pay', [FlutterwavePaymentController::class, 'initializePayment']);
+    Route::post('flutter-wave/callback', [FlutterwavePaymentController::class, 'paymentCallback']);
+    Route::get('booking-on-hold/{bookingId}', [BookingController::class, 'bookOnHold']);
 });
 
 
