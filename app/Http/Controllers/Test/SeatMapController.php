@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 class SeatMapController extends Controller
 {   
     protected $seatMapBuilder;
-
+    protected $craneAncillaryOTASoapService;
+    
     public function __construct(SeatMapBuilder $seatMapBuilder)
     {
         $this->seatMapBuilder = $seatMapBuilder; 
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService'); 
     }
 
     public function seatMap(seatMapRequest $request) {
@@ -82,7 +84,8 @@ class SeatMapController extends Controller
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID');
 
-
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetSeatMap';
+       
         $xml = $this->seatMapBuilder->seatMap(
             $airlineCode, 
             $airlineCodeContext,
@@ -151,8 +154,8 @@ class SeatMapController extends Controller
         );
 
         try {
-
-            dd($xml);
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            dd($response);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

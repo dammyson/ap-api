@@ -11,10 +11,14 @@ class DividePNRController extends Controller
 {
     //
     protected $dividePNRBuilder;
+    protected $craneOTASoapService;
+    protected $craneAncillaryOTASoapService; 
 
     public function __construct(DividePNRBuilder $dividePNRBuilder)
     {
-        $this->dividePNRBuilder = $dividePNRBuilder;
+        $this->dividePNRBuilder = $dividePNRBuilder;   
+        $this->craneOTASoapService = app('CraneOTASoapService');
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService'); 
     }
 
     public function dividePNR(DividePNRRequest $request) {
@@ -72,6 +76,7 @@ class DividePNRController extends Controller
         $travelerReferenceID = $request->input('travelerReferenceID'); 
         $unaccompaniedMinor = $request->input('unaccompaniedMinor');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/DividePnr';
 
         $xml = $this->dividePNRBuilder->dividePNR(
             $companyNameCitycode,
@@ -130,7 +135,9 @@ class DividePNRController extends Controller
         );
 
         try {
-            dd($xml);
+            
+            $response = $this->craneOTASoapService->run($function, $xml);
+            dd($response);
 
         } catch (\Throwable $th) {
             return response()->json([

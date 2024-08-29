@@ -72,7 +72,7 @@ class PassengerTicketService
                     'needs_mobility_assistance' => $passengerData['needs_mobility_assistance'],
                     'is_contact_person' => $passengerData['is_contact_person'],
                     'invoice_type' => $passengerData['invoice_type'],
-                    'user_category' => $passengerData['user_category'],
+                    'user_category' => $passengerData['user_category']
                 ]);
 
             

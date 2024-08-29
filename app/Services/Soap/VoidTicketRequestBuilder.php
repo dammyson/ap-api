@@ -70,7 +70,7 @@ class VoidTicketRequestBuilder {
              </soapenv:Body>
           </soapenv:Envelope>';
         
-         dd($xml);
+         return $xml;
     }
 
    public function voidTicketCommit( 
@@ -93,7 +93,7 @@ class VoidTicketRequestBuilder {
       $operationType
    ) {
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
-         soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
+         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
             <soapenv:Header/>
                <soapenv:Body>
                <impl:VoidTicket>
@@ -139,7 +139,7 @@ class VoidTicketRequestBuilder {
             </soapenv:Body>
             </soapenv:Envelope>';
       
-         dd($xml);
+         return $xml;
    }
 
 }

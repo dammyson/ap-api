@@ -12,10 +12,16 @@ use Illuminate\Http\Request;
 class AvailableSpecialController extends Controller
 {
     protected $availableSpecialServiceBuilder;
+    protected $craneOTASoapService;
+    protected $craneAncillaryOTASoapService; 
 
+ 
     public function __construct(AvailableSpecialServiceBuilder $availableSpecialServiceBuilder)
     {
         $this->availableSpecialServiceBuilder = $availableSpecialServiceBuilder;
+        $this->craneOTASoapService = app('CraneOTASoapService');
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService'); 
+
     }
 
     public function AvailableSpecialServiceTwoA (AvailableSpecialServiceTwoARequest $request) {
@@ -27,7 +33,9 @@ class AvailableSpecialController extends Controller
         $countryCode = $request->input("countryCode"); 
         $ID = $request->input("ID"); 
         $referenceID = $request->input("referenceID");
-
+        
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+        
         $xml = $this->availableSpecialServiceBuilder->AvailableSpecialServiceTwoA(
             $cityCode, 
             $code, 
@@ -39,7 +47,9 @@ class AvailableSpecialController extends Controller
             $referenceID
         );
 
-        dd($xml);
+        $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+
+        dd($response);
     }
 
     public function AvailableSpecialServiceOW(AvailableSpecialServiceOWRequest $request) {
@@ -52,6 +62,8 @@ class AvailableSpecialController extends Controller
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID');   
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+
         $xml = $this->availableSpecialServiceBuilder->AvailableSpecialServiceOW(
             $cityCode, 
             $code, 
@@ -63,7 +75,9 @@ class AvailableSpecialController extends Controller
             $referenceID
         );
 
-        dd($xml);
+        $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+
+        dd($response);
     }
 
     public function AvailableSpecialServiceRT(AvailableSpecialServiceRTRequest $request) {
@@ -76,6 +90,8 @@ class AvailableSpecialController extends Controller
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+        
         $xml = $this->availableSpecialServiceBuilder->AvailableSpecialServiceRT(
             $cityCode, 
             $code, 
@@ -87,6 +103,8 @@ class AvailableSpecialController extends Controller
             $referenceID
         );
 
-        return $xml;
+        $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+
+        dd($response);
     }
 }

@@ -11,10 +11,12 @@ use App\Services\Soap\VoidTicketRequestBuilder;
 class VoidTicketController extends Controller
 {
     protected $voidTicketRequestBuilder;
+    protected $craneOTASoapService;
 
     public function __construct(VoidTicketRequestBuilder $voidTicketRequestBuilder)
     {
-        $this->voidTicketRequestBuilder = $voidTicketRequestBuilder;
+        $this->voidTicketRequestBuilder = $voidTicketRequestBuilder;     
+        $this->craneOTASoapService = app('CraneOTASoapService');
     }
     
     public function voidTicketPricing(VoidTicketPricingRequest $request) {
@@ -36,7 +38,8 @@ class VoidTicketController extends Controller
         $parentBookingReferenceID = $request->input('parentBookingReferenceID');
         $operationType = $request->input('operationType');
 
-     
+        $function = 'http://impl.soap.ws.crane.hititcs.com/VoidTicket';
+
         $xml = $this->voidTicketRequestBuilder->voidTicketPricing(
             $bookingReferenceCompanyCityCode,
             $bookingReferenceCompanyCode,
@@ -61,7 +64,9 @@ class VoidTicketController extends Controller
 
         try {
 
-            dd($xml);
+            $response = $this->craneOTASoapService->run($function, $xml);
+            
+            dd($response);
         
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -90,6 +95,8 @@ class VoidTicketController extends Controller
         $operationType = $request->input('operationType');
 
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/VoidTicket';
+
         $xml = $this->voidTicketRequestBuilder->voidTicketCommit(
             $companyNameCityCodeOne, 
             $companyNameCodeOne, 
@@ -112,7 +119,9 @@ class VoidTicketController extends Controller
         );
 
         try {
-          dd($xml);
+            $response = $this->craneOTASoapService->run($function, $xml);
+            dd($response);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

@@ -10,10 +10,14 @@ use Illuminate\Http\Request;
 class AddSeatController extends Controller
 {
     protected $addSeatBuilder;
+    protected $craneOTASoapService;
+    protected $craneAncillaryOTASoapService;
 
     public function __construct(AddSeatBuilder $addSeatBuilder)
     {
         $this->addSeatBuilder = $addSeatBuilder;
+        $this->craneOTASoapService = app('CraneOTASoapService');
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');  
     }
     
     public function addSeat(AddSeatRequest $request) {
@@ -155,6 +159,8 @@ class AddSeatController extends Controller
         $bookingReferenceIDID = $request->input('bookingReferenceIDID'); 
         $referenceID = $request->input('referenceID');
         
+        $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
+
         $xml = $this->addSeatBuilder->addSeat(
             $adviceCodeSegmentExist, 
             $actionCode, 
@@ -295,6 +301,7 @@ class AddSeatController extends Controller
             $referenceID
         );
 
-        dd($xml);
+        $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+        dd($response);
     }
 }
