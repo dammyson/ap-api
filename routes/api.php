@@ -143,6 +143,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile'] );
+        Route::patch('edit/profile', [ProfileController::class, 'editProfile']);
     });
 
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
