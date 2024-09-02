@@ -38,8 +38,8 @@ class FlightController extends Controller
     {
         $departureDateTime = $request->input('departure_date');
         $ArrivalDateTime = $request->input('arrival_date');
-        $destinationLocationCode = $request->input('departure_airport');
-        $originLocationCode = $request->input('arrival_airport');
+        $destinationLocationCode = $request->input('arrival_airport');
+        $originLocationCode = $request->input('departure_airport');
         $passengerTypeCode = $request->input('passenger_type');
         $quantity = $request->input('passengers');
         $tripType = $request->input('trip_type');
@@ -56,13 +56,14 @@ class FlightController extends Controller
 
         try {
             $response = $this->craneOTASoapService->run($function, $xml);
-            $result = "";
+             $result = "";
 
             if ($request->input('trip_type') == "ONE_WAY") {
                 $originDestinationOptionList = $response['Availability']['availabilityResultList']['availabilityRouteList']['availabilityByDateList']['originDestinationOptionList'];
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList, $quantity);
                 $rt = new \stdClass();
                 $rt->departure = $result0;
+                $result = $rt;
             } else {
                 $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity);
@@ -106,6 +107,7 @@ class FlightController extends Controller
                         foreach ($fareComponentList  as $fareComponentItem) {
                             if ($item['resBookDesigCode'] == $fareComponentItem['passengerFareInfoList']['fareInfoList']['resBookDesigCode']) {
                                 $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                $cabinData->$cabin['fareInfoList'] = $fareComponentItem['passengerFareInfoList']['fareInfoList'];
                                 break;
                             }
                         }
