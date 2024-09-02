@@ -20,17 +20,19 @@ class RegisterController extends Controller
     {
 
         try {
+
             $create = User::create([
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
                 'email' => $request->input('email'),
                 'phone_number' => $request->input('phone_number'),
+                'peace_id' => $request->input('peace_id') ?? null,
                 'password' => Hash::make($request->input('password')),
-                'peace_id' => $request->input('peace_id') || null,
-                'status' => $request->input('status') || null,
-              
+                'status' => $request->input('status') ?? null
+            
             ]);
 
+           
           
         } catch (\Exception $exception) {
             return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
