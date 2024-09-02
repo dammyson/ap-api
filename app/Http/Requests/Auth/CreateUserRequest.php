@@ -35,7 +35,7 @@ class CreateUserRequest extends FormRequest
                 'regex:/[@$!%*#?&]/', // Must contain at least one special character
                 'confirmed', // Must match password confirmation
             ],
-            'peace_id' => 'sometimes|numeric',
+            'peace_id' => 'sometimes|string',
             'status' => 'sometimes|string'
         ];
     }

@@ -15,31 +15,32 @@ use App\Http\Controllers\AirportController;
 
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GamePlayController;
 use App\Http\Controllers\GameRuleController;
 use App\Http\Controllers\RegisterController;
 use App\Services\Soap\VoidTicketRequestBuilder;
 use App\Http\Controllers\GameCategoryController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Test\AddSeatController;
 use App\Http\Controllers\Test\SeatMapController;
 use App\Http\Controllers\RedeemedRewardController;
-use App\Http\Controllers\Test\AddSeatController;
 use App\Http\Controllers\Test\addWeightController;
-use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
-use App\Http\Controllers\Test\AvailableSpecialController;
+use App\Http\Controllers\Test\DividePNRController;
+use App\Http\Controllers\SharePeacePointController;
 use App\Http\Controllers\Test\VoidTicketController;
+use App\Http\Controllers\Test\DivideDinerController;
 use App\Http\Controllers\Test\SegmentBaseController;
 use App\Http\Controllers\Test\PenaltyRulesController;
 use App\Http\Controllers\Test\GetAvailabilityController;
+use App\Http\Controllers\Test\AvailableSpecialController;
 use App\Http\Controllers\Test\GetAirportMatrixController;
 use App\Http\Controllers\Test\TicketReservationController;
-use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\CreateBookingController;
-use App\Http\Controllers\Test\DivideDinerController;
-use App\Http\Controllers\Test\DividePNRController;
+use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
+use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 
@@ -142,8 +143,10 @@ Route::group(["middleware" => ["auth:api"]], function() {
 Route::group(["middleware" => ["auth:api"]], function () {    
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
-        Route::get('profile', [ProfileController::class, 'getProfile'] );
+        Route::get('profile', [ProfileController::class, 'getProfile']);
         Route::patch('profile/edit', [ProfileController::class, 'editProfile']);
+        Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
+        Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
     });
 
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
