@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('title');
-            $table->string('image_url');
-            $table->string('nationality');
-            $table->timestamps('date_of_birth');
-            $table->string('travel_document');
+            $table->string('title')->nullable();
+            $table->string('image_url')->nullable();
+            $table->string('nationality')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->string('travel_document')->nullable();
         });
     }
 
@@ -27,6 +27,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
+
+            $table->dropColumn(['title', 'image_url', 'nationality', 'date_of_birth', 'travel_document']);
         });
     }
 };

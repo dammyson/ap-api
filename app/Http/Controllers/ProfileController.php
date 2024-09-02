@@ -26,8 +26,9 @@ class ProfileController extends Controller
     }
 
     public function editProfile(EditProfileRequest $request) {
-        $user = $request->user;
+        $user = $request->user();
 
+    
         try {
 
             $user->image_url = $request['image_url'] ?? $user->image_url;

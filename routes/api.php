@@ -143,7 +143,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile'] );
-        Route::patch('edit/profile', [ProfileController::class, 'editProfile']);
+        Route::patch('profile/edit', [ProfileController::class, 'editProfile']);
     });
 
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
@@ -180,6 +180,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::get('game-plays/{gamePlay}', [GamePlayController::class, 'show']);
     Route::put('game-plays/{gamePlay}', [GamePlayController::class, 'update']);
     Route::delete('game-plays/{gamePlay}', [GamePlayController::class, 'destroy']);
+    Route::get('game-leaderboard', [GamePlayController::class, 'gameLeaderboard']);
+    Route::get('overall-game-leaderboard', [GamePlayController::class, 'overallLeaderboard']);
 
     Route::get('rewards', [RewardController::class, 'index']);
     Route::post('rewards', [RewardController::class, 'store']);

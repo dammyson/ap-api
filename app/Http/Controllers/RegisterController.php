@@ -27,7 +27,8 @@ class RegisterController extends Controller
                 'phone_number' => $request->input('phone_number'),
                 'password' => Hash::make($request->input('password')),
                 'peace_id' => $request->input('peace_id') || null,
-                'status' => $request->input('status') || null
+                'status' => $request->input('status') || null,
+              
             ]);
 
           

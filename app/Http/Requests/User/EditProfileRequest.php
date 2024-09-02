@@ -11,7 +11,7 @@ class EditProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,15 +22,15 @@ class EditProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "image_url" => "required|string",
-            "title" => "required|string",
-            "first_name" => "required|string",
-            "last_name" => "required|string",
-            "nationality" => "required|string",
-            "date_of_birth" => "required|date",
-            "email" => "required|email",
-            "phone_number" => "required|string",
-            "travel_document" => "required|string"
+            "image_url" => "sometimes|string",
+            "title" => "sometimes|string",
+            "first_name" => "sometimes|string",
+            "last_name" => "sometimes|string",
+            "nationality" => "sometimes|string",
+            "date_of_birth" => "sometimes|date",
+            "email" => "sometimes|email",
+            "phone_number" => "sometimes|string",
+            "travel_document" => "sometimes|file|mimes:pdf,jpg,png|max:2048"
         ];
     }
 }
