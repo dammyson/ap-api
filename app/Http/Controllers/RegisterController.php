@@ -26,7 +26,9 @@ class RegisterController extends Controller
                 'email' => $request->input('email'),
                 'phone_number' => $request->input('phone_number'),
                 'password' => Hash::make($request->input('password')),
-                'peace_id' => $request->input('peace_id'),
+                'peace_id' => $request->input('peace_id') || null,
+                'status' => $request->input('status') || null,
+              
             ]);
 
           

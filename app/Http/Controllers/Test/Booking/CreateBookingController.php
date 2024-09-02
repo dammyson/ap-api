@@ -12,9 +12,14 @@ use Illuminate\Http\Request;
 class CreateBookingController extends Controller
 {
     protected $createBookingBuilder;
+    protected $craneOTASoapService;
+    protected $craneAncillaryOTASoapService;
 
     public function __construct(CreateBookingBuilder $createBookingBuilder) {
         $this->createBookingBuilder = $createBookingBuilder;
+
+        $this->craneOTASoapService = app('CraneOTASoapService');
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
     }
 
     public function createBookingRT(CreateBookingRTRequest $request) {
@@ -817,6 +822,18 @@ class CreateBookingController extends Controller
             $requestPurpose
         );
 
-        dd($xml);
+       
+        $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
+        try {
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+
+            dd( $response );
+
+            $result = "";
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
