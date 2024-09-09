@@ -8,7 +8,7 @@ use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Models\User;
-use App\Services\GeneratePeaceId\CreatePeaceId;
+use App\Services\AutoGenerate\CreatePeaceId;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -71,7 +71,7 @@ class RegisterController extends Controller
                 return response()->json(['error' => true, 'message' => 'Invalid password'], 500);
             }
     
-            $user->password =  $request->input("new_password");
+            $user->password =  Hash::make($request->input("new_password"));
             $user->save();
     
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
