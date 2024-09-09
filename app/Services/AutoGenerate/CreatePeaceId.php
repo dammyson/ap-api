@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services\GeneratePeaceId;
+namespace App\Services\AutoGenerate;
 
 use App\Models\User;
 
@@ -15,12 +15,13 @@ class CreatePeaceId {
             return $this->generateUniquePeaceId();
 
         } 
-        
+
         return $peaceId;
       
     }
 
-    public function generatePeaceId() { '-' . time();
+
+    public function generatePeaceId() { 
         
         // Define a set of digits
         $digits = '0123456789';
