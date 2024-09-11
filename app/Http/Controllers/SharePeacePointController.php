@@ -50,7 +50,7 @@ class SharePeacePointController extends Controller
                 "error" => false,
                 "message" => "Points shared successfully",
                 "user" => $user,
-                "recipeint" => $recipient
+                "recipient" => $recipient
             ], 200);
              
         

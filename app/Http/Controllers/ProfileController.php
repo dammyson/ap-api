@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\User\EditProfileRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\User\EditProfileRequest;
 
 class ProfileController extends Controller
 {
@@ -11,9 +12,20 @@ class ProfileController extends Controller
         try {
             $user = $request->user();
 
+            // get the image_url  path
+            $pathToImage = $user->image_url;
+            $pathToTravelDoc = $user->travel_document;
+
+            // image url link
+            $imageUrlLink = Storage::url($pathToImage);
+            $travelDocumentLink = Storage::url($pathToTravelDoc);
+            
             return response()->json([
                 "error" => "false",
-                "user" => $user
+                "user" => $user,
+                "image_url_link" => $imageUrlLink,
+                'travel_document_link' => $travelDocumentLink
+            
             ], 200);
             
         } catch (\Throwable $th) {
@@ -30,8 +42,7 @@ class ProfileController extends Controller
 
     
         try {
-
-            $user->image_url = $request['image_url'] ?? $user->image_url;
+            
             $user->title = $request['title'] ?? $user->title;
             $user->first_name = $request['first_name'] ?? $user->first_name;
             $user->last_name = $request['last_name'] ?? $user->last_name;
@@ -39,7 +50,20 @@ class ProfileController extends Controller
             $user->date_of_birth = $request['date_of_birth'] ?? $user->date_of_birth;
             $user->email = $request['email'] ?? $user->email;
             $user->phone_number = $request['phone_number'] ?? $user->phone_number;
-            $user->travel_document = $request['travel_document'] ?? $user->travel_document;
+            
+
+            if ($request->file('image_url')) {
+                // store the user image in a folder;
+                $path = $request->file('image_url')->store('users-images-folder');
+                // store the path to the image in the image_url column
+                $user->image_url = $path;
+
+            }
+
+            if ($request->file('travel_document')) {
+                $path = $request->file('travel_document')->store('users-travel-documents-folder');
+                $user->travel_document = $path;
+            }
 
             $user->save();
 
@@ -55,4 +79,6 @@ class ProfileController extends Controller
             'user_data' => $user
         ]);
     }
+
+    
 }

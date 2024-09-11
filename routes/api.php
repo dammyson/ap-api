@@ -228,6 +228,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::patch('profile/edit', [ProfileController::class, 'editProfile']);
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
+        Route::post('user-logout', [RegisterController::class, 'logoutUser']);
     });
 
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
@@ -238,6 +239,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
     Route::post('/tickets/update-seats', [TicketController::class, 'updateSeats']);
     Route::get('/booking', [BookingController::class, 'getBooking']);
+    
 });
 
 
