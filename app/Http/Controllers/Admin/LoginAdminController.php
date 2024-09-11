@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\AdminLoginEvent;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\Admin\LoginAdminRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
 
 class LoginAdminController extends Controller
@@ -22,11 +24,12 @@ class LoginAdminController extends Controller
                 ]);
             }
 
-
             if (Hash::check($request->password, $admin->password)) {
                 $data['admin'] = $admin;
                 $data['token'] = $admin->createToken('Nova')->accessToken;
 
+                event(new AdminLoginEvent($admin));
+                
                 return response()->json(
                     [
                         'is_correct' => true,
