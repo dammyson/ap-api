@@ -6,40 +6,55 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PlaneController;
-
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\RewardController;
+
 use App\Http\Controllers\TicketController;
 use App\Services\Soap\PenaltyRulesBuilder;
 use App\Http\Controllers\AirportController;
-
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CountryController;
+
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GamePlayController;
 use App\Http\Controllers\GameRuleController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\FillSurveyController;
+use App\Http\Controllers\UserSurveyController;
 use App\Services\Soap\VoidTicketRequestBuilder;
+use App\Http\Controllers\Admin\SurveyController;
 use App\Http\Controllers\GameCategoryController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Test\AddSeatController;
 use App\Http\Controllers\Test\SeatMapController;
 use App\Http\Controllers\RedeemedRewardController;
-use App\Http\Controllers\Test\AddSeatController;
 use App\Http\Controllers\Test\addWeightController;
-use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
-use App\Http\Controllers\Test\AvailableSpecialController;
+use App\Http\Controllers\Test\DividePNRController;
+use App\Http\Controllers\SharePeacePointController;
 use App\Http\Controllers\Test\VoidTicketController;
+use App\Http\Controllers\Admin\LoginAdminController;
+use App\Http\Controllers\Test\DivideDinerController;
 use App\Http\Controllers\Test\SegmentBaseController;
+use App\Http\Controllers\Admin\ChangeAdminController;
 use App\Http\Controllers\Test\PenaltyRulesController;
+use App\Http\Controllers\Admin\ProfileAdminController;
+use App\Http\Controllers\Admin\CustomerAdminController;
+use App\Http\Controllers\Admin\RegisterAdminController;
+use App\Http\Controllers\Admin\DashboardAdminController;
 use App\Http\Controllers\Test\GetAvailabilityController;
+use App\Http\Controllers\Test\AvailableSpecialController;
 use App\Http\Controllers\Test\GetAirportMatrixController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\Admin\ActivityLogAdminController;
+use App\Http\Controllers\Admin\TeamMembersAdminController;
 use App\Http\Controllers\Test\TicketReservationController;
-use App\Http\Controllers\Test\Booking\BookingRequestController;
+use App\Http\Controllers\Admin\ChangePasswordAdminController;
+use App\Http\Controllers\Admin\ForgetPasswordAdminController;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\CreateBookingController;
-use App\Http\Controllers\Test\DivideDinerController;
-use App\Http\Controllers\Test\DividePNRController;
+use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
+use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 
@@ -53,14 +68,77 @@ Route::group(['prefix' => 'user'], function ()  {
 });
 
 
-Route::middleware('auth:api')->group(function () {
-    Route::group(['prefix' => 'admin/'], function () {
+Route::group(['prefix' => 'admin/'], function () {
+    Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
+    Route::post('admin-login', [LoginAdminController::class, 'loginAdmin']);
+    Route::post('forgot-password', [ForgetPasswordAdminController::class, 'forgotPassword']);
+    Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
+    Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
+
+    Route::middleware('auth:admin')->group(function () {    
+        Route::group(['prefix' => 'dashboard'], function () {
+            Route::get('total-registered-users', [DashboardAdminController::class, 'totalRegisteredUsers']);
+            Route::get('ticket-purchased', [DashboardAdminController::class, 'purchasedTicket']);
+            Route::get('total-revenue', [DashboardAdminController::class, 'totalRevenue']);
+            Route::get('user-by-device', [DashboardAdminController::class, 'userByDevice']);
+            Route::get('screen-resolution', [DashboardAdminController::class, 'screenResolution']);
+            Route::get('total-registered-users-table', [DashboardAdminController::class, 'totalRegisteredUsersTable']);
+            Route::get('total-purchased-tickets-table', [DashboardAdminController::class, 'totalPurchasedTicketTable']);
+            Route::get('active-users-table', [DashboardAdminController::class, 'activeUserTable']);
+            
+        });
+
+        Route::group(['prefix' => 'customer'], function() {
+            Route::get('customer-information', [CustomerAdminController::class, 'customerInformation']);
+            Route::get('active-loyal-points', [CustomerAdminController::class, 'activeLoyalPoints']);
+            Route::get('total-loyal-points', [CustomerAdminController::class, 'totalLoyalPoint']);
+            Route::get('total-flight-flown', [CustomerAdminController::class, 'totalFlightFlown']);
+            Route::get('referrals', [CustomerAdminController::class, 'frequentFlyerMiles']);
+            Route::get('revenue-sources', [CustomerAdminController::class, 'revenueSource']);
+            Route::get('activity-log', [CustomerAdminController::class, 'activityLog']);
+
+        });
+
+        Route::group(['prefix' => 'activity-log'], function() {
+            Route::post('create-activity-log', [ActivityLogAdminController::class, 'storeActivityLog']);
+            Route::get('activity-log-table-data', [ActivityLogAdminController::class, 'indexActivityLog']);
+        });
+
+        Route::group(['prefix' => 'surveys'], function () {
+            Route::post('create-survey', [SurveyController::class, 'createSurvey']);
+            Route::get('/', [UserSurveyController::class, 'indexSurvey']);
+            Route::get('/survey-table', [SurveyController::class, 'surveyTable']);
+            Route::group(['prefix' => '{survey}'], function () {
+                Route::get('/', [SurveyController::class, 'showSurvey']);  
+                Route::patch('toogle-publish-survey', [SurveyController::class, 'tooglePublishSurvey']);
+                Route::put('edit', [SurveyController::class, 'editSurvey']);
+                Route::get('participants', [SurveyController::class, 'surveyParticipants']);
+                Route::get('survey-result', [SurveyController::class, 'getSurveyResults']);
+        
+            });
+        });
+
+        Route::group(['prefix' => 'settings'], function () {
+            Route::get('profile', [ProfileAdminController::class, 'getAdminProfile']);
+            Route::put('profile/edit', [ProfileAdminController::class, 'editAdminProfile']);
+            Route::patch('change-admin-role', [ProfileAdminController::class, 'changeAdminRole']);
+            Route::delete('delete-admin-account', [ProfileAdminController::class, 'deleteAdmin']);
+            Route::get('team-members', [TeamMembersAdminController::class, 'teamMembers']);
+            Route::post('add-team-member', [RegisterAdminController::class, 'registerAdmin']);
+            Route::delete('team-member/{teamMemberId}/delete', [TeamMembersAdminController::class , 'deleteTeamMembers']);
+            Route::patch('profile/change-password', [ChangePasswordAdminController::class, 'ChangeAdminPassword']);
+        });
+
+        Route::post('admin-logout', [RegisterAdminController::class, 'logoutAdmin']);
+
+
         Route::post('/country', [CountryController::class, 'storeCountry']);
         Route::post('/city', [CityController::class, 'storeCity']);
         Route::post('/plane', [PlaneController::class, 'storePlane']);
         Route::post('/airport', [AirportController::class, 'storeAirport']);
         Route::post('game-categories', [GameCategoryController::class, 'store']);
         Route::post('games', [GameController::class, 'store']);
+
     });
 });
 
@@ -99,6 +177,12 @@ Route::group(["middleware" => ["auth:api"]], function() {
                 Route::post('two-a', [CreateBookingController::class, 'createBookingTwoA']);
             });
 
+        });
+
+        Route::group(['prefix' => 'surveys'], function() {
+            Route::get('/', [UserSurveyController::class, 'indexSurvey']);
+            Route::post('/{survey}/fill-survey', [UserSurveyController::class, 'fillSurvey']);
+           
         });
  
         Route::group(["prefix" => "get-availability"], function() {
@@ -142,7 +226,11 @@ Route::group(["middleware" => ["auth:api"]], function() {
 Route::group(["middleware" => ["auth:api"]], function () {    
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
-        Route::get('profile', [ProfileController::class, 'getProfile'] );
+        Route::get('profile', [ProfileController::class, 'getProfile']);
+        Route::patch('profile/edit', [ProfileController::class, 'editProfile']);
+        Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
+        Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
+        Route::post('user-logout', [RegisterController::class, 'logoutUser']);
     });
 
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
@@ -153,6 +241,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
     Route::post('/tickets/update-seats', [TicketController::class, 'updateSeats']);
     Route::get('/booking', [BookingController::class, 'getBooking']);
+    
 });
 
 
@@ -179,6 +268,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::get('game-plays/{gamePlay}', [GamePlayController::class, 'show']);
     Route::put('game-plays/{gamePlay}', [GamePlayController::class, 'update']);
     Route::delete('game-plays/{gamePlay}', [GamePlayController::class, 'destroy']);
+    Route::get('game-leaderboard', [GamePlayController::class, 'gameLeaderboard']);
+    Route::get('overall-game-leaderboard', [GamePlayController::class, 'overallLeaderboard']);
 
     Route::get('rewards', [RewardController::class, 'index']);
     Route::post('rewards', [RewardController::class, 'store']);

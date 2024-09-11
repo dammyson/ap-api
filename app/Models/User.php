@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Admin\SurveyUserResponse;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -19,13 +21,21 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+
     protected $fillable = [
         'first_name', 
         'last_name',
         'email',
         'phone_number',
         'peace_id',
-        'password'
+        'password',
+        'image_url',
+        'title',
+        'first_name',
+        'last_name',
+        'nationality',
+        'date_of_birth',
+        'travel_document'
     ];
 
     /**
@@ -49,5 +59,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function surveyUserResponses() {
+        return $this->hasMany(SurveyUserResponse::class);
     }
 }

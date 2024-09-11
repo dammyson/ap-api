@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Models\User;
+use App\Services\AutoGenerate\CreatePeaceId;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -16,20 +17,31 @@ use Illuminate\Support\Facades\Mail;
 class RegisterController extends Controller
 {
     //
+    public $createPeaceId;
+
+    public function __construct(CreatePeaceId $createPeaceId)
+    {
+        $this->createPeaceId = $createPeaceId;
+    }
+    
     public function userRegister(CreateUserRequest $request)
     {
 
         try {
+            $peace_id =  $this->createPeaceId->generateUniquePeaceId();
+
             $create = User::create([
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
                 'email' => $request->input('email'),
                 'phone_number' => $request->input('phone_number'),
+                'peace_id' => $peace_id,
                 'password' => Hash::make($request->input('password')),
-                'peace_id' => $request->input('peace_id') || null,
-                'status' => $request->input('status') || null
+                'status' => $request->input('status') ?? null
+            
             ]);
 
+           
           
         } catch (\Exception $exception) {
             return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
@@ -59,7 +71,7 @@ class RegisterController extends Controller
                 return response()->json(['error' => true, 'message' => 'Invalid password'], 500);
             }
     
-            $user->password =  $request->input("new_password");
+            $user->password =  Hash::make($request->input("new_password"));
             $user->save();
     
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
@@ -177,6 +189,25 @@ class RegisterController extends Controller
             return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
         }
 
+    }
+
+    public function logoutUser(Request $request)
+    {
+        try {
+            $request->user()->token()->revoke();
+           
+            return response()->json([
+                'error' => false,
+                'message' => 'Successfully logged out'
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+
+        }
     }
 
 
