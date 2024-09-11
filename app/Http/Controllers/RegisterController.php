@@ -191,5 +191,24 @@ class RegisterController extends Controller
 
     }
 
+    public function logoutUser(Request $request)
+    {
+        try {
+            $request->user()->token()->revoke();
+           
+            return response()->json([
+                'error' => false,
+                'message' => 'Successfully logged out'
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+
+        }
+    }
+
 
 }

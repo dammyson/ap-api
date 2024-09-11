@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileAdminController extends Controller
 {
@@ -11,11 +12,14 @@ class ProfileAdminController extends Controller
         $admin = $request->user('admin');
 
         try {
-           
+           // get the image url link from the stored name
+           $image_url = $admin->image_url;
+           $image_url_link = Storage::url($image_url);
 
             return response()->json([
                 'error' => false,
-                'admin_data' => $admin
+                'admin_data' => $admin,
+                'image_url_link' => $image_url_link
             ]);
 
         } catch (\Throwable $th) {
@@ -34,10 +38,15 @@ class ProfileAdminController extends Controller
            
 
            $admin->user_name = $request->user_name ?? $admin->user_name;
-        //    $admin->last_name = $request->last_name ?? $admin->last_name;
            $admin->email = $request->email ?? $admin->email;
            $admin->role = $request->role ?? $admin->role;
-           $admin->image_url = $request->image_url ?? $admin->image_url;
+
+           if ($request->file('image_url')) {
+            // store the file in the admin-profile-images folder
+                $path = $request->file('image_url')->store('admin-profile-images');
+                // store the path to the image
+                $admin->image_url = $path;
+           }
 
            $admin->save();
 
