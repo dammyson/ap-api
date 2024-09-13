@@ -37,16 +37,28 @@ return [
 
     'mailers' => [
 
+        // 'smtp' => [
+        //     'transport' => 'smtp',
+        //     'url' => env('MAIL_URL'),
+        //     'host' => env('MAIL_HOST', '127.0.0.1'),
+        //     'port' => env('MAIL_PORT', 2525),
+        //     'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+        //     'username' => env('MAIL_USERNAME'),
+        //     'password' => env('MAIL_PASSWORD'),
+        //     'timeout' => null,
+        //     'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+        // ],
+
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', '127.0.0.1'),
-            'port' => env('MAIL_PORT', 2525),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
+            'host' => 'smtp.gmail.com',
+            'port' => '587',
+            'encryption' => 'tls',
+            'username' => 'gilbertgenye4@gmail.com',
+            'password' => 'hiuzmdyypfdofxxq',
             'timeout' => null,
-            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+            'local_domain' => 'https://srv575046.hstgr.cloud/',
         ],
 
         'ses' => [
@@ -108,9 +120,14 @@ return [
     |
     */
 
+    // 'from' => [
+    //     'address' => env('MAIL_FROM_ADDRESS', 'gilbertgenye4@gmail.com'),
+    //     'name' => env('MAIL_FROM_NAME', 'Airpeace'),
+    // ],
+
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'gilbertgenye4@gmail.com'),
-        'name' => env('MAIL_FROM_NAME', 'Airpeace'),
-    ],
+        'address' => 'gilbertgenye4@gmail.com',
+        'name' => 'MAIL_FROM_NAME', 'Airpeace',
+    ]
 
 ];

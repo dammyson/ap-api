@@ -48,7 +48,7 @@ class RegisterAdminController extends Controller
                 'user_name' => $request->input('user_name'), 
                 'email' => $request->input('email'), 
                 'password' => Hash::make($temporaryPassword), 
-                'password_unhashed' => $request->input('password'),  // Hash::make($temporaryPassword);
+                'password_unhashed' => $temporaryPassword,  // Hash::make($temporaryPassword);
                 'role' => $request->input('role'),
                 'image_url' => $request->input('image_url')
             ]);
