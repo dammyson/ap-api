@@ -58,9 +58,9 @@ return [
             'username' => 'gilbertgenye4@gmail.com',
             'password' => 'hiuzmdyypfdofxxq',
             'timeout' => null,
-            // 'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url('https://srv575046.hstgr.cloud/', PHP_URL_HOST)),
-           'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
-
+            
+            // 'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'https://srv575046.hstgr.cloud'), PHP_URL_HOST)),
         ],
 
         'ses' => [
