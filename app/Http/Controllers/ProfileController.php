@@ -38,9 +38,7 @@ class ProfileController extends Controller
     }
 
     public function editProfile(EditProfileRequest $request) {
-        $user = $request->user();
-
-    
+        $user = $request->user();    
         try {
             
             $user->title = $request['title'] ?? $user->title;
