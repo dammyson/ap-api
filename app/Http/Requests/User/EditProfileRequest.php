@@ -22,7 +22,7 @@ class EditProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "image_url" => "sometimes|string",
+            "image_url" => "sometimes|string|mimes:pdf,jpg,png|max:2048",
             "title" => "sometimes|string",
             "first_name" => "sometimes|string",
             "last_name" => "sometimes|string",
@@ -30,7 +30,7 @@ class EditProfileRequest extends FormRequest
             "date_of_birth" => "sometimes|date",
             "email" => "sometimes|email",
             "phone_number" => "sometimes|string",
-            "travel_document" => "sometimes|file|mimes:pdf,jpg,png|max:2048"
+            "travel_document" => "sometimes|mimes:pdf,jpg,png|max:2048"
         ];
     }
 }
