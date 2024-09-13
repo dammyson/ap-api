@@ -53,12 +53,12 @@ return [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
             'host' => 'smtp.gmail.com',
-            'port' => '587',
-            'encryption' => 'tls',
+            'port' => '465',
+            'encryption' => 'ssl',
             'username' => 'gilbertgenye4@gmail.com',
             'password' => 'hiuzmdyypfdofxxq',
             'timeout' => null,
-            'local_domain' => 'https://srv575046.hstgr.cloud/',
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
         'ses' => [

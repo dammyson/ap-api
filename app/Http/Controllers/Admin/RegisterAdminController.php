@@ -48,7 +48,6 @@ class RegisterAdminController extends Controller
                 'user_name' => $request->input('user_name'), 
                 'email' => $request->input('email'), 
                 'password' => Hash::make($temporaryPassword), 
-                'password_unhashed' => $temporaryPassword,  // Hash::make($temporaryPassword);
                 'role' => $request->input('role'),
                 'image_url' => $request->input('image_url')
             ]);
@@ -75,6 +74,7 @@ class RegisterAdminController extends Controller
 
         return response()->json(['error' => false, 
             'message' => 'Client registration successful. Verification code sent to your email.', 
+            'password_unhashed' => $temporaryPassword, 
             'data' => $data
         ], 201);
 
