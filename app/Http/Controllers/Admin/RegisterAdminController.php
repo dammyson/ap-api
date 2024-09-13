@@ -44,6 +44,16 @@ class RegisterAdminController extends Controller
 
             $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
 
+            $message = "Hello " . $to_name . " Welcome to the airpeace admin team. 
+            below is the temporary password to your account . Pls do well to change this password once you log in" ;
+       
+            Mail::to($to_email)
+                ->send(
+                    new TemporaryPassword($to_name, $to_email, $message, $temporaryPassword)
+                );
+
+            dd('mail sent');
+            
             $admin = Admin::create([
                 'user_name' => $request->input('user_name'), 
                 'email' => $request->input('email'), 
