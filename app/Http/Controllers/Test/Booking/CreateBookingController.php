@@ -633,79 +633,10 @@ class CreateBookingController extends Controller
     }
 
     public function createBookingOW(createBookingOWRequest $request) {
-        $actionCode = $request->input('actionCode');
-        $bookingClassCabin = $request->input('bookingClassCabin');
-        $bookingClassResBookDesigCode = $request->input('bookingClassResBookDesigCode');
-        $bookingClassResBookDesigQuantity = $request->input('bookingClassResBookDesigQuantity');
-        $bookingClassResBookDesigStatusCode = $request->input('bookingClassResBookDesigStatusCode');
-        $fareInfoCabin = $request->input('fareInfoCabin');
-        $fareInfoCabinClassCode = $request->input('fareInfoCabinClassCode');
-        $fareBaggageAllowanceType = $request->input('fareBaggageAllowanceType');
-        $fareBaggageMaxAllowedPieces = $request->input('fareBaggageMaxAllowedPieces');
-        $unitOfMeasureCode = $request->input('unitOfMeasureCode');
-        $maxAllowedWeight = $request->input('maxAllowedWeight');
-        $fareGroupName = $request->input('fareGroupName');
-        $fareReferenceCode = $request->input('fareReferenceCode');
-        $fareReferenceID = $request->input('fareReferenceID');
-        $fareReferenceName = $request->input('fareReferenceName');
-        $flightSegmeneSequence = $request->input('flightSegmeneSequence');
-        $fareInfoPortTax = $request->input('fareInfoPortTax');
-        $fareInfoResBookDesigCode = $request->input('fareInfoResBookDesigCode');
-        $airlineCode = $request->input('airlineCode');
-        $airlineCompanyFullName = $request->input('airlineCompanyFullName');
-        $arrivalAirportCityLocationCode = $request->input('arrivalAirportCityLocationCode');
-        $arrivalAirportCityLocationName = $request->input('arrivalAirportCityLocationName');
-        $arrivalAirportCityLocationNameLanguage = $request->input('arrivalAirportCityLocationNameLanguage');
-        $arrivalAirportCountryLocationCode = $request->input('arrivalAirportCountryLocationCode');
-        $arrivalAirportCountryLocationName = $request->input('arrivalAirportCountryLocationName');
-        $arrivalAirportCountryLocationNameLanguage = $request->input('arrivalAirportCountryLocationNameLanguage');
-        $arrivalAirportCountryCode = $request->input('arrivalAirportCountryCode');
-        $arrivalAirportCodeContext = $request->input('arrivalAirportCodeContext');
-        $arrivalAirportLanguage = $request->input('arrivalAirportLanguage');
-        $arrivalAirportLocationCode = $request->input('arrivalAirportLocationCode');
-        $arrivalAirportLocationName = $request->input('arrivalAirportLocationName');
-        $arrivalAirportTimeZoneInfo = $request->input('arrivalAirportTimeZoneInfo');
-        $arrivalDateTime = $request->input('arrivalDateTime');
-        $arrivalDateTimeUTC = $request->input('arrivalDateTimeUTC');
-        $departureAirportCityLocationCode = $request->input('departureAirportCityLocationCode');
-        $departureAirportCityLocationName = $request->input('departureAirportCityLocationName');
-        $departureAirportCityLocationNameLanguage = $request->input('departureAirportCityLocationNameLanguage');
-        $departureAirportCountryLocationCode = $request->input('departureAirportCountryLocationCode');
-        $departureAirportCountryLocationName = $request->input('departureAirportCountryLocationName');
-        $departureAirportCountryLocationNameLanguage = $request->input('departureAirportCountryLocationNameLanguage');
-        $departureAirportCountryCurrencyCode = $request->input('departureAirportCountryCurrencyCode');
-        $departureAirportCodeContext = $request->input('departureAirportCodeContext');
-        $departureAirportLanguage = $request->input('departureAirportLanguage');
-        $departureAirportLocationCode = $request->input('departureAirportLocationCode');
-        $departureAirportLocationName = $request->input('departureAirportLocationName');
-        $departureAirportTimeZoneInfo = $request->input('departureAirportTimeZoneInfo');
-        $departureDateTime = $request->input('departureDateTime');
-        $departureDateTimeUTC = $request->input('departureDateTimeUTC');
-        $flightNumber = $request->input('flightNumber');
-        $flightSegmentID = $request->input('flightSegmentID');
-        $ondControlled = $request->input('ondControlled');
-        $sector = $request->input('sector');
-        $codeshare = $request->input('codeshare');
-        $distance = $request->input('distance');
-        $airEquipType = $request->input('airEquipType');
-        $changeOfGuage = $request->input('changeOfGuage');
-        $flightNotesDeiCodeOne = $request->input('flightNotesDeiCodeOne');
-        $flightNotesExplanationOne = $request->input('flightNotesExplanationOne');
-        $flightNoteOne = $request->input('flightNoteOne');
-        $flightNotesDeiCodeTwo = $request->input('flightNotesDeiCodeTwo');
-        $flightNotesExplanationTwo = $request->input('flightNotesExplanationTwo');
-        $flightNotesNoteTwo = $request->input('flightNotesNoteTwo');
-        $flightNoteDeiCodeThree = $request->input('flightNoteDeiCodeThree');
-        $flightNoteExplanationThree = $request->input('flightNoteExplanationThree');
-        $flightNotesNoteThree = $request->input('flightNotesNoteThree');
-        $flownMileageQty = $request->input('flownMileageQty');
-        $iatciFlight = $request->input('iatciFlight');
-        $journeyDuration = $request->input('journeyDuration');
-        $onTimeRate = $request->input('onTimeRate');
-        $remark = $request->input('remark');
-        $secureFlightDataRequired = $request->input('secureFlightDataRequired');
-        $stopQuantity = $request->input('stopQuantity');
-        $ticketType = $request->input('ticketType');
+
+        $validated = $request->validated();
+        $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
+
         $airTravelerListGender = $request->input('airTravelerListGender');
         $airTravelerPassengerTypeCode = $request->input('airTravelerPassengerTypeCode');
         $airTravelerListGivenName = $request->input('airTravelerListGivenName');
@@ -724,83 +655,12 @@ class CreateBookingController extends Controller
         $contactPersonSocialSecurityNumber = $request->input('contactPersonSocialSecurityNumber');
         $shareContactInfo = $request->input('shareContactInfo');
         $requestedSeatCount = $request->input('requestedSeatCount');
+        
         $requestPurpose = $request->input('requestPurpose');
 
 
         $xml = $this->createBookingBuilder->createBookingOW(
-            $actionCode,
-            $bookingClassCabin,
-            $bookingClassResBookDesigCode,
-            $bookingClassResBookDesigQuantity,
-            $bookingClassResBookDesigStatusCode,
-            $fareInfoCabin,
-            $fareInfoCabinClassCode,
-            $fareBaggageAllowanceType,
-            $fareBaggageMaxAllowedPieces,
-            $unitOfMeasureCode,
-            $maxAllowedWeight,
-            $fareGroupName,
-            $fareReferenceCode,
-            $fareReferenceID,
-            $fareReferenceName,
-            $flightSegmeneSequence,
-            $fareInfoPortTax,
-            $fareInfoResBookDesigCode,
-            $airlineCode,
-            $airlineCompanyFullName,
-            $arrivalAirportCityLocationCode,
-            $arrivalAirportCityLocationName,
-            $arrivalAirportCityLocationNameLanguage,
-            $arrivalAirportCountryLocationCode,
-            $arrivalAirportCountryLocationName,
-            $arrivalAirportCountryLocationNameLanguage,
-            $arrivalAirportCountryCode,
-            $arrivalAirportCodeContext,
-            $arrivalAirportLanguage,
-            $arrivalAirportLocationCode,
-            $arrivalAirportLocationName,
-            $arrivalAirportTimeZoneInfo,
-            $arrivalDateTime,
-            $arrivalDateTimeUTC,
-            $departureAirportCityLocationCode,
-            $departureAirportCityLocationName,
-            $departureAirportCityLocationNameLanguage,
-            $departureAirportCountryLocationCode,
-            $departureAirportCountryLocationName,
-            $departureAirportCountryLocationNameLanguage,
-            $departureAirportCountryCurrencyCode,
-            $departureAirportCodeContext,
-            $departureAirportLanguage,
-            $departureAirportLocationCode,
-            $departureAirportLocationName,
-            $departureAirportTimeZoneInfo,
-            $departureDateTime,
-            $departureDateTimeUTC,
-            $flightNumber,
-            $flightSegmentID,
-            $ondControlled,
-            $sector,
-            $codeshare,
-            $distance,
-            $airEquipType,
-            $changeOfGuage,
-            $flightNotesDeiCodeOne,
-            $flightNotesExplanationOne,
-            $flightNoteOne,
-            $flightNotesDeiCodeTwo,
-            $flightNotesExplanationTwo,
-            $flightNotesNoteTwo,
-            $flightNoteDeiCodeThree,
-            $flightNoteExplanationThree,
-            $flightNotesNoteThree,
-            $flownMileageQty,
-            $iatciFlight,
-            $journeyDuration,
-            $onTimeRate,
-            $remark,
-            $secureFlightDataRequired,
-            $stopQuantity,
-            $ticketType,
+            $CreateBookOriginDestinationOptionList, 
             $airTravelerListGender,
             $airTravelerPassengerTypeCode,
             $airTravelerListGivenName,
@@ -821,7 +681,6 @@ class CreateBookingController extends Controller
             $requestedSeatCount,
             $requestPurpose
         );
-
        
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
         try {

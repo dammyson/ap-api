@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations. docker-compose run --rm artisan migrate:refresh --path=/database/migrations/2024_09_02_101120_add_image_url_to_games_table.php
      */
     public function up(): void
     {
