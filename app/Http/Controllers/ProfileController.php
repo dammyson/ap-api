@@ -38,9 +38,10 @@ class ProfileController extends Controller
     }
 
     public function editProfile(EditProfileRequest $request) {
-        $user = $request->user();    
+        $user = $request->user();  
+        
         try {
-            
+
             $user->title = $request['title'] ?? $user->title;
             $user->first_name = $request['first_name'] ?? $user->first_name;
             $user->last_name = $request['last_name'] ?? $user->last_name;
@@ -58,7 +59,9 @@ class ProfileController extends Controller
 
             }
 
+           
             if ($request->file('travel_document')) {
+                
                 $path = $request->file('travel_document')->store('users-travel-documents-folder');
                 $user->travel_document = $path;
             }

@@ -227,7 +227,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
-        Route::patch('profile/edit', [ProfileController::class, 'editProfile']);
+        Route::post('profile/edit', [ProfileController::class, 'editProfile']);
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
