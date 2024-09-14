@@ -26,15 +26,15 @@ class RegisterAdminController extends Controller
     public function registerAdmin(CreateAdminRequest $request) {
         try {
 
-            // $admin = $request->user('admin');
+            $admin = $request->user('admin');
 
-            // if ($admin->role  != 'Admin') {
-            //     return response()->json([
-            //         "error" => true,
-            //         "message" => "You do not have permission to view team members.
-            //             Please contact your system administrator if you believe this is an error"
-            //     ], 403);
-            // }
+            if ($admin->role  != 'Admin') {
+                return response()->json([
+                    "error" => true,
+                    "message" => "You do not have permission to view team members.
+                        Please contact your system administrator if you believe this is an error"
+                ], 403);
+            }
            
             // generate temporary password
             $to_name = $request->input('user_name');
@@ -71,8 +71,7 @@ class RegisterAdminController extends Controller
         }
 
         return response()->json(['error' => false, 
-            'message' => 'Client registration successful. Verification code sent to your email.', 
-            'password_unhashed' => $temporaryPassword, 
+            'message' => 'Client registration successful. Verification code sent to your email.',
             'data' => $data
         ], 201);
 

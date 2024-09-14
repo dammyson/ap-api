@@ -51,8 +51,7 @@ class ForgetPasswordAdminController extends Controller
         return response()->json([
             "error" => "false",
             "message" => "otp sent to email successfully",
-            "otp" => $otp,
-            "otp_expires_at" => $admin->otp_expires_at
+           
         ], 200);
    }
 
