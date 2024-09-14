@@ -39,7 +39,7 @@ class ProfileController extends Controller
 
     public function editProfile(EditProfileRequest $request) {
         $user = $request->user();  
-        
+
         try {
 
             $user->title = $request['title'] ?? $user->title;
@@ -53,6 +53,11 @@ class ProfileController extends Controller
 
             if ($request->file('image_url')) {
                 // store the user image in a folder;
+                if ($user->image_url) {
+                    $oldPath = $user->image_url;
+                    Storage::delete($oldPath);
+
+                }
                 $path = $request->file('image_url')->store('users-images-folder');
                 // store the path to the image in the image_url column
                 $user->image_url = $path;
