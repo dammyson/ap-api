@@ -23,30 +23,9 @@ class CreateBookingController extends Controller
     }
 
     public function createBookingRT(CreateBookingRTRequest $request) {
-
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
-
-       
-
-        $airTravelerListGenderTwo = $request->input('airTravelerListGenderTwo');
-        $airTravelerListPassengerTypeCodeTwo = $request->input('airTravelerListPassengerTypeCodeTwo');
-        $airTravelerListPersonNameGivenNameTwo = $request->input('airTravelerListPersonNameGivenNameTwo');
-        $airTravelerListSurnameTwo = $request->input('airTravelerListSurnameTwo');
-        $airTravelerListBirthDateTwo = $request->input('airTravelerListBirthDateTwo');
-        $contactPersonEmail = $request->input('contactPersonEmail');
-        $contactPersonShareMarketInd = $request->input('contactPersonShareMarketInd');
-        $contactPersonMarkedForSendingRezInfo = $request->input('contactPersonMarkedForSendingRezInfo');
-        $contactPersonPersonNameGivenName = $request->input('contactPersonPersonNameGivenName');
-        $contactPersonPersonNameSurname = $request->input('contactPersonPersonNameSurname');
-        $phoneNumberAreaCode = $request->input('phoneNumberAreaCode');
-        $phoneNumberCountryCode = $request->input('phoneNumberCountryCode');
-        $phoneNumberMarkedForSendingRezInfo = $request->input('phoneNumberMarkedForSendingRezInfo');
-        $phoneNumberSubscriberNumber = $request->input('phoneNumberSubscriberNumber');
-        $phoneNumberShareMarketInd = $request->input('phoneNumberShareMarketInd');
-        $phoneNumberSocialSecurityNumber = $request->input('phoneNumberSocialSecurityNumber');
-        $shareContactInfo = $request->input('shareContactInfo');
-        $requestedSeatCount = $request->input('requestedSeatCount');
+        $airTravelerList = $validated["airTravelerList"];        
         $requestPurpose = $request->input('requestPurpose');
         $capturePayment = $request->input('capturePayment');
         $paymentCode = $request->input('paymentCode');
@@ -58,24 +37,7 @@ class CreateBookingController extends Controller
 
         $xml = $this->createBookingBuilder->createBookingRT(            
             $CreateBookOriginDestinationOptionList,
-            $airTravelerListGenderTwo,
-            $airTravelerListPassengerTypeCodeTwo,
-            $airTravelerListPersonNameGivenNameTwo,
-            $airTravelerListSurnameTwo,
-            $airTravelerListBirthDateTwo,
-            $contactPersonEmail,
-            $contactPersonShareMarketInd,
-            $contactPersonMarkedForSendingRezInfo,
-            $contactPersonPersonNameGivenName,
-            $contactPersonPersonNameSurname,
-            $phoneNumberAreaCode,
-            $phoneNumberCountryCode,
-            $phoneNumberMarkedForSendingRezInfo,
-            $phoneNumberSubscriberNumber,
-            $phoneNumberShareMarketInd,
-            $phoneNumberSocialSecurityNumber,
-            $shareContactInfo,
-            $requestedSeatCount,
+            $airTravelerList,
             $requestPurpose,
             $capturePayment,
             $paymentCode,
@@ -85,7 +47,6 @@ class CreateBookingController extends Controller
             $paymentType,
             $primaryPayment
         );
-        
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
         try {
 
@@ -105,49 +66,12 @@ class CreateBookingController extends Controller
 
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
-
-        $airTravelerListGender = $request->input('airTravelerListGender');
-        $airTravelerPassengerTypeCode = $request->input('airTravelerPassengerTypeCode');
-        $airTravelerListGivenName = $request->input('airTravelerListGivenName');
-        $airTravelerListSurname = $request->input('airTravelerListSurname');
-        $airTravelerBirthDate = $request->input('airTravelerBirthDate');
-        $contactPersonEmail = $request->input('contactPersonEmail');
-        $contactPersonShareMarketInd = $request->input('contactPersonShareMarketInd');
-        $contactPersonMarkedForSendingRezInfo = $request->input('contactPersonMarkedForSendingRezInfo');
-        $contactPersonNameGivenName = $request->input('contactPersonNameGivenName');
-        $contactPersonSurname = $request->input('contactPersonSurname');
-        $phoneNumberAreaCode = $request->input('phoneNumberAreaCode');
-        $phoneNumberCountryCode = $request->input('phoneNumberCountryCode');
-        $phoneNumberMarkedForSendingRezInfo = $request->input('phoneNumberMarkedForSendingRezInfo');
-        $phoneNumberSubscriberNumber = $request->input('phoneNumberSubscriberNumber');
-        $shareMarketInd = $request->input('shareMarketInd');
-        $contactPersonSocialSecurityNumber = $request->input('contactPersonSocialSecurityNumber');
-        $shareContactInfo = $request->input('shareContactInfo');
-        $requestedSeatCount = $request->input('requestedSeatCount');
-        
-        $requestPurpose = $request->input('requestPurpose');
-
+        $airTravelerList = $validated["airTravelerList"];
+        $requestPurpose = $validated["requestPurpose"];
 
         $xml = $this->createBookingBuilder->createBookingOW(
             $CreateBookOriginDestinationOptionList, 
-            $airTravelerListGender,
-            $airTravelerPassengerTypeCode,
-            $airTravelerListGivenName,
-            $airTravelerListSurname,
-            $airTravelerBirthDate,
-            $contactPersonEmail,
-            $contactPersonShareMarketInd,
-            $contactPersonMarkedForSendingRezInfo,
-            $contactPersonNameGivenName,
-            $contactPersonSurname,
-            $phoneNumberAreaCode,
-            $phoneNumberCountryCode,
-            $phoneNumberMarkedForSendingRezInfo,
-            $phoneNumberSubscriberNumber,
-            $shareMarketInd,
-            $contactPersonSocialSecurityNumber,
-            $shareContactInfo,
-            $requestedSeatCount,
+            $airTravelerList,
             $requestPurpose
         );
        
