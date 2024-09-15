@@ -24,8 +24,8 @@ class ProfileController extends Controller
                 "error" => "false",
                 "user" => [
                     ...$user, 
-                    "image_url_link" => $imageUrlLink,
-                    'travel_document_link' => $travelDocumentLink
+                    "image_url_link" => $imageUrlLink ?? null,
+                    'travel_document_link' => $travelDocumentLink ?? null
                 ],
             ], 200);
             
