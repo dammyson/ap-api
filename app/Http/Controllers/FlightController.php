@@ -40,35 +40,43 @@ class FlightController extends Controller
         $ArrivalDateTime = $request->input('arrival_date');
         $destinationLocationCode = $request->input('arrival_airport');
         $originLocationCode = $request->input('departure_airport');
-        $passengerTypeCode = $request->input('passenger_type');
+
+
         $quantity = $request->input('passengers');
+        
         $tripType = $request->input('trip_type');
+
+        $validated = $request->validated();
+        $travelerInformation = $validated["travelerInformation"];
+        $travelerInformation_count = count($travelerInformation);
+
+      
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
 
 
         if ($request->input('trip_type') == "ONE_WAY") {
-            $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $passengerTypeCode, $quantity, $tripType);
+            $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType);
         } else {
-            $xml = $this->soapRequestBuilder->GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $passengerTypeCode, $quantity, $tripType,  $ArrivalDateTime);
+            $xml = $this->soapRequestBuilder->GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType,  $ArrivalDateTime);
         }
-
 
         try {
             $response = $this->craneOTASoapService->run($function, $xml);
+           // dd( $response);
              $result = "";
 
             if ($request->input('trip_type') == "ONE_WAY") {
                 $originDestinationOptionList = $response['Availability']['availabilityResultList']['availabilityRouteList']['availabilityByDateList']['originDestinationOptionList'];
-                $result0 = $this->groupFaresByCabin($originDestinationOptionList, $quantity);
+                $result0 = $this->groupFaresByCabin($originDestinationOptionList, $quantity, $travelerInformation_count);
                 $rt = new \stdClass();
                 $rt->departure = $result0;
                 $result = $rt;
             } else {
                 $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
-                $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity);
+                $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity, $travelerInformation_count);
                 $originDestinationOptionList1 = $response['Availability']['availabilityResultList']['availabilityRouteList'][1]['availabilityByDateList']['originDestinationOptionList'];
-                $result1 = $this->groupFaresByCabin($originDestinationOptionList1, $quantity);
+                $result1 = $this->groupFaresByCabin($originDestinationOptionList1, $quantity,  $travelerInformation_count);
 
                 $rt = new \stdClass();
                 $rt->departure = $result0;
@@ -83,8 +91,11 @@ class FlightController extends Controller
     }
 
 
-    public function groupFaresByCabin($originDestinationOptionList, $quantity)
+    public function groupFaresByCabin($originDestinationOptionList, $quantity,  $count)
     {
+
+       // dd($originDestinationOptionList);
+
         $itemsCollection = collect();
         foreach ($originDestinationOptionList as  $originDestinationOptionItems) {
             $fareComponentGroupList = $originDestinationOptionItems['fareComponentGroupList'];
@@ -93,7 +104,7 @@ class FlightController extends Controller
             $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
             $fareComponentList = $fareComponentGroupList['fareComponentList'];
 
-
+            //dd($fareComponentList);
             $cabinData = new \stdClass();
             $cabinData->flightSegment = $flightSegment;
 
@@ -105,11 +116,26 @@ class FlightController extends Controller
                         $cabinData->$cabin['availability'] = $item;
 
                         foreach ($fareComponentList  as $fareComponentItem) {
-                            if ($item['resBookDesigCode'] == $fareComponentItem['passengerFareInfoList']['fareInfoList']['resBookDesigCode']) {
-                                $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
-                                $cabinData->$cabin['fareInfoList'] = $fareComponentItem['passengerFareInfoList']['fareInfoList'];
-                                break;
+
+                           $passengerFareInfoList = $fareComponentItem['passengerFareInfoList'];
+                         
+                            if($count == 1){
+                                if ($item['resBookDesigCode'] == $passengerFareInfoList['fareInfoList']['resBookDesigCode']) {
+                                    $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                    $cabinData->$cabin['fareInfoList'] = $passengerFareInfoList;
+                                    break;
+                                }
+                            }else{
+
+                                foreach ($passengerFareInfoList  as $passengerFareInfoItem) {
+                                    if ($item['resBookDesigCode'] == $passengerFareInfoItem['fareInfoList']['resBookDesigCode']) {
+                                        $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                        $cabinData->$cabin['fareInfoList'] = $passengerFareInfoList;
+                                        break;
+                                    }
+                                }
                             }
+
                         }
                         break;
                     }

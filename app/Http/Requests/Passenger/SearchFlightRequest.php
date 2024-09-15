@@ -24,11 +24,12 @@ class SearchFlightRequest extends FormRequest
         return [
             'departure_date' => 'required|date',
             'arrival_date' => 'required|date',
-            'passengers' => 'required|integer|min:1',
             'trip_type' => 'required|string|in:ONE_WAY,ROUND_TRIP,MULTI_DIRECTIONAL',
             'departure_airport' => 'required|string',
             'arrival_airport' => 'required|string',
-            'passenger_type' => 'required|string',
+            'travelerInformation' => 'required|array',
+            'travelerInformation.*.passenger_type' => 'required|string',
+            'travelerInformation.*.passengers' => 'required|integer|min:1',
         ];
     }
 }

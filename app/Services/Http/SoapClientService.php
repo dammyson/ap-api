@@ -23,7 +23,7 @@ class SoapClientService
 
     public function run($function, $xml)
     {
-        ini_set('memory_limit', '256M');
+        ini_set('memory_limit', '2560M');
         $result = $this->client->send($xml, $function);
 
         // Check for a fault
