@@ -67,7 +67,11 @@ class ProfileController extends Controller
 
            
             if ($request->file('travel_document')) {
-                
+                if ($user->travel_document) {
+                    $oldPath = $user->travel_document;
+                    Storage::delete($oldPath);
+
+                }
                 $path = $request->file('travel_document')->store('users-travel-documents-folder');
                 $user->travel_document = $path;
             }
