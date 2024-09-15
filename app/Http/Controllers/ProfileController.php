@@ -22,10 +22,11 @@ class ProfileController extends Controller
             
             return response()->json([
                 "error" => "false",
-                "user" => $user,
-                "image_url_link" => $imageUrlLink,
-                'travel_document_link' => $travelDocumentLink
-            
+                "user" => [
+                    ...$user, 
+                    "image_url_link" => $imageUrlLink ?? null,
+                    'travel_document_link' => $travelDocumentLink ?? null
+                ],
             ], 200);
             
         } catch (\Throwable $th) {
