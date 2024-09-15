@@ -10,8 +10,7 @@ class ProfileController extends Controller
 {
     public function getProfile(Request $request) {
         try {
-
-            dd($request);
+            
             $user = $request->user();
 
             // get the image_url  path
