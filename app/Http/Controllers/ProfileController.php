@@ -23,7 +23,7 @@ class ProfileController extends Controller
             return response()->json([
                 "error" => "false",
                 "user" => [
-                    ...$user, 
+                    $user, 
                     "image_url_link" => $imageUrlLink ?? null,
                     'travel_document_link' => $travelDocumentLink ?? null
                 ],
