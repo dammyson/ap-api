@@ -4,19 +4,19 @@ namespace App\Services\Soap;
 
 class CreateBookingBuilder
 {
-   public function createBookingRT(
-      $CreateBookOriginDestinationOptionList,
-      $airTravelerList,
-      $requestPurpose,
-      $capturePayment,
-      $paymentCode,
-      $threeDomainSecurityEligible,
-      $MCONumber,
-      $paymentAmountCurrencyCode,
-      $paymentType,
-      $primaryPayment
-   ) {
-      $xml = '<?xml version="1.0" encoding="UTF-8"?>      
+    public function createBookingRT(
+        $CreateBookOriginDestinationOptionList,
+        $airTravelerList,
+        $requestPurpose,
+        $capturePayment,
+        $paymentCode,
+        $threeDomainSecurityEligible,
+        $MCONumber,
+        $paymentAmountCurrencyCode,
+        $paymentType,
+        $primaryPayment
+    ) {
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>      
          <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
             <soapenv:Header/>
             <soapenv:Body>
@@ -33,14 +33,14 @@ class CreateBookingBuilder
                <adviceCodeSegmentExist/>
 
                <bookOriginDestinationOptions>' .
-                  $this->CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList) .
-               '</bookOriginDestinationOptions>
+            $this->CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList) .
+            '</bookOriginDestinationOptions>
 
-            </airItinerary>'.
+            </airItinerary>' .
             $this->airTravelerList(
                 $airTravelerList
-             )
-         .  ' <infantWithSeatCount/>
+            )
+            .  ' <infantWithSeatCount/>
             <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
             <fullfillment>
             <paymentDetails>
@@ -70,15 +70,15 @@ class CreateBookingBuilder
             </impl:CreateBooking>
             </soapenv:Body>
          </soapenv:Envelope>';
-      return  $xml;
-   }
+        return  $xml;
+    }
 
-   public function createBookingOW(
-      $CreateBookOriginDestinationOptionList,
-      $airTravelerList,
-      $requestPurpose
-   ) {
-      $xml = '<?xml version="1.0" encoding="UTF-8"?>
+    public function createBookingOW(
+        $CreateBookOriginDestinationOptionList,
+        $airTravelerList,
+        $requestPurpose
+    ) {
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
         <soapenv:Header/>
             <soapenv:Body>
@@ -94,34 +94,32 @@ class CreateBookingBuilder
                     <airItinerary>
                         <adviceCodeSegmentExist/>
                         <bookOriginDestinationOptions>' .
-                           $this->CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList) .
-                        '</bookOriginDestinationOptions>
+            $this->CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList) .
+            '</bookOriginDestinationOptions>
                     </airItinerary>' .
-         $this->airTravelerList(
-            $airTravelerList
-         ) .
-         '<infantWithSeatCount/>
+$this->airTravelerList( $airTravelerList) .
+            '<infantWithSeatCount/>
                     <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
                     </AirBookingRequest>
                 </impl:CreateBooking>
         </soapenv:Body>
         </soapenv:Envelope>';
-      return $xml;
-   }
+        return $xml;
+    }
 
 
 
 
 
 
-   public function CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList)
-   {  
-      //dd($CreateBookOriginDestinationOptionList[0]['flightSegmeneSequence'] );
+    public function CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList)
+    {
+        //dd($CreateBookOriginDestinationOptionList[0]['flightSegmeneSequence'] );
 
-       $xml = '';
+        $xml = '';
 
-      foreach ($CreateBookOriginDestinationOptionList as $string) {
-         $xml .= '
+        foreach ($CreateBookOriginDestinationOptionList as $string) {
+            $xml .= '
          <bookOriginDestinationOptionList>
              <bookFlightSegmentList>
                  <actionCode>' . htmlspecialchars($string['actionCode'], ENT_XML1, 'UTF-8') . '</actionCode>
@@ -243,18 +241,18 @@ class CreateBookingBuilder
                     </bookFlightSegmentList>
                     </bookOriginDestinationOptionList>
       ';
-      }
-      return $xml;
-   }
+        }
+        return $xml;
+    }
 
 
-   public function airTravelerList(
-    $airTravelerList
-   ) {
-      $xml = '';
+    public function airTravelerList(
+        $airTravelerList
+    ) {
+        $xml = '';
 
-       foreach ($airTravelerList as $string) {
-         $xml .= '
+        foreach ($airTravelerList as $string) {
+            $xml .= '
             <airTravelerList>
                 <gender>' . htmlspecialchars($string['airTravelerListGender'], ENT_XML1, 'UTF-8') . '</gender>
                 <hasStrecher/>
@@ -299,6 +297,127 @@ class CreateBookingBuilder
             </airTravelerList>';
         }
 
-      return $xml;
-   }
+        return $xml;
+    }
+
+
+
+
+    public function createBookingTwoA(
+        $CreateBookOriginDestinationOptionList,
+        $airTravelerList,
+
+        $airTravelerListGenderThree,
+        $airTravelerListBirthDateThree,
+        $passengerTypeCodeThree,
+        $personNameGivenNameThree,
+        $personNameSurnameThree,
+        $contactPersonShareContactInfoThree,
+        $requestedSeatCountThree,
+        $requestPurposeThree,
+        $airTravelerSequenceOne,
+        $flightSegmentSequenceOne,
+        $SSRCodeOne,
+        $SSRExplanationOne,
+        $ticketedServiceQuantityOne,
+        $ticketedStatusOne,
+        $airTravelerSequenceTwo,
+        $flightSegmentSequenceTwo,
+        $SSRCodeTwo,
+        $SSRExplanationTwo,
+        $ticketedServiceQuantityTwo,
+        $ticketedStatusTwo,
+    ) {
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
+        <soapenv:Header/>
+        <soapenv:Body>
+           <impl:CreateBooking>
+              <AirBookingRequest>
+              <clientInformation>
+                 <clientIP>129.0.0.1</clientIP>
+                 <member>false</member>
+                 <password>SCINTILLA</password>
+                 <userName>SCINTILLA</userName>
+                 <preferredCurrency>NGN</preferredCurrency>
+              </clientInformation>
+              <airItinerary>
+                 <adviceCodeSegmentExist/>
+                  <bookOriginDestinationOptions>' .
+            $this->CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList) .
+            '</bookOriginDestinationOptions>
+              </airItinerary>' .
+            $this->airTravelerList($airTravelerList) .
+            '  <airTravelerList>
+                 <gender>' . htmlspecialchars($airTravelerListGenderThree, ENT_XML1, 'UTF-8') . '</gender>
+                 <accompaniedByInfant/>
+                 <birthDate>' . htmlspecialchars($airTravelerListBirthDateThree, ENT_XML1, 'UTF-8') . '</birthDate>
+                 <hasStrecher/>
+                 <parentSequence/>
+                 <passengerTypeCode>' . htmlspecialchars($passengerTypeCodeThree, ENT_XML1, 'UTF-8') . '</passengerTypeCode>
+                 <personName>
+                    <givenName>' . htmlspecialchars($personNameGivenNameThree, ENT_XML1, 'UTF-8') . '</givenName>
+                    <shareMarketInd/>
+                    <surname>' . htmlspecialchars($personNameSurnameThree, ENT_XML1, 'UTF-8') . '</surname>
+                 </personName>
+                 <contactPerson>
+                    <shareContactInfo>' . htmlspecialchars($contactPersonShareContactInfoThree, ENT_XML1, 'UTF-8') . '</shareContactInfo>
+                    <shareMarketInd/>
+                    <useForInvoicing/>
+                 </contactPerson>
+                 <requestedSeatCount>' . htmlspecialchars($requestedSeatCountThree, ENT_XML1, 'UTF-8') . '</requestedSeatCount>
+                 <shareMarketInd/>
+                 <unaccompaniedMinor/>
+              </airTravelerList>
+              <infantWithSeatCount/>
+              <requestPurpose>' . htmlspecialchars($requestPurposeThree, ENT_XML1, 'UTF-8') . '</requestPurpose>
+              <specialRequestDetails>
+                 <specialServiceRequestList>
+                    <airTravelerSequence>' . htmlspecialchars($airTravelerSequenceOne, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                    <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceOne, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                    <SSR>
+                    <allowedQuantityPerPassenger/>
+                    <bundleRelatedSsr/>
+                    <code>' . htmlspecialchars($SSRCodeOne, ENT_XML1, 'UTF-8') . '</code>
+                    <exchangeable/>
+                    <explanation>' . htmlspecialchars($SSRExplanationOne, ENT_XML1, 'UTF-8') . '</explanation>
+                    <extraBaggage/>
+                    <free/>
+                    <iciAllowed/>
+                    <refundable/>
+                    <showOnItinerary/>
+                    <unitOfMeasureExist/>
+                    </SSR>
+                    <serviceQuantity>' . htmlspecialchars($ticketedServiceQuantityOne, ENT_XML1, 'UTF-8') . '</serviceQuantity>
+                    <status>' . htmlspecialchars($ticketedStatusOne, ENT_XML1, 'UTF-8') . '</status>
+                    <ticketed/>
+                 </specialServiceRequestList>
+                 <specialServiceRequestList>
+                    <airTravelerSequence>' . htmlspecialchars($airTravelerSequenceTwo, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                    <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceTwo, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                    <SSR>
+                    <allowedQuantityPerPassenger/>
+                    <bundleRelatedSsr/>
+                    <code>' . htmlspecialchars($SSRCodeTwo, ENT_XML1, 'UTF-8') . '</code>
+                    <exchangeable/>
+                    <explanation>' . htmlspecialchars($SSRExplanationTwo, ENT_XML1, 'UTF-8') . '</explanation>
+                    <extraBaggage/>
+                    <free/>
+                    <iciAllowed/>
+                    <refundable/>
+                    <showOnItinerary/>
+                    <unitOfMeasureExist/>
+                    </SSR>
+                    <serviceQuantity>' . htmlspecialchars($ticketedServiceQuantityTwo, ENT_XML1, 'UTF-8') . '</serviceQuantity>
+                    <status>' . htmlspecialchars($ticketedStatusTwo, ENT_XML1, 'UTF-8') . '</status>
+                    <ticketed/>
+                 </specialServiceRequestList>
+              </specialRequestDetails>
+              </AirBookingRequest>
+           </impl:CreateBooking>
+        </soapenv:Body>
+     </soapenv:Envelope>';
+
+        return $xml;
+    }
 }
