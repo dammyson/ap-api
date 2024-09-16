@@ -41,7 +41,6 @@ class FlightController extends Controller
         $destinationLocationCode = $request->input('arrival_airport');
         $originLocationCode = $request->input('departure_airport');
 
-
         $quantity = $request->input('passengers');
         
         $tripType = $request->input('trip_type');
@@ -54,7 +53,6 @@ class FlightController extends Controller
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
 
-
         if ($request->input('trip_type') == "ONE_WAY") {
             $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType);
         } else {
@@ -62,8 +60,10 @@ class FlightController extends Controller
         }
 
         try {
+
             $response = $this->craneOTASoapService->run($function, $xml);
-           // dd( $response);
+            // dd($response);
+
              $result = "";
 
             if ($request->input('trip_type') == "ONE_WAY") {
@@ -111,11 +111,10 @@ class FlightController extends Controller
             foreach ($grouped_bookingClassList as $cabin => $items) {
                 $reversedItems = $items->reverse();
                 foreach ($reversedItems as $item) {
-
                     if ($quantity <= (int)$item['resBookDesigQuantity']) {
                         $cabinData->$cabin['availability'] = $item;
 
-                        foreach ($fareComponentList  as $fareComponentItem) {
+                        foreach ($fareComponentList as $fareComponentItem) {
 
                            $passengerFareInfoList = $fareComponentItem['passengerFareInfoList'];
                          

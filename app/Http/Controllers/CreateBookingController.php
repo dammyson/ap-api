@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Test\Booking;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Test\Booking\createBookingOWRequest;
@@ -53,10 +53,16 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            dd( $response );
+            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"]["ID"];
+            // $result = "";
 
-            $result = "";
-            return response()->json($result);
+
+            return response()->json([
+                "error" => false,
+                "message" => "Flight booked successfully",
+                "booking_reference_id" =>$bookingReferenceIDList
+            ], 200);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -81,9 +87,16 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            dd( $response );
+            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"]["ID"];
+            // $result = "";
 
-            $result = "";
+
+            return response()->json([
+                "error" => false,
+                "message" => "Flight booked successfully",
+                "booking_reference_id" =>$bookingReferenceIDList
+            ], 200);
+            
             return response()->json($result);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -149,10 +162,15 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            dd( $response );
+            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"]["ID"];
+            // $result = "";
 
-            $result = "";
-            return response()->json($result);
+
+            return response()->json([
+                "error" => false,
+                "message" => "Flight booked successfully",
+                "booking_reference_id" =>$bookingReferenceIDList
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
