@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Test\Booking\createBookingOWRequest;
+use App\Http\Requests\Test\Booking\CreateBookingOWRequest;
 use App\Http\Requests\Test\Booking\CreateBookingRTRequest;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
 use App\Services\Soap\CreateBookingBuilder;
@@ -69,7 +69,7 @@ class CreateBookingController extends Controller
     }
 
 
-    public function createBookingOW(createBookingOWRequest $request) {
+    public function createBookingOW(CreateBookingOWRequest $request) {
 
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
