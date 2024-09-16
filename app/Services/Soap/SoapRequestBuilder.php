@@ -4,7 +4,7 @@ namespace App\Services\Soap;
 
 class SoapRequestBuilder
 {
-   public function GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $passengerTypeCode, $quantity, $tripType)
+   public function GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType)
    {
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
                 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -32,15 +32,9 @@ class SoapRequestBuilder
                                   <locationCode>' . htmlspecialchars($originLocationCode, ENT_XML1, 'UTF-8') . '</locationCode>
                                </originLocation>
                             </originDestinationInformationList>
-                            <travelerInformation>
-                               <passengerTypeQuantityList>
-                                  <hasStrecher/>
-                                  <passengerType>
-                                     <code>' . htmlspecialchars($passengerTypeCode, ENT_XML1, 'UTF-8') . '</code>
-                                  </passengerType>
-                                  <quantity>' . htmlspecialchars($quantity, ENT_XML1, 'UTF-8') . '</quantity>
-                               </passengerTypeQuantityList>
-                            </travelerInformation>
+                            <travelerInformation>' .
+                            $this->passengerTypeQuantityList($travelerInformation)
+                          . '</travelerInformation>
                             <tripType>' . htmlspecialchars($tripType, ENT_XML1, 'UTF-8') . '</tripType>
                          </AirAvailabilityRequest>
                       </impl:GetAvailability>
@@ -50,7 +44,7 @@ class SoapRequestBuilder
       return $xml;
    }
 
-   public function GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $passengerTypeCode, $quantity, $tripType, $returnDateTime,)
+   public function GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType, $returnDateTime,)
    {
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
               <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -91,15 +85,9 @@ class SoapRequestBuilder
                           <locationCode>' . htmlspecialchars($destinationLocationCode, ENT_XML1, 'UTF-8') . '</locationCode>
                           </originLocation>
                        </originDestinationInformationList>
-                       <travelerInformation>
-                          <passengerTypeQuantityList>
-                             <hasStrecher/>
-                             <passengerType>
-                               <code>' . htmlspecialchars($passengerTypeCode, ENT_XML1, 'UTF-8') . '</code>
-                             </passengerType>
-                             <quantity>' . htmlspecialchars($quantity, ENT_XML1, 'UTF-8') . '</quantity>
-                          </passengerTypeQuantityList>
-                       </travelerInformation>
+                        <travelerInformation>' .
+                            $this->passengerTypeQuantityList($travelerInformation)
+                          . '</travelerInformation>v
                        <tripType>' . htmlspecialchars($tripType, ENT_XML1, 'UTF-8') . '</tripType>
                     </AirAvailabilityRequest>
                  </impl:GetAvailability>
@@ -108,5 +96,27 @@ class SoapRequestBuilder
 
       return $xml;
    }
+
+
+
+   public function passengerTypeQuantityList(
+      $travelerInformation
+  ) {
+      $xml = '';
+
+      foreach ($travelerInformation as $string) {
+          $xml .= '
+               <passengerTypeQuantityList>
+                  <hasStrecher/>
+                  <passengerType>
+                     <code>'. htmlspecialchars($string['passenger_type'], ENT_XML1, 'UTF-8') .'</code>
+                  </passengerType>
+                  <quantity>'. htmlspecialchars($string['passengers'], ENT_XML1, 'UTF-8') .'</quantity>
+               </passengerTypeQuantityList>';
+      }
+
+      return $xml;
+  }
+
 }
 
