@@ -90,7 +90,7 @@ class CreateBookingController extends Controller
             // dd($response);
 
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
-            dd($bookingReferenceIDList);
+           
             // $result = "";
 
             return response()->json([
