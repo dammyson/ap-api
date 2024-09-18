@@ -14,8 +14,16 @@ class ChangePasswordAdminController extends Controller
         try {
             $currentPassword = $request->input('current_password');
             $newPassword = $request->input('new_password');
+            $newPasswordConfirmation = $request->input("new_password_confirmation");
 
             $admin = $request->user('admin');
+
+            if ($newPassword != $newPasswordConfirmation) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'new password and new password confirmation does not match'
+                ], 500); 
+            }
 
             if (!Hash::check($currentPassword, $admin->password)) {
                 return response()->json([
