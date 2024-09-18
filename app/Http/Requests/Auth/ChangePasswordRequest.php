@@ -27,7 +27,7 @@ class ChangePasswordRequest extends FormRequest
             'new_password' => [
                 'required',
                 'string',
-                'min:6', // At least six characters
+                'min:8', // At least six characters
                 'regex:/[A-Z]/', // Must contain at least one uppercase letter
                 'regex:/[0-9]/', // Must contain at least one number
                 'regex:/[@$!%*#?&]/', // Must contain at least one special character
