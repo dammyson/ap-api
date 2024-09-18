@@ -201,7 +201,7 @@ class TicketReservationRequestBuilder
         $requestPurpose
      ) {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
-        soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
            <soapenv:Header/>
               <soapenv:Body>
                  <impl:TicketReservation>

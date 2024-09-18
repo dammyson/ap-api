@@ -121,7 +121,7 @@ class FlightController extends Controller
                             if($count == 1){
                                 if ($item['resBookDesigCode'] == $passengerFareInfoList['fareInfoList']['resBookDesigCode']) {
                                     $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
-                                    $cabinData->$cabin['fareInfoList'] = $passengerFareInfoList;
+                                    $cabinData->$cabin['fareInfoList'] = [$passengerFareInfoList];
                                     break;
                                 }
                             }else{

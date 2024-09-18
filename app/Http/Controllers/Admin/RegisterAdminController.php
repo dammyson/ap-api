@@ -41,7 +41,7 @@ class RegisterAdminController extends Controller
             $to_email = $request->input('email');
 
             $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
-
+            
             $admin = Admin::create([
                 'user_name' => $request->input('user_name'), 
                 'email' => $request->input('email'), 
