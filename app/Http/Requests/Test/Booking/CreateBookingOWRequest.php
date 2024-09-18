@@ -115,7 +115,7 @@ class CreateBookingOWRequest extends FormRequest
             'airTravelerList.*.contactPersonSocialSecurityNumber' => 'required|string',
             'airTravelerList.*.shareContactInfo' => 'required|boolean',
             'airTravelerList.*.requestedSeatCount' => 'required|string',
-             "requestPurpose" => "required|string"
+            "requestPurpose" => "required|string"
         ];
     }
 }

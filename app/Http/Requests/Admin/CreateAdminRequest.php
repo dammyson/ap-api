@@ -24,7 +24,6 @@ class CreateAdminRequest extends FormRequest
         return [
             'user_name' => 'required|string',
             'email' => 'required|email',
-            // 'password' => 'required|min:8',
             'role' => 'required|string'
         ];
     }

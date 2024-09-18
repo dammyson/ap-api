@@ -30,14 +30,14 @@ class TicketReservationCommitRequest extends FormRequest
             "companyNameCountryCode" => 'required|string',
             "ID" => 'required|string',
             "referenceID" => 'required|string',
-            "capturePaymentToolNumber" => 'required|string',
-            "paymentCode" => 'required|string',
-            "threeDomainSecurityEligible" => 'required|string',
-            "MCONumber" => 'required|string',
-            "code" => 'required|string',
-            "value" => 'required|string',
-            "paymentType" => 'required|string',
-            "primaryPayment" => 'required|boolean',
+            "capturePaymentToolNumber" => 'sometimes|string',
+            "paymentCode" => 'sometimes|string',
+            "threeDomainSecurityEligible" => 'sometimes|string',
+            "MCONumber" => 'sometimes|string',
+            "code" => 'sometimes|string',
+            "value" => 'sometimes|string',
+            "paymentType" => 'sometimes|string',
+            "primaryPayment" => 'sometimes|boolean',
             "requestPurpose" => 'required|string'
         ];
     }

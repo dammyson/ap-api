@@ -15,11 +15,13 @@ use App\Http\Requests\Ticket\TicketReservationViewOnlyTwoARequest;
 class TicketReservationController extends Controller
 {
 
-    protected $ticketReservationRequestBuilder;
+    protected $ticketReservationRequestBuilder;    
+    protected $craneOTASoapService;
 
     public function __construct(TicketReservationRequestBuilder $ticketReservationRequestBuilder)
     {
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
+        $this->craneOTASoapService = app('CraneOTASoapService');
     }
 
     public function ticketReservationViewOnlyRT(TicketReservationViewOnlyRTRequest $request) {
@@ -67,7 +69,7 @@ class TicketReservationController extends Controller
         $referenceID = $request->input('referenceID');
         $requestPurpose = $request->input('requestPurpose');
 
-        $function = 'http://impl.soap.ws.crane.hititcs.com/ticketReservationViewOnlyRT';
+        // $function = 'http://impl.soap.ws.crane.hititcs.com/ticketReservationViewOnlyRT';
 
         $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
             $companyNameCityCode,
@@ -83,7 +85,10 @@ class TicketReservationController extends Controller
 
         try {
           
-            dd($xml);
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+            dd($response);
            
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -180,7 +185,10 @@ class TicketReservationController extends Controller
 
         try {
             
-            dd($xml);
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+            dd($response);
            
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
