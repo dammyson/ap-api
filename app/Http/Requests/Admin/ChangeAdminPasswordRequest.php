@@ -30,8 +30,10 @@ class ChangeAdminPasswordRequest extends FormRequest
                 'regex:/[A-Z]/', // Must contain at least one uppercase letter
                 'regex:/[0-9]/', // Must contain at least one number
                 'regex:/[@$!%*#?&]/', // Must contain at least one special character
-                'confirmed', // Must match password confirmation
-            ]
+                
+            ],
+
+            'new_password_confirmation' => "required|string"
 
         ];
     }
