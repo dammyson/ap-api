@@ -29,6 +29,7 @@ class GetAvailabilityController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
             dd($response);
+            // dd($response);
            
 
         } catch (\Exception $e) {
