@@ -1651,7 +1651,7 @@
                       ]
                       "mileAmount" => "0.0"
                       "value" => "2300.0"
-                    ]
+                    ] 
                     "taxCode" => "NG"
                   ]
                 ]
