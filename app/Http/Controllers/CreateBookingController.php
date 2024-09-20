@@ -52,8 +52,11 @@ class CreateBookingController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
+
+
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
+            dd($bookingReferenceIDList);
+
             // $result = "";
            
 
@@ -89,8 +92,8 @@ class CreateBookingController extends Controller
             dd($response);
 
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
-            // $result = "";
 
+            // $result = "";
 
             return response()->json([
                 "error" => false,

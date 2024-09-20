@@ -22,8 +22,18 @@ class ChangeAdminPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'current_password' => 'required|string|confirmed',
-            'new_password' => 'required|min:8',
+            'current_password' => 'required|string',
+            'new_password' => [
+                'required',
+                'string',
+                'min:8', // At least six characters
+                'regex:/[A-Z]/', // Must contain at least one uppercase letter
+                'regex:/[0-9]/', // Must contain at least one number
+                'regex:/[@$!%*#?&]/', // Must contain at least one special character
+                
+            ],
+
+            'new_password_confirmation' => "required|string"
 
         ];
     }
