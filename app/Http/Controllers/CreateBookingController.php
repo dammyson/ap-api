@@ -131,16 +131,24 @@ class CreateBookingController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-           
-            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"]["ID"];
-            // $result = "";
+
+            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
+            $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
+            $timeLimitUTC = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimitUTC"];
+
+            $bookingDetails = [
+                "bookingReferenceIDList" => $bookingReferenceIDList,
+                "timeLimit" => $timeLimit,
+                "timeLimitUTC" => $timeLimitUTC
+            ];
 
 
             return response()->json([
                 "error" => false,
                 "message" => "Flight booked successfully",
-                "booking_reference_id" =>$bookingReferenceIDList
+                "bookingDetails" => $bookingDetails
             ], 200);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
