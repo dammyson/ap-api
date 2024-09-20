@@ -252,7 +252,7 @@ class TicketReservationRequestBuilder
                              <primaryPayment>' . htmlspecialchars($primaryPayment, ENT_XML1, 'UTF-8') . '</primaryPayment>
                           </paymentDetailList>
                           </paymentDetails>
-                       </fullfillment>
+                        </fullfillment>
                        <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
                     </AirTicketReservationRequest>
                  </impl:TicketReservation>

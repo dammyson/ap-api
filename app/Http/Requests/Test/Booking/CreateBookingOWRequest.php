@@ -79,15 +79,14 @@ class CreateBookingOWRequest extends FormRequest
             'CreateBookOriginDestinationOptionList.*.distance' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.airEquipType' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.changeOfGuage' => 'required|boolean',
-            'CreateBookOriginDestinationOptionList.*.flightNotesDeiCodeOne' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesExplanationOne' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNoteOne' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesDeiCodeTwo' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesExplanationTwo' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesNoteTwo' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNoteDeiCodeThree' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNoteExplanationThree' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesNoteThree' => 'required|string',
+
+
+            'CreateBookOriginDestinationOptionList.*.flightNotes' => 'required|array',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.deiCode' => 'required|string',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.explanation' => 'required|string',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.note' => 'required|string',
+
+
             'CreateBookOriginDestinationOptionList.*.flownMileageQty' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.iatciFlight' => 'required|boolean',
             'CreateBookOriginDestinationOptionList.*.journeyDuration' => 'required|string',
