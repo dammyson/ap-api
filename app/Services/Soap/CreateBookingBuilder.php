@@ -260,34 +260,36 @@ class CreateBookingBuilder
         $airTravelerChildList
     ) {
         $xml = '';
-
-        foreach ($airTravelerChildList as $string) {
-            $xml .= '
-                <airTravelerList>
-                    <gender>' . htmlspecialchars($string['airTravelerListGenderChild'], ENT_XML1, 'UTF-8') . '</gender>
-                    <accompaniedByInfant/>
-                    <birthDate>' . htmlspecialchars($string['airTravelerListBirthDateChild'], ENT_XML1, 'UTF-8') . '</birthDate>
-                    <hasStrecher/>
-                    <parentSequence/>
-                    <passengerTypeCode>' . htmlspecialchars($string['passengerTypeCodeChild'], ENT_XML1, 'UTF-8') . '</passengerTypeCode>
-                    <personName>
-                        <givenName>' . htmlspecialchars($string['personNameGivenNameChild'], ENT_XML1, 'UTF-8') . '</givenName>
+        if ($airTravelerChildList) {
+            foreach ($airTravelerChildList as $string) {
+                $xml .= '
+                    <airTravelerList>
+                        <gender>' . htmlspecialchars($string['airTravelerListGenderChild'], ENT_XML1, 'UTF-8') . '</gender>
+                        <accompaniedByInfant/>
+                        <birthDate>' . htmlspecialchars($string['airTravelerListBirthDateChild'], ENT_XML1, 'UTF-8') . '</birthDate>
+                        <hasStrecher/>
+                        <parentSequence/>
+                        <passengerTypeCode>' . htmlspecialchars($string['passengerTypeCodeChild'], ENT_XML1, 'UTF-8') . '</passengerTypeCode>
+                        <personName>
+                            <givenName>' . htmlspecialchars($string['personNameGivenNameChild'], ENT_XML1, 'UTF-8') . '</givenName>
+                            <shareMarketInd/>
+                            <surname>' . htmlspecialchars($string['personNameSurnameChild'], ENT_XML1, 'UTF-8') . '</surname>
+                        </personName>
+                        <contactPerson>
+                            <shareContactInfo>' . htmlspecialchars($string['contactPersonShareContactInfoChild'], ENT_XML1, 'UTF-8') . '</shareContactInfo>
+                            <shareMarketInd/>
+                            <useForInvoicing/>
+                        </contactPerson>
+                        <requestedSeatCount>' . htmlspecialchars($string['requestedSeatCountChild'], ENT_XML1, 'UTF-8') . '</requestedSeatCount>
                         <shareMarketInd/>
-                        <surname>' . htmlspecialchars($string['personNameSurnameChild'], ENT_XML1, 'UTF-8') . '</surname>
-                    </personName>
-                    <contactPerson>
-                        <shareContactInfo>' . htmlspecialchars($string['contactPersonShareContactInfoChild'], ENT_XML1, 'UTF-8') . '</shareContactInfo>
-                        <shareMarketInd/>
-                        <useForInvoicing/>
-                    </contactPerson>
-                    <requestedSeatCount>' . htmlspecialchars($string['requestedSeatCountChild'], ENT_XML1, 'UTF-8') . '</requestedSeatCount>
-                    <shareMarketInd/>
-                    <unaccompaniedMinor/>
-                </airTravelerList>';
-
+                        <unaccompaniedMinor/>
+                    </airTravelerList>';
+    
+            }
+    
+            return $xml;
         }
-
-        return $xml;
+        
 
     }
 
@@ -376,14 +378,19 @@ class CreateBookingBuilder
             '</bookOriginDestinationOptions>
               </airItinerary>' .
             $this->airTravelerList($airTravelerList) .' '.
-            $this->airTravelerChildList($airTravelerChildList) .'
+
+           
+           $this->airTravelerChildList($airTravelerChildList)
+                
+            
+            .'
 
             
               <infantWithSeatCount/>
               <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
               <specialRequestDetails>
                 '. 
-                    $this->specialServiceRequestList($specialServiceRequestList)
+                 $this->specialServiceRequestList($specialServiceRequestList)
                 .'
               </specialRequestDetails>
               </AirBookingRequest>
@@ -396,33 +403,36 @@ class CreateBookingBuilder
 
  
     public function specialServiceRequestList($specialServiceRequestList) {
-        $xml = '';
+        if($specialServiceRequestList)
+        { 
+            $xml = '';
+        
+            foreach($specialServiceRequestList as $string) {
+                $xml .= '
+                    <specialServiceRequestList>
+                        <airTravelerSequence>' . htmlspecialchars($string['airTravelerSequence'], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                        <flightSegmentSequence>' . htmlspecialchars($string['flightSegmentSequence'], ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                        <SSR>
+                        <allowedQuantityPerPassenger/>
+                        <bundleRelatedSsr/>
+                        <code>' . htmlspecialchars($string['SSRCode'], ENT_XML1, 'UTF-8') . '</code>
+                        <exchangeable/>
+                        <explanation>' . htmlspecialchars($string['SSRExplanation'], ENT_XML1, 'UTF-8') . '</explanation>
+                        <extraBaggage/>
+                        <free/>
+                        <iciAllowed/>
+                        <refundable/>
+                        <showOnItinerary/>
+                        <unitOfMeasureExist/>
+                        </SSR>
+                        <serviceQuantity>' . htmlspecialchars($string['ticketedServiceQuantity'], ENT_XML1, 'UTF-8') . '</serviceQuantity>
+                        <status>' . htmlspecialchars($string['ticketedStatus'], ENT_XML1, 'UTF-8') . '</status>
+                        <ticketed/>
+                    </specialServiceRequestList>
+                ';
+            }
 
-        foreach($specialServiceRequestList as $string) {
-            $xml .= '
-                <specialServiceRequestList>
-                    <airTravelerSequence>' . htmlspecialchars($string['airTravelerSequence'], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
-                    <flightSegmentSequence>' . htmlspecialchars($string['flightSegmentSequence'], ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                    <SSR>
-                    <allowedQuantityPerPassenger/>
-                    <bundleRelatedSsr/>
-                    <code>' . htmlspecialchars($string['SSRCode'], ENT_XML1, 'UTF-8') . '</code>
-                    <exchangeable/>
-                    <explanation>' . htmlspecialchars($string['SSRExplanation'], ENT_XML1, 'UTF-8') . '</explanation>
-                    <extraBaggage/>
-                    <free/>
-                    <iciAllowed/>
-                    <refundable/>
-                    <showOnItinerary/>
-                    <unitOfMeasureExist/>
-                    </SSR>
-                    <serviceQuantity>' . htmlspecialchars($string['ticketedServiceQuantity'], ENT_XML1, 'UTF-8') . '</serviceQuantity>
-                    <status>' . htmlspecialchars($string['ticketedStatus'], ENT_XML1, 'UTF-8') . '</status>
-                    <ticketed/>
-                 </specialServiceRequestList>
-            ';
+            return $xml;
         }
-
-        return $xml;
     }
 }
