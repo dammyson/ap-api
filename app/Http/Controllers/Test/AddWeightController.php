@@ -10,11 +10,14 @@ use App\Http\Requests\Test\addWeightRequest;
 class AddWeightController extends Controller
 {
     protected $addWeightBuilder;
+    protected $craneAncillaryOTASoapService;
 
     public function __construct(AddWeightBuilder $addWeightBuilder)
     {
         $this->addWeightBuilder = $addWeightBuilder;
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
     }
+
     public function addWeight(addWeightRequest $request) {
         
         $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
@@ -298,6 +301,14 @@ class AddWeightController extends Controller
             $bookingReferenceID
         );
 
-        dd($xml);
+        $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
+
+        try {
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            dd($response);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

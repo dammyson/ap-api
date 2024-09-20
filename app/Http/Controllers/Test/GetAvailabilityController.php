@@ -14,15 +14,26 @@ class GetAvailabilityController extends Controller
 {
     //
     protected $getAvailabilityBuilder;
+    protected $craneOTASoapService;
 
     public function __construct(GetAvailabilityBuilder $getAvailabilityBuilder)
     {
         $this->getAvailabilityBuilder = $getAvailabilityBuilder;
+        $this->craneOTASoapService = app('CraneOTASoapService');
     }
 
     public function getAvailabilityGeneralParameters() {
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailabilityGeneralParameters';
         $xml = $this->getAvailabilityBuilder->getAvailabilityGeneralParameters();
-        dd($xml);
+        try {
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+            dd($response);
+           
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
     public function getAvailabilityRT(GetAvailabilityRTRequest $request) {
         $originDateOffsetOne = $request->input('originDateOffsetOne'); 

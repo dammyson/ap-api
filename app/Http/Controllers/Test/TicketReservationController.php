@@ -267,6 +267,15 @@ class TicketReservationController extends Controller
             $requestPurpose   
         );
 
-        dd($xml);
+        try {
+          
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+            dd($response);
+           
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        } 
     }
 }

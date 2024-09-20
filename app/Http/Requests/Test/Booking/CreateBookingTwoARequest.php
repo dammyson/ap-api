@@ -79,15 +79,12 @@ class CreateBookingTwoARequest extends FormRequest
             'CreateBookOriginDestinationOptionList.*.distance' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.airEquipType' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.changeOfGuage' => 'required|boolean',
-            'CreateBookOriginDestinationOptionList.*.flightNotesDeiCodeOne' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesExplanationOne' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNoteOne' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesDeiCodeTwo' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesExplanationTwo' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesNoteTwo' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNoteDeiCodeThree' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNoteExplanationThree' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.flightNotesNoteThree' => 'required|string',
+            
+            'CreateBookOriginDestinationOptionList.*.flightNotes' => 'required|array',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.deiCode' => 'required|string',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.explanation' => 'required|string',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.note' => 'required|string',
+
             'CreateBookOriginDestinationOptionList.*.flownMileageQty' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.iatciFlight' => 'required|boolean',
             'CreateBookOriginDestinationOptionList.*.journeyDuration' => 'required|string',
@@ -115,29 +112,26 @@ class CreateBookingTwoARequest extends FormRequest
             'airTravelerList.*.contactPersonSocialSecurityNumber' => 'required|string',
             'airTravelerList.*.shareContactInfo' => 'required|boolean',
             'airTravelerList.*.requestedSeatCount' => 'required|string',
+
+            'airTravelerChildList' => 'sometimes|array',
+            "airTravelerChildList.*.airTravelerListGenderChild" => "required|string",
+            "airTravelerChildList.*.airTravelerListBirthDateChild" => "required|string",
+            "airTravelerChildList.*.passengerTypeCodeChild" => "required|string",
+            "airTravelerChildList.*.personNameGivenNameChild" => "required|string",
+            "airTravelerChildList.*.personNameSurnameChild" => "required|string",
+            "airTravelerChildList.*.contactPersonShareContactInfoChild" => "required|boolean",
+            "airTravelerChildList.*.requestedSeatCountChild" => "required|string",
+
+            "requestPurpose" => "required|string",
+
+            'specialServiceRequestList' => 'sometimes|array',            
+            "specialServiceRequestList.*.airTravelerSequence" => "required|string",
+            "specialServiceRequestList.*.flightSegmentSequence" => "required|string",
+            "specialServiceRequestList.*.SSRCode" => "required|string",
+            "specialServiceRequestList.*.SSRExplanation" => "required|string",
+            "specialServiceRequestList.*.ticketedServiceQuantity" => "required|string",
+            "specialServiceRequestList.*.ticketedStatus" => "required|string",  
             
-
-            "airTravelerListGenderThree" => "required|string",
-            "airTravelerListBirthDateThree" => "required|string",
-            "passengerTypeCodeThree" => "required|string",
-            "personNameGivenNameThree" => "required|string",
-            "personNameSurnameThree" => "required|string",
-            "contactPersonShareContactInfoThree" => "required|boolean",
-            "requestedSeatCountThree" => "required|string",
-
-            "requestPurposeThree" => "required|string",
-            "airTravelerSequenceOne" => "required|string",
-            "flightSegmentSequenceOne" => "required|string",
-            "SSRCodeOne" => "required|string",
-            "SSRExplanationOne" => "required|string",
-            "ticketedServiceQuantityOne" => "required|string",
-            "ticketedStatusOne" => "required|string",  
-            "airTravelerSequenceTwo" => "required|string",
-            "flightSegmentSequenceTwo" => "required|string",
-            "SSRCodeTwo" => "required|string",
-            "SSRExplanationTwo" => "required|string",
-            "ticketedServiceQuantityTwo" => "required|string",
-            "ticketedStatusTwo" => "required|string"
         ];
     }
 }

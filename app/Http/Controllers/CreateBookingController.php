@@ -52,8 +52,8 @@ class CreateBookingController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-
-            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"]["ID"];
+            dd($response);
+            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
             // $result = "";
            
 
@@ -86,9 +86,9 @@ class CreateBookingController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
+            dd($response);
 
-            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"]["ID"];
+            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
             // $result = "";
 
 
@@ -108,52 +108,18 @@ class CreateBookingController extends Controller
     public function createBookingTwoA(CreateBookingTwoARequest $request){
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
-        $airTravelerList = $validated["airTravelerList"];   
-
-        $airTravelerListGenderThree = $request->input('airTravelerListGenderThree');
-        $airTravelerListBirthDateThree = $request->input('airTravelerListBirthDateThree');
-        $passengerTypeCodeThree = $request->input('passengerTypeCodeThree');
-        $personNameGivenNameThree = $request->input('personNameGivenNameThree');
-        $personNameSurnameThree = $request->input('personNameSurnameThree');
-        $contactPersonShareContactInfoThree = $request->input('contactPersonShareContactInfoThree');
-        $requestedSeatCountThree = $request->input('requestedSeatCountThree');
-        $requestPurposeThree = $request->input('requestPurposeThree');
-        $airTravelerSequenceOne = $request->input('airTravelerSequenceOne');
-        $flightSegmentSequenceOne = $request->input('flightSegmentSequenceOne');
-        $SSRCodeOne = $request->input('SSRCodeOne');
-        $SSRExplanationOne = $request->input('SSRExplanationOne');
-        $ticketedServiceQuantityOne = $request->input('ticketedServiceQuantityOne');
-        $ticketedStatusOne = $request->input('ticketedStatusOne');  
-        $airTravelerSequenceTwo = $request->input('airTravelerSequenceTwo');
-        $flightSegmentSequenceTwo = $request->input('flightSegmentSequenceTwo');
-        $SSRCodeTwo = $request->input('SSRCodeTwo');
-        $SSRExplanationTwo = $request->input('SSRExplanationTwo');
-        $ticketedServiceQuantityTwo = $request->input('ticketedServiceQuantityTwo');
-        $ticketedStatusTwo = $request->input('ticketedStatusTwo'); 
+        $airTravelerList = $validated["airTravelerList"];
+        $airTravelerListChild = $validated['airTravelerChildList']; 
+        $requestPurpose = $request->input('requestPurpose');
+        $specialServiceRequestList = $validated['specialServiceRequestList'];
+        
 
         $xml = $this->createBookingBuilder->createBookingTwoA(
             $CreateBookOriginDestinationOptionList,
             $airTravelerList,
-            $airTravelerListGenderThree,
-            $airTravelerListBirthDateThree,
-            $passengerTypeCodeThree,
-            $personNameGivenNameThree,
-            $personNameSurnameThree,
-            $contactPersonShareContactInfoThree,
-            $requestedSeatCountThree,
-            $requestPurposeThree,
-            $airTravelerSequenceOne,
-            $flightSegmentSequenceOne,
-            $SSRCodeOne,
-            $SSRExplanationOne,
-            $ticketedServiceQuantityOne,
-            $ticketedStatusOne,  
-            $airTravelerSequenceTwo,
-            $flightSegmentSequenceTwo,
-            $SSRCodeTwo,
-            $SSRExplanationTwo,
-            $ticketedServiceQuantityTwo,
-            $ticketedStatusTwo
+            $airTravelerListChild,
+            $requestPurpose,
+            $specialServiceRequestList
         );
 
        // dd($xml);
@@ -162,7 +128,7 @@ class CreateBookingController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-
+            dd($response);
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"]["ID"];
             // $result = "";
 
