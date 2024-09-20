@@ -112,6 +112,7 @@ class CreateBookingController extends Controller
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
         $airTravelerList = $validated["airTravelerList"];
+        // optional
         $airTravelerListChild = $validated['airTravelerChildList']; 
         $requestPurpose = $request->input('requestPurpose');
         $specialServiceRequestList = $validated['specialServiceRequestList'];
