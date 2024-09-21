@@ -11,11 +11,13 @@ use Illuminate\Http\Request;
 
 class AvailableSpecialController extends Controller
 {
-    protected $availableSpecialServiceBuilder;
+    protected $availableSpecialServiceBuilder;    
+    protected $craneAncillaryOTASoapService;
 
     public function __construct(AvailableSpecialServiceBuilder $availableSpecialServiceBuilder)
     {
         $this->availableSpecialServiceBuilder = $availableSpecialServiceBuilder;
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
     }
 
     public function AvailableSpecialServiceTwoA (AvailableSpecialServiceTwoARequest $request) {
@@ -62,8 +64,16 @@ class AvailableSpecialController extends Controller
             $ID, 
             $referenceID
         );
+        try {
+           
+            $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
 
-        dd($xml);
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            dd($response);
+           
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        } 
     }
 
     public function AvailableSpecialServiceRT(AvailableSpecialServiceRTRequest $request) {
