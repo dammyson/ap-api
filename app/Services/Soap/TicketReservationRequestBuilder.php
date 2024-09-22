@@ -252,7 +252,15 @@ class TicketReservationRequestBuilder
                              <primaryPayment>' . htmlspecialchars($primaryPayment, ENT_XML1, 'UTF-8') . '</primaryPayment>
                           </paymentDetailList>
                           </paymentDetails>
-                        </fullfillment>
+                          <creditCardList>
+                           <capturePaymentToolNumber>true</capturePaymentToolNumber>
+                           <paymentReferenceID>1337</paymentReferenceID>
+                           <cardHolderName>TEST TEST</cardHolderName>
+                           <cardNumber>1111111111111111</cardNumber>
+                           <validUntil>12/2018</validUntil>
+                           <validationCode>111</validationCode>
+                         </creditCardList>
+                       </fullfillment>
                        <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
                     </AirTicketReservationRequest>
                  </impl:TicketReservation>
