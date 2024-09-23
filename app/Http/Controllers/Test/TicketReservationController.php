@@ -12,6 +12,7 @@ use App\Http\Requests\Test\Ticket\TicketReservationCommitRTRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationCommitTwoARequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRTRequest;
+use App\Models\Record;
 use App\Models\TransactionType;
 
 class TicketReservationController extends Controller
@@ -190,119 +191,82 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
-            $txStatus = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList']['status'];
-            
-            if ($txStatus) {
-                $user = $request->user();
-                $peaceId = $user->peace_id;
+           
+           
+            $user = $request->user();
+            $peaceId = $user->peace_id;
 
-                $amount = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList']['totalAmountText'];
-                
-                $leadPassengerEmail = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'][0]['contactPerson']['email']['email'];
-                $leadPassengerEmail = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']['contactPerson']['email']['email'];
-                $ancilary  = $response["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"]["asvcSsr"]["amount"]["value"];
+            //later on check if an array or object is returned so you can handle the reponse correctly;
+            $leadPassengerEmail = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']['contactPerson']['email']['email'];
+           
 
-                // solution
-                $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+            // get the list of all the tickets 
+            $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
 
-                foreach($ticketItemList as $ticketItem) {
-                    if ($ticketItem["status"] == "OK") {
-                        dd('I ran');
-
-                        if (!$ticketItem['couponInfoList']['asvcSsr']) {
-                            $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
-                            $inv = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                            $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
-                            $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
-                            $statusOfPayment = $ticketItem['status']; // would be OK as checked above;
-                            $ticketId = $ticketItem['ticketDocumentNbr'];
-                            $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
-
-                            $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                            
-
-                            Transaction::create([
-                                'user_name' => $user->user_name,
-                                'peace_id' => $peaceId,
-                                'amount' => $amount,
-                                'payment_reference' => $paymentReferenceID,
-                                'inv_number' => $inv,
-                                'reason_for_issuance' => $reasonForIssuance,
-                                'ticket_number' => '',
-
-                                'ticket_type' => 'ticket',
-                                'lead_passenger_email' => $leadPassengerEmail,
-                            ]);
-                            // 'user_id',
-                            // 'ref',
-                            // 'invoice_id',
-                            // 'transaction_type_id',
-                            // 'amount',
-                            // 'description',
-                            // 'transaction_date',
-                            // 'is_flight',
-    
-    
-                            $transactionType = TransactionType::create([
-                                'name' => '',
-                                'description' => ''
-                            ]);
-                            Transaction::create([
-                                'user_name' => $user->user_name,
-                                'peace_id' => $peaceId,
-                                'amount' => $amount,
-                                'ticket_type' => 'ticket',
-                                'lead_passenger_email' => $leadPassengerEmail,
-                                
-                                'user_id' => '',
-                                'ref' => '',
-                                'invoice_id' => '',
-                                'transaction_type_id' => '',
-                                'amount' => $amount,
-                                'description' => '',
-                                'transaction_date' => '',
-                                'is_flight' => ''
-            
-                            ]);
-                        } else  if ($ticketItem['couponInfoList']['asvcSsr']) {
-                            $amount = $ticketItem['couponInfoList']['asvcSsr']['amount']['value'];
-                            Transaction::create([
-                                'user_name' => $user->user_name,
-                                'peace_id' => $peaceId,
-                                'amount' => $amount,
-                                'ticket_type' => 'ancilary',
-                                'lead_passenger_email' => $leadPassengerEmail
-            
-                            ]);
+            foreach($ticketItemList as $ticketItem) {
+                if ($ticketItem["status"] == "OK") {
+                    // dump($user->first_name);
+                    if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
+                        dump('non asvcSsr ran');
+                        $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
+                        $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                        $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
+                        $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
+                        $ticketId = $ticketItem['ticketDocumentNbr'];
+                        $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
+                        $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
-                        }
-                    }
+
+                        Record::create([
+                            'user_name' => "Emeka",
+                            'peace_id' => $peaceId,
+                            'amount' => $amount,
+                            'ticket_type' => 'ticket',
+                            'payment_reference' => $paymentReferenceID,
+                            'invoice_number' => $invoice_number,
+                            'reason_for_issuance' => $reasonForIssuance,
+                            'ticket_number' => $ticketId,
+                            'order_id' => $orderID,
+                            'lead_passenger_email' => $leadPassengerEmail,
+                        ]); 
                     
+                    }
+                    else {                        
+
+                        dump('ssr ran');
+                        $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
+                        $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                        $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
+                        $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
+                        $ticketId = $ticketItem['ticketDocumentNbr'];
+                        $reasonForIssuance = $ticketItem['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
+                        $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                        
+
+                        Record::create([
+                            'user_name' => $user->user_name,
+                            'peace_id' => $peaceId,
+                            'amount' => $amount,
+                            'payment_reference' => $paymentReferenceID,
+                            'invoice_number' => $invoice_number,
+                            'reason_for_issuance' => $reasonForIssuance,
+                            'ticket_number' => $ticketId,
+                            'order_id' => $orderID,
+                            'ticket_type' => 'Ancilary',
+                            'lead_passenger_email' => $leadPassengerEmail,
+                        ]);
+
+
+                        
+                    } 
                 }
                 
-                Transaction::create([
-                    'user_name' => $user->user_name,
-                    'peace_id' => $peaceId,
-                    'amount' => $amount,
-                    'lead_passenger_email' => $leadPassengerEmail
+            }
 
-                ]);
-
-                AncillaryRevenue::create([
-                    'user_name' => $user->user_name,
-                    'peace_id' => $peaceId,
-                    'ancilary' => $ancilary
-                ]);
-
-                Ticket::create([
-                    'user_name' => $user->user_name,
-                    'peace_id' => $peaceId,
-                    'amount' => $amount,
-                ]);
-            };
-
-            dd($response);
+            return response()->json([
+                "error" => false,
+                "message" => "transaction successfully recorded"
+            ], 200);           
            
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
