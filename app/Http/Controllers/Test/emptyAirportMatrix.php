@@ -13,9 +13,6 @@ array:1 [ // app\Http\Controllers\Test\GetAirportMatrixController.php:27
                   "locationName" => "Abuja"
                   "locationNameLanguage" => "EN"
                 ]
-
-                
-
                 "country" => array:3 [
                   "codeContext" => "IATA"
                   "locationCode" => "NG"
