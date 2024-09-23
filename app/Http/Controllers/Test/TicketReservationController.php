@@ -22,6 +22,7 @@ class TicketReservationController extends Controller
     {
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->craneOTASoapService = app('CraneOTASoapService');
+        
     }
 
     public function ticketReservationViewOnlyRT(TicketReservationViewOnlyRTRequest $request) {
