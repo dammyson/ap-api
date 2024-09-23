@@ -72,7 +72,7 @@ class BookingRequestController extends Controller
 
             
             $response = $this->craneOTASoapService->run($function, $xml);
-
+            dd($response);
             $airTravelerList = $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'];
             dd($airTravelerList);
 
