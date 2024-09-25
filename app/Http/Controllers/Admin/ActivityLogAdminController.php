@@ -38,9 +38,10 @@ class ActivityLogAdminController extends Controller
     }
 
     public function indexActivityLog() {
-        try {
+        try {         
+
             $activityLogs = ActivityLog::with(['admin' => function($query) {
-                $query->select('user_name', 'role');
+                $query->select('id', 'user_name', 'role');
             }])->get();
 
         } catch(\Throwable $th) {
