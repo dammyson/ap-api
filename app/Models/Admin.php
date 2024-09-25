@@ -13,7 +13,7 @@ class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory;
 
-    protected $fillable = ['user_name', 'email', 'password', 'image_url', 'role'];
+    protected $fillable = ['user_name', 'email', 'password', 'image_url', 'role', 'phone_number'];
 
     protected $hidden = ['password', 'remember_token'];
 
