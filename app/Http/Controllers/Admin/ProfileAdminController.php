@@ -40,7 +40,7 @@ class ProfileAdminController extends Controller
 
            $admin->user_name = $request->user_name ?? $admin->user_name;
            $admin->email = $request->email ?? $admin->email;
-           $admin->phone_number = $request->phone_number -> $admin->phone_number;
+           $admin->phone_number = $request->phone_number ?? $admin->phone_number;
 
            if ($request->file('image_url')) {
             // store the file in the admin-profile-images folder
