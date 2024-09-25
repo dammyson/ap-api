@@ -1,4 +1,5 @@
 <?php
+//check seat map
 array:1 [ // app\Http\Controllers\Test\SeatMapController.php:158
     "AirSeatMapResponse" => array:1 [
       "seatMapResponse" => array:4 [
@@ -125,7 +126,7 @@ array:1 [ // app\Http\Controllers\Test\SeatMapController.php:158
                         "rowNumber" => "1"
                         "seatAlignment" => "0.0"
                         "seatFeatureList" => "W"
-                        "seatNumber" => "1D"
+                        "seatNumber" => "1D" 7q
                         "seatSection" => "7"
                         "seatTypeCode" => "SEAT"
                         "sellCode" => "FR"
@@ -2733,8 +2734,8 @@ array:1 [ // app\Http\Controllers\Test\SeatMapController.php:158
             "locationName" => "Abuja"
             "timeZoneInfo" => "Africa/Lagos"
           ]
-          "arrivalDateTime" => "2024-09-26T11:55:00+01:00"
-          "arrivalDateTimeUTC" => "2024-09-26T10:55:00+01:00"
+          "arrivalDateTime" => "2024-09-26T16:20:00+01:00"
+          "arrivalDateTimeUTC" => "2024-09-26T15:20:00+01:00"
           "departureAirport" => array:6 [
             "cityInfo" => array:2 [
               "city" => array:3 [
@@ -2757,10 +2758,10 @@ array:1 [ // app\Http\Controllers\Test\SeatMapController.php:158
             "locationName" => "Lagos"
             "timeZoneInfo" => "Africa/Lagos"
           ]
-          "departureDateTime" => "2024-09-26T10:35:00+01:00"
-          "departureDateTimeUTC" => "2024-09-26T09:35:00+01:00"
-          "flightNumber" => "7124"
-          "flightSegmentID" => "1145434"
+          "departureDateTime" => "2024-09-26T15:00:00+01:00"
+          "departureDateTimeUTC" => "2024-09-26T14:00:00+01:00"
+          "flightNumber" => "7138"
+          "flightSegmentID" => "1136694"
           "ondControlled" => "false"
           "sector" => "DOMESTIC"
           "accumulatedDuration" => ""
@@ -2787,7 +2788,7 @@ array:1 [ // app\Http\Controllers\Test\SeatMapController.php:158
           "iatciFlight" => "false"
           "journeyDuration" => "PT1H20M"
           "onTimeRate" => "0"
-          "remark" => "Departs From MM1 Zulu Terminal, GAT (Old Domestic)"
+          "remark" => "Departs From MM1 Zulu Terminal GAT Old Domestic"
           "secureFlightDataRequired" => "true"
           "segmentStatusByFirstLeg" => "CI"
           "stopQuantity" => "0"

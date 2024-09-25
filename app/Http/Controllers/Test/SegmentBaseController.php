@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 class SegmentBaseController extends Controller
 {
     protected $segmentBaseRequestBuilder;
+    protected $craneAncillaryOTASoapService;
 
     public function __construct(SegmentBaseRequestBuilder $segmentBaseRequestBuilder)
     {
         $this->segmentBaseRequestBuilder = $segmentBaseRequestBuilder;
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
     }
 
     public function segmentBaseAvailableSpecialServices(SegmentBaseAvailableSpecialServicesRequest $request) {
@@ -168,8 +170,10 @@ class SegmentBaseController extends Controller
          
 
         try {
+            $function = 'http://impl.soap.ws.crane.hititcs.com/SegmentBaseAvailableSpecialServices';
 
-            dd($xml);
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            dd($response);
             
             
         } catch (\Exception $e) {

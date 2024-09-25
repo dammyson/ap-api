@@ -191,7 +191,8 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-           
+            
+            dd($response);
            
             $user = $request->user();
             $peaceId = $user->peace_id;
