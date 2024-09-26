@@ -219,10 +219,10 @@ class AddSeatBuilder {
                                             <locationCode>' . htmlspecialchars($departureAirportCountryLocationCode, ENT_XML1, 'UTF-8') . '</locationCode>
                                             <locationName>' . htmlspecialchars($departureAirportCountryLocationName, ENT_XML1, 'UTF-8') . '</locationName>
                                             <locationNameLanguage>' . htmlspecialchars($departureAirportCountryLocationNameLanguage, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
-                                         <currency>
-                                         <code>' . htmlspecialchars($departureAirportCurrencyCode, ENT_XML1, 'UTF-8') . '</code>
-                                         </currency>
-                           Airport              </country>
+                                            <currency>
+                                                      <code>' . htmlspecialchars($departureAirportCurrencyCode, ENT_XML1, 'UTF-8') . '</code>
+                                             </currency>
+                                          </country>
                                       </cityInfo>
                                       <codeContext>' . htmlspecialchars($departureAirportCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
                                       <language>' . htmlspecialchars($departureAirportLanguage, ENT_XML1, 'UTF-8') . '</language>
@@ -361,14 +361,17 @@ class AddSeatBuilder {
                           <ID>' . htmlspecialchars($bookingReferenceIDID, ENT_XML1, 'UTF-8') . '</ID>
                           <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
                        </bookingReferenceID>
-                       <creditCardList>
-                           <capturePaymentToolNumber>true</capturePaymentToolNumber>
-                           <paymentReferenceID>1337</paymentReferenceID>
-                           <cardHolderName>TEST TEST</cardHolderName>
-                           <cardNumber>1111111111111111</cardNumber>
-                           <validUntil>12/2018</validUntil>
-                           <validationCode>111</validationCode>
-                         </creditCardList>
+                       <fullfillment>
+                        <creditCardList>
+                              <capturePaymentToolNumber>true</capturePaymentToolNumber>
+                              <paymentReferenceID>1337</paymentReferenceID>
+                              <cardHolderName>TEST TEST</cardHolderName>
+                              <cardNumber>1111111111111111</cardNumber>
+                              <validUntil>12/2018</validUntil>
+                              <validationCode>111</validationCode>
+                           </creditCardList>
+                       
+                       </fullfillment>
                     </AddSsrRequest>
               </impl:AddSsr>
            </soapenv:Body>
