@@ -22,7 +22,6 @@ class EditProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "image_url" => "sometimes|file|mimes:jpg,png|max:2048", // Treat image_url as a file
             "title" => "sometimes|string",
             "first_name" => "sometimes|string",
             "last_name" => "sometimes|string",

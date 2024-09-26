@@ -121,6 +121,7 @@ Route::group(['prefix' => 'admin/'], function () {
         Route::group(['prefix' => 'settings'], function () {
             Route::get('profile', [ProfileAdminController::class, 'getAdminProfile']);
             Route::put('profile/edit', [ProfileAdminController::class, 'editAdminProfile']);
+            Route::post('profile/change-profile-image', [ProfileAdminController::class, 'changeAdminProfilePic']);
             Route::patch('change-admin-role', [ProfileAdminController::class, 'changeAdminRole']);
             Route::delete('delete-admin-account', [ProfileAdminController::class, 'deleteAdmin']);
             Route::get('team-members', [TeamMembersAdminController::class, 'teamMembers']);
@@ -228,6 +229,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
         Route::post('profile/edit', [ProfileController::class, 'editProfile']);
+        Route::post('profile/change-profile-image', [ProfileController::class, 'changeProfileImage']);
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);

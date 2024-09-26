@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangeProfileImageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\User\EditProfileRequest;
@@ -38,6 +39,33 @@ class ProfileController extends Controller
        
     }
 
+    public function changeProfileImage(ChangeProfileImageRequest $request) {
+        $user = $request->user(); 
+        
+        try {
+            if ($request->file('image_url')) {
+                // store the user image in a folder;
+                if ($user->image_url) {
+                    $oldPath = $user->image_url;
+                    Storage::delete($oldPath);
+
+                }
+                $path = $request->file('image_url')->store('users-images-folder');
+                // store the path to the image in the image_url column
+                $user->image_url = $path;
+                $user->save();
+
+            }
+        
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     public function editProfile(EditProfileRequest $request) {
         $user = $request->user();  
 
@@ -52,20 +80,6 @@ class ProfileController extends Controller
             $user->phone_number = $request['phone_number'] ?? $user->phone_number;
             
 
-            if ($request->file('image_url')) {
-                // store the user image in a folder;
-                if ($user->image_url) {
-                    $oldPath = $user->image_url;
-                    Storage::delete($oldPath);
-
-                }
-                $path = $request->file('image_url')->store('users-images-folder');
-                // store the path to the image in the image_url column
-                $user->image_url = $path;
-
-            }
-
-           
             if ($request->file('travel_document')) {
                 if ($user->travel_document) {
                     $oldPath = $user->travel_document;

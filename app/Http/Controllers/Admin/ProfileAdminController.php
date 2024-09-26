@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangeProfileImageRequest;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileAdminController extends Controller
@@ -32,6 +33,25 @@ class ProfileAdminController extends Controller
 
     }
 
+    public function changeAdminProfilePic(ChangeProfileImageRequest $request) {
+        $admin = $request->user('admin');
+
+        try {
+            if ($request->file('image_url')) {
+                // store the file in the admin-profile-images folder
+                    $path = $request->file('image_url')->store('admin-profile-images');
+                    // store the path to the image
+                    $admin->image_url = $path;
+               }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ]);
+        }
+
+    }
+
     public function editAdminProfile(Request $request) {
         $admin = $request->user('admin');
 
@@ -42,12 +62,7 @@ class ProfileAdminController extends Controller
            $admin->email = $request->email ?? $admin->email;
            $admin->phone_number = $request->phone_number ?? $admin->phone_number;
 
-           if ($request->file('image_url')) {
-            // store the file in the admin-profile-images folder
-                $path = $request->file('image_url')->store('admin-profile-images');
-                // store the path to the image
-                $admin->image_url = $path;
-           }
+          
 
            $admin->save();
 
