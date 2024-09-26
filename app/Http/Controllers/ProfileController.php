@@ -41,7 +41,6 @@ class ProfileController extends Controller
 
     public function changeProfileImage(ChangeProfileImageRequest $request) {
         $user = $request->user(); 
-        $imageUrlLink = '';
         
         try {
             if ($request->file('image_url')) {
@@ -57,7 +56,13 @@ class ProfileController extends Controller
                 $user->save();
 
                 $imageUrlLink = Storage::url($path);
-
+                return response()->json([
+                    "error" => false,
+                    "message" => "Profile picture updated successfully",
+                    "user" => $user,
+                    "image_url_link" => $imageUrlLink
+                    
+                ], 200);
             }
         
 
@@ -68,13 +73,7 @@ class ProfileController extends Controller
             ], 500);
         }
 
-        return response()->json([
-            "error" => false,
-            "message" => "Profile picture updated successfully",
-            "user" => $user,
-            "image_url_link" => $imageUrlLink
-            
-        ], 200);
+        
     }
 
     public function editProfile(EditProfileRequest $request) {

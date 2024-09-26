@@ -35,7 +35,7 @@ class ProfileAdminController extends Controller
 
     public function changeAdminProfileImage(ChangeProfileImageRequest $request) {
         $admin = $request->user('admin');
-        $imageUrlLink = '';
+        
         try {
             if ($request->file('image_url')) {
                 // store the file in the admin-profile-images folder
@@ -44,6 +44,13 @@ class ProfileAdminController extends Controller
                     $admin->image_url = $path;
 
                     $imageUrlLink = Storage::url($path);
+
+                    return response()->json([
+                        "error" => false,
+                        "message" => "Profile picture updated successfully",
+                        "user" => $admin,
+                        "image_url_link" => $imageUrlLink
+                    ], 200);
                }
         } catch (\Throwable $th) {
             return response()->json([
@@ -51,12 +58,7 @@ class ProfileAdminController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
-        return response()->json([
-            "error" => false,
-            "message" => "Profile picture updated successfully",
-            "user" => $admin,
-            "image_url_link" => $imageUrlLink
-        ], 200);
+        
 
     }
 
