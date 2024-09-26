@@ -207,12 +207,7 @@ class AddSeatController extends Controller
             $bookFlightSegmentDistance, 
             $airEquipType, 
             $changeOfGauge, 
-
             $flightNotes,
-            
-            
-            
-
             $flownMileageQty, 
             $iatciFlight, 
             $journeyDuration, 
