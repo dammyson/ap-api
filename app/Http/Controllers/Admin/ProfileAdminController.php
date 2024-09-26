@@ -35,7 +35,7 @@ class ProfileAdminController extends Controller
 
     public function changeAdminProfileImage(ChangeProfileImageRequest $request) {
         $admin = $request->user('admin');
-
+        $imageUrlLink = '';
         try {
             if ($request->file('image_url')) {
                 // store the file in the admin-profile-images folder

@@ -41,6 +41,7 @@ class ProfileController extends Controller
 
     public function changeProfileImage(ChangeProfileImageRequest $request) {
         $user = $request->user(); 
+        $imageUrlLink = '';
         
         try {
             if ($request->file('image_url')) {
