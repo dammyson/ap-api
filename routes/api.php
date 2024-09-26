@@ -121,7 +121,7 @@ Route::group(['prefix' => 'admin/'], function () {
         Route::group(['prefix' => 'settings'], function () {
             Route::get('profile', [ProfileAdminController::class, 'getAdminProfile']);
             Route::put('profile/edit', [ProfileAdminController::class, 'editAdminProfile']);
-            Route::post('profile/change-profile-image', [ProfileAdminController::class, 'changeAdminProfilePic']);
+            Route::post('profile/change-profile-image', [ProfileAdminController::class, 'changeAdminProfileImage']);
             Route::patch('change-admin-role', [ProfileAdminController::class, 'changeAdminRole']);
             Route::delete('delete-admin-account', [ProfileAdminController::class, 'deleteAdmin']);
             Route::get('team-members', [TeamMembersAdminController::class, 'teamMembers']);
