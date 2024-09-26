@@ -42,6 +42,8 @@ class ProfileAdminController extends Controller
                     $path = $request->file('image_url')->store('admin-profile-images');
                     // store the path to the image
                     $admin->image_url = $path;
+
+                    $imageUrlLink = Storage::url($path);
                }
         } catch (\Throwable $th) {
             return response()->json([
@@ -52,7 +54,8 @@ class ProfileAdminController extends Controller
         return response()->json([
             "error" => false,
             "message" => "Profile picture updated successfully",
-            "user" => $user
+            "user" => $admin,
+            "image_url_link" => $imageUrlLink
         ], 200);
 
     }

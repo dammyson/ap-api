@@ -55,6 +55,8 @@ class ProfileController extends Controller
                 $user->image_url = $path;
                 $user->save();
 
+                $imageUrlLink = Storage::url($path);
+
             }
         
 
@@ -68,7 +70,9 @@ class ProfileController extends Controller
         return response()->json([
             "error" => false,
             "message" => "Profile picture updated successfully",
-            "user" => $user
+            "user" => $user,
+            "image_url_link" => $imageUrlLink
+            
         ], 200);
     }
 
