@@ -64,6 +64,12 @@ class ProfileController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
+
+        return response()->json([
+            "error" => false,
+            "message" => "Profile picture updated successfully",
+            "user" => $user
+        ], 200);
     }
 
     public function editProfile(EditProfileRequest $request) {

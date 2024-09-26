@@ -33,7 +33,7 @@ class ProfileAdminController extends Controller
 
     }
 
-    public function changeAdminProfilePic(ChangeProfileImageRequest $request) {
+    public function changeAdminProfileImage(ChangeProfileImageRequest $request) {
         $admin = $request->user('admin');
 
         try {
@@ -49,6 +49,11 @@ class ProfileAdminController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
+        return response()->json([
+            "error" => false,
+            "message" => "Profile picture updated successfully",
+            "user" => $user
+        ], 200);
 
     }
 
