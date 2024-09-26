@@ -10,21 +10,25 @@ use Illuminate\Http\Request;
 class PenaltyRulesController extends Controller
 {
     protected $penaltyRulesBuilder;
+    protected $craneFareRulesService;
 
     public function __construct(PenaltyRulesBuilder $penaltyRulesBuilder)
     {
         $this->penaltyRulesBuilder = $penaltyRulesBuilder;
+        $this->craneFareRulesService = app('CraneFareRulesService');
     }
 
     public function penaltyRules(PenaltyRulesRequest $request) {
         $fareBasisCode = $request->input('fareBasisCode');
        
+        $function = 'http://impl.soap.ws.crane.hititcs.com/PenaltyRules';
         $xml = $this->penaltyRulesBuilder->penaltyRules($fareBasisCode);
 
+        $response = $this->craneFareRulesService->run($function, $xml);
 
          try {
 
-            dd($xml);
+            dd($response);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
