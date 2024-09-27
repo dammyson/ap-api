@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 class SeatMapController extends Controller
 {   
     protected $seatMapBuilder;
+    protected $craneAncillaryOTASoapService;
 
     public function __construct(SeatMapBuilder $seatMapBuilder)
     {
         $this->seatMapBuilder = $seatMapBuilder; 
+        $this->craneAncillaryOTASoapService = app("CraneAncillaryOTASoapService");
     }
 
     public function seatMap(seatMapRequest $request) {
@@ -82,6 +84,7 @@ class SeatMapController extends Controller
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID');
 
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetSeatMap';
 
         $xml = $this->seatMapBuilder->seatMap(
             $airlineCode, 
@@ -151,12 +154,25 @@ class SeatMapController extends Controller
         );
 
         try {
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            $airplaneCabinList = $response['AirSeatMapResponse']['seatMapResponse']['airplane']['airplaneCabinList'];
 
-            dd($xml);
+            $seatArray = [];
+            foreach($airplaneCabinList as $airplaneCabin) {
+                $airplaneRowList = $airplaneCabin['airplaneRowList'];
+
+                foreach($airplaneRowList as $airplaneRow) {
+                    $seats =  $airplaneRow['seats'];
+
+                    $seatArray[] = $seats;
+                }
+            }
+            return response()->json([
+                "error" => false,
+                "seatArray" => $seats
+            ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
-        }
-        
-    }
-    
+        } 
+    }    
 }
