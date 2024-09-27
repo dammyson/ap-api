@@ -155,21 +155,28 @@ class SeatMapController extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+
+           
             $airplaneCabinList = $response['AirSeatMapResponse']['seatMapResponse']['airplane']['airplaneCabinList'];
 
             $seatArray = [];
             foreach($airplaneCabinList as $airplaneCabin) {
                 $airplaneRowList = $airplaneCabin['airplaneRowList'];
-
                 foreach($airplaneRowList as $airplaneRow) {
                     $seats =  $airplaneRow['seats'];
 
-                    $seatArray[] = $seats;
+                    
+                    // Add each seat to the seatArray
+                    foreach($seats as $seat) {
+                        $seatArray[] = $seat;
+                    }
+                    
+                    // $seatArray[] = $seats;
                 }
             }
             return response()->json([
                 "error" => false,
-                "seatArray" => $seats
+                "seatArray" => $seatArray
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

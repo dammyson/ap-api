@@ -75,7 +75,7 @@ class SurveyController extends Controller
             ], 500);
         }
         return response()->json([
-            'error' => true,
+            'error' => false,
             'survey_data' => $surveyData
         ], 200);
 
