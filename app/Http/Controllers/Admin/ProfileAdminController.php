@@ -45,6 +45,8 @@ class ProfileAdminController extends Controller
 
                     $imageUrlLink = Storage::url($path);
 
+                    $admin->save();
+
                     return response()->json([
                         "error" => false,
                         "message" => "Profile picture updated successfully",
