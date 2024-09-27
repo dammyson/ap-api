@@ -112,6 +112,7 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::get('/', [SurveyController::class, 'showSurvey']);  
                 Route::patch('toogle-publish-survey', [SurveyController::class, 'tooglePublishSurvey']);
                 Route::put('edit', [SurveyController::class, 'editSurvey']);
+                Route::put('delete', [SurveyController::class, 'deleteSurvey']);
                 Route::get('participants', [SurveyController::class, 'surveyParticipants']);
                 Route::get('survey-result', [SurveyController::class, 'getSurveyResults']);
         

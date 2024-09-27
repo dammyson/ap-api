@@ -13,6 +13,7 @@ use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationCommitTwoARequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRTRequest;
 use App\Models\Record;
+use App\Models\TransactionRecord;
 use App\Models\TransactionType;
 
 class TicketReservationController extends Controller
@@ -218,7 +219,7 @@ class TicketReservationController extends Controller
                         $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
 
-                        Record::create([
+                        TransactionRecord::create([
                             'user_name' => "Emeka",
                             'peace_id' => $peaceId,
                             'amount' => $amount,
@@ -244,7 +245,7 @@ class TicketReservationController extends Controller
                         $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
 
-                        Record::create([
+                        TransactionRecord::create([
                             'user_name' => $user->user_name,
                             'peace_id' => $peaceId,
                             'amount' => $amount,
