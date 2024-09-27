@@ -193,7 +193,7 @@ class TicketReservationController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
             
-            dd($response);
+            // dd($response);
            
             $user = $request->user();
             $peaceId = $user->peace_id;
@@ -219,18 +219,23 @@ class TicketReservationController extends Controller
                         $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
 
-                        TransactionRecord::create([
-                            'user_name' => "Emeka",
-                            'peace_id' => $peaceId,
-                            'amount' => $amount,
-                            'ticket_type' => 'ticket',
-                            'payment_reference' => $paymentReferenceID,
-                            'invoice_number' => $invoice_number,
-                            'reason_for_issuance' => $reasonForIssuance,
-                            'ticket_number' => $ticketId,
-                            'order_id' => $orderID,
-                            'lead_passenger_email' => $leadPassengerEmail,
-                        ]); 
+                        $transactionExist = TransactionRecord::where('invoice_number', $invoice_number)->first();
+
+                        if (!$transactionExist)  {
+                            TransactionRecord::create([
+                                'user_name' => "Emeka",
+                                'peace_id' => $peaceId,
+                                'amount' => $amount,
+                                'ticket_type' => 'ticket',
+                                'payment_reference' => $paymentReferenceID,
+                                'invoice_number' => $invoice_number,
+                                'reason_for_issuance' => $reasonForIssuance,
+                                'ticket_number' => $ticketId,
+                                'order_id' => $orderID,
+                                'lead_passenger_email' => $leadPassengerEmail,
+                            ]); 
+
+                        }
                     
                     }
                     else {                        
@@ -245,18 +250,23 @@ class TicketReservationController extends Controller
                         $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
 
-                        TransactionRecord::create([
-                            'user_name' => $user->user_name,
-                            'peace_id' => $peaceId,
-                            'amount' => $amount,
-                            'payment_reference' => $paymentReferenceID,
-                            'invoice_number' => $invoice_number,
-                            'reason_for_issuance' => $reasonForIssuance,
-                            'ticket_number' => $ticketId,
-                            'order_id' => $orderID,
-                            'ticket_type' => 'Ancilary',
-                            'lead_passenger_email' => $leadPassengerEmail,
-                        ]);
+                        $transactionExist = TransactionRecord::where('invoice_number', $invoice_number)->first();
+                        
+                        if (!$transactionExist)  { 
+                            TransactionRecord::create([
+                                'user_name' => $user->user_name,
+                                'peace_id' => $peaceId,
+                                'amount' => $amount,
+                                'payment_reference' => $paymentReferenceID,
+                                'invoice_number' => $invoice_number,
+                                'reason_for_issuance' => $reasonForIssuance,
+                                'ticket_number' => $ticketId,
+                                'order_id' => $orderID,
+                                'ticket_type' => 'Ancilary',
+                                'lead_passenger_email' => $leadPassengerEmail,
+                            ]);
+
+                        }
 
 
                         
