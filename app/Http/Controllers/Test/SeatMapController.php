@@ -164,7 +164,6 @@ class SeatMapController extends Controller
                 $airplaneRowList = $airplaneCabin['airplaneRowList'];
                 foreach($airplaneRowList as $airplaneRow) {
                     $seats =  $airplaneRow['seats'];
-
                     
                     // Add each seat to the seatArray
                     foreach($seats as $seat) {
