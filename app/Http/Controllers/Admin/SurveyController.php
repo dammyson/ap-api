@@ -10,6 +10,7 @@ use App\Models\Admin\Question;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\SurveyUserResponse;
 use App\Http\Requests\Admin\CreateSurveyRequest;
+use App\Models\PointAllocation;
 
 class SurveyController extends Controller
 {
@@ -267,5 +268,59 @@ class SurveyController extends Controller
             ]);
         }
 
+    }
+
+    public function allocatePointToParticipant(Request $request, $surveyId, $participantId) {
+        $points = $request->input('points');
+        $reason = $request->input('reason_of_allocation');
+
+        $admin = $request->user('admin');
+
+
+        try {
+
+            if (!$admin) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You are not authorized to carry out this action'
+                ], 500);
+            } 
+
+
+            $user = User::find($participantId);
+
+            if (!$user) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'user not found'
+                ], 500);
+            }
+            $user->points += $points;
+            $user->save();
+
+            $userName = $user->first_name . ' '. $user->last_name;
+
+            PointAllocation::create([
+                'admin_id' => $admin->id,
+                'admin_user_name' => $admin->user_name,
+                'user_id' => $user->id,
+                'user_name' => $userName,
+                'point_allocated' => $points,
+                'reason_of_allocation' => $reason,
+                'survey_id' => $surveyId,
+            ]);
+
+            return response()->json([
+                'error' => false,
+                'message' => 'points have been allocated to user successfully'
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+        
     }
 }
