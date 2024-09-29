@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\BookingRecord;
 use App\Http\Controllers\Controller;
+use App\Services\Soap\CreateBookingBuilder;
 use App\Http\Requests\Test\Booking\CreateBookingOWRequest;
 use App\Http\Requests\Test\Booking\CreateBookingRTRequest;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
-use App\Services\Soap\CreateBookingBuilder;
-use Illuminate\Http\Request;
 
 class CreateBookingController extends Controller
 {
@@ -85,20 +86,36 @@ class CreateBookingController extends Controller
             $requestPurpose
         );
        
+       
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
 
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
+            $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
+            $timeLimitUTC = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimitUTC"];
+            
+            $bookingId = $bookingReferenceIDList['ID'];
+            $bookingReferenceID = $bookingReferenceIDList['referenceID'];
+            $user = $request->user();
 
-            // $result = "";
+            BookingRecord::create([
+                'peace_id' => $user->peace_id,
+                'booking_id' => $bookingId,
+                'booking_reference_id' => $bookingReferenceID
+            ]);
+
+            $bookingDetails = [
+                "bookingReferenceIDList" => $bookingReferenceIDList,
+                "timeLimit" => $timeLimit,
+                "timeLimitUTC" => $timeLimitUTC
+            ];            
 
             return response()->json([
                 "error" => false,
                 "message" => "Flight booked successfully",
-                "booking_reference_id" =>$bookingReferenceIDList
+                "booking_reference_id" => $bookingDetails
             ], 200);
             
             return response()->json($result);
@@ -135,7 +152,15 @@ class CreateBookingController extends Controller
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
             $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
             $timeLimitUTC = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimitUTC"];
+            $bookingId = $bookingReferenceIDList['ID'];
+            $bookingReferenceID = $bookingReferenceIDList['referenceID'];
+            $user = $request->user();
 
+            BookingRecord::create([
+                'peace_Id' => $user->peace_id,
+                'booking_id' => $bookingId,
+                'booking_reference_id' => $bookingReferenceID
+            ]);
             $bookingDetails = [
                 "bookingReferenceIDList" => $bookingReferenceIDList,
                 "timeLimit" => $timeLimit,

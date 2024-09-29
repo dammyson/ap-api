@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Test\Booking;
 
+use Illuminate\Http\Request;
+use App\Models\BookingRecord;
 use App\Http\Controllers\Controller;
+use App\Services\Soap\BookingBuilder;
 use App\Http\Requests\Test\Booking\ReadBookingRequest;
 use App\Http\Requests\Test\Booking\ReadBookingTkRequest;
 use App\Http\Requests\Test\Booking\RetrievePNRHistoryRequest;
 use App\Http\Requests\Test\Booking\RetrieveTicketHistoryRequest;
-use App\Services\Soap\BookingBuilder;
-use Illuminate\Http\Request;
 
 class BookingRequestController extends Controller
 {
@@ -21,9 +22,53 @@ class BookingRequestController extends Controller
       $this->craneOTASoapService = app("CraneOTASoapService");
       
     }
-//     php artisan config:clear
-// php artisan cache:clear
-// php artisan optimize:clear
+
+    public function readUserBookingTk(Request $request) {
+        $bookingId = $request->input('booking_id');
+        $peaceId = $request->input('peace_id');
+        
+
+        try {
+
+            $booking = BookingRecord::where('booking_id', $bookingId)
+                        ->where('peace_id', $peaceId)->first();
+    
+            if (!$booking) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'no booking found'
+                ], 500);
+            }
+    
+            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+    
+            $xml = $this->bookingBuilder->readBookingTK(
+                'LOS', 
+                'P4', 
+                'CRANE',
+                'SCINTILLA', 
+                'SCINTILLA', 
+                'NG', 
+                $booking->booking_id, 
+                $booking->booking_reference_id
+            );
+    
+            
+            $response = $this->craneOTASoapService->run($function, $xml);
+        
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ]);
+        }
+
+        return response()->json([
+            'error' => false,
+            'booking_data' => $response
+        ]);
+
+    }
 
 
     public function retrievePNRHistory(RetrievePNRHistoryRequest $request) {
