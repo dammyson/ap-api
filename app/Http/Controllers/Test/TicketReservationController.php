@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Test;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Test\Ticket\TicketReservationCommitRequest;
 use App\Services\Soap\TicketReservationRequestBuilder;
-use App\Http\Requests\Test\Ticket\TicketReservationCommitRTRequest;
-use App\Http\Requests\Test\Ticket\TicketReservationCommitTwoARequest;
-use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
-use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRTRequest;
+use App\Http\Requests\Test\Ticket\TicketReservationCommitRequest;
 use App\Http\Requests\Ticket\TicketReservationViewOnlyTwoARequest;
+use App\Http\Requests\Test\Ticket\TicketReservationCommitRTRequest;
+use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
+use App\Http\Requests\Test\Ticket\TicketReservationCommitTwoARequest;
+use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRTRequest;
+use App\Models\TransactionRecord;
+use App\Models\TransactionType;
 
 class TicketReservationController extends Controller
 {
@@ -22,7 +25,6 @@ class TicketReservationController extends Controller
     {
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->craneOTASoapService = app('CraneOTASoapService');
-        
     }
 
     public function ticketReservationViewOnlyRT(TicketReservationViewOnlyRTRequest $request) {
@@ -189,7 +191,88 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
+            
+            // dd($response);
+           
+            $user = $request->user();
+            $peaceId = $user->peace_id;
+
+            //later on check if an array or object is returned so you can handle the reponse correctly;
+            $leadPassengerEmail = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']['contactPerson']['email']['email'];
+           
+
+            // get the list of all the tickets 
+            $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+
+            foreach($ticketItemList as $ticketItem) {
+                if ($ticketItem["status"] == "OK") {
+                    // dump($user->first_name);
+                    if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
+                        dump('non asvcSsr ran');
+                        $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
+                        $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                        $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
+                        $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
+                        $ticketId = $ticketItem['ticketDocumentNbr'];
+                        $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
+                        $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                        
+
+                        $transactionExist = TransactionRecord::where('invoice_number', $invoice_number)->first();
+
+                        if (!$transactionExist)  {
+                            TransactionRecord::create([
+                                'user_name' => "Emeka",
+                                'peace_id' => $peaceId,
+                                'amount' => $amount,
+                                'ticket_type' => 'ticket',
+                                'payment_reference' => $paymentReferenceID,
+                                'invoice_number' => $invoice_number,
+                                'reason_for_issuance' => $reasonForIssuance,
+                                'ticket_number' => $ticketId,
+                                'order_id' => $orderID,
+                                'lead_passenger_email' => $leadPassengerEmail,
+                            ]); 
+
+                        }
+                    
+                    }
+                    else {                        
+
+                        // dump('ssr ran');
+                        $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
+                        $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                        $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
+                        $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
+                        $ticketId = $ticketItem['ticketDocumentNbr'];
+                        $reasonForIssuance = $ticketItem['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
+                        $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                        
+
+                        $transactionExist = TransactionRecord::where('invoice_number', $invoice_number)->first();
+                        
+                        if (!$transactionExist)  { 
+                            TransactionRecord::create([
+                                'user_name' => $user->user_name,
+                                'peace_id' => $peaceId,
+                                'amount' => $amount,
+                                'payment_reference' => $paymentReferenceID,
+                                'invoice_number' => $invoice_number,
+                                'reason_for_issuance' => $reasonForIssuance,
+                                'ticket_number' => $ticketId,
+                                'order_id' => $orderID,
+                                'ticket_type' => 'Ancilary',
+                                'lead_passenger_email' => $leadPassengerEmail,
+                            ]);
+                        }                        
+                    } 
+                }                
+            }
+
+            return response()->json([
+                "error" => false,
+                "message" => "transaction successfully recorded"
+            ], 200);           
            
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
