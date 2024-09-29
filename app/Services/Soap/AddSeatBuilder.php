@@ -61,15 +61,7 @@ class AddSeatBuilder {
          $bookFlightSegmentDistance, 
          $airEquipType, 
          $changeOfGauge, 
-         $DeiCodeOne, 
-         $explanationOne, 
-         $noteOne, 
-         $DeiCodeTwo,
-         $explanationTwo, 
-         $noteTwo, 
-         $DeiCodeThree, 
-         $explanationThree, 
-         $noteThree, 
+         $flightNotes,
          $flownMileageQty, 
          $iatciFlight, 
          $journeyDuration, 
@@ -227,10 +219,10 @@ class AddSeatBuilder {
                                             <locationCode>' . htmlspecialchars($departureAirportCountryLocationCode, ENT_XML1, 'UTF-8') . '</locationCode>
                                             <locationName>' . htmlspecialchars($departureAirportCountryLocationName, ENT_XML1, 'UTF-8') . '</locationName>
                                             <locationNameLanguage>' . htmlspecialchars($departureAirportCountryLocationNameLanguage, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
-                                         <currency>
-                                         <code>' . htmlspecialchars($departureAirportCurrencyCode, ENT_XML1, 'UTF-8') . '</code>
-                                         </currency>
-                           Airport              </country>
+                                            <currency>
+                                                      <code>' . htmlspecialchars($departureAirportCurrencyCode, ENT_XML1, 'UTF-8') . '</code>
+                                             </currency>
+                                          </country>
                                       </cityInfo>
                                       <codeContext>' . htmlspecialchars($departureAirportCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
                                       <language>' . htmlspecialchars($departureAirportLanguage, ENT_XML1, 'UTF-8') . '</language>
@@ -251,21 +243,11 @@ class AddSeatBuilder {
                                       <airEquipType>' . htmlspecialchars($airEquipType, ENT_XML1, 'UTF-8') . '</airEquipType>
                                       <changeofGauge>' . htmlspecialchars($changeOfGauge, ENT_XML1, 'UTF-8') . '</changeofGauge>
                                    </equipment>
-                                   <flightNotes>
-                                      <deiCode>' . htmlspecialchars($DeiCodeOne, ENT_XML1, 'UTF-8') . '</deiCode>
-                                      <explanation>' . htmlspecialchars($explanationOne, ENT_XML1, 'UTF-8') . ' Flight Info</explanation>
-                                      <note>' . htmlspecialchars($noteOne, ENT_XML1, 'UTF-8') . '</note>
-                                   </flightNotes>
-                                   <flightNotes>
-                                      <deiCode>' . htmlspecialchars($DeiCodeTwo, ENT_XML1, 'UTF-8') . '</deiCode>
-                                      <explanation>' . htmlspecialchars($explanationTwo, ENT_XML1, 'UTF-8') . '</explanation>
-                                      <note>' . htmlspecialchars($noteTwo, ENT_XML1, 'UTF-8') . '</note>
-                                   </flightNotes>
-                                   <flightNotes>
-                                      <deiCode>' . htmlspecialchars($DeiCodeThree, ENT_XML1, 'UTF-8') . '</deiCode>
-                                      <explanation>' . htmlspecialchars($explanationThree, ENT_XML1, 'UTF-8') . '</explanation>
-                                      <note>' . htmlspecialchars($noteThree, ENT_XML1, 'UTF-8') . '</note>
-                                   </flightNotes>
+
+                                    '.
+                                       $this->flightNotes($flightNotes)
+                                    .'                                 
+                                  
                                    <flownMileageQty>' . htmlspecialchars($flownMileageQty, ENT_XML1, 'UTF-8') . '</flownMileageQty>
                                    <groundDuration/>
                                    <iatciFlight>' . htmlspecialchars($iatciFlight, ENT_XML1, 'UTF-8') . '</iatciFlight>
@@ -379,6 +361,17 @@ class AddSeatBuilder {
                           <ID>' . htmlspecialchars($bookingReferenceIDID, ENT_XML1, 'UTF-8') . '</ID>
                           <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
                        </bookingReferenceID>
+                       <fullfillment>
+                        <creditCardList>
+                              <capturePaymentToolNumber>true</capturePaymentToolNumber>
+                              <paymentReferenceID>1337</paymentReferenceID>
+                              <cardHolderName>TEST TEST</cardHolderName>
+                              <cardNumber>1111111111111111</cardNumber>
+                              <validUntil>12/2018</validUntil>
+                              <validationCode>111</validationCode>
+                           </creditCardList>
+                       
+                       </fullfillment>
                     </AddSsrRequest>
               </impl:AddSsr>
            </soapenv:Body>
@@ -387,7 +380,20 @@ class AddSeatBuilder {
         return $xml;
   
   
-    }
+   }
+
+   public function flightNotes($flightNotes) {
+      $xml = '';
+      foreach ($flightNotes as $string) {
+         $xml .= '<flightNotes>
+                        <deiCode>' . htmlspecialchars($string['deiCode'], ENT_XML1, 'UTF-8') . '</deiCode>
+                        <explanation>' . htmlspecialchars($string['explanation'], ENT_XML1, 'UTF-8') . ' Flight Info</explanation>
+                        <note>' . htmlspecialchars($string['note'], ENT_XML1, 'UTF-8') . '</note>
+                  </flightNotes>';
+      }
+      return $xml;
+
+   }
   
     
   
