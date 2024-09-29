@@ -115,6 +115,7 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::delete('delete', [SurveyController::class, 'deleteSurvey']);
                 Route::get('participants', [SurveyController::class, 'surveyParticipants']);
                 Route::get('survey-result', [SurveyController::class, 'getSurveyResults']);
+                Route::put('allocate-points/{participant_id}', [SurveyController::class, 'allocatePointToParticipant']);
         
             });
         });
@@ -239,7 +240,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
     });
-
+    
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);
     Route::get('/city', [CityController::class, 'indexCity']);
