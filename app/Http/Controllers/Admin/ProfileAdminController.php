@@ -50,7 +50,6 @@ class ProfileAdminController extends Controller
                     return response()->json([
                         "error" => false,
                         "message" => "Profile picture updated successfully",
-                        "user" => $admin,
                         "image_url_link" => $imageUrlLink
                     ], 200);
                }
