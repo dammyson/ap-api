@@ -9,6 +9,7 @@ use App\Services\Soap\CreateBookingBuilder;
 use App\Http\Requests\Test\Booking\CreateBookingOWRequest;
 use App\Http\Requests\Test\Booking\CreateBookingRTRequest;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
+use App\Models\FlightRecord;
 
 class CreateBookingController extends Controller
 {
@@ -91,6 +92,9 @@ class CreateBookingController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
+            
+
+            dd($response);
 
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
             $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
@@ -105,6 +109,25 @@ class CreateBookingController extends Controller
                 'booking_id' => $bookingId,
                 'booking_reference_id' => $bookingReferenceID
             ]);
+
+            $arrival_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['flightSegment']['arrivalDateTime'];
+            $departure_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['flightSegment']['departureDateTime'];
+            $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+            $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+           
+
+            // FlightRecord::create([
+            //     'origin' => , 
+            //     'destination' => , 
+            //     'arrival_time' => , 
+            //     'departure_time'=>,
+            //     'peace_id' => $user->peace_id, 
+            //     'passenger_type',
+            //     'quantity_of passenger',
+            //     'phone_number' => $user->phone_number,
+            //     'trip_type' => ,
+            //     'booking_id' => $bookingId
+            // ]);
 
             $bookingDetails = [
                 "bookingReferenceIDList" => $bookingReferenceIDList,

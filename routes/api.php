@@ -242,7 +242,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
     });
 
-    Route::post('change-flight', [ChangeFlightController::class, 'changeFlight']);
+    Route::post('cancel-flight-view-only', [ChangeFlightController::class, 'changeFlight']);
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);
