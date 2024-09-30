@@ -194,6 +194,12 @@ class TicketReservationController extends Controller
             
             // dd($response);
            
+            if (!array_key_exists('AirTicketReservationResponse', $response)) {
+                return response()->json([
+                    'error' => true,
+                    'message' => "no new addition to ticket"
+                ], 500);
+            }
             $user = $request->user();
             $peaceId = $user->peace_id;
 

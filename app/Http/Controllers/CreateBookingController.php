@@ -110,7 +110,8 @@ class CreateBookingController extends Controller
                 "bookingReferenceIDList" => $bookingReferenceIDList,
                 "timeLimit" => $timeLimit,
                 "timeLimitUTC" => $timeLimitUTC
-            ];            
+            ];      
+            
 
             return response()->json([
                 "error" => false,

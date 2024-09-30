@@ -45,7 +45,10 @@ class CancelBookingController extends Controller
             $requestPurpose
         );
 
-        dd($xml);
+        $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
+
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
     }
 
 
