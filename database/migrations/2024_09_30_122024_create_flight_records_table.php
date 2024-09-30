@@ -18,9 +18,7 @@ return new class extends Migration
             $table->dateTime('arrival_time');
             $table->dateTime('departure_time');
             $table->string('peace_id');
-            $table->string('passenger_type');
-            $table->string('quantity_of passenger');
-            $table->string('phone_number')->nullable();
+            $table->string('passenger_type');           
             $table->string('trip_type');
             $table->string('booking_id');
             $table->timestamps();

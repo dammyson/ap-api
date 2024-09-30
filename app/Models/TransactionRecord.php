@@ -10,15 +10,13 @@ class TransactionRecord extends Model
     use HasFactory;
     
     protected $fillable = [ 
-        'user_name', 
+        'transaction_type', 
         'peace_id', 
+        'flight_id',
         'amount', 
         'ticket_type', 
-        'ticket_number', 
-        'lead_passenger_email',
-        'payment_reference', 
-        'invoice_number', 
-        'reason_for_issuance', 
-        'order_id'
+        'user_id', 
+        'payment_reference',
+        'invoice_number'
     ];
 }

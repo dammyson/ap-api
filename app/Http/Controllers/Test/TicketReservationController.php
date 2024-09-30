@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Test;
 
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\TransactionType;
+use App\Models\TransactionRecord;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Requests\Test\Ticket\TicketReservationCommitRequest;
@@ -12,8 +16,6 @@ use App\Http\Requests\Test\Ticket\TicketReservationCommitRTRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationCommitTwoARequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRTRequest;
-use App\Models\TransactionRecord;
-use App\Models\TransactionType;
 
 class TicketReservationController extends Controller
 {
@@ -224,20 +226,37 @@ class TicketReservationController extends Controller
                         $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
 
-                        $transactionExist = TransactionRecord::where('invoice_number', $invoice_number)->first();
+                        $invoiceExists = Invoice::where('code', $invoice_number)->first();
 
-                        if (!$transactionExist)  {
+                        if (!$invoiceExists)  {
+
+                            $invoice = Invoice::create([
+                                'code' => $invoice_number,
+                                'amount' => $amount,
+                                'order_id' => $orderID,                                
+                                'ticket_number' => $ticketId,
+                                'reason_for_issuance' => $reasonForIssuance,
+                                'address' => $address,
+                            ]);
+                           
+
+                            InvoiceItem::create([
+                                'invoice_id' => $invoice->id,
+                                'product' => '', // baggages or ticket shopping
+                                'quantity' => '',
+                                'price' => ''
+                            ]);
+                            
                             TransactionRecord::create([
-                                'user_name' => "Emeka",
+                                'transaction_type' => "Emeka",
                                 'peace_id' => $peaceId,
+                                'flight_id' => $flightId,
                                 'amount' => $amount,
                                 'ticket_type' => 'ticket',
+                                'user_id' => $user->id,
                                 'payment_reference' => $paymentReferenceID,
-                                'invoice_number' => $invoice_number,
-                                'reason_for_issuance' => $reasonForIssuance,
-                                'ticket_number' => $ticketId,
-                                'order_id' => $orderID,
-                                'lead_passenger_email' => $leadPassengerEmail,
+                                'invoice_number' => $invoice->id,
+                                'reason_for_issuance' => $reasonForIssuance
                             ]); 
 
                         }
