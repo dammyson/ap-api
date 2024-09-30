@@ -50,6 +50,7 @@ use App\Http\Controllers\Admin\TeamMembersAdminController;
 use App\Http\Controllers\Test\TicketReservationController;
 use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
+use App\Http\Controllers\ChangeFlightController;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
@@ -240,6 +241,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
     });
+
+    Route::post('change-flight', [ChangeFlightController::class, 'changeFlight']);
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);
