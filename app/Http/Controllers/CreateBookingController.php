@@ -149,30 +149,41 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
-            $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
-            $timeLimitUTC = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimitUTC"];
-            $bookingId = $bookingReferenceIDList['ID'];
-            $bookingReferenceID = $bookingReferenceIDList['referenceID'];
-            $user = $request->user();
+            if (!array_key_exists('AirBookingResponse', $response)) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "booking is no longer available for this flight",
+                   
+                ], 404);
 
-            BookingRecord::create([
-                'peace_id' => $user->peace_id,
-                'booking_id' => $bookingId,
-                'booking_reference_id' => $bookingReferenceID
-            ]);
+            } else {
+                $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
+                $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
+                $timeLimitUTC = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimitUTC"];
+                $bookingId = $bookingReferenceIDList['ID'];
+                $bookingReferenceID = $bookingReferenceIDList['referenceID'];
+                $user = $request->user();
+
+                BookingRecord::create([
+                    'peace_id' => $user->peace_id,
+                    'booking_id' => $bookingId,
+                    'booking_reference_id' => $bookingReferenceID
+                ]);
+
+                $bookingDetails = [
+                    "bookingReferenceIDList" => $bookingReferenceIDList,
+                    "timeLimit" => $timeLimit,
+                    "timeLimitUTC" => $timeLimitUTC
+                ];
+
+                return response()->json([
+                    "error" => false,
+                    "message" => "Flight booked successfully",
+                    "bookingDetails" => $bookingDetails
+                ], 200);
+            }
+
             
-            $bookingDetails = [
-                "bookingReferenceIDList" => $bookingReferenceIDList,
-                "timeLimit" => $timeLimit,
-                "timeLimitUTC" => $timeLimitUTC
-            ];
-
-            return response()->json([
-                "error" => false,
-                "message" => "Flight booked successfully",
-                "bookingDetails" => $bookingDetails
-            ], 200);
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
