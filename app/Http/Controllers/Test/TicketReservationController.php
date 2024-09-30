@@ -210,8 +210,10 @@ class TicketReservationController extends Controller
            
 
             // get the list of all the tickets 
+            $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
             $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
-
+            $flightNumber = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightNumber'];
+            
             foreach($ticketItemList as $ticketItem) {
                 if ($ticketItem["status"] == "OK") {
                     // dump($user->first_name);
@@ -220,10 +222,10 @@ class TicketReservationController extends Controller
                         $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
                         $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
                         $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
+                        $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
                         $ticketId = $ticketItem['ticketDocumentNbr'];
                         $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
-                        $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
 
                         $invoiceExists = Invoice::where('code', $invoice_number)->first();
@@ -236,7 +238,6 @@ class TicketReservationController extends Controller
                                 'order_id' => $orderID,                                
                                 'ticket_number' => $ticketId,
                                 'reason_for_issuance' => $reasonForIssuance,
-                                'address' => $address,
                             ]);
                            
 
@@ -248,9 +249,9 @@ class TicketReservationController extends Controller
                             ]);
                             
                             TransactionRecord::create([
-                                'transaction_type' => "Emeka",
+                                'transaction_type' => $transactionType,
                                 'peace_id' => $peaceId,
-                                'flight_id' => $flightId,
+                                'flight_id' => $flightNumber,
                                 'amount' => $amount,
                                 'ticket_type' => 'ticket',
                                 'user_id' => $user->id,
@@ -274,31 +275,47 @@ class TicketReservationController extends Controller
                         $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
 
-                        $transactionExist = TransactionRecord::where('invoice_number', $invoice_number)->first();
-                        
-                        if (!$transactionExist)  { 
-                            TransactionRecord::create([
-                                'user_name' => $user->user_name,
-                                'peace_id' => $peaceId,
-                                'amount' => $amount,
-                                'payment_reference' => $paymentReferenceID,
-                                'invoice_number' => $invoice_number,
-                                'reason_for_issuance' => $reasonForIssuance,
-                                'ticket_number' => $ticketId,
-                                'order_id' => $orderID,
-                                'ticket_type' => 'Ancilary',
-                                'lead_passenger_email' => $leadPassengerEmail,
-                            ]);
-                        }                        
-                    } 
-                }                
-            }
 
-            return response()->json([
-                "error" => false,
-                "message" => "transaction successfully recorded"
-            ], 200);           
-           
+                        $invoiceExists = Invoice::where('code', $invoice_number)->first();
+
+                        if (!$invoiceExists)  {
+
+                            $invoice = Invoice::create([
+                                'code' => $invoice_number,
+                                'amount' => $amount,
+                                'order_id' => $orderID,                                
+                                'ticket_number' => $ticketId,
+                                'reason_for_issuance' => $reasonForIssuance,
+                            ]);
+                           
+
+                            InvoiceItem::create([
+                                'invoice_id' => $invoice->id,
+                                'product' => '', // baggages or ticket shopping
+                                'quantity' => '',
+                                'price' => ''
+                            ]);
+                            
+                            TransactionRecord::create([
+                                'transaction_type' => $transactionType,
+                                'peace_id' => $peaceId,
+                                'flight_id' => $flightNumber,
+                                'amount' => $amount,
+                                'ticket_type' => 'Ancilary',
+                                'user_id' => $user->id,
+                                'payment_reference' => $paymentReferenceID,
+                                'invoice_number' => $invoice->id,
+                                'reason_for_issuance' => $reasonForIssuance
+                            ]);                       
+                        } 
+                    }                
+                }
+
+                return response()->json([
+                    "error" => false,
+                    "message" => "transaction successfully recorded"
+                ], 200);           
+            }   
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }  

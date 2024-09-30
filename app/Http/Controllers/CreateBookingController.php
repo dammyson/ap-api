@@ -115,19 +115,24 @@ class CreateBookingController extends Controller
             $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
             $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
            
+             // get the list of all the tickets 
+            $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
 
-            // FlightRecord::create([
-            //     'origin' => , 
-            //     'destination' => , 
-            //     'arrival_time' => , 
-            //     'departure_time'=>,
-            //     'peace_id' => $user->peace_id, 
-            //     'passenger_type',
-            //     'quantity_of passenger',
-            //     'phone_number' => $user->phone_number,
-            //     'trip_type' => ,
-            //     'booking_id' => $bookingId
-            // ]);
+            foreach($ticketItemList as $ticketItem) {
+                
+                FlightRecord::create([
+                    'origin' => $origin, 
+                    'destination' => $destination, 
+                    'arrival_time' => $arrival_time, 
+                    'departure_time'=> $departure_time,
+                    'peace_id' => $user->peace_id, 
+                    'passenger_type' => $ticketItem['passengerTypeCode'],
+                    'trip_type' => 'ONE_WAY',
+                    'booking_id' => $bookingId
+                ]);
+                
+            }
+            
 
             $bookingDetails = [
                 "bookingReferenceIDList" => $bookingReferenceIDList,
