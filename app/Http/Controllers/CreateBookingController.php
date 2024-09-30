@@ -157,16 +157,16 @@ class CreateBookingController extends Controller
             $user = $request->user();
 
             BookingRecord::create([
-                'peace_Id' => $user->peace_id,
+                'peace_id' => $user->peace_id,
                 'booking_id' => $bookingId,
                 'booking_reference_id' => $bookingReferenceID
             ]);
+            
             $bookingDetails = [
                 "bookingReferenceIDList" => $bookingReferenceIDList,
                 "timeLimit" => $timeLimit,
                 "timeLimitUTC" => $timeLimitUTC
             ];
-
 
             return response()->json([
                 "error" => false,
