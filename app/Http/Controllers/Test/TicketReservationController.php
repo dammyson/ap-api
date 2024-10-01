@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Test;
 
+use App\Models\Wallet;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\InvoiceRecord;
 use App\Models\TransactionType;
 use App\Models\TransactionRecord;
 use App\Http\Controllers\Controller;
@@ -228,11 +230,11 @@ class TicketReservationController extends Controller
                         $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
                         
 
-                        $invoiceExists = Invoice::where('code', $invoice_number)->first();
+                        $invoiceExists = InvoiceRecord::where('code', $invoice_number)->first();
 
                         if (!$invoiceExists)  {
 
-                            $invoice = Invoice::create([
+                            $invoice = InvoiceRecord::create([
                                 'code' => $invoice_number,
                                 'amount' => $amount,
                                 'order_id' => $orderID,                                
@@ -243,9 +245,9 @@ class TicketReservationController extends Controller
 
                             InvoiceItem::create([
                                 'invoice_id' => $invoice->id,
-                                'product' => '', // baggages or ticket shopping
+                                'product' => $reasonForIssuance ?? 'ticket', // baggages or ticket shopping
                                 'quantity' => '',
-                                'price' => ''
+                                'price' => $amount
                             ]);
                             
                             TransactionRecord::create([
@@ -276,11 +278,10 @@ class TicketReservationController extends Controller
                         
 
 
-                        $invoiceExists = Invoice::where('code', $invoice_number)->first();
+                        $invoiceExists = InvoiceRecord::where('code', $invoice_number)->first();
 
                         if (!$invoiceExists)  {
-
-                            $invoice = Invoice::create([
+                            $invoice = InvoiceRecord::create([
                                 'code' => $invoice_number,
                                 'amount' => $amount,
                                 'order_id' => $orderID,                                
@@ -291,7 +292,7 @@ class TicketReservationController extends Controller
 
                             InvoiceItem::create([
                                 'invoice_id' => $invoice->id,
-                                'product' => '', // baggages or ticket shopping
+                                'product' => $reasonForIssuance, // baggages or ticket shopping
                                 'quantity' => '',
                                 'price' => ''
                             ]);
@@ -304,9 +305,9 @@ class TicketReservationController extends Controller
                                 'ticket_type' => 'Ancilary',
                                 'user_id' => $user->id,
                                 'payment_reference' => $paymentReferenceID,
-                                'invoice_number' => $invoice->id,
+                                'invoice_number' => $invoice->id,+
                                 'reason_for_issuance' => $reasonForIssuance
-                            ]);                       
+                            ]);
                         } 
                     }                
                 }

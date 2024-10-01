@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('status')->nullable();
             $table->string('amount')->nullable();
             $table->string('user_id')->nullable();
-            $table->string('invoice_id')->nullable();
+            $table->string('invoice_record_id')->nullable();
             $table->timestamps();
         });
     }

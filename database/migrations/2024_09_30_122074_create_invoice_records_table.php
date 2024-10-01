@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('code'); 
             $table->integer('amount');
             $table->string('order_id');
-            $table->string('address')->nullable();
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use App\Models\BookingRecord;
 use App\Services\Soap\CancelBookingBuilder;
@@ -18,7 +19,7 @@ class ChangeFlightController extends Controller
         $this->craneOTASoapService = app('CraneOTASoapService');
     }
 
-    public function changeFlight(Request $request) {
+    public function changeFlightViewOnly(Request $request) {
         $peaceId = $request->input('peace_id');
         $bookingId = $request->input('booking_id');
 
@@ -59,5 +60,53 @@ class ChangeFlightController extends Controller
             ]);
         }
 
+    }
+
+    public function changeFlightCommit(Request $request) {
+        $peaceId = $request->input('peace_id');
+        $bookingId = $request->input('booking_id');
+
+
+        $booking = BookingRecord::where('peace_id', $peaceId)
+            ->where('booking_id', $bookingId)->first();
+
+        $xml = $this->cancelBookingBuilder->cancelBookingViewOnly(
+            "LOS", 
+            "P4", 
+            "CRANE", 
+            "SCINTILLA", 
+            "SCINTILLA", 
+            "NG", 
+            $booking->booking_id, 
+            $booking->booking_reference_id,
+            "VIEW_ONLY"
+        );
+
+        try {
+
+            
+            
+            $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
+            
+            $response = $this->craneOTASoapService->run($function, $xml);
+            
+            dd($response);
+            
+            $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
+            $amount = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList']['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                        
+            if ($transactionType == "REFUND") {
+                
+                $wallet = Wallet::where('user_id', $user->id);
+                $wallet->topUp($amount);
+
+            }
+        
+        } catch (\Throwable $th) {
+            return response()->json([
+                "error" => "true",
+                "message" => $th->getMessage()
+            ]);
+        }
     }
 }

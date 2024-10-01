@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
             $table->string('invoice_id');
-            $table->string('product');
+            $table->string('product')->nullable();
             $table->string('quantity')->nullable();
             $table->integer('price');
             $table->timestamps();
