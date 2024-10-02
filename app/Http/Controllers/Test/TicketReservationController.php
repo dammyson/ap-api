@@ -214,7 +214,7 @@ class TicketReservationController extends Controller
             // get the list of all the tickets 
             $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
             $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
-            $flightNumber = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightNumber'];
+            $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNumber'];
             
             if (array_key_exists('couponInfoList', $ticketItemList)) {
                 if (!array_key_exists('asvcSsr', $ticketItemList['couponInfoList'])) {
