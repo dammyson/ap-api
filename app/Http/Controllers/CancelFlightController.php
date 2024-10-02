@@ -19,7 +19,7 @@ class CancelFlightController extends Controller
          $this->craneOTASoapService = app('CraneOTASoapService');
      }
  
-     public function changeFlightViewOnly(Request $request) {
+     public function cancelFlightViewOnly(Request $request) {
          $peaceId = $request->input('peace_id');
          $bookingId = $request->input('booking_id');
  
@@ -42,16 +42,30 @@ class CancelFlightController extends Controller
          );
  
          try {
-             $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
+            $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
  
-             $response = $this->craneOTASoapService->run($function, $xml);
-             
- 
+            $response = $this->craneOTASoapService->run($function, $xml);
+
+            $airBookingList = $response['AirCancelBookingResponse']['airBookingList'];
+
+            if (!array_key_exists('ticketInfo', $airBookingList)) {
+                return response()->json([
+                    "error" => false,
+                    "message" => "money hasnt been paid for this ticket pls ignore it if you plan to cancel it"
+                ], 200);
+            }
              // display response of voiding a ticket to user
-             dd($response);
- 
+            $penaltyFee =  $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']["pricingOverview"]['totalPenalty']['value'];
+            // dd($penaltyFee);
+            
+            $message = "Canceling this ticket after payment is made would cost you " . $penaltyFee;
              // if user clicks okay, void the ticket and refund money
  
+            return response()->json([
+                "error" => false,
+                "message" => $message,
+                "penalty_fee" => $penaltyFee
+            ], 200);
              // provide the previous passenger info when the user searches for new flight
          } catch (\Throwable $th) {
              return response()->json([
@@ -62,7 +76,7 @@ class CancelFlightController extends Controller
  
      }
  
-    public function changeFlightCommit(Request $request) {
+    public function cancelFlightCommit(Request $request) {
         $peaceId = $request->input('peace_id');
         $bookingId = $request->input('booking_id');
 
@@ -83,22 +97,40 @@ class CancelFlightController extends Controller
         );
  
         try {            
-             
+            $user = $request->user();
             $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
             
             $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
+
+            $airBookingList = $response['AirCancelBookingResponse']['airBookingList'];
+
+            if (!array_key_exists('ticketInfo', $airBookingList)) {
+                return response()->json([
+                    "error" => false,
+                    "message" => "money hasnt been paid for this ticket pls ignore it if you plan to cancel it"
+                ], 200);
+            }
             
-            dd($response);
+            $transactionType = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['pricingType'];
+            // $amount = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+            $totalRefundAmount = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['ticketItemList']['refundPricingInfo']['baseFare']['amount']['value'];; // amount paid for this transaction
+            $penaltyFee =  $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']["pricingOverview"]['totalPenalty']['value'];
             
-            $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
-            $amount = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList']['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                        
             if ($transactionType == "REFUND") {
                 
                 $wallet = Wallet::where('user_id', $user->id);
 
+
                 if($wallet) {
-                    $wallet->topUp($amount);
+                    $wallet->topDown($penaltyFee);
+
+                    $amountAddition = $totalRefundAmount - $penaltyFee;
+
+                    if ($amountAddition > 0) {
+                        $wallet->topUp($amountAddition);
+
+                    }
 
                 return response()->json([
                     "error" => false,

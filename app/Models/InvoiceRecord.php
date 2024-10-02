@@ -14,6 +14,5 @@ class InvoiceRecord extends Model
         'amount',
         'order_id',                                
         'ticket_number',
-        'reason_for_issuance'
     ];
 }

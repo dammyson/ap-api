@@ -11,12 +11,11 @@ class TransactionRecord extends Model
     
     protected $fillable = [ 
         'transaction_type', 
-        'peace_id', 
-        'flight_id',
         'amount', 
-        'ticket_type', 
-        'user_id', 
-        'payment_reference',
-        'invoice_number'
+        'user_id',
+        'peace_id', 
+        'invoice_number', 
+        'ticket_type',
+        
     ];
 }

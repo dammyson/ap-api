@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('transaction_records', function (Blueprint $table) {
             $table->id();
-            $table->string('transaction_type')->nullable();
-            $table->string('flight_id')->nullable();
-            $table->string('status')->nullable();
-            $table->string('amount')->nullable();
-            $table->string('user_id')->nullable();
-            $table->string('invoice_record_id')->nullable();
+            $table->string('transaction_type');
+            $table->string('amount');
+            $table->unsignedBigInteger('user_id');
+            $table->string('peace_id');
+            $table->string('invoice_number');
+            $table->string('ticket_type');
             $table->timestamps();
         });
     }

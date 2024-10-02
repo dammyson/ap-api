@@ -112,24 +112,25 @@ class CreateBookingController extends Controller
 
             $arrival_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
             $departure_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-            $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-            $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+            $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+            $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
            
              // get the list of all the tickets 
-            $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
-
+            $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+            
             foreach($ticketItemList as $ticketItem) {
-                
-                FlightRecord::create([
-                    'origin' => $origin, 
-                    'destination' => $destination, 
-                    'arrival_time' => $arrival_time, 
-                    'departure_time'=> $departure_time,
-                    'peace_id' => $user->peace_id, 
-                    'passenger_type' => $ticketItem['passengerTypeCode'],
-                    'trip_type' => 'ONE_WAY',
-                    'booking_id' => $bookingId
-                ]);
+               if($ticketItem == "airTraveler") {
+                   FlightRecord::create([
+                       'origin' => $origin, 
+                       'destination' => $destination, 
+                       'arrival_time' => $arrival_time, 
+                       'departure_time'=> $departure_time,
+                       'peace_id' => $user->peace_id, 
+                       'passenger_type' => $ticketItem['passengerTypeCode'],
+                       'trip_type' => 'ONE_WAY',
+                       'booking_id' => $bookingId
+                   ]);
+               }
                 
             }
 
@@ -200,25 +201,29 @@ class CreateBookingController extends Controller
 
                 $arrival_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
                 $departure_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-                $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+                $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
             
                 // get the list of all the tickets 
-                $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+                $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+
 
 
                 foreach($ticketItemList as $ticketItem) {
                     
-                    FlightRecord::create([
-                        'origin' => $origin, 
-                        'destination' => $destination, 
-                        'arrival_time' => $arrival_time, 
-                        'departure_time'=> $departure_time,
-                        'peace_id' => $user->peace_id, 
-                        'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
-                        'trip_type' => 'ONE_WAY',
-                        'booking_id' => $bookingId
-                    ]);
+                    if (array_key_exists('airTraveler', $ticketItem)) {
+                        FlightRecord::create([
+                            'origin' => $origin, 
+                            'destination' => $destination, 
+                            'arrival_time' => $arrival_time, 
+                            'departure_time'=> $departure_time,
+                            'peace_id' => $user->peace_id, 
+                            'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
+                            'trip_type' => 'ONE_WAY',
+                            'booking_id' => $bookingId
+                        ]);
+
+                    }
                     
                 }
                 

@@ -214,7 +214,7 @@ class TicketReservationController extends Controller
             // get the list of all the tickets 
             $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
             $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
-            $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNumber'];
+            $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNumber'];
             
             if (array_key_exists('couponInfoList', $ticketItemList)) {
                 if (!array_key_exists('asvcSsr', $ticketItemList['couponInfoList'])) {
@@ -237,7 +237,7 @@ class TicketReservationController extends Controller
                             'amount' => $amount,
                             'order_id' => $orderID,                                
                             'ticket_number' => $ticketId,
-                            'reason_for_issuance' => $reasonForIssuance,
+                            // 'flight_id' => $flightNumber, // later on add this to the invoice
                         ]);
                         
 
@@ -248,16 +248,14 @@ class TicketReservationController extends Controller
                             'price' => $amount
                         ]);
                         
+                        
                         TransactionRecord::create([
                             'transaction_type' => $transactionType,
                             'peace_id' => $peaceId,
-                            'flight_id' => $flightNumber,
                             'amount' => $amount,
                             'ticket_type' => 'ticket',
                             'user_id' => $user->id,
-                            'payment_reference' => $paymentReferenceID,
-                            'invoice_number' => $invoice->id,
-                            'reason_for_issuance' => $reasonForIssuance
+                            'invoice_number' => $invoice->id
                         ]); 
 
                     }
@@ -283,8 +281,7 @@ class TicketReservationController extends Controller
                             'code' => $invoice_number,
                             'amount' => $amount,
                             'order_id' => $orderID,                                
-                            'ticket_number' => $ticketId,
-                            'reason_for_issuance' => $reasonForIssuance,
+                            'ticket_number' => $ticketId
                         ]);
                         
 
@@ -298,14 +295,11 @@ class TicketReservationController extends Controller
                         TransactionRecord::create([
                             'transaction_type' => $transactionType,
                             'peace_id' => $peaceId,
-                            'flight_id' => $flightNumber,
                             'amount' => $amount,
-                            'ticket_type' => 'Ancilary',
+                            'ticket_type' => 'ticket',
                             'user_id' => $user->id,
-                            'payment_reference' => $paymentReferenceID,
-                            'invoice_number' => $invoice->id,+
-                            'reason_for_issuance' => $reasonForIssuance
-                        ]);
+                            'invoice_number' => $invoice->id
+                        ]); 
                     } 
                 } 
             
@@ -333,29 +327,25 @@ class TicketReservationController extends Controller
                                 'code' => $invoice_number,
                                 'amount' => $amount,
                                 'order_id' => $orderID,                                
-                                'ticket_number' => $ticketId,
-                                'reason_for_issuance' => $reasonForIssuance,
+                                'ticket_number' => $ticketId
                             ]);
                             
-
+    
                             InvoiceItem::create([
                                 'invoice_id' => $invoice->id,
-                                'product' => $reasonForIssuance ?? 'ticket', // baggages or ticket shopping
+                                'product' => $reasonForIssuance, // baggages or ticket shopping
                                 'quantity' => '',
-                                'price' => $amount
+                                'price' => ''
                             ]);
                             
                             TransactionRecord::create([
                                 'transaction_type' => $transactionType,
                                 'peace_id' => $peaceId,
-                                'flight_id' => $flightNumber,
                                 'amount' => $amount,
                                 'ticket_type' => 'ticket',
                                 'user_id' => $user->id,
-                                'payment_reference' => $paymentReferenceID,
-                                'invoice_number' => $invoice->id,
-                                'reason_for_issuance' => $reasonForIssuance
-                            ]); 
+                                'invoice_number' => $invoice->id
+                            ]);  
 
                         }
                     
@@ -381,10 +371,10 @@ class TicketReservationController extends Controller
                                 'amount' => $amount,
                                 'order_id' => $orderID,                                
                                 'ticket_number' => $ticketId,
-                                'reason_for_issuance' => $reasonForIssuance,
+                                
                             ]);
                             
-
+    
                             InvoiceItem::create([
                                 'invoice_id' => $invoice->id,
                                 'product' => $reasonForIssuance, // baggages or ticket shopping
@@ -395,14 +385,11 @@ class TicketReservationController extends Controller
                             TransactionRecord::create([
                                 'transaction_type' => $transactionType,
                                 'peace_id' => $peaceId,
-                                'flight_id' => $flightNumber,
                                 'amount' => $amount,
-                                'ticket_type' => 'Ancilary',
+                                'ticket_type' => 'ticket',
                                 'user_id' => $user->id,
-                                'payment_reference' => $paymentReferenceID,
-                                'invoice_number' => $invoice->id,+
-                                'reason_for_issuance' => $reasonForIssuance
-                            ]);
+                                'invoice_number' => $invoice->id
+                            ]); 
                         } 
                     }                
                 }
