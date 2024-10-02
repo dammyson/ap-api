@@ -36,6 +36,8 @@ class FlightController extends Controller
     
     public function searchFlights(SearchFlightRequest $request)
     {
+
+
         $departureDateTime = $request->input('departure_date');
         $ArrivalDateTime = $request->input('arrival_date');
         $destinationLocationCode = $request->input('arrival_airport');
@@ -46,6 +48,8 @@ class FlightController extends Controller
         $tripType = $request->input('trip_type');
 
         $validated = $request->validated();
+
+      
         $travelerInformation = $validated["travelerInformation"];
         $travelerInformation_count = count($travelerInformation);
 
@@ -55,14 +59,18 @@ class FlightController extends Controller
 
         if ($request->input('trip_type') == "ONE_WAY") {
             $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType);
-        } else {
+        } else  if ($request->input('trip_type') == "ROUND_TRIP") {
             $xml = $this->soapRequestBuilder->GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType,  $ArrivalDateTime);
+        } else {
+            $multiDirectionalFlights = $validated['multi_directional_flights'];
+
+            $xml = $this->soapRequestBuilder->GetFlightMultiCity( $multiDirectionalFlights, $travelerInformation, $tripType);
         }
 
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
+            
 
              $result = "";
 
@@ -72,7 +80,7 @@ class FlightController extends Controller
                 $rt = new \stdClass();
                 $rt->departure = $result0;
                 $result = $rt;
-            } else {
+            } else  if ($request->input('trip_type') == "ROUND_TRIP") {
                 $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity, $travelerInformation_count);
                 $originDestinationOptionList1 = $response['Availability']['availabilityResultList']['availabilityRouteList'][1]['availabilityByDateList']['originDestinationOptionList'];
@@ -82,6 +90,27 @@ class FlightController extends Controller
                 $rt->departure = $result0;
                 $rt->arrival = $result1;
                 $result = $rt;
+            }else{
+                $availabilityRouteList = $response['Availability']['availabilityResultList']['availabilityRouteList'];
+
+                $multiDirectionalFlights = $validated['multi_directional_flights'];
+
+                $rt = new \stdClass();
+
+                for ($i = 0; $i < count( $availabilityRouteList); $i++) {
+
+                    $mainkey =  $multiDirectionalFlights[$i]['departure_airport'] . " - " .  $multiDirectionalFlights[$i]['arrival_airport'];
+
+                    $originDestinationOptionList =  $availabilityRouteList[$i];
+                  
+                    $result = $this->groupFaresByCabin($originDestinationOptionList['availabilityByDateList']['originDestinationOptionList'], $quantity, $travelerInformation_count);
+                    $rt->{$mainkey}  =  $result;
+                }
+               // $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
+               // dd(  $availabilityRouteList);
+
+               $result = $rt;
+
             }
            
             return response()->json($result);
