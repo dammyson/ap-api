@@ -11,10 +11,12 @@ use Illuminate\Http\Request;
 class CancelBookingController extends Controller
 {
     protected $cancelBookingBuilder;
+    protected $craneOTASoapService;
 
     public function __construct(CancelBookingBuilder $cancelBookingBuilder)
     {
         $this->cancelBookingBuilder = $cancelBookingBuilder;
+        $this->craneOTASoapService = app("CraneOTASoapService");
 
     }
 
@@ -43,8 +45,12 @@ class CancelBookingController extends Controller
             $requestPurpose
         );
 
-        dd($xml);
+        $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
+
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
     }
+
 
     public function cancelBookingViewOnly(CancelBookingViewOnlyRequest $request) {
         $cityCode = $request->input('cityCode'); 
@@ -70,8 +76,11 @@ class CancelBookingController extends Controller
         );
 
         try {
+            $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
 
-            dd($xml);
+            $response = $this->craneOTASoapService->run($function, $xml);
+
+            dd($response);
         } catch (\Throwable $th) {
             return response()->json([
                 "error" => "true",

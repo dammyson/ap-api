@@ -122,7 +122,6 @@ class FlightController extends Controller
 
     public function groupFaresByCabin($originDestinationOptionList, $quantity,  $count)
     {
-
        // dd($originDestinationOptionList);
 
         $itemsCollection = collect();

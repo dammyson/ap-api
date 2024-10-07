@@ -76,15 +76,7 @@ class AddSeatController extends Controller
         $bookFlightSegmentDistance = $request->input('bookFlightSegmentDistance'); 
         $airEquipType = $request->input('airEquipType'); 
         $changeOfGauge = $request->input('changeOfGauge'); 
-        $DeiCodeOne = $request->input('DeiCodeOne'); 
-        $explanationOne = $request->input('explanationOne'); 
-        $noteOne = $request->input('noteOne'); 
-        $DeiCodeTwo = $request->input('DeiCodeTwo');
-        $explanationTwo = $request->input('explanationTwo'); 
-        $noteTwo = $request->input('noteTwo'); 
-        $DeiCodeThree = $request->input('DeiCodeThree'); 
-        $explanationThree = $request->input('explanationThree'); 
-        $noteThree = $request->input('noteThree'); 
+        $flightNotes = $request->input('flightNotes');        
         $flownMileageQty = $request->input('flownMileageQty'); 
         $iatciFlight = $request->input('iatciFlight'); 
         $journeyDuration = $request->input('journeyDuration'); 
@@ -215,15 +207,7 @@ class AddSeatController extends Controller
             $bookFlightSegmentDistance, 
             $airEquipType, 
             $changeOfGauge, 
-            $DeiCodeOne, 
-            $explanationOne, 
-            $noteOne, 
-            $DeiCodeTwo,
-            $explanationTwo, 
-            $noteTwo, 
-            $DeiCodeThree, 
-            $explanationThree, 
-            $noteThree, 
+            $flightNotes,
             $flownMileageQty, 
             $iatciFlight, 
             $journeyDuration, 

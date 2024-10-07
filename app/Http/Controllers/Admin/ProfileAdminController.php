@@ -18,10 +18,18 @@ class ProfileAdminController extends Controller
            $image_url = $admin->image_url;
            $image_url_link = Storage::url($image_url);
 
+
+           $admin_data = [
+                "user_name" => $admin->user_name,
+                'email' => $admin->email,
+                'role' => $admin->role,
+                'phone_number' => $admin->phone_number,
+                'image_url_link' => $image_url_link
+           ];
+
             return response()->json([
                 'error' => false,
-                'admin_data' => $admin,
-                'image_url_link' => $image_url_link
+                'admin_data' => $admin_data
             ]);
 
         } catch (\Throwable $th) {

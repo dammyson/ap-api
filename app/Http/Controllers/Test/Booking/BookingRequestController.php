@@ -28,6 +28,7 @@ class BookingRequestController extends Controller
         $peaceId = $request->input('peace_id');
         
 
+
         try {
 
             $booking = BookingRecord::where('booking_id', $bookingId)
@@ -55,7 +56,15 @@ class BookingRequestController extends Controller
     
             
             $response = $this->craneOTASoapService->run($function, $xml);
-        
+                    
+            if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
+                $this->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
+                    // dd('I ran');
+                    $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'] = 
+                    [$response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']];
+            }
+
+
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => true,
@@ -68,6 +77,17 @@ class BookingRequestController extends Controller
             'booking_data' => $response
         ]);
 
+    }
+
+
+    private function isAssociativeArray($array) {
+        // if the value is no at array at all return false;
+        if (!is_array($array)) {
+            return false;
+        }
+
+        // Check if the array is associative by looking at the keys
+        return array_keys($array) !== range(0, count($array) - 1);
     }
 
 
