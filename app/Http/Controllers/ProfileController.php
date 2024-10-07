@@ -81,14 +81,14 @@ class ProfileController extends Controller
     public function changePeaceId(Request $request) {
         $peaceId = $request->input('peaceId');
         try {
-            $existingUser = User::where('peace_id', $peaceId);
+            $existingUser = User::where('peace_id', $peaceId)->first();
     
             
             if ($existingUser) {
                 return response()->json([
                     "error" => false,
                     "message" => "peace id already taken by another user"            
-                ], 200);
+                ], 500);
             }
     
             $user = $request->user();
@@ -100,7 +100,7 @@ class ProfileController extends Controller
                 "error" => false,
                 "message" => "peace id successfully updated",
                 "user" => $user
-            ]);
+            ], 200);
 
         } catch (\Throwable $th){
             return response()->json([
