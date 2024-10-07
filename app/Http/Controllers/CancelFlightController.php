@@ -111,7 +111,6 @@ class CancelFlightController extends Controller
                     "message" => "money hasnt been paid for this ticket pls ignore it if you plan to cancel it"
                 ], 200);
             }
-            
             $transactionType = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['pricingType'];
             // $amount = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
             $totalRefundAmount = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['ticketItemList']['refundPricingInfo']['baseFare']['amount']['value'];; // amount paid for this transaction
@@ -123,7 +122,7 @@ class CancelFlightController extends Controller
 
 
                 if($wallet) {
-                    $wallet->topDown($penaltyFee);
+                    // $wallet->topDown($penaltyFee);
 
                     $amountAddition = $totalRefundAmount - $penaltyFee;
 

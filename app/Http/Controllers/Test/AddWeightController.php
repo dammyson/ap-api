@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Test;
 
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
+use App\Models\InvoiceRecord;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\AddWeightBuilder;
 use App\Http\Requests\Test\addWeightRequest;
@@ -18,8 +21,12 @@ class AddWeightController extends Controller
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
     }
 
-    public function addWeight(addWeightRequest $request) {
-        
+    // public function addWeight(Request $request) {
+    //     dd('test');
+    // }
+  
+    
+    public function addWeight(addWeightRequest $request, $invoiceId) {
         $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
         $bookFlightSegmentListActionCode = $request->input('bookFlightSegmentListActionCode');
         $bookFlightAddOnSegment = $request->input('bookFlightAddOnSegment');
@@ -305,10 +312,52 @@ class AddWeightController extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dd($response);
+            // dd($response);
+            $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
+            $invoice = InvoiceRecord::find($invoiceId);
+
+            // if user has not paid set the new invoice balance else generate a new invoice
+            
+            $baggagePrice = 0;
+            if (!$invoice->is_paid) {
+                $baggagePrice = $invoice->amount - $amount;
+                $baggagePrice = abs($baggagePrice);
+                $invoice->amount = $amount;
+                
+            } else { 
+                $invoice = InvoiceRecord::create([
+                    'amount' => $amount,
+                    'booking_id' => $bookingId
+                ]);
+                $baggagePrice = $amount;
+            }
+            $invoice->is_paid = false;
+            $invoice->save();
+
+            // Use preg_match to extract the number
+            preg_match('/\d+/', $ssrExplanation, $matches);
+
+            // $matches[0] will contain the number
+            $quantity = $matches[0];
+
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'product' => 'Baggages', // baggages or ticket shopping
+                'quantity' => $quantity,
+                // total_passengers => $totalPassengers  // this field would be removed
+                'price' => $baggagePrice
+            ]);
+
+            return response()->json([
+                "error" => false,
+                "message" => "Baggages added successfully",
+                'invoice_id' => $invoice->id
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
 }

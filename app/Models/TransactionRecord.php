@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TransactionRecord extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
     
     protected $fillable = [ 
         'transaction_type', 
@@ -15,6 +16,7 @@ class TransactionRecord extends Model
         'user_id',
         'peace_id', 
         'invoice_number', 
+        'invoice_id',
         'ticket_type',
         
     ];

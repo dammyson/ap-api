@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChangeProfileImageRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\User\EditProfileRequest;
+use App\Http\Requests\ChangeProfileImageRequest;
+use Throwable;
 
 class ProfileController extends Controller
 {
@@ -74,6 +76,42 @@ class ProfileController extends Controller
         }
 
         
+    }
+
+    public function changePeaceId(Request $request) {
+        $peaceId = $request->input('peaceId');
+        try {
+            $existingUser = User::where('peace_id', $peaceId);
+    
+            
+            if ($existingUser) {
+                return response()->json([
+                    "error" => false,
+                    "message" => "peace id already taken by another user"            
+                ], 200);
+            }
+    
+            $user = $request->user();
+    
+            $user->peace_id = $peaceId;
+            $user->save();
+
+            return response()->json([
+                "error" => false,
+                "message" => "peace id successfully updated",
+                "user" => $user
+            ]);
+
+        } catch (\Throwable $th){
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+            
+        }
+
+        
+
     }
 
     public function editProfile(EditProfileRequest $request) {

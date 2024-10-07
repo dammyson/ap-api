@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddBaggagesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CityController;
@@ -57,6 +58,7 @@ use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
+use App\Http\Controllers\Test\TestWeightController;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 
@@ -160,7 +162,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
             Route::post('/view-only-rt', [TicketReservationController::class, 'ticketReservationViewOnlyRT']);
             Route::post('/view-only-two-a', [TicketReservationController::class, 'ticketReservationViewOnlyTwoA']);
             Route::post('/commit-two-a', [TicketReservationController::class, 'ticktReservationCommitTwoA']);
-            Route::post('/commit', [TicketReservationController::class, 'ticketReservationCommit']);
+            Route::post('/commit/invoice/{invoiceId}', [TicketReservationController::class, 'ticketReservationCommit']);
             Route::post('/commit-rt', [TicketReservationController::class, 'ticketReservationCommitRT']);
 
         });
@@ -222,7 +224,8 @@ Route::group(["middleware" => ["auth:api"]], function() {
         });
         
         Route::post('/add-seat-ssr', [AddSeatController::class, 'addSeat']);
-        Route::post('/add-weight-bag-ow', [AddWeightController::class, 'addWeight']);
+        Route::post('/add-weight-bag-ow/invoice/{invoiceId}', [AddWeightController::class, 'addWeight']);
+        
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
         Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
         Route::post('/penalty-rules', [PenaltyRulesController::class, 'penaltyRules']);
@@ -237,6 +240,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
         Route::post('profile/edit', [ProfileController::class, 'editProfile']);
+        Route::post('change-peace-id', [ProfileController::class, 'changePeaceId']);
         Route::post('profile/change-profile-image', [ProfileController::class, 'changeProfileImage']);
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);

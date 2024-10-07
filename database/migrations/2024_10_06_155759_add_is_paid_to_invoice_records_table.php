@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('wallets');
+        Schema::table('invoice_records', function (Blueprint $table) {
+            $table->boolean('is_paid')->default(false)->after('amount');
+        });
     }
 
     /**
@@ -19,13 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::create('wallets', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->integer('points');
-            $table->string('status');
-            $table->decimal('amount', 10, 2);
-            $table->timestamps();
+        Schema::table('invoice_records', function (Blueprint $table) {
+            $table->dropColumn('is_paid');
         });
     }
 };

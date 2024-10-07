@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyOtpRequest;
+use App\Models\ReferralActivity;
 use App\Models\User;
 use App\Services\AutoGenerate\CreatePeaceId;
 use Illuminate\Support\Facades\Hash;
@@ -37,10 +38,32 @@ class RegisterController extends Controller
                 'phone_number' => $request->input('phone_number'),
                 'peace_id' => $peace_id,
                 'password' => Hash::make($request->input('password')),
-                'status' => $request->input('status') ?? null
+                'status' => $request->input('status') ?? null,
+                'points' => 0, // allocate appropriate pointts once decided
             
             ]);
 
+            $referrer_peace_id = $request->input('referrer_peace_id');
+            
+            if ($referrer_peace_id) {
+                $referrer = User::find($referrer_peace_id);
+                if ($referrer) {
+                    $referrer->points += 0;
+                    $referrer->save();
+    
+                    // kindly uncomment when table is created in migration
+                    // ReferralActivity::create([
+                    //     "referrer_peace_id" => $referrer_peace_id,
+                    //     "referrer_first_name" => $referrer->first_name,
+                    //     "referrer_last_name" => $referrer->last_name,
+                    //     "referee_peace_id" => $create->peace_id,
+                    //     "referee_first_name" => $create->first_name,
+                    //     "referee_last_name" => $create->last_name,
+                    // ]);
+                }            
+            }
+
+           
            
           
         } catch (\Exception $exception) {

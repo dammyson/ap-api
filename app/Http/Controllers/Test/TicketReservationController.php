@@ -150,7 +150,7 @@ class TicketReservationController extends Controller
         }  
     }
 
-    public function ticketReservationCommit(TicketReservationCommitRequest $request) {
+    public function ticketReservationCommit(TicketReservationCommitRequest $request, $invoiceId) {
         $companyNameCityCode = $request->input('companyNameCityCode');
         $companyNameCode = $request->input('companyNameCode');
         $companyNameCodeContext = $request->input('companyNameCodeContext');
@@ -192,30 +192,41 @@ class TicketReservationController extends Controller
 
         try {
             
+            $user = $request->user();
+            $peaceId = $user->peace_id;
+
+            $invoice = InvoiceRecord::find($invoiceId);
+
+            if (!$invoice) {
+                return response()->json([
+                    "error" => false,
+                    "message" => "No record of invoice"
+                ], 500);
+            }
+
+            
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
             
             // dd($response);
+            $invoice->is_paid = true;
+            $invoice->save();
            
             if (!array_key_exists('AirTicketReservationResponse', $response)) {
                 return response()->json([
                     'error' => true,
                     'message' => "no new addition to ticket"
                 ], 500);
-            }
-            $user = $request->user();
-            $peaceId = $user->peace_id;
-
-            //later on check if an array or object is returned so you can handle the reponse correctly;
-            $leadPassengerEmail = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']['contactPerson']['email']['email'];
-           
+            }        
 
             // get the list of all the tickets 
             $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
             $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
             $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNumber'];
             
+            
+
             if (array_key_exists('couponInfoList', $ticketItemList)) {
                 if (!array_key_exists('asvcSsr', $ticketItemList['couponInfoList'])) {
                     // dump('non asvcSsr ran');
@@ -228,37 +239,19 @@ class TicketReservationController extends Controller
                     $reasonForIssuance = $ticketItemList['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
                     
 
-                    $invoiceExists = InvoiceRecord::where('code', $invoice_number)->first();
-
-                    if (!$invoiceExists)  {
-
-                        $invoice = InvoiceRecord::create([
-                            'code' => $invoice_number,
-                            'amount' => $amount,
-                            'order_id' => $orderID,                                
-                            'ticket_number' => $ticketId,
-                            // 'flight_id' => $flightNumber, // later on add this to the invoice
-                        ]);
                         
+                    TransactionRecord::firstOrCreate([
+                        "invoice_number" => $invoice_number
+                    ], [
+                        'transaction_type' => $transactionType,
+                        'peace_id' => $peaceId,
+                        'amount' => $amount,
+                        'ticket_type' => 'ticket',
+                        'user_id' => $user->id,
+                        'invoice_id' => $invoice->id
+                    ]); 
 
-                        InvoiceItem::create([
-                            'invoice_id' => $invoice->id,
-                            'product' => $reasonForIssuance ?? 'ticket', // baggages or ticket shopping
-                            'quantity' => '',
-                            'price' => $amount
-                        ]);
-                        
-                        
-                        TransactionRecord::create([
-                            'transaction_type' => $transactionType,
-                            'peace_id' => $peaceId,
-                            'amount' => $amount,
-                            'ticket_type' => 'ticket',
-                            'user_id' => $user->id,
-                            'invoice_number' => $invoice->id
-                        ]); 
-
-                    }
+                    
                 
                 }
                 else {                        
@@ -272,35 +265,20 @@ class TicketReservationController extends Controller
                     $reasonForIssuance = $ticketItemList['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
                     $amount = $ticketItemList['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                     
-
-
-                    $invoiceExists = InvoiceRecord::where('code', $invoice_number)->first();
-
-                    if (!$invoiceExists)  {
-                        $invoice = InvoiceRecord::create([
-                            'code' => $invoice_number,
-                            'amount' => $amount,
-                            'order_id' => $orderID,                                
-                            'ticket_number' => $ticketId
-                        ]);
                         
-
-                        InvoiceItem::create([
-                            'invoice_id' => $invoice->id,
-                            'product' => $reasonForIssuance, // baggages or ticket shopping
-                            'quantity' => '',
-                            'price' => ''
-                        ]);
-                        
-                        TransactionRecord::create([
+                    TransactionRecord::firstOrCreate([
+                        "invoice_number" => $invoice_number
+                        ],
+                        [
                             'transaction_type' => $transactionType,
                             'peace_id' => $peaceId,
                             'amount' => $amount,
-                            'ticket_type' => 'ticket',
+                            'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
-                            'invoice_number' => $invoice->id
-                        ]); 
-                    } 
+                            'invoice_id' => $invoice->id
+                        ]
+                    ); 
+                    
                 } 
             
             
@@ -318,36 +296,19 @@ class TicketReservationController extends Controller
                         $ticketId = $ticketItem['ticketDocumentNbr'];
                         $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
                         
+                          
+                        TransactionRecord::firstOrCreate([
+                            "invoice_number" => $invoice_number
+                        ], [
+                            'transaction_type' => $transactionType,
+                            'peace_id' => $peaceId,
+                            'amount' => $amount,
+                            'ticket_type' => 'ticket',
+                            'user_id' => $user->id,
+                            'invoice_id' => $invoice->id
+                        ]);  
 
-                        $invoiceExists = InvoiceRecord::where('code', $invoice_number)->first();
-
-                        if (!$invoiceExists)  {
-
-                            $invoice = InvoiceRecord::create([
-                                'code' => $invoice_number,
-                                'amount' => $amount,
-                                'order_id' => $orderID,                                
-                                'ticket_number' => $ticketId
-                            ]);
-                            
-    
-                            InvoiceItem::create([
-                                'invoice_id' => $invoice->id,
-                                'product' => $reasonForIssuance, // baggages or ticket shopping
-                                'quantity' => '',
-                                'price' => ''
-                            ]);
-                            
-                            TransactionRecord::create([
-                                'transaction_type' => $transactionType,
-                                'peace_id' => $peaceId,
-                                'amount' => $amount,
-                                'ticket_type' => 'ticket',
-                                'user_id' => $user->id,
-                                'invoice_number' => $invoice->id
-                            ]);  
-
-                        }
+                        
                     
                     }
                     else {                        
@@ -361,36 +322,18 @@ class TicketReservationController extends Controller
                         $reasonForIssuance = $ticketItem['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
                         $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
-
-
-                        $invoiceExists = InvoiceRecord::where('code', $invoice_number)->first();
-
-                        if (!$invoiceExists)  {
-                            $invoice = InvoiceRecord::create([
-                                'code' => $invoice_number,
-                                'amount' => $amount,
-                                'order_id' => $orderID,                                
-                                'ticket_number' => $ticketId,
-                                
-                            ]);
+                 
                             
-    
-                            InvoiceItem::create([
-                                'invoice_id' => $invoice->id,
-                                'product' => $reasonForIssuance, // baggages or ticket shopping
-                                'quantity' => '',
-                                'price' => ''
-                            ]);
-                            
-                            TransactionRecord::create([
-                                'transaction_type' => $transactionType,
-                                'peace_id' => $peaceId,
-                                'amount' => $amount,
-                                'ticket_type' => 'ticket',
-                                'user_id' => $user->id,
-                                'invoice_number' => $invoice->id
-                            ]); 
-                        } 
+                        TransactionRecord::firstOrCreate([
+                            "invoice_number" => $invoice_number
+                        ], [
+                            'transaction_type' => $transactionType,
+                            'peace_id' => $peaceId,
+                            'amount' => $amount,
+                            'ticket_type' => 'Ancillary',
+                            'user_id' => $user->id,
+                            'invoice_id' => $invoice->id
+                        ]); 
                     }                
                 }
             }

@@ -28,8 +28,8 @@ class SearchFlightRequest extends FormRequest
             'departure_date' => 'required_if:trip_type,ONE_WAY,ROUND_TRIP|date',
             'arrival_date' => 'required_if:trip_type,ROUND_TRIP|date|after:departure_date',
            
-            'departure_airport' => 'required|string',
-            'arrival_airport' => 'required|string',
+            'departure_airport' => 'required_if:trip_type,ONE_WAY,ROUND_TRIP|string',
+            'arrival_airport' => 'required_if:trip_type,ONE_WAY,ROUND_TRIP|string',
 
             // Validation for MULTI_DIRECTIONAL
             'multi_directional_flights' => 'required_if:trip_type,MULTI_DIRECTIONAL|array',
