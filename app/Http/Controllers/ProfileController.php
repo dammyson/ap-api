@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePeaceIdRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -78,8 +79,8 @@ class ProfileController extends Controller
         
     }
 
-    public function changePeaceId(Request $request) {
-        $peaceId = $request->input('peaceId');
+    public function changePeaceId(ChangePeaceIdRequest $request) {
+        $peaceId = $request->input('peace_id');
         try {
             $existingUser = User::where('peace_id', $peaceId)->first();
     
