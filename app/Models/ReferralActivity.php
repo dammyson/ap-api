@@ -9,6 +9,6 @@ class ReferralActivity extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['referrer_peace_id', 'referrer_first_name', 'referrer_last_name', 'referee_peace_id', 'referee_first_name', 'referee_last_name'];
+    protected $fillable = ['referrer_peace_id', 'referrer_user_name', 'referee_peace_id', 'referee_user_name', 'referee_first_name', 'referee_last_name'];
 
 }

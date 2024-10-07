@@ -50,16 +50,19 @@ class RegisterController extends Controller
                 if ($referrer) {
                     $referrer->points += 0;
                     $referrer->save();
+
+                    $referee = $create;
+                    
+                    $referrer_user_name = $referrer->first_name . ' '. $referrer->last_name;
+                    $referee_user_name = $referee->first_name . ' '. $referee->last_name;
+
     
-                    // kindly uncomment when table is created in migration
-                    // ReferralActivity::create([
-                    //     "referrer_peace_id" => $referrer_peace_id,
-                    //     "referrer_first_name" => $referrer->first_name,
-                    //     "referrer_last_name" => $referrer->last_name,
-                    //     "referee_peace_id" => $create->peace_id,
-                    //     "referee_first_name" => $create->first_name,
-                    //     "referee_last_name" => $create->last_name,
-                    // ]);
+                    ReferralActivity::create([
+                        "referrer_peace_id" => $referrer_peace_id,
+                        "referrer_user_name" => $referrer_user_name,
+                        "referee_peace_id" => $referee->peace_id,
+                        "referee_user_name" => $referee_user_name
+                    ]);
                 }            
             }
 
