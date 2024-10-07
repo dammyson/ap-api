@@ -46,7 +46,8 @@ class RegisterController extends Controller
             $referrer_peace_id = $request->input('referrer_peace_id');
             
             if ($referrer_peace_id) {
-                $referrer = User::find($referrer_peace_id);
+                $referrer = User::where('peace_id', $referrer_peace_id)->first();
+                // dd($referrer);
                 if ($referrer) {
                     $referrer->points += 0;
                     $referrer->save();
@@ -63,6 +64,7 @@ class RegisterController extends Controller
                         "referee_peace_id" => $referee->peace_id,
                         "referee_user_name" => $referee_user_name
                     ]);
+
                 }            
             }
 
