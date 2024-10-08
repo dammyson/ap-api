@@ -22,7 +22,7 @@ class ChangePeaceIdRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "peace_id" => "required|string|min:11|max:11"
+            "peace_id" => "required|string|min:9|max:9"
         ];
     }
 }
