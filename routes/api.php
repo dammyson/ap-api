@@ -59,6 +59,7 @@ use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
 use App\Http\Controllers\Test\TestWeightController;
+use App\Http\Controllers\TierController;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 
@@ -71,6 +72,8 @@ Route::group(['prefix' => 'user'], function ()  {
     Route::post('login', [LoginController::class, 'login']);
 });
 
+
+Route::post('/upgrade-tier', [TierController::class, 'upgradeTier'])->middleware('auth');
 
 Route::group(['prefix' => 'admin/'], function () {
     Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);

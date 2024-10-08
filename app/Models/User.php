@@ -64,4 +64,9 @@ class User extends Authenticatable
     public function surveyUserResponses() {
         return $this->hasMany(SurveyUserResponse::class);
     }
+
+    public function tier()
+    {
+        return $this->belongsTo(Tier::class);
+    }
 }
