@@ -127,6 +127,7 @@ class AddSeatController extends Controller
         $personNameGivenName = $request->input('personNameGivenName'); 
         $personNameNameTitle = $request->input('personNameNameTitle'); 
         $personNameShareMarketInd = $request->input('personNameShareMarketInd'); 
+        $personNameNameSurname = $request->input('personNameSurname');
         $personNameENGivenName = $request->input('personNameENGivenName'); 
         $personNameENNameTitle = $request->input('personNameENNameTitle'); 
         $personNameENShareMarketInd = $request->input('personNameENShareMarketInd'); 
@@ -257,7 +258,8 @@ class AddSeatController extends Controller
             $contactPersonPassengerTypeCode, 
             $personNameGivenName, 
             $personNameNameTitle, 
-            $personNameShareMarketInd, 
+            $personNameShareMarketInd,
+            $personNameNameSurname, 
             $personNameENGivenName, 
             $personNameENNameTitle, 
             $personNameENShareMarketInd, 
@@ -282,7 +284,7 @@ class AddSeatController extends Controller
         );
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
-
+        dd($xml);
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
             dd($response);

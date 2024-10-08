@@ -133,6 +133,7 @@ class AddSeatRequest extends FormRequest
             "personNameGivenName" => "required|string", 
             "personNameNameTitle" => "required|string", 
             "personNameShareMarketInd" => "required|boolean", 
+            "personNameNameSurname" => "required|string",
             "personNameENGivenName" => "required|string", 
             "personNameENNameTitle" => "required|string", 
             "personNameENShareMarketInd" => "required|boolean", 
