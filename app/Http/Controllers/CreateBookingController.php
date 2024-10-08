@@ -218,23 +218,26 @@ class CreateBookingController extends Controller
             $bookingReferenceID = $bookingReferenceIDList['referenceID'];
             $user = $request->user();
 
-                BookingRecord::create([
-                    'peace_id' => $user->peace_id,
-                    'booking_id' => $bookingId,
-                    'booking_reference_id' => $bookingReferenceID
-                ]);
+            BookingRecord::create([
+                'peace_id' => $user->peace_id,
+                'booking_id' => $bookingId,
+                'booking_reference_id' => $bookingReferenceID
+            ]);
 
-                $arrival_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
-                $departure_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-                $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-            
-                // get the list of all the tickets 
-                $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+            $arrival_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
+            $departure_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureDateTime'];
+            $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+            $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+        
+            // get the list of all the tickets 
+            $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+            $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            $ticketCount = 0;
 
-
-                foreach($ticketItemList as $ticketItem) {
-                    
+            if ($this->isAssociativeArray($ticketItemList)) {
+                // dump('I associate ran');
+                foreach($ticketItemList as $ticketItem) {                    
+                   
                     FlightRecord::create([
                         'origin' => $origin, 
                         'destination' => $destination, 
@@ -245,24 +248,59 @@ class CreateBookingController extends Controller
                         'trip_type' => 'ONE_WAY',
                         'booking_id' => $bookingId
                     ]);
-                    
-                }
+
+                    //dd('I ran');
+                    $ticketCount += 1;            
+                }                        
+            
+            } else {
+                // dump('unassociative array ran');
                 
-                $bookingDetails = [
-                    "bookingReferenceIDList" => $bookingReferenceIDList,
-                    "timeLimit" => $timeLimit,
-                    "timeLimitUTC" => $timeLimitUTC
-                ];
+                FlightRecord::create([
+                    'origin' => $origin, 
+                    'destination' => $destination, 
+                    'arrival_time' => $arrival_time, 
+                    'departure_time'=> $departure_time,
+                    'peace_id' => $user->peace_id, 
+                    'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
+                    'trip_type' => 'ONE_WAY',
+                    'booking_id' => $bookingId
+                ]);    
 
+                $ticketCount += 1;
 
-                return response()->json([
-                    "error" => false,
-                    "message" => "Flight booked successfully",
-                    "bookingDetails" => $bookingDetails
-                ], 200);
             }
 
+            // create invoice table   // add booking_id
+            $invoice = InvoiceRecord::create([
+                'amount' => $amount,
+                'booking_id' => $bookingReferenceIDList['ID'],
+                'is_paid' => false
+            ]);
             
+
+            // create invoice_items table
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'product' => 'Ticket', 
+                'quantity' => $ticketCount,
+                'price' => $amount
+            ]);
+            
+            $bookingDetails = [
+                "booking_id" => $bookingReferenceIDList['ID'],
+                "reference_id" => $bookingReferenceIDList['referenceID'],
+                "invoice_id" => $invoice->id,
+                "timeLimit" => $timeLimit,
+                "timeLimitUTC" => $timeLimitUTC
+            ];
+
+
+            return response()->json([
+                "error" => false,
+                "message" => "Flight booked successfully",
+                "bookingDetails" => $bookingDetails,
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
