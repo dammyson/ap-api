@@ -12,18 +12,21 @@ use App\Services\Soap\CreateBookingBuilder;
 use App\Http\Requests\Test\Booking\CreateBookingOWRequest;
 use App\Http\Requests\Test\Booking\CreateBookingRTRequest;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
+use App\Services\Utility\CheckArray;
 
 class CreateBookingController extends Controller
 {
     protected $createBookingBuilder;
     protected $craneOTASoapService;
     protected $craneAncillaryOTASoapService;
+    protected $checkArray;
 
-    public function __construct(CreateBookingBuilder $createBookingBuilder) {
+    public function __construct(CreateBookingBuilder $createBookingBuilder, CheckArray $checkArray) {
         $this->createBookingBuilder = $createBookingBuilder;
 
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
+        $this->checkArray = $checkArray;
     }
 
     public function createBookingRT(CreateBookingRTRequest $request) {
@@ -95,7 +98,7 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
             
-            dd($response);
+            // dd($response);
 
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
             $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
@@ -117,22 +120,46 @@ class CreateBookingController extends Controller
             $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
            
              // get the list of all the tickets 
-            $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
-            $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-
-            $ticketCount = 1;
-            
-           
-            FlightRecord::create([
-                'origin' => $origin, 
-                'destination' => $destination, 
-                'arrival_time' => $arrival_time, 
-                'departure_time'=> $departure_time,
-                'peace_id' => $user->peace_id, 
-                'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
-                'trip_type' => 'ONE_WAY',
-                'booking_id' => $bookingId
-            ]);                
+             $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+             $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+             $ticketCount = 0;
+ 
+             if (!$this->isAssociativeArray($ticketItemList)) {
+                 // dump('I associate ran');
+                 foreach($ticketItemList as $ticketItem) {                    
+                    
+                    FlightRecord::create([
+                        'origin' => $origin, 
+                        'destination' => $destination, 
+                        'arrival_time' => $arrival_time, 
+                        'departure_time'=> $departure_time,
+                        'peace_id' => $user->peace_id, 
+                        'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
+                        'trip_type' => 'ONE_WAY',
+                        'booking_id' => $bookingId
+                    ]);
+ 
+                    //dd('I ran');
+                    $ticketCount += 1;            
+                 }                        
+             
+             } else {
+                 // dump('unassociative array ran');
+                 
+                 FlightRecord::create([
+                     'origin' => $origin, 
+                     'destination' => $destination, 
+                     'arrival_time' => $arrival_time, 
+                     'departure_time'=> $departure_time,
+                     'peace_id' => $user->peace_id, 
+                     'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
+                     'trip_type' => 'ONE_WAY',
+                     'booking_id' => $bookingId
+                 ]);    
+ 
+                 $ticketCount += 1;
+ 
+             }             
             
 
             // create invoice table   // add booking_id
@@ -201,7 +228,7 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            dd($response);
+            // dd($response);
             if (!array_key_exists('AirBookingResponse', $response)) {
                 return response()->json([
                     "error" => true,
@@ -224,60 +251,109 @@ class CreateBookingController extends Controller
                 'booking_reference_id' => $bookingReferenceID
             ]);
 
-            $arrival_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
-            $departure_time = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-            $origin = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-            $destination = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-        
-            // get the list of all the tickets 
             $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+            $bookOriginDestinationOptionList = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
             $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             $ticketCount = 0;
 
-            if ($this->isAssociativeArray($ticketItemList)) {
-                // dump('I associate ran');
-                foreach($ticketItemList as $ticketItem) {                    
-                   
+            if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
+                $arrival_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
+                $departure_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureDateTime'];
+                $origin = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+                $destination = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                
+                if ($this->checkArray->isAssociativeArray($ticketItemList)) {                     
                     FlightRecord::create([
                         'origin' => $origin, 
                         'destination' => $destination, 
                         'arrival_time' => $arrival_time, 
                         'departure_time'=> $departure_time,
                         'peace_id' => $user->peace_id, 
-                        'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
+                        'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
                         'trip_type' => 'ONE_WAY',
                         'booking_id' => $bookingId
-                    ]);
+                    ]);  
+                    $ticketCount += 1;
 
-                    //dd('I ran');
-                    $ticketCount += 1;            
-                }                        
-            
+                } else {
+                    foreach($ticketItemList as $ticketItem) {
+                        FlightRecord::create([
+                            'origin' => $origin, 
+                            'destination' => $destination, 
+                            'arrival_time' => $arrival_time, 
+                            'departure_time'=> $departure_time,
+                            'peace_id' => $user->peace_id, 
+                            'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
+                            'trip_type' => 'ONE_WAY',
+                            'booking_id' => $bookingId
+                        ]); 
+                        
+                        $ticketCount += 1;
+                    }
+                }
+
             } else {
-                // dump('unassociative array ran');
+
+                if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+                    
+                    foreach($bookOriginDestinationOptionList as $bookOriginDestinationOption) {
+                        $arrival_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
+                        $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
+                        $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+                        $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                        
+                        FlightRecord::create([
+                            'origin' => $origin, 
+                            'destination' => $destination, 
+                            'arrival_time' => $arrival_time, 
+                            'departure_time'=> $departure_time,
+                            'peace_id' => $user->peace_id, 
+                            'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
+                            'trip_type' => 'MULTI_CITY',
+                            'booking_id' => $bookingId
+                        ]);  
+
+                        $ticketCount += 1;
+                    
+                    }
+                    
+                } else {
+                    foreach($ticketItemList as $ticketItem) {
+                        $passengeType = $ticketItem['airTraveler']['passengerTypeCode'];
+                        foreach($bookOriginDestinationOptionList as $bookOriginDestinationOption) {
+                            $arrival_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
+                            $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
+                            $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+                            $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                            
+                            FlightRecord::create([
+                                'origin' => $origin, 
+                                'destination' => $destination, 
+                                'arrival_time' => $arrival_time, 
+                                'departure_time'=> $departure_time,
+                                'peace_id' => $user->peace_id, 
+                                'passenger_type' => $passengeType,
+                                'trip_type' => 'MULTI_CITY',
+                                'booking_id' => $bookingId
+                            ]); 
+                            
+                            $ticketCount += 1;
+                        
+                        }
+                    }                    
+                }
                 
-                FlightRecord::create([
-                    'origin' => $origin, 
-                    'destination' => $destination, 
-                    'arrival_time' => $arrival_time, 
-                    'departure_time'=> $departure_time,
-                    'peace_id' => $user->peace_id, 
-                    'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
-                    'trip_type' => 'ONE_WAY',
-                    'booking_id' => $bookingId
-                ]);    
-
-                $ticketCount += 1;
-
             }
+            
+        
+          
 
             // create invoice table   // add booking_id
             $invoice = InvoiceRecord::create([
                 'amount' => $amount,
                 'booking_id' => $bookingReferenceIDList['ID'],
                 'is_paid' => false
-            ]);
-            
+            ]);            
 
             // create invoice_items table
             InvoiceItem::create([
@@ -316,6 +392,6 @@ class CreateBookingController extends Controller
         }
 
         // Check if the array is associative by looking at the keys
-        return array_keys($array) == range(0, count($array) - 1);
+        return array_keys($array) !== range(0, count($array) - 1);
     }
 }
