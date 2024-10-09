@@ -7,10 +7,11 @@ use App\Models\Admin\Option;
 use App\Models\Admin\Survey;
 use Illuminate\Http\Request;
 use App\Models\Admin\Question;
+use App\Models\PointAllocation;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Admin\SurveyUserResponse;
 use App\Http\Requests\Admin\CreateSurveyRequest;
-use App\Models\PointAllocation;
 
 class SurveyController extends Controller
 {
@@ -23,14 +24,12 @@ class SurveyController extends Controller
             $questions = $request->input('questions');
             $duration_of_survey = $request->input('duration_of_survey');
             $points_awarded = $request->input('points_awarded');
-            $image_url = $request->input('image_url');
 
             $survey = Survey::create([
                 'title' => $title,
                 // 'duration_of_survey' => now()->addMinutes($duration_of_survey),
                 'duration_of_survey' => $duration_of_survey,
                 'points_awarded' => $points_awarded,
-                'image_url' => $image_url
             ]);
 
             foreach($questions as $question) {
@@ -63,6 +62,34 @@ class SurveyController extends Controller
 
         ]);
 
+
+    }
+
+    public function updateSurveyImage(Request $request, Survey $survey) {        
+        try {
+            if ($request->file('image_url')) {
+                // store the file in the admin-profile-images folder
+                    $path = $request->file('image_url')->store('survey-images');
+                    // store the path to the image
+                    $survey->image_url = $path;
+
+                    $imageUrlLink = Storage::url($path);
+
+                    $survey->save();
+
+                    return response()->json([
+                        "error" => false,
+                        "message" => "Survey image updated successfully",
+                        "image_url_link" => $imageUrlLink
+                    ], 200);
+               }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ]);
+        }
+        
 
     }
 
@@ -133,7 +160,9 @@ class SurveyController extends Controller
         try {
             // Fetch the survey with its questions and options
             $survey = $survey->load(['questions.options']);
-            
+            $image_url = $survey->image_url;
+
+            $image_url_link = Storage::url($image_url);
 
             // Prepare the data to return
             $results = [];
@@ -166,14 +195,18 @@ class SurveyController extends Controller
                     ];
                 }
 
-                $results[] = $questionResults;
+                $results[] = [$questionResults];
             }
 
+            $surveyData = [
+                "image_url_link" => $image_url_link,
+                ...$results
+            ];
             // Return the survey results with percentage data
             return response()->json([
                 'error' => false,
                 'message' => 'Survey results retrieved successfully',
-                'data' => $results
+                'data' => $surveyData
             ]);
 
         } catch (\Throwable $th) {
@@ -189,14 +222,12 @@ class SurveyController extends Controller
         $title = $request->input('title');
         $duration_of_survey = $request->input('duration_of_survey');
         $points_awarded = $request->input('points_awarded');
-        $image_url = $request->input('image_url');
         $requestQuestions = $request->input('questions');
 
         $survey->update([
             'title' => $title,
             'duration_of_survey' => $duration_of_survey,
             'points_awarded' => $points_awarded,
-            'image_url' => $image_url
         ]);
        
 
@@ -230,6 +261,14 @@ class SurveyController extends Controller
     public function showSurvey(Survey $survey) {
         try {
             $survey = $survey->load('questions.options');
+            $image_url = $survey->image_url;
+
+            $image_url_link = Storage::url($image_url);
+
+            $surveyData = [
+                "image_url_link" => $image_url_link,
+                "survey" => $survey
+            ];
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -241,7 +280,7 @@ class SurveyController extends Controller
 
         return response()->json([
             'error' => false,
-            'survey' => $survey
+            'surveyData' => $surveyData
         ], 200);
 
     }
