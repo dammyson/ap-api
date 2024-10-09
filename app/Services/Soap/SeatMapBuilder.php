@@ -43,15 +43,7 @@ class SeatMapBuilder {
         $distance, 
         $airEquipType, 
         $changeOfGuage,
-        $flightNotesDeiCodeOne, 
-        $flightNotesExplanationOne, 
-        $flightNotesNoteOne,
-        $flightNotesDeiCodeTwo, 
-        $flightNotesExplanationTwo, 
-        $flightNotesNoteTwo,
-        $flightNotesDeiCodeThree, 
-        $flightNotesExplanationThree, 
-        $flightNotesNoteThree,
+        $flightNotes,         
         $flownMileageQty, 
         $iatciFlight, 
         $journeyDuration, 
@@ -148,21 +140,9 @@ class SeatMapBuilder {
                            <airEquipType>' . htmlspecialchars($airEquipType, ENT_XML1, 'UTF-8') . '</airEquipType>
                            <changeofGauge>' . htmlspecialchars($changeOfGuage, ENT_XML1, 'UTF-8') . '</changeofGauge>
                         </equipment>
-                        <flightNotes>
-                           <deiCode>' . htmlspecialchars($flightNotesDeiCodeOne, ENT_XML1, 'UTF-8') . '</deiCode>
-                           <explanation>' . htmlspecialchars($flightNotesExplanationOne, ENT_XML1, 'UTF-8') . '</explanation>
-                           <note>' . htmlspecialchars($flightNotesNoteOne, ENT_XML1, 'UTF-8') . '</note>
-                        </flightNotes>
-                        <flightNotes>
-                           <deiCode>' . htmlspecialchars($flightNotesDeiCodeTwo, ENT_XML1, 'UTF-8') . '</deiCode>
-                           <explanation>' . htmlspecialchars($flightNotesExplanationTwo, ENT_XML1, 'UTF-8') . ' </explanation>
-                           <note>' . htmlspecialchars($flightNotesNoteTwo, ENT_XML1, 'UTF-8') . '</note>
-                        </flightNotes>
-                        <flightNotes>
-                           <deiCode>' . htmlspecialchars($flightNotesDeiCodeThree, ENT_XML1, 'UTF-8') . '</deiCode>
-                           <explanation>' . htmlspecialchars($flightNotesExplanationThree, ENT_XML1, 'UTF-8') . '</explanation>
-                           <note>' . htmlspecialchars($flightNotesNoteThree, ENT_XML1, 'UTF-8') . '</note>
-                        </flightNotes>
+                       
+                        ' . $this->flightNotes($flightNotes) .'
+                        
                         <flownMileageQty>' . htmlspecialchars($flownMileageQty, ENT_XML1, 'UTF-8') . '</flownMileageQty>
                         <groundDuration/>
                         <iatciFlight>' . htmlspecialchars($iatciFlight, ENT_XML1, 'UTF-8') . '</iatciFlight>
@@ -198,4 +178,18 @@ class SeatMapBuilder {
       ';
       return $xml;
    } 
+
+   public function flightNotes($flightNotes) {
+      $xml = '';
+      foreach($flightNotes as $string) {
+        $xml .= '<flightNotes>
+            <deiCode>' . htmlspecialchars($string['deiCode'], ENT_XML1, 'UTF-8') . '</deiCode>
+            <explanation>' . htmlspecialchars($string['explanation'], ENT_XML1, 'UTF-8') . '</explanation>
+            <note>' . htmlspecialchars($string['note'], ENT_XML1, 'UTF-8') . '</note>
+         </flightNotes>';
+                        
+      }
+
+      return $xml;
+   }
 }

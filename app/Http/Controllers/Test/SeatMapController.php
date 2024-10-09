@@ -58,15 +58,7 @@ class SeatMapController extends Controller
         $distance = $request->input('distance'); 
         $airEquipType = $request->input('airEquipType'); 
         $changeOfGuage = $request->input('changeOfGuage');
-        $flightNotesDeiCodeOne = $request->input('flightNotesDeiCodeOne'); 
-        $flightNotesExplanationOne = $request->input('flightNotesExplanationOne'); 
-        $flightNotesNoteOne = $request->input('flightNotesNoteOne');
-        $flightNotesDeiCodeTwo = $request->input('flightNotesDeiCodeTwo'); 
-        $flightNotesExplanationTwo = $request->input('flightNotesExplanationTwo'); 
-        $flightNotesNoteTwo = $request->input('flightNotesNoteTwo');
-        $flightNotesDeiCodeThree = $request->input('flightNotesDeiCodeThree'); 
-        $flightNotesExplanationThree = $request->input('flightNotesExplanationThree'); 
-        $flightNotesNoteThree = $request->input('flightNotesNoteThree');
+        $flightNotes = $request->input('flightNotes'); 
         $flownMileageQty = $request->input('flownMileageQty'); 
         $iatciFlight = $request->input('iatciFlight'); 
         $journeyDuration = $request->input('journeyDuration'); 
@@ -126,15 +118,7 @@ class SeatMapController extends Controller
             $distance, 
             $airEquipType, 
             $changeOfGuage,
-            $flightNotesDeiCodeOne, 
-            $flightNotesExplanationOne, 
-            $flightNotesNoteOne,
-            $flightNotesDeiCodeTwo, 
-            $flightNotesExplanationTwo, 
-            $flightNotesNoteTwo,
-            $flightNotesDeiCodeThree, 
-            $flightNotesExplanationThree, 
-            $flightNotesNoteThree,
+            $flightNotes,            
             $flownMileageQty, 
             $iatciFlight, 
             $journeyDuration, 

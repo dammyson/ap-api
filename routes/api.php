@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\AddBaggagesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\TierController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PlaneController;
 use App\Http\Controllers\FlightController;
@@ -22,8 +22,12 @@ use App\Http\Controllers\GameRuleController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\FillSurveyController;
 use App\Http\Controllers\UserSurveyController;
+use App\Http\Controllers\AddBaggagesController;
+use App\Http\Controllers\TestPaymentController;
 use App\Services\Soap\VoidTicketRequestBuilder;
 use App\Http\Controllers\Admin\SurveyController;
+use App\Http\Controllers\CancelFlightController;
+use App\Http\Controllers\ChangeFlightController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\Test\AddSeatController;
 use App\Http\Controllers\Test\SeatMapController;
@@ -32,6 +36,7 @@ use App\Http\Controllers\RedeemedRewardController;
 use App\Http\Controllers\Test\addWeightController;
 use App\Http\Controllers\Test\DividePNRController;
 use App\Http\Controllers\SharePeacePointController;
+use App\Http\Controllers\Test\TestWeightController;
 use App\Http\Controllers\Test\VoidTicketController;
 use App\Http\Controllers\Admin\LoginAdminController;
 use App\Http\Controllers\Test\DivideDinerController;
@@ -51,15 +56,11 @@ use App\Http\Controllers\Admin\TeamMembersAdminController;
 use App\Http\Controllers\Test\TicketReservationController;
 use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
-use App\Http\Controllers\CancelFlightController;
-use App\Http\Controllers\ChangeFlightController;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
-use App\Http\Controllers\Test\TestWeightController;
-use App\Http\Controllers\TierController;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 
@@ -238,6 +239,8 @@ Route::group(["middleware" => ["auth:api"]], function() {
     });
 });
 
+
+
 Route::group(["middleware" => ["auth:api"]], function () {    
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
@@ -249,6 +252,12 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
     });
+
+    
+    Route::prefix('wallet')->group(function () {
+        Route::get('/{ref}', [TestPaymentController::class, 'verify'])->name('wallet.top_up');
+    });
+
 
     Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);
     Route::post('cancel-flight-commit', [CancelFlightController::class, 'cancelFlightCommit']);

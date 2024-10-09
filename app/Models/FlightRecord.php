@@ -15,6 +15,7 @@ class FlightRecord extends Model
         'arrival_time', 
         'departure_time',
         'peace_id', 
+        'passenger_name',
         'passenger_type',
         'trip_type',
         'booking_id'

@@ -112,6 +112,7 @@ class AddSeatBuilder {
          $personNameGivenName, 
          $personNameNameTitle, 
          $personNameShareMarketInd, 
+         $personNameNameSurname,
          $personNameENGivenName, 
          $personNameENNameTitle, 
          $personNameENShareMarketInd, 
@@ -329,7 +330,7 @@ class AddSeatBuilder {
                              <givenName>' . htmlspecialchars($personNameGivenName, ENT_XML1, 'UTF-8') . '</givenName>
                              <nameTitle>' . htmlspecialchars($personNameNameTitle, ENT_XML1, 'UTF-8') . '</nameTitle>
                              <shareMarketInd>' . htmlspecialchars($personNameShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                             <surname>' . htmlspecialchars($personNameSurname, ENT_XML1, 'UTF-8') . '</surname>
+                             <surname>' . htmlspecialchars($personNameNameSurname, ENT_XML1, 'UTF-8') . '</surname>
                           </personName>
                           <personNameEN>
                              <givenName>' . htmlspecialchars($personNameENGivenName, ENT_XML1, 'UTF-8') . '</givenName>
@@ -361,17 +362,6 @@ class AddSeatBuilder {
                           <ID>' . htmlspecialchars($bookingReferenceIDID, ENT_XML1, 'UTF-8') . '</ID>
                           <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
                        </bookingReferenceID>
-                       <fullfillment>
-                        <creditCardList>
-                              <capturePaymentToolNumber>true</capturePaymentToolNumber>
-                              <paymentReferenceID>1337</paymentReferenceID>
-                              <cardHolderName>TEST TEST</cardHolderName>
-                              <cardNumber>1111111111111111</cardNumber>
-                              <validUntil>12/2018</validUntil>
-                              <validationCode>111</validationCode>
-                           </creditCardList>
-                       
-                       </fullfillment>
                     </AddSsrRequest>
               </impl:AddSsr>
            </soapenv:Body>
