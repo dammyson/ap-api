@@ -134,6 +134,7 @@ class CreateBookingController extends Controller
                         'arrival_time' => $arrival_time, 
                         'departure_time'=> $departure_time,
                         'peace_id' => $user->peace_id, 
+                        'passenger_name' =>  $ticketItem['airTraveler']["personName"]["givenName"],
                         'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
                         'trip_type' => 'ONE_WAY',
                         'booking_id' => $bookingId
@@ -151,8 +152,9 @@ class CreateBookingController extends Controller
                      'destination' => $destination, 
                      'arrival_time' => $arrival_time, 
                      'departure_time'=> $departure_time,
-                     'peace_id' => $user->peace_id, 
-                     'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
+                     'peace_id' => $user->peace_id,
+                     'passenger_name' =>  $ticketItemList['airTraveler']["personName"]["givenName"],
+                     'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],                        
                      'trip_type' => 'ONE_WAY',
                      'booking_id' => $bookingId
                  ]);    
@@ -269,6 +271,7 @@ class CreateBookingController extends Controller
                         'arrival_time' => $arrival_time, 
                         'departure_time'=> $departure_time,
                         'peace_id' => $user->peace_id, 
+                        'passenger_name' =>  $ticketItemList['airTraveler']["personName"]["givenName"],
                         'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
                         'trip_type' => 'ONE_WAY',
                         'booking_id' => $bookingId
@@ -283,6 +286,7 @@ class CreateBookingController extends Controller
                             'arrival_time' => $arrival_time, 
                             'departure_time'=> $departure_time,
                             'peace_id' => $user->peace_id, 
+                            'passenger_name' =>  $ticketItem['airTraveler']["personName"]["givenName"],
                             'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
                             'trip_type' => 'ONE_WAY',
                             'booking_id' => $bookingId
@@ -308,6 +312,7 @@ class CreateBookingController extends Controller
                             'arrival_time' => $arrival_time, 
                             'departure_time'=> $departure_time,
                             'peace_id' => $user->peace_id, 
+                            'passenger_name' =>  $ticketItemList['airTraveler']["personName"]["givenName"],
                             'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
                             'trip_type' => 'MULTI_CITY',
                             'booking_id' => $bookingId
@@ -320,6 +325,7 @@ class CreateBookingController extends Controller
                 } else {
                     foreach($ticketItemList as $ticketItem) {
                         $passengeType = $ticketItem['airTraveler']['passengerTypeCode'];
+                        $passengerName = $ticketItem['airTraveler']["personName"]["givenName"];
                         foreach($bookOriginDestinationOptionList as $bookOriginDestinationOption) {
                             $arrival_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
                             $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
@@ -332,6 +338,7 @@ class CreateBookingController extends Controller
                                 'arrival_time' => $arrival_time, 
                                 'departure_time'=> $departure_time,
                                 'peace_id' => $user->peace_id, 
+                                'passenger_name'=> $passengerName,
                                 'passenger_type' => $passengeType,
                                 'trip_type' => 'MULTI_CITY',
                                 'booking_id' => $bookingId
