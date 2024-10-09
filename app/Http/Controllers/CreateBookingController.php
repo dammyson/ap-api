@@ -286,7 +286,7 @@ class CreateBookingController extends Controller
                             'arrival_time' => $arrival_time, 
                             'departure_time'=> $departure_time,
                             'peace_id' => $user->peace_id, 
-                            'passenger_name' =>  $ticketItem['airTraveler']["personName"]["givenName"],
+                            'passenger_name' => $ticketItem['airTraveler']["personName"]["givenName"],
                             'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
                             'trip_type' => 'ONE_WAY',
                             'booking_id' => $bookingId
@@ -349,9 +349,8 @@ class CreateBookingController extends Controller
                         }
                     }                    
                 }
-                
-            }
-            
+
+            }         
         
           
 
