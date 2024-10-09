@@ -26,7 +26,6 @@ class CreateSurveyRequest extends FormRequest
             'title' => 'required|string',
             'duration_of_survey' => 'required|integer',
             'points_awarded' => 'sometimes|integer|min:0',
-            'image_url' => 'required|string',
             'questions' => 'required|array',
             'questions.*.question_text' => 'required|string',
             'questions.*.is_multiple_choice' => 'required|boolean',

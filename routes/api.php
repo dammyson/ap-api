@@ -61,6 +61,7 @@ use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
+use Psy\Sudo;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 
@@ -118,6 +119,7 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::get('/survey-table', [SurveyController::class, 'surveyTable']);
             Route::group(['prefix' => '{survey}'], function () {
                 Route::get('/', [SurveyController::class, 'showSurvey']);  
+                Route::post('update-survey-image', [SurveyController::class, 'updateSurveyImage']);
                 Route::patch('toogle-publish-survey', [SurveyController::class, 'tooglePublishSurvey']);
                 Route::put('edit', [SurveyController::class, 'editSurvey']);                
                 Route::delete('delete', [SurveyController::class, 'deleteSurvey']);
