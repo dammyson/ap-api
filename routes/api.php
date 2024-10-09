@@ -195,7 +195,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
         });
 
         Route::group(['prefix' => 'surveys'], function() {
-            Route::get('/', [UserSurveyController::class, 'indexSurvey']);
+            Route::get('/', [UserSurveyController::class, 'indexSurvey']);   
             Route::post('/{survey}/fill-survey', [UserSurveyController::class, 'fillSurvey']);
            
         });
