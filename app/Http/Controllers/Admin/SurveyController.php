@@ -36,6 +36,7 @@ class SurveyController extends Controller
             foreach($questions as $question) {
                 $quest = Question::create([
                     'question_text' => $question['question_text'],
+                    'is_multiple_choice' => $question['is_multiple_choice'],
                     'survey_id' => $survey->id 
                 ]);
 
