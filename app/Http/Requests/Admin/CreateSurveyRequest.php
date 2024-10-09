@@ -29,6 +29,7 @@ class CreateSurveyRequest extends FormRequest
             'image_url' => 'required|string',
             'questions' => 'required|array',
             'questions.*.question_text' => 'required|string',
+            'questions.*.is_multiple_choice' => 'required|boolean',
             'questions.*.options' => 'required|array',
             'questions.*.options.*.option_text' => 'required|string',
 
