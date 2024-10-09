@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Admin\ActivityLog;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Admin\ActivityLog;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateFilterActivityRequest;
 
 class ActivityLogAdminController extends Controller
 {
@@ -57,4 +59,28 @@ class ActivityLogAdminController extends Controller
             'activityLog' => $activityLogs
         ], 200);
     }
+
+    public function filterActivityLog(CreateFilterActivityRequest $request) {
+        $startDate = $request->input('start_date');
+        $endDate = Carbon::parse($request->input('end_date') ?? now())->endOfDay();
+
+        try {
+            $filteredActivityLog = ActivityLog::whereBetween('created_at', [$startDate, $endDate])
+                ->with(['admin' => function($query) {
+                    $query->select('id', 'user_name', 'role');
+                }])->get();
+
+        } catch(\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'error' => false,
+            'filtered_activity_log' => $filteredActivityLog
+        ], 200);
+    }
+
 }
