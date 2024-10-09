@@ -141,12 +141,6 @@ class AddSeatController extends Controller
         $ssrCode = $request->input('ssrCode');
         $ssrGroup = $request->input('ssrGroup');
         $ssrExplanation = $request->input('ssrExplanation'); 
-        $bookingReferenceCompanyCityCode = $request->input('bookingReferenceCompanyCityCode'); 
-        $bookingReferenceCompanyCode = $request->input('bookingReferenceCompanyCode'); 
-        $bookingReferenceCodeContext = $request->input('bookingReferenceCodeContext'); 
-        $bookingReferenceCompanyFullName = $request->input('bookingReferenceCompanyFullName'); 
-        $bookingReferenceCompanyShortName = $request->input('bookingReferenceCompanyShortName'); 
-        $bookingReferenceCountryCode = $request->input('bookingReferenceCountryCode'); 
         $bookingReferenceIDID = $request->input('bookingReferenceIDID'); 
         $referenceID = $request->input('referenceID');
         
@@ -273,18 +267,12 @@ class AddSeatController extends Controller
             $ssrCode,
             $ssrGroup,
             $ssrExplanation, 
-            $bookingReferenceCompanyCityCode, 
-            $bookingReferenceCompanyCode, 
-            $bookingReferenceCodeContext, 
-            $bookingReferenceCompanyFullName, 
-            $bookingReferenceCompanyShortName, 
-            $bookingReferenceCountryCode, 
             $bookingReferenceIDID, 
             $referenceID
         );
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
-        dd($xml);
+        // dd($xml);
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
             dd($response);

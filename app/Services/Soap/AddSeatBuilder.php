@@ -126,12 +126,6 @@ class AddSeatBuilder {
          $ssrCode,
          $ssrGroup,
          $ssrExplanation, 
-         $bookingReferenceCompanyCityCode, 
-         $bookingReferenceCompanyCode, 
-         $bookingReferenceCodeContext, 
-         $bookingReferenceCompanyFullName, 
-         $bookingReferenceCompanyShortName, 
-         $bookingReferenceCountryCode, 
          $bookingReferenceIDID, 
          $referenceID
       ) {
@@ -352,12 +346,12 @@ class AddSeatBuilder {
                        </ancillaryRequestList>
                        <bookingReferenceID>
                           <companyName>
-                             <cityCode>' . htmlspecialchars($bookingReferenceCompanyCityCode, ENT_XML1, 'UTF-8') . '</cityCode>
-                             <code>' . htmlspecialchars($bookingReferenceCompanyCode, ENT_XML1, 'UTF-8') . '</code>
-                             <codeContext>' . htmlspecialchars($bookingReferenceCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
-                             <companyFullName>' . htmlspecialchars($bookingReferenceCompanyFullName, ENT_XML1, 'UTF-8') . '</companyFullName>
-                             <companyShortName>' . htmlspecialchars($bookingReferenceCompanyShortName, ENT_XML1, 'UTF-8') . '</companyShortName>
-                             <countryCode>' . htmlspecialchars($bookingReferenceCountryCode, ENT_XML1, 'UTF-8') . '</countryCode>
+                             <cityCode>LOS</cityCode>
+                             <code>P4</code>
+                             <codeContext>CRANE</codeContext>
+                             <companyFullName>SCINTILLA</companyFullName>
+                             <companyShortName>SCINTILLA</companyShortName>
+                             <countryCode>NG</countryCode>
                           </companyName>
                           <ID>' . htmlspecialchars($bookingReferenceIDID, ENT_XML1, 'UTF-8') . '</ID>
                           <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>

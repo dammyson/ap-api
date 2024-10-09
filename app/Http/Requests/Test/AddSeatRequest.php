@@ -147,12 +147,6 @@ class AddSeatRequest extends FormRequest
             "ssrCode" => "required|string",
             "ssrGroup" => "required|string",
             "ssrExplanation" => "required|string", 
-            "bookingReferenceCompanyCityCode" => "required|string", 
-            "bookingReferenceCompanyCode" => "required|string", 
-            "bookingReferenceCodeContext" => "required|string", 
-            "bookingReferenceCompanyFullName" => "required|string", 
-            "bookingReferenceCompanyShortName" => "required|string", 
-            "bookingReferenceCountryCode" => "required|string", 
             "bookingReferenceIDID" => "required|string", 
             "referenceID" => "required|string"
         ];

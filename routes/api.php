@@ -111,6 +111,7 @@ Route::group(['prefix' => 'admin/'], function () {
         Route::group(['prefix' => 'activity-log'], function() {
             Route::post('create-activity-log', [ActivityLogAdminController::class, 'storeActivityLog']);
             Route::get('activity-log-table-data', [ActivityLogAdminController::class, 'indexActivityLog']);
+            Route::post('filter-survey', [ActivityLogAdminController::class, 'filterActivityLog']);
         });
 
         Route::group(['prefix' => 'surveys'], function () {
