@@ -164,12 +164,6 @@ Route::group(["middleware" => ["auth:api"]], function() {
             Route::post('/commit', [VoidTicketController::class, 'voidTicketCommit']);
         });
 
-        Route::group(['prefix' => 'activity-log'], function() {
-            Route::post('create-activity-log', [ActivityLogAdminController::class, 'storeActivityLog']);
-            Route::get('activity-log-table-data', [ActivityLogAdminController::class, 'indexActivityLog']);
-            Route::post('filter-survey', [ActivityLogAdminController::class, 'filterActivityLog']);
-        });
-        
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
             Route::post('/view-only-rt', [TicketReservationController::class, 'ticketReservationViewOnlyRT']);
