@@ -17,6 +17,7 @@ class SurveyCollection extends ResourceCollection
     {
         return $this->collection->map(function ($survey) {
             return [
+                "id" => $survey->id,
                 'title' => $survey->title, 
                 'duration_of_survey' => $survey->duration_of_survey, 
                 'image_url' => $survey->image_url, 

@@ -256,8 +256,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
     });
 
     
-    Route::prefix('wallet')->group(function () {
-        Route::post('/{ref}', [TestPaymentController::class, 'verify'])->name('wallet.top_up');
+    Route::prefix('verify-payment')->group(function () {
+        Route::post('/ref', [TestPaymentController::class, 'verify'])->name('wallet.top_up');
     });
 
 

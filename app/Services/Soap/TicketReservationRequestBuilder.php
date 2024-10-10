@@ -175,23 +175,9 @@ class TicketReservationRequestBuilder
     }
 
     public function ticketReservationCommit(
-        $companyNameCityCode,
-        $companyNameCode,
-        $companyNameCodeContext,
-        $companyFullName,
-        $companyShortName,
-        $companyNameCountryCode,
         $ID,
         $referenceID,
-        $capturePaymentToolNumber,
-        $paymentCode,
-        $threeDomainSecurityEligible,
-        $MCONumber,
-        $code,
-        $value,
-        $paymentType,
-        $primaryPayment,
-        $requestPurpose
+        $value        
      ) {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -211,12 +197,12 @@ class TicketReservationRequestBuilder
                        <!-- Optional: -->
                        <bookingReferenceID>
                           <companyName>
-                             <cityCode>' . htmlspecialchars($companyNameCityCode, ENT_XML1, 'UTF-8') . '</cityCode>
-                             <code>' . htmlspecialchars($companyNameCode, ENT_XML1, 'UTF-8') . '</code>
-                             <codeContext>' . htmlspecialchars($companyNameCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
-                             <companyFullName>' . htmlspecialchars($companyFullName, ENT_XML1, 'UTF-8') . '</companyFullName>
-                             <companyShortName>' . htmlspecialchars($companyShortName, ENT_XML1, 'UTF-8') . '</companyShortName>
-                             <countryCode>' . htmlspecialchars($companyNameCountryCode, ENT_XML1, 'UTF-8') . '</countryCode>
+                             <cityCode>LOS</cityCode>
+                             <code>P4</code>
+                             <codeContext>CRANE</codeContext>
+                             <companyFullName>SCINTILLA</companyFullName>
+                             <companyShortName>SCINTILLA</companyShortName>
+                             <countryCode>NG</countryCode>
                           </companyName>
                           <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
                           <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
@@ -227,26 +213,26 @@ class TicketReservationRequestBuilder
                           <paymentDetailList>
                              <miscChargeOrder>
                                 <avsEnabled/>
-                                <capturePaymentToolNumber>' . htmlspecialchars($capturePaymentToolNumber, ENT_XML1, 'UTF-8') . '</capturePaymentToolNumber>
-                                <paymentCode>' . htmlspecialchars($paymentCode, ENT_XML1, 'UTF-8') . '</paymentCode>
-                                <threeDomainSecurityEligible>' . htmlspecialchars($threeDomainSecurityEligible, ENT_XML1, 'UTF-8') . '</threeDomainSecurityEligible>
+                                <capturePaymentToolNumber>true</capturePaymentToolNumber>
+                                <paymentCode>INV</paymentCode>
+                                <threeDomainSecurityEligible>false</threeDomainSecurityEligible>
                                 <transactionFeeApplies/>
-                                <MCONumber>' . htmlspecialchars($MCONumber, ENT_XML1, 'UTF-8') . '</MCONumber>
+                                <MCONumber>4010026732</MCONumber>
                              </miscChargeOrder>
                              <payLater/>
                              <paymentAmount>
                              <currency>
-                                <code>' . htmlspecialchars($code, ENT_XML1, 'UTF-8') . '</code>
+                                <code>NGN</code>
                              </currency>
                              <mileAmount/>
                              <value>' . htmlspecialchars($value, ENT_XML1, 'UTF-8') . '</value>
                              </paymentAmount>
-                             <paymentType>' . htmlspecialchars($paymentType, ENT_XML1, 'UTF-8') . '</paymentType>
-                             <primaryPayment>' . htmlspecialchars($primaryPayment, ENT_XML1, 'UTF-8') . '</primaryPayment>
+                             <paymentType>MISC_CHARGE_ORDER</paymentType>
+                             <primaryPayment>true</primaryPayment>
                           </paymentDetailList>
                           </paymentDetails>
                         </fullfillment>
-                       <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
+                       <requestPurpose>COMMIT</requestPurpose>
                     </AirTicketReservationRequest>
                  </impl:TicketReservation>
               </soapenv:Body>
