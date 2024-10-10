@@ -166,7 +166,7 @@ class SurveyController extends Controller
             $image_url_link = Storage::url($image_url);
 
             // Prepare the data to return
-            $results = ["image_url_link" => $image_url_link];
+            $results = [];
 
             foreach ($survey->questions as $question) {
                 $questionResults = [
@@ -204,7 +204,7 @@ class SurveyController extends Controller
             return response()->json([
                 'error' => false,
                 'message' => 'Survey results retrieved successfully',
-                // "image_url_link" => $image_url_link,
+                "image_url_link" => $image_url_link,
                 'results' => $results
             ]);
 
