@@ -201,7 +201,7 @@ class SurveyController extends Controller
 
             $surveyData = [
                 "image_url_link" => $image_url_link,
-                ...$results
+                $results
             ];
             // Return the survey results with percentage data
             return response()->json([
