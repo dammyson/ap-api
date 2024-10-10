@@ -352,7 +352,8 @@ class AddWeightController extends Controller
             return response()->json([
                 "error" => false,
                 "message" => "Baggages added successfully",
-                'invoice_id' => $invoice->id
+                'invoice_id' => $invoice->id,
+                "amount" => $amount
             ], 200);
 
         } catch (\Exception $e) {

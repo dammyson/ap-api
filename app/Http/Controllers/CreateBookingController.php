@@ -373,6 +373,7 @@ class CreateBookingController extends Controller
                 "booking_id" => $bookingReferenceIDList['ID'],
                 "reference_id" => $bookingReferenceIDList['referenceID'],
                 "invoice_id" => $invoice->id,
+                "amount" => $amount,
                 "timeLimit" => $timeLimit,
                 "timeLimitUTC" => $timeLimitUTC
             ];
