@@ -6,14 +6,14 @@ use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TeamMembersCollection;
 
 class TeamMembersAdminController extends Controller
 {
     public function teamMembers(Request $request) {
         try {
             
-            $admins = Admin::all();
-            
+            $admins = new TeamMembersCollection(Admin::paginate(10));
 
             return response()->json([
                 'error' => false,
