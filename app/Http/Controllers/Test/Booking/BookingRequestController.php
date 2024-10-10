@@ -44,14 +44,12 @@ class BookingRequestController extends Controller
                 ], 500);
             }
     
-            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
-            
-            
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
     
-           $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                $booking->booking_id,
-                $booking->booking_reference_id
-           );
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                    $booking->booking_id,
+                    $booking->booking_reference_id
+            );
     
             
             $response = $this->craneOTASoapService->run($function, $xml);

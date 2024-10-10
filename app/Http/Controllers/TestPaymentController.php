@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Test\TicketReservationController;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -10,20 +11,32 @@ use App\Services\Wallet\TopUpService;
 use App\Services\Wallet\VerificationService;
 
 class TestPaymentController extends Controller
-{
-   
-    public function verify($ref)
+{   
+    protected $ticketReservationController;
+    public function __construct(TicketReservationController $ticketReservationController)
     {
-        $user_id = Auth::user()->id;
-        $wallet = Wallet::where('user_id', $user_id)->get();
-       
+        $this->ticketReservationController = $ticketReservationController;
+    }
+   
+    public function verify(Request $request)
+    {
+            
         try {
+            $ref = $request->input('ref');
+            $bookingId = $request->input('bookingId');
+            $bookingReferenceID = $request->input('bookingReferenceID');
+            $invoiceId = $request->input('invoiceId');
+            
             $new_top_request = new VerificationService($ref);
             $verified_request = $new_top_request->run();
-            // dd($verified_request);
-            $top_up  =  new TopUpService($verified_request,  $wallet);             
-            $top_up_result =  $top_up->run();
-            return response()->json(['status' => true, 'data' =>  $top_up_result, 'message' => 'Wallet top up successfully'], 200);
+            $amount = $verified_request["data"]["amount"];
+
+            
+            //validate verifiedRequest;
+
+            // $this->ticketReservationController->ticketReservationCommit([], $invoiceId);
+            
+            // return response()->json(['status' => true, 'data' =>  $top_up_result, 'message' => 'Wallet top up successfully'], 200);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             return response()->json(['status' => false,  'message' => 'Error processing request'], 500);
