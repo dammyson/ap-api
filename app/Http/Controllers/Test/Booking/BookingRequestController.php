@@ -10,15 +10,18 @@ use App\Http\Requests\Test\Booking\ReadBookingRequest;
 use App\Http\Requests\Test\Booking\ReadBookingTkRequest;
 use App\Http\Requests\Test\Booking\RetrievePNRHistoryRequest;
 use App\Http\Requests\Test\Booking\RetrieveTicketHistoryRequest;
+use App\Services\Soap\TicketReservationRequestBuilder;
 
 class BookingRequestController extends Controller
 {
     protected $bookingBuilder;
+    protected $ticketReservationRequestBuilder;
     protected $craneOTASoapService;
     
-    public function __construct(BookingBuilder $bookingBuilder)
+    public function __construct(BookingBuilder $bookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder)
     {
       $this->bookingBuilder = $bookingBuilder; 
+      $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
       $this->craneOTASoapService = app("CraneOTASoapService");
       
     }
@@ -41,27 +44,25 @@ class BookingRequestController extends Controller
                 ], 500);
             }
     
-            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
+            
+            
     
-            $xml = $this->bookingBuilder->readBookingTK(
-                'LOS', 
-                'P4', 
-                'CRANE',
-                'SCINTILLA', 
-                'SCINTILLA', 
-                'NG', 
-                $booking->booking_id, 
+           $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                $booking->booking_id,
                 $booking->booking_reference_id
-            );
+           );
     
             
             $response = $this->craneOTASoapService->run($function, $xml);
+
+            // dd($response);
                     
-            if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
-                $this->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
+            if (isset($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']) &&
+                $this->isAssociativeArray($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'])) {
                     // dd('I ran');
-                    $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'] = 
-                    [$response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']];
+                    $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'] = 
+                    [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']];
             }
 
 
