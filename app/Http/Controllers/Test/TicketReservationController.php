@@ -66,28 +66,14 @@ class TicketReservationController extends Controller
     }
 
     public function ticketReservationViewOnly(TicketReservationViewOnlyRequest $request) {
-        $companyNameCityCode = $request->input('companyNameCityCode');
-        $companyNameCode = $request->input('companyNameCode');
-        $companyNameCodeContext = $request->input('companyNameCodeContext');
-        $companyFullName = $request->input('companyFullName');
-        $companyShortName = $request->input('companyShortName');
-        $companyNameCountryCode = $request->input('companyNameCountryCode');
         $ID = $request->input('ID');
         $referenceID = $request->input('referenceID');
-        $requestPurpose = $request->input('requestPurpose');
 
         // $function = 'http://impl.soap.ws.crane.hititcs.com/ticketReservationViewOnlyRT';
 
         $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-            $companyNameCityCode,
-            $companyNameCode,
-            $companyNameCodeContext,
-            $companyFullName,
-            $companyShortName,
-            $companyNameCountryCode,
             $ID,
-            $referenceID,
-            $requestPurpose
+            $referenceID
         );
 
         try {

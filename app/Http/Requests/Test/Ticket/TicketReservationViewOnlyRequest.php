@@ -22,15 +22,8 @@ class TicketReservationViewOnlyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "companyNameCityCode" => "required|string",
-            "companyNameCode" => "required|string",
-            "companyNameCodeContext" => "required|string",
-            "companyFullName" => "required|string",
-            "companyShortName" => "required|string",
-            "companyNameCountryCode" => "required|string",
             "ID" => "required|string",
-            "referenceID" => "required|string",
-            "requestPurpose" => "required|string"
+            "referenceID" => "required|string"
         ];
     }
 }

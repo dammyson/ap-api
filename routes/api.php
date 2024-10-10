@@ -243,7 +243,6 @@ Route::group(["middleware" => ["auth:api"]], function() {
 });
 
 
-
 Route::group(["middleware" => ["auth:api"]], function () {    
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);

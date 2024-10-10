@@ -54,15 +54,8 @@ class TicketReservationRequestBuilder
     }
 
     public function ticketReservationViewOnly(
-        $companyNameCityCode,
-        $companyNameCode,
-        $companyNameCodeContext,
-        $companyFullName,
-        $companyShortName,
-        $companyNameCountryCode,
         $ID,
         $referenceID,
-        $requestPurpose
     ) {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -82,18 +75,18 @@ class TicketReservationRequestBuilder
                        <!-- Optional: -->
                        <bookingReferenceID>
                           <companyName>
-                             <cityCode>' . htmlspecialchars($companyNameCityCode, ENT_XML1, 'UTF-8') . '</cityCode>
-                             <code>' . htmlspecialchars($companyNameCode, ENT_XML1, 'UTF-8') . '</code>
-                             <codeContext>' . htmlspecialchars($companyNameCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
-                             <companyFullName>' . htmlspecialchars($companyFullName, ENT_XML1, 'UTF-8') . '</companyFullName>
-                             <companyShortName>' . htmlspecialchars($companyShortName, ENT_XML1, 'UTF-8') . '</companyShortName>
-                             <countryCode>' . htmlspecialchars($companyNameCountryCode, ENT_XML1, 'UTF-8') . '</countryCode>
+                             <cityCode>LOS</cityCode>
+                             <code>P4</code>
+                             <codeContext>CRANE</codeContext>
+                             <companyFullName>SCINTILLA</companyFullName>
+                             <companyShortName>SCINTILLA</companyShortName>
+                             <countryCode>NG</countryCode>
                           </companyName>
                           <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
                           <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
                        </bookingReferenceID>
                        <!-- Optional: -->
-                       <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
+                       <requestPurpose>VIEW_ONLY</requestPurpose>
                     </AirTicketReservationRequest>
                  </impl:TicketReservation>
               </soapenv:Body>
