@@ -199,15 +199,13 @@ class SurveyController extends Controller
                 $results[] = [$questionResults];
             }
 
-            $surveyData = [
-                "image_url_link" => $image_url_link,
-                $results
-            ];
+          
             // Return the survey results with percentage data
             return response()->json([
                 'error' => false,
                 'message' => 'Survey results retrieved successfully',
-                'data' => $surveyData
+                "image_url_link" => $image_url_link,
+                'results' => $results
             ]);
 
         } catch (\Throwable $th) {
