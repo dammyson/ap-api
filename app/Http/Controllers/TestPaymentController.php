@@ -31,10 +31,10 @@ class TestPaymentController extends Controller
             $verified_request = $new_top_request->run();
             $amount = $verified_request["data"]["amount"];
 
-            
+            // dd($amount);
             //validate verifiedRequest;
 
-            // $this->ticketReservationController->ticketReservationCommit([], $invoiceId);
+            return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
             
             // return response()->json(['status' => true, 'data' =>  $top_up_result, 'message' => 'Wallet top up successfully'], 200);
         } catch (\Exception $exception) {

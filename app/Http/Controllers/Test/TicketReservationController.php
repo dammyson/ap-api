@@ -136,59 +136,45 @@ class TicketReservationController extends Controller
         }  
     }
 
-    public function ticketReservationCommit(TicketReservationCommitRequest $request, $invoiceId) {
-        $companyNameCityCode = $request->input('companyNameCityCode');
-        $companyNameCode = $request->input('companyNameCode');
-        $companyNameCodeContext = $request->input('companyNameCodeContext');
-        $companyFullName = $request->input('companyFullName');
-        $companyShortName = $request->input('companyShortName');
-        $companyNameCountryCode = $request->input('companyNameCountryCode');
-        $ID = $request->input('ID');
-        $referenceID = $request->input('referenceID');
-        $capturePaymentToolNumber = $request->input('capturePaymentToolNumber');
-        $paymentCode = $request->input('paymentCode');
-        $threeDomainSecurityEligible = $request->input('threeDomainSecurityEligible');
-        $MCONumber = $request->input('MCONumber');
-        $code = $request->input('code');
-        $value = $request->input('value');
-        $paymentType = $request->input('paymentType');
-        $primaryPayment = $request->input('primaryPayment');
-        $requestPurpose = $request->input('requestPurpose');
+    public function ticketReservationCommit($bookingId, $bookingReferenceId, $amount, $invoiceId) {
+        $invoice = InvoiceRecord::find($invoiceId);
 
-        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
-            $companyNameCityCode,
-            $companyNameCode,
-            $companyNameCodeContext,
-            $companyFullName,
-            $companyShortName,
-            $companyNameCountryCode,
-            $ID,
-            $referenceID,
-            $capturePaymentToolNumber,
-            $paymentCode,
-            $threeDomainSecurityEligible,
-            $MCONumber,
-            $code,
-            $value,
-            $paymentType,
-            $primaryPayment,
-            $requestPurpose
+        if (!$invoice) {
+            return response()->json([
+                "error" => true,
+                "message" => "No record of invoice"
+            ], 404);
+        } 
+
+       
+
+        if ($invoice->is_paid) {
+            // dd("Invoice already Paid for");
+            return response()->json([
+                "error" =>  true,
+                "message" => "Invoice already paid for"
+            ], 500);
+        }
+
+        if ( $amount < $invoice->amount ) {
+            return response()->json([
+                "error" => false,
+                "message" => "fund payment for ticket is less than calculated"
+            ], 500);
+        }
+
+        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
+            $bookingId,
+            $bookingReferenceId,           
+            $amount,
+          
         );
 
 
         try {
             
-            $user = $request->user();
-            $peaceId = $user->peace_id;
-
-            $invoice = InvoiceRecord::find($invoiceId);
-
-            if (!$invoice) {
-                return response()->json([
-                    "error" => false,
-                    "message" => "No record of invoice"
-                ], 500);
-            }
+            $user = auth()->user();
+            $peaceId = $user->peace_id;          
 
             
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
@@ -214,18 +200,16 @@ class TicketReservationController extends Controller
             
 
             if (array_key_exists('couponInfoList', $ticketItemList)) {
-                if (!array_key_exists('asvcSsr', $ticketItemList['couponInfoList'])) {
-                    // dump('non asvcSsr ran');
-                    $paymentReferenceID = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
+                $paymentReferenceID = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
                     $invoice_number = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['invNumber'];
                     $paymentType = $ticketItemList['paymentDetails']['paymentDetailList']['paymentType'];
                     $amount = $ticketItemList['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                     $orderID = $ticketItemList['paymentDetails']['paymentDetailList']['orderID'];
                     $ticketId = $ticketItemList['ticketDocumentNbr'];
+                
+                if (!array_key_exists('asvcSsr', $ticketItemList['couponInfoList'])) {                    
                     $reasonForIssuance = $ticketItemList['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
-                    
-
-                        
+                     
                     TransactionRecord::firstOrCreate([
                         "invoice_number" => $invoice_number
                     ], [
@@ -235,23 +219,13 @@ class TicketReservationController extends Controller
                         'ticket_type' => 'ticket',
                         'user_id' => $user->id,
                         'invoice_id' => $invoice->id
-                    ]); 
-
-                    
+                    ]);                    
                 
                 }
-                else {                        
 
-                    // dump('ssr ran');
-                    $paymentReferenceID = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
-                    $invoice_number = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                    $paymentType = $ticketItemList['paymentDetails']['paymentDetailList']['paymentType'];
-                    $orderID = $ticketItemList['paymentDetails']['paymentDetailList']['orderID'];
-                    $ticketId = $ticketItemList['ticketDocumentNbr'];
+                else { 
                     $reasonForIssuance = $ticketItemList['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
-                    $amount = $ticketItemList['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                    
-                        
+                                           
                     TransactionRecord::firstOrCreate([
                         "invoice_number" => $invoice_number
                         ],
@@ -272,14 +246,16 @@ class TicketReservationController extends Controller
                 foreach($ticketItemList as $ticketItem) {
                     // if ($ticketItem["status"] == "OK") {
                         // dump($user->first_name);
+                    $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
+                    $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                    $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
+                    $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                    $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
+                    $ticketId = $ticketItem['ticketDocumentNbr'];
+
                     if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
                         // dump('non asvcSsr ran');
-                        $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
-                        $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                        $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
-                        $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                        $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
-                        $ticketId = $ticketItem['ticketDocumentNbr'];
+                       
                         $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
                         
                           
@@ -297,19 +273,9 @@ class TicketReservationController extends Controller
                         
                     
                     }
-                    else {                        
-
-                        // dump('ssr ran');
-                        $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
-                        $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                        $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
-                        $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
-                        $ticketId = $ticketItem['ticketDocumentNbr'];
+                    else {      
                         $reasonForIssuance = $ticketItem['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
-                        $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                        
-                 
-                            
+                                                    
                         TransactionRecord::firstOrCreate([
                             "invoice_number" => $invoice_number
                         ], [
@@ -324,6 +290,8 @@ class TicketReservationController extends Controller
                 }
             }
             
+
+            dd("transaction successfully recorded");
 
             return response()->json([
                 "error" => false,
