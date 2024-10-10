@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Admin\SurveyUserResponse;
 use App\Http\Requests\Admin\CreateSurveyRequest;
+use App\Http\Resources\SurveyCollection;
 
 class SurveyController extends Controller
 {
@@ -95,7 +96,7 @@ class SurveyController extends Controller
 
     public function surveyTable() {
         try {
-            $surveyData = Survey::all();
+            $surveys = new SurveyCollection(Survey::paginate(10));
 
         } catch(\Throwable $th) {
             return response()->json([
@@ -105,7 +106,7 @@ class SurveyController extends Controller
         }
         return response()->json([
             'error' => false,
-            'survey_data' => $surveyData
+            'surveys' => $surveys
         ], 200);
 
 
