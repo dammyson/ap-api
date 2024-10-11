@@ -27,12 +27,15 @@ class TestPaymentController extends Controller
             $bookingReferenceID = $request->input('bookingReferenceID');
             $invoiceId = $request->input('invoiceId');
             
+            
+            //validate verifiedRequest;
             $new_top_request = new VerificationService($ref);
             $verified_request = $new_top_request->run();
+            
             $amount = $verified_request["data"]["amount"];
 
-            // dd($amount);
-            //validate verifiedRequest;
+            // convert from kobo back to Naira
+            $amount = $amount / 100;
 
             return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
             
