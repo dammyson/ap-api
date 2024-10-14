@@ -22,23 +22,10 @@ class VoidTicketCommitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "companyNameCityCodeOne" => "required|string", 
-            "companyNameCodeOne" => "required|string", 
-            "codeContextOne" => "required|string", 
-            "companyFullNameOne" => "required|string", 
-            "companyShortNameOne" => "required|string", 
-            "companyCountryCodeOne" => "required|string", 
-            "IDOne" => "required|string", 
-            "referenceIDOne" => "required|string", 
-            "companyNameCityCodeTwo" => "required|string",
-            "companyCodeTwo" => "required|string",
-            "companyCodeContextTwo" => "required|string",
-            "companyFullNameTwo" => "required|string",
-            "companyShortNameTwo" => "required|string",
-            "companyCountryCodeTwo" => "required|string",
-            "IDTwo" => "required|string",
-            "referenceIDTwo" => "required|string",
-            "operationType" => "required|string"
+            "booking_id" => "required|string", 
+            "booking_reference_id" => "required|string", 
+            "parent_booking_id" => "required|string",
+            "parent_booking_reference_id" => "required|string",
         ];
 
 

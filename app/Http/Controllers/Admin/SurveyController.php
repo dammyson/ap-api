@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Admin\SurveyUserResponse;
 use App\Http\Requests\Admin\CreateSurveyRequest;
 use App\Http\Resources\SurveyCollection;
+use Carbon\Carbon;
 
 class SurveyController extends Controller
 {
@@ -94,9 +95,26 @@ class SurveyController extends Controller
 
     }
 
-    public function surveyTable() {
+    public function surveyTable(Request $request) {
         try {
-            $surveys = new SurveyCollection(Survey::paginate(10));
+            $from_date = $request->input('from_date');
+            $to_date = $request->input('to_date');
+            $title = $request->input('title');
+
+            $query = Survey::query();
+            
+            if ($title) {
+                $query->where('title', $title);
+            }
+
+            if ($to_date && $from_date) {
+                $to_date = Carbon::parse($to_date)->endOfDay();
+                $query->whereBetween('created_at', [$from_date, $to_date]);
+            } else if ($from_date) {
+                $query->where('created_at', '>=', $from_date);
+            }
+
+            $filteredSurveys = new SurveyCollection($query->get());
 
         } catch(\Throwable $th) {
             return response()->json([
@@ -106,11 +124,11 @@ class SurveyController extends Controller
         }
         return response()->json([
             'error' => false,
-            'surveys' => $surveys
+            'surveys' => $filteredSurveys
         ], 200);
 
-
     }
+
 
     public function tooglePublishSurvey(Request $request, Survey $survey) {
         try {

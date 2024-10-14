@@ -288,6 +288,8 @@ class TicketReservationController extends Controller
                     }                
                 }
             }
+
+            dd($response);
             
 
             return response()->json([

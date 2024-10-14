@@ -123,7 +123,27 @@ class CreateBookingRTRequest extends FormRequest
             "MCONumber" => "required|string",
             "paymentAmountCurrencyCode" => "required|string",
             "paymentType" => "required|string",
-            "primaryPayment" => "required|boolean"
+            "primaryPayment" => "required|boolean",
+
+            "airTravelerSequence" => "sometimes|string",
+            "flightSegmentSequence" => "sometimes|string",
+            "allowedQuantityPerPassenger" => "sometimes|string",
+            "bundleRelatedSsr" => "sometimes|boolean",
+            "code" => "sometimes|string",
+            "codeContext" => "sometimes|string",
+            "exchangeable" => "sometimes|boolean",
+            "explanation" => "sometimes|string",
+            "extraBaggage" => "sometimes|boolean",
+            "SSRFree" => "sometimes|boolean",
+            "freeTextInRequest" => "sometimes|string",
+            "groupCode" => "sometimes|string",
+            "groupCodeExplanation" => "sometimes|string",
+            "iciAllowed" => "sometimes|boolean",
+            "refundable" => "sometimes|string",
+            "showOnItinerary" => "sometimes|string",
+            "unitOfMeasureExist" => "sometimes|string",
+            "serviceQuantity" => "sometimes|string",
+            "status" => "sometimes|string"
         ];
     }
 }

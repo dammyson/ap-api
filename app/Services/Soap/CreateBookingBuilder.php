@@ -42,30 +42,7 @@ class CreateBookingBuilder
             )
             .  ' <infantWithSeatCount/>
             <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
-            <fullfillment>
-            <paymentDetails>
-            <paymentDetailList>
-            <miscChargeOrder>
-            <avsEnabled/>
-            <capturePaymentToolNumber>' . htmlspecialchars($capturePayment, ENT_XML1, 'UTF-8') . '</capturePaymentToolNumber>
-            <paymentCode>' . htmlspecialchars($paymentCode, ENT_XML1, 'UTF-8') . '</paymentCode>
-            <threeDomainSecurityEligible>' . htmlspecialchars($threeDomainSecurityEligible, ENT_XML1, 'UTF-8') . '</threeDomainSecurityEligible>
-            <transactionFeeApplies/>
-            <MCONumber>' . htmlspecialchars($MCONumber, ENT_XML1, 'UTF-8') . '</MCONumber>
-            </miscChargeOrder>
-            <payLater/>
-            <paymentAmount>
-               <currency>
-                  <code>' . htmlspecialchars($paymentAmountCurrencyCode, ENT_XML1, 'UTF-8') . '</code>
-               </currency>
-               <mileAmount/>
-               <value/> 
-            </paymentAmount>
-            <paymentType>' . htmlspecialchars($paymentType, ENT_XML1, 'UTF-8') . '</paymentType>
-            <primaryPayment>' . htmlspecialchars($primaryPayment, ENT_XML1, 'UTF-8') . '</primaryPayment>
-            </paymentDetailList>
-            </paymentDetails>
-            </fullfillment>
+            
             </AirBookingRequest>
             </impl:CreateBooking>
             </soapenv:Body>
@@ -76,7 +53,27 @@ class CreateBookingBuilder
     public function createBookingOW(
         $CreateBookOriginDestinationOptionList,
         $airTravelerList,
-        $requestPurpose
+        $requestPurpose,
+        $airTravelerSequence,
+        $flightSegmentSequence,
+        $allowedQuantityPerPassenger,
+        $bundleRelatedSsr,
+        $code,
+        $codeContext,
+        $exchangeable,
+        $explanation,
+        $extraBaggage,
+        $SSRFree,
+        $freeTextInRequest,
+        $groupCode,
+        $groupCodeExplanation,
+        $iciAllowed,
+        $refundable,
+        $showOnItinerary,
+        $unitOfMeasureExist,
+        $serviceQuantity,
+        $status
+       
     ) {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -100,6 +97,28 @@ class CreateBookingBuilder
                     $this->airTravelerList( $airTravelerList) .
                     '<infantWithSeatCount/>
                     <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
+                    <specialRequestDetails>
+                        <specialServiceRequestList>
+                            <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                            <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                            <SSR>
+                                <allowedQuantityPerPassenger/>
+                                <bundleRelatedSsr/>
+                                <code>' . htmlspecialchars($code, ENT_XML1, 'UTF-8') . '</code>
+                                <explanation>' . htmlspecialchars($explanation, ENT_XML1, 'UTF-8') . '</explanation>
+                                <groupCode>' . htmlspecialchars($groupCode, ENT_XML1, 'UTF-8') . '</groupCode>
+                                <extraBaggage/>
+                                <free/>
+                                <iciAllowed/>
+                                <refundable/>
+                                <showOnItinerary/>
+                                <unitOfMeasureExist/>
+                            </SSR>
+                            <serviceQuantity>' . htmlspecialchars($serviceQuantity, ENT_XML1, 'UTF-8') . '</serviceQuantity>
+                            <status>' . htmlspecialchars($status, ENT_XML1, 'UTF-8') . '</status>
+                            <ticketed/>
+                        </specialServiceRequestList>
+                    </specialRequestDetails>                    
                     </AirBookingRequest>
                 </impl:CreateBooking>
         </soapenv:Body>
@@ -413,17 +432,17 @@ class CreateBookingBuilder
                         <airTravelerSequence>' . htmlspecialchars($string['airTravelerSequence'], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
                         <flightSegmentSequence>' . htmlspecialchars($string['flightSegmentSequence'], ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
                         <SSR>
-                        <allowedQuantityPerPassenger/>
-                        <bundleRelatedSsr/>
-                        <code>' . htmlspecialchars($string['SSRCode'], ENT_XML1, 'UTF-8') . '</code>
-                        <exchangeable/>
-                        <explanation>' . htmlspecialchars($string['SSRExplanation'], ENT_XML1, 'UTF-8') . '</explanation>
-                        <extraBaggage/>
-                        <free/>
-                        <iciAllowed/>
-                        <refundable/>
-                        <showOnItinerary/>
-                        <unitOfMeasureExist/>
+                            <allowedQuantityPerPassenger/>
+                            <bundleRelatedSsr/>
+                            <code>' . htmlspecialchars($string['SSRCode'], ENT_XML1, 'UTF-8') . '</code>
+                            <exchangeable/>
+                            <explanation>' . htmlspecialchars($string['SSRExplanation'], ENT_XML1, 'UTF-8') . '</explanation>
+                            <extraBaggage/>
+                            <free/>
+                            <iciAllowed/>
+                            <refundable/>
+                            <showOnItinerary/>
+                            <unitOfMeasureExist/>
                         </SSR>
                         <serviceQuantity>' . htmlspecialchars($string['ticketedServiceQuantity'], ENT_XML1, 'UTF-8') . '</serviceQuantity>
                         <status>' . htmlspecialchars($string['ticketedStatus'], ENT_XML1, 'UTF-8') . '</status>

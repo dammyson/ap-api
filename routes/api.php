@@ -111,13 +111,14 @@ Route::group(['prefix' => 'admin/'], function () {
         Route::group(['prefix' => 'activity-log'], function() {
             Route::post('create-activity-log', [ActivityLogAdminController::class, 'storeActivityLog']);
             Route::get('activity-log-table-data', [ActivityLogAdminController::class, 'indexActivityLog']);
-            Route::post('filter-survey', [ActivityLogAdminController::class, 'filterActivityLog']);
+            Route::post('filter-activity-log', [ActivityLogAdminController::class, 'filterActivityLog']);
         });
 
         Route::group(['prefix' => 'surveys'], function () {
             Route::post('create-survey', [SurveyController::class, 'createSurvey']);
             Route::get('/', [UserSurveyController::class, 'indexSurvey']);
             Route::get('/survey-table', [SurveyController::class, 'surveyTable']);
+            Route::post('filter-survey', [SurveyController::class, 'filterSurvey']);
             Route::group(['prefix' => '{survey}'], function () {
                 Route::get('/', [SurveyController::class, 'showSurvey']);  
                 Route::post('update-survey-image', [SurveyController::class, 'updateSurveyImage']);

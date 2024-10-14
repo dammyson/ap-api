@@ -42,6 +42,8 @@ class CreateBookingController extends Controller
         $paymentType = $request->input('paymentType');
         $primaryPayment = $request->input('primaryPayment');
 
+
+
         $xml = $this->createBookingBuilder->createBookingRT(            
             $CreateBookOriginDestinationOptionList,
             $airTravelerList,
@@ -80,16 +82,53 @@ class CreateBookingController extends Controller
 
 
     public function createBookingOW(CreateBookingOWRequest $request) {
-
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
         $airTravelerList = $validated["airTravelerList"];
         $requestPurpose = $validated["requestPurpose"];
+        $airTravelerSequence = $request->input('airTravelerSequence');
+        $flightSegmentSequence = $request->input('flightSegmentSequence');
+        $allowedQuantityPerPassenger = $request->input('allowedQuantityPerPassenger');
+        $bundleRelatedSsr = $request->input('bundleRelatedSsr');
+        $code = $request->input('code');
+        $codeContext = $request->input('codeContext');
+        $exchangeable = $request->input('exchangeable');
+        $extraBaggage = $request->input('extraBaggage');
+        $explanation = $request->input('explanation');
+        $SSRFree = $request->input('SSRFree');
+        $freeTextInRequest = $request->input('freeTextInRequest');
+        $groupCode = $request->input('groupCode');
+        $groupCodeExplanation = $request->input('groupCodeExplanation');
+        $iciAllowed = $request->input('iciAllowed');
+        $refundable = $request->input('refundable');
+        $showOnItinerary = $request->input('showOnItinerary');
+        $unitOfMeasureExist = $request->input('unitOfMeasureExist');
+        $serviceQuantity = $request->input('serviceQuantity');
+        $status = $request->input('status');
 
         $xml = $this->createBookingBuilder->createBookingOW(
             $CreateBookOriginDestinationOptionList, 
             $airTravelerList,
-            $requestPurpose
+            $requestPurpose,
+            $airTravelerSequence,
+            $flightSegmentSequence,
+            $allowedQuantityPerPassenger,
+            $bundleRelatedSsr,
+            $code,
+            $codeContext,
+            $exchangeable,
+            $explanation,
+            $extraBaggage,
+            $SSRFree,
+            $freeTextInRequest,
+            $groupCode,
+            $groupCodeExplanation,
+            $iciAllowed,
+            $refundable,
+            $showOnItinerary,
+            $unitOfMeasureExist,
+            $serviceQuantity,
+            $status
         );
        
        
@@ -230,7 +269,6 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            // dd($response);
             if (!array_key_exists('AirBookingResponse', $response)) {
                 return response()->json([
                     "error" => true,
@@ -378,7 +416,8 @@ class CreateBookingController extends Controller
                 "timeLimitUTC" => $timeLimitUTC
             ];
 
-
+            dump($bookingDetails);
+            dd($response);
             return response()->json([
                 "error" => false,
                 "message" => "Flight booked successfully",
