@@ -15,6 +15,8 @@ use App\Http\Resources\SurveyCollection;
 use App\Models\Admin\SurveyUserResponse;
 use App\Http\Requests\Admin\CreateSurveyRequest;
 use App\Http\Requests\FilterSurveyRequest;
+use App\Http\Requests\UpdateSurveyImageRequest;
+use App\Http\Resources\SurveyResource;
 
 class SurveyController extends Controller
 {
@@ -27,12 +29,15 @@ class SurveyController extends Controller
             $questions = $request->input('questions');
             $duration_of_survey = $request->input('duration_of_survey');
             $points_awarded = $request->input('points_awarded');
+            
+            $image_url = $request->file('image_url')->store('survey-images');
 
             $survey = Survey::create([
                 'title' => $title,
                 // 'duration_of_survey' => now()->addMinutes($duration_of_survey),
                 'duration_of_survey' => $duration_of_survey,
                 'points_awarded' => $points_awarded,
+                'image_url' => $image_url
             ]);
 
             foreach($questions as $question) {
@@ -51,6 +56,8 @@ class SurveyController extends Controller
 
             }
 
+            $survey = new SurveyResource($survey);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => true,
@@ -68,7 +75,7 @@ class SurveyController extends Controller
 
     }
 
-    public function updateSurveyImage(Request $request, Survey $survey) {        
+    public function updateSurveyImage(UpdateSurveyImageRequest $request, Survey $survey) {        
         try {
             if ($request->file('image_url')) {
                 // store the file in the admin-profile-images folder
