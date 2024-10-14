@@ -263,11 +263,10 @@ class SurveyController extends Controller
             $question->survey_id = $survey->id;
             $question->save();
 
-            foreach($requestQuestion['options'] as $option) {
-                $option = Option::find($option['id'])  ?? new Option();
+            foreach($requestQuestion['options'] as $requestOption) {
+                $option = Option::find($requestOption['id'])  ?? new Option();
                 $option->question_id = $question->id;
                 $option->option_text = $option['option_text'];
-                dd("I ran");
                 $option->save();
             }
         }   
