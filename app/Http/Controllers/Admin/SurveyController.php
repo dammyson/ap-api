@@ -112,7 +112,7 @@ class SurveyController extends Controller
             $query = Survey::query();
             
             if ($title) {
-                $query->where('title', $title);
+                $query->where('title', 'like', '%' . $title . '%');
             }
 
             if ($to_date && $from_date) {
