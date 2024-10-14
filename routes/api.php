@@ -117,7 +117,7 @@ Route::group(['prefix' => 'admin/'], function () {
         Route::group(['prefix' => 'surveys'], function () {
             Route::post('create-survey', [SurveyController::class, 'createSurvey']);
             Route::get('/', [UserSurveyController::class, 'indexSurvey']);
-            Route::get('/survey-table', [SurveyController::class, 'surveyTable']);
+            Route::post('/survey-table', [SurveyController::class, 'surveyTable']);
             Route::group(['prefix' => '{survey}'], function () {
                 Route::get('/', [SurveyController::class, 'showSurvey']);  
                 Route::post('update-survey-image', [SurveyController::class, 'updateSurveyImage']);

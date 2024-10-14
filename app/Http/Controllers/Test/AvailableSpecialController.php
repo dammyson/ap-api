@@ -12,10 +12,12 @@ use Illuminate\Http\Request;
 class AvailableSpecialController extends Controller
 {
     protected $availableSpecialServiceBuilder;
+    protected $craneAncillaryOTASoapService;
 
-    public function __construct(AvailableSpecialServiceBuilder $availableSpecialServiceBuilder)
-    {
+    public function __construct(AvailableSpecialServiceBuilder $availableSpecialServiceBuilder)    {
         $this->availableSpecialServiceBuilder = $availableSpecialServiceBuilder;
+        
+        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
     }
 
     public function AvailableSpecialServiceTwoA (AvailableSpecialServiceTwoARequest $request) {
@@ -39,7 +41,10 @@ class AvailableSpecialController extends Controller
             $referenceID
         );
 
-        dd($xml);
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+
+        $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
+        return $response;
     }
 
     public function AvailableSpecialServiceOW(AvailableSpecialServiceOWRequest $request) {
@@ -63,7 +68,10 @@ class AvailableSpecialController extends Controller
             $referenceID
         );
 
-        dd($xml);
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+
+        $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
+        return $response;
     }
 
     public function AvailableSpecialServiceRT(AvailableSpecialServiceRTRequest $request) {
@@ -87,6 +95,9 @@ class AvailableSpecialController extends Controller
             $referenceID
         );
 
-        return $xml;
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+
+        $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
+        return $response;
     }
 }
