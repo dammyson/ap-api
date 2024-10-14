@@ -259,9 +259,8 @@ class SurveyController extends Controller
         foreach($requestQuestions as $requestQuestion) {
             $question = Question::find($requestQuestion['id']) ?? new Question();
             $question->question_text = $requestQuestion['question_text'];
-
             $question->survey_id = $survey->id;
-            $question->save();
+            
 
             foreach($requestQuestion['options'] as $requestOption) {
                 $option = Option::find($requestOption['id'])  ?? new Option();
@@ -269,8 +268,12 @@ class SurveyController extends Controller
                 $option->option_text = $option['option_text'];
                 $option->save();
             }
+
+            $question->save();
         }   
 
+        $survey->save();
+        
         $surveyData = $survey->load('questions.options');
 
         return response()->json(
