@@ -87,16 +87,11 @@ class CancelFlightController extends Controller
         $booking = BookingRecord::where('peace_id', $peaceId)
             ->where('booking_id', $bookingId)->first();
 
-        $xml = $this->cancelBookingBuilder->cancelBookingViewOnly(
-            "LOS", 
-            "P4", 
-            "CRANE", 
-            "SCINTILLA", 
-            "SCINTILLA", 
-            "NG", 
+            dd('I ran');
+
+        $xml = $this->cancelBookingBuilder->cancelBookingCommit(
             $booking->booking_id, 
             $booking->booking_reference_id,
-            "VIEW_ONLY"
         );
  
         try {            

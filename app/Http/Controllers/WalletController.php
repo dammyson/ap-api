@@ -11,8 +11,11 @@ class WalletController extends Controller
         $user = $request->user();
 
         try {
-            $wallet =  Wallet::create([
+            
+            $wallet = Wallet::create([
                 'user_id' => $user->id,
+                'balance' => 0.0, 
+                'ledger_balance' => 0.0
             ]);
     
             return response()->json([

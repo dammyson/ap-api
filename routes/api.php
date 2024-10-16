@@ -61,6 +61,7 @@ use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
+use App\Http\Controllers\WalletController;
 use Psy\Sudo;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
@@ -253,7 +254,9 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
+        Route::post('create-wallet', [WalletController::class, 'createWallet']);
     });
+
 
     
     Route::prefix('verify-payment')->group(function () {
@@ -264,6 +267,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);
     Route::post('cancel-flight-commit', [CancelFlightController::class, 'cancelFlightCommit']);
     Route::post('change-flight', [ChangeFlightController::class, 'changeFlight']);
+    Route::post('change-flight-view-only', [ChangeFlightController::class, 'changeFlightViewOnly']);
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);
