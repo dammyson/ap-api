@@ -86,8 +86,6 @@ class ChangeFlightController extends Controller
         );
         
         $responseTrv = $this->craneOTASoapService->run($functionTicketReservation, $ticketReservationViewXml);
-
-      
       
                 
         if (isset($responseTrv['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']) &&
