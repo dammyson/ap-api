@@ -7,17 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations. docker-compose run --rm artisan migrate::refresh --path=/database/migrations/2024_06_27_023331_create_wallets_table.php
-     *
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->integer('points');
-            $table->string('status');
-            $table->decimal('amount', 10, 2);
+            $table->unsignedBigInteger('user_id');
+            $table->decimal('balance', 10, 2); 
+            $table->decimal('ledger_balance', 10, 2);
+            $table->string('reference')->nullable();
             $table->timestamps();
         });
     }
