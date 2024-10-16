@@ -356,8 +356,8 @@ class AddWeightBuilder {
                      <unaccompaniedMinor>' . htmlspecialchars($airTravelUnaccompaniedMinor, ENT_XML1, 'UTF-8') . '</unaccompaniedMinor>
                   </airTravelerList>
                   <ancillaryRequestList>
-                  <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
-                  <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                     <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                     <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
                      <ssrCode>' . htmlspecialchars($airTravelerSsrCode, ENT_XML1, 'UTF-8') . '</ssrCode>
                      <ssrGroup>' . htmlspecialchars($airTravelerSsrGroup, ENT_XML1, 'UTF-8') . '</ssrGroup>
                      <ssrExplanation>' . htmlspecialchars($ssrExplanation, ENT_XML1, 'UTF-8') . '</ssrExplanation>

@@ -138,6 +138,7 @@ class SurveyController extends Controller
 
     }
 
+
     public function tooglePublishSurvey(Request $request, Survey $survey) {
         try {
             $survey->is_published = !$survey->is_published;

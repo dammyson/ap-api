@@ -61,6 +61,7 @@ use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
+use App\Http\Controllers\WalletController;
 use Psy\Sudo;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
@@ -111,7 +112,7 @@ Route::group(['prefix' => 'admin/'], function () {
         Route::group(['prefix' => 'activity-log'], function() {
             Route::post('create-activity-log', [ActivityLogAdminController::class, 'storeActivityLog']);
             Route::get('activity-log-table-data', [ActivityLogAdminController::class, 'indexActivityLog']);
-            Route::post('filter-survey', [ActivityLogAdminController::class, 'filterActivityLog']);
+            Route::post('filter-activity-log', [ActivityLogAdminController::class, 'filterActivityLog']);
         });
 
         Route::group(['prefix' => 'surveys'], function () {
@@ -220,8 +221,8 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
         Route::group(["prefix" => "cancel-booking"], function () {
             Route::post('commit', [CancelBookingController::class, 'cancelBookingCommit']);
-            Route::post('viewonly', [CancelBookingController::class, 'cancelBookingViewOnly']);
-            Route::post('cancelbooking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
+            Route::post('view-only', [CancelBookingController::class, 'cancelBookingViewOnly']);
+            Route::post('cancel-booking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
         });
 
         Route::group(["prefix" => "available-special-service"], function() {
@@ -253,7 +254,9 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
+        Route::post('create-wallet', [WalletController::class, 'createWallet']);
     });
+
 
     
     Route::prefix('verify-payment')->group(function () {
@@ -263,7 +266,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
 
     Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);
     Route::post('cancel-flight-commit', [CancelFlightController::class, 'cancelFlightCommit']);
-    Route::post('changeFlight', [ChangeFlightController::class, 'changeFlight']);
+    Route::post('change-flight', [ChangeFlightController::class, 'changeFlight']);
+    Route::post('change-flight-view-only', [ChangeFlightController::class, 'changeFlightViewOnly']);
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);

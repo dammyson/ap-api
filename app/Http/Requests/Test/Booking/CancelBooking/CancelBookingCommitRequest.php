@@ -21,16 +21,9 @@ class CancelBookingCommitRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            "cityCode" => "required|string", 
-            "code" => "required|string", 
-            "codeContext" => "required|string", 
-            "companyFullName" => "required|string", 
-            "companyShortName" => "required|string", 
-            "countryCode" => "required|string", 
+        return [ 
             "ID" => "required|string", 
-            "referenceID" => "required|string", 
-            "requestPurpose" => "required|string"
+            "referenceID" => "required|string"
         ];
     }
 }

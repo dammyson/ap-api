@@ -25,7 +25,8 @@ class CancelFlightController extends Controller
  
          $booking = BookingRecord::where('peace_id', $peaceId)
              ->where('booking_id', $bookingId)->first();
- 
+        
+             dd($booking);
         
          // user the what will be deducted and refunded after booking is canceled
  
@@ -45,6 +46,8 @@ class CancelFlightController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
  
             $response = $this->craneOTASoapService->run($function, $xml);
+
+            dd($response);
 
             $airBookingList = $response['AirCancelBookingResponse']['airBookingList'];
 
@@ -84,16 +87,11 @@ class CancelFlightController extends Controller
         $booking = BookingRecord::where('peace_id', $peaceId)
             ->where('booking_id', $bookingId)->first();
 
-        $xml = $this->cancelBookingBuilder->cancelBookingViewOnly(
-            "LOS", 
-            "P4", 
-            "CRANE", 
-            "SCINTILLA", 
-            "SCINTILLA", 
-            "NG", 
+            dd('I ran');
+
+        $xml = $this->cancelBookingBuilder->cancelBookingCommit(
             $booking->booking_id, 
             $booking->booking_reference_id,
-            "VIEW_ONLY"
         );
  
         try {            

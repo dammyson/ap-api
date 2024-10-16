@@ -73,24 +73,11 @@ class VoidTicketRequestBuilder {
          dd($xml);
     }
 
-   public function voidTicketCommit( 
-      $companyNameCityCodeOne, 
-      $companyNameCodeOne, 
-      $codeContextOne, 
-      $companyFullNameOne, 
-      $companyShortNameOne, 
-      $companyCountryCodeOne, 
-      $IDOne, 
-      $referenceIDOne, 
-      $companyNameCityCodeTwo,
-      $companyCodeTwo,
-      $companyCodeContextTwo,
-      $companyFullNameTwo,
-      $companyShortNameTwo,
-      $companyCountryCodeTwo,
-      $IDTwo,
-      $referenceIDTwo,
-      $operationType
+   public function voidTicketCommit(      
+      $bookingId, 
+      $bookingReferenceId, 
+      $parentBookingId,
+      $parentBookingReferenceID,
    ) {
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
          soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -110,30 +97,30 @@ class VoidTicketRequestBuilder {
                <!-- Optional: -->
                <bookingReferenceID>
                   <companyName>
-                     <cityCode>' . htmlspecialchars($companyNameCityCodeOne, ENT_XML1, 'UTF-8') . '</cityCode>
-                     <code>' . htmlspecialchars($companyNameCodeOne, ENT_XML1, 'UTF-8') . '</code>
-                     <codeContext>' . htmlspecialchars($codeContextOne, ENT_XML1, 'UTF-8') . '</codeContext>
-                     <companyFullName>' . htmlspecialchars($companyFullNameOne, ENT_XML1, 'UTF-8') . '</companyFullName>
-                     <companyShortName>' . htmlspecialchars($companyShortNameOne, ENT_XML1, 'UTF-8') . '</companyShortName>
-                     <countryCode>' . htmlspecialchars($companyCountryCodeOne, ENT_XML1, 'UTF-8') . '</countryCode>
+                     <cityCode>LOS</cityCode>
+                     <code>P4</code>
+                     <codeContext>CRANE</codeContext>
+                     <companyFullName>SCINTILLA</companyFullName>
+                     <companyShortName>SCINTILLA</companyShortName>
+                     <countryCode>NG</countryCode>
                   </companyName>
-                  <ID>' . htmlspecialchars($IDOne, ENT_XML1, 'UTF-8') . '</ID>
-                  <referenceID>' . htmlspecialchars($referenceIDOne, ENT_XML1, 'UTF-8') . '</referenceID>
+                  <ID>' . htmlspecialchars($bookingId, ENT_XML1, 'UTF-8') . '</ID>
+                  <referenceID>' . htmlspecialchars($bookingReferenceId, ENT_XML1, 'UTF-8') . '</referenceID>
                   <parentBookingReferenceID>
                      <companyName>
-                        <cityCode>' . htmlspecialchars($companyNameCityCodeTwo, ENT_XML1, 'UTF-8') . '</cityCode>
-                        <code>' . htmlspecialchars($companyCodeTwo, ENT_XML1, 'UTF-8') . '</code>
-                        <codeContext>' . htmlspecialchars($companyCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
-                        <companyFullName>' . htmlspecialchars($companyFullNameTwo, ENT_XML1, 'UTF-8') . '</companyFullName>
-                        <companyShortName>' . htmlspecialchars($companyShortNameTwo, ENT_XML1, 'UTF-8') . '</companyShortName>
-                        <countryCode>' . htmlspecialchars($companyCountryCodeTwo, ENT_XML1, 'UTF-8') . '</countryCode>
+                        <cityCode>LOS</cityCode>
+                        <code>P4</code>
+                        <codeContext>CRANE</codeContext>
+                        <companyFullName>SCINTILLA</companyFullName>
+                        <companyShortName>SCINTILLA</companyShortName>
+                        <countryCode>NG</countryCode>
                      </companyName>
-                     <ID>' . htmlspecialchars($IDTwo, ENT_XML1, 'UTF-8') . '</ID>
-                     <referenceID>' . htmlspecialchars($referenceIDTwo, ENT_XML1, 'UTF-8') . '</referenceID>
+                     <ID>' . htmlspecialchars($parentBookingId, ENT_XML1, 'UTF-8') . '</ID>
+                     <referenceID>' . htmlspecialchars($parentBookingReferenceID, ENT_XML1, 'UTF-8') . '</referenceID>
                   </parentBookingReferenceID>
                </bookingReferenceID>
                <!-- Optional: -->
-               <operationType>' . htmlspecialchars($operationType, ENT_XML1, 'UTF-8') . '</operationType>
+               <operationType>VOID_BOOKING</operationType>
                </VoidTicketRequest>
                </impl:VoidTicket>
             </soapenv:Body>

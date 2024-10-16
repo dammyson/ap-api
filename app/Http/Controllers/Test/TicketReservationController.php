@@ -181,7 +181,7 @@ class TicketReservationController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
             
-            // dd($response);
+            dump($response);
             $invoice->is_paid = true;
             $invoice->save();
            
@@ -288,6 +288,8 @@ class TicketReservationController extends Controller
                     }                
                 }
             }
+
+            dump($response);
             
 
             return response()->json([
@@ -377,7 +379,6 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
            
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

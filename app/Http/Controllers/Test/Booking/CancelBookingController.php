@@ -6,81 +6,73 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Test\Booking\CancelBooking\CancelBookingCommitRequest;
 use App\Http\Requests\Test\Booking\CancelBooking\CancelBookingViewOnlyRequest;
 use App\Services\Soap\CancelBookingBuilder;
+use App\Services\Utility\CheckArray;
 use Illuminate\Http\Request;
 
 class CancelBookingController extends Controller
 {
     protected $cancelBookingBuilder;
-    protected $craneOTASoapService;
+    protected $craneOTASoapService;    
+    protected $checkArray;
 
-    public function __construct(CancelBookingBuilder $cancelBookingBuilder)
+    public function __construct(CancelBookingBuilder $cancelBookingBuilder, CheckArray $checkArray)
     {
         $this->cancelBookingBuilder = $cancelBookingBuilder;
         $this->craneOTASoapService = app("CraneOTASoapService");
+        $this->checkArray = $checkArray;
 
     }
 
     public function cancelBookingCommit(CancelBookingCommitRequest $request) {
-        
-        $cityCode = $request->input('cityCode'); 
-        $code = $request->input('code'); 
-        $codeContext = $request->input('codeContext'); 
-        $companyFullName = $request->input('companyFullName'); 
-        $companyShortName = $request->input('companyShortName'); 
-        $countryCode = $request->input('countryCode'); 
         $ID = $request->input('ID'); 
-        $referenceID = $request->input('referenceID'); 
-        $requestPurpose = $request->input('requestPurpose'); 
-      
-
-        $xml = $this->cancelBookingBuilder->cancelBookingCommit(
-            $cityCode, 
-            $code, 
-            $codeContext, 
-            $companyFullName, 
-            $companyShortName, 
-            $countryCode, 
+        $referenceID = $request->input('referenceID');       
+        // dd('I ran');
+        $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
             $ID, 
-            $referenceID, 
-            $requestPurpose
+            $referenceID,
         );
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
 
         $response = $this->craneOTASoapService->run($function, $xml);
         dd($response);
+        $amount = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['refundPaymentAmountList']['amount']['value'];
+        dd($amount);
     }
 
 
     public function cancelBookingViewOnly(CancelBookingViewOnlyRequest $request) {
-        $cityCode = $request->input('cityCode'); 
-        $code = $request->input('code'); 
-        $codeContext = $request->input('codeContext'); 
-        $companyFullName = $request->input('companyFullName'); 
-        $companyShortName = $request->input('companyShortName'); 
-        $countryCode = $request->input('companyShortName'); 
+        
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID'); 
-        $requestPurpose = $request->input('requestPurpose');
 
-        $xml = $this->cancelBookingBuilder->cancelBookingViewOnly(
-            $cityCode, 
-            $code, 
-            $codeContext, 
-            $companyFullName, 
-            $companyShortName, 
-            $countryCode, 
+        $xml = $this->cancelBookingBuilder->cancelBookingViewOnly(          
             $ID, 
-            $referenceID,
-            $requestPurpose
+            $referenceID          
         );
 
         try {
             $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
 
             $response = $this->craneOTASoapService->run($function, $xml);
+            
+            $totalPenalty = 0;
 
-            dd($response);
+            if (isset($response['AirCancelBookingResponse']['airBookingList']['ticketInfo'])) {
+                if ($this->checkArray->isAssociativeArray($response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'])) {
+                    dd($response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['couponInfoList']);
+                    $totalPenalty = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['couponInfoList']['pricingOverview']['totalPenalty'];
+
+                } else {
+                    $ticketItemList = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+                    foreach($ticketItemList as $ticketItem) {
+                        $totalPenalty += $ticketItem['pricingOverview']['totalPenalty']['value'];
+                    }
+                }
+            }
+
+            // display response of voiding a ticket to user
+            dd($totalPenalty);
         } catch (\Throwable $th) {
             return response()->json([
                 "error" => "true",

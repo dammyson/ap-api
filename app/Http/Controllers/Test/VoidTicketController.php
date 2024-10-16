@@ -70,44 +70,18 @@ class VoidTicketController extends Controller
     }
 
 
-    public function voidTicketCommit(VoidTicketCommitRequest $request) {
-        $companyNameCityCodeOne = $request->input('companyNameCityCodeOne');
-        $companyNameCodeOne = $request->input('companyNameCodeOne');
-        $codeContextOne = $request->input('codeContextOne');
-        $companyFullNameOne = $request->input('companyFullNameOne');
-        $companyShortNameOne = $request->input('companyShortNameOne');
-        $companyCountryCodeOne = $request->input('companyCountryCodeOne');
-        $IDOne = $request->input('IDOne');
-        $referenceIDOne = $request->input('referenceID');
-        $companyNameCityCodeTwo = $request->input('companyNameCityCodeTwo');
-        $companyCodeTwo = $request->input('companyCodeTwo');
-        $companyCodeContextTwo = $request->input('companyCodeContextTwo');
-        $companyFullNameTwo = $request->input('companyFullNameTwo');
-        $companyShortNameTwo = $request->input('companyShortNameTwo');
-        $companyCountryCodeTwo = $request->input('companyCountryCodeTwo');
-        $IDTwo = $request->input('IDTwo');
-        $referenceIDTwo = $request->input('referenceIDTwo');
-        $operationType = $request->input('operationType');
+    public function voidTicketCommit(VoidTicketCommitRequest $request) {       
+        $bookingId = $request->input('booking_id');
+        $bookingReferenceId = $request->input('booking_reference_id');
+        $parentBookingId = $request->input('parent_booking_id');
+        $parentBookingReferenceId = $request->input('parent_booking_reference_id');
 
 
-        $xml = $this->voidTicketRequestBuilder->voidTicketCommit(
-            $companyNameCityCodeOne, 
-            $companyNameCodeOne, 
-            $codeContextOne, 
-            $companyFullNameOne, 
-            $companyShortNameOne, 
-            $companyCountryCodeOne, 
-            $IDOne, 
-            $referenceIDOne, 
-            $companyNameCityCodeTwo,
-            $companyCodeTwo,
-            $companyCodeContextTwo,
-            $companyFullNameTwo,
-            $companyShortNameTwo,
-            $companyCountryCodeTwo,
-            $IDTwo,
-            $referenceIDTwo,
-            $operationType
+        $xml = $this->voidTicketRequestBuilder->voidTicketCommit(          
+            $bookingId, 
+            $bookingReferenceId,           
+            $parentBookingId,
+            $parentBookingReferenceId,
 
         );
 
