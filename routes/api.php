@@ -220,8 +220,8 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
         Route::group(["prefix" => "cancel-booking"], function () {
             Route::post('commit', [CancelBookingController::class, 'cancelBookingCommit']);
-            Route::post('viewonly', [CancelBookingController::class, 'cancelBookingViewOnly']);
-            Route::post('cancelbooking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
+            Route::post('view-only', [CancelBookingController::class, 'cancelBookingViewOnly']);
+            Route::post('cancel-booking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
         });
 
         Route::group(["prefix" => "available-special-service"], function() {
@@ -263,7 +263,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
 
     Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);
     Route::post('cancel-flight-commit', [CancelFlightController::class, 'cancelFlightCommit']);
-    Route::post('changeFlight', [ChangeFlightController::class, 'changeFlight']);
+    Route::post('change-flight', [ChangeFlightController::class, 'changeFlight']);
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);

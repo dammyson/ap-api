@@ -21,65 +21,38 @@ class CancelBookingController extends Controller
     }
 
     public function cancelBookingCommit(CancelBookingCommitRequest $request) {
-        
-        $cityCode = $request->input('cityCode'); 
-        $code = $request->input('code'); 
-        $codeContext = $request->input('codeContext'); 
-        $companyFullName = $request->input('companyFullName'); 
-        $companyShortName = $request->input('companyShortName'); 
-        $countryCode = $request->input('countryCode'); 
         $ID = $request->input('ID'); 
-        $referenceID = $request->input('referenceID'); 
-        $requestPurpose = $request->input('requestPurpose'); 
-      
-
-        $xml = $this->cancelBookingBuilder->cancelBookingCommit(
-            $cityCode, 
-            $code, 
-            $codeContext, 
-            $companyFullName, 
-            $companyShortName, 
-            $countryCode, 
+        $referenceID = $request->input('referenceID');       
+        // dd('I ran');
+        $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
             $ID, 
-            $referenceID, 
-            $requestPurpose
+            $referenceID,
         );
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
 
         $response = $this->craneOTASoapService->run($function, $xml);
         dd($response);
+        $amount = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['refundPaymentAmountList']['amount']['value'];
+        dd($amount);
     }
 
 
     public function cancelBookingViewOnly(CancelBookingViewOnlyRequest $request) {
-        $cityCode = $request->input('cityCode'); 
-        $code = $request->input('code'); 
-        $codeContext = $request->input('codeContext'); 
-        $companyFullName = $request->input('companyFullName'); 
-        $companyShortName = $request->input('companyShortName'); 
-        $countryCode = $request->input('companyShortName'); 
+        
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID'); 
-        $requestPurpose = $request->input('requestPurpose');
 
-        $xml = $this->cancelBookingBuilder->cancelBookingViewOnly(
-            $cityCode, 
-            $code, 
-            $codeContext, 
-            $companyFullName, 
-            $companyShortName, 
-            $countryCode, 
+        $xml = $this->cancelBookingBuilder->cancelBookingViewOnly(          
             $ID, 
-            $referenceID,
-            $requestPurpose
+            $referenceID          
         );
 
         try {
             $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-
+            // dd('i ran');
             dd($response);
         } catch (\Throwable $th) {
             return response()->json([

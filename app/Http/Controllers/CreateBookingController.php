@@ -269,6 +269,7 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
+            // dd($response);
             if (!array_key_exists('AirBookingResponse', $response)) {
                 return response()->json([
                     "error" => true,

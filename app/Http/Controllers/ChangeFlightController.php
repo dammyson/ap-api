@@ -6,16 +6,23 @@ use App\Models\Wallet;
 use Illuminate\Http\Request;
 use App\Models\BookingRecord;
 use App\Services\Soap\CancelBookingBuilder;
+use App\Services\Soap\TicketReservationRequestBuilder;
+use App\Services\Utility\CheckArray;
 
 class ChangeFlightController extends Controller
 {
     //
     protected $cancelBookingBuilder;
+    protected $ticketReservationRequestBuilder;
     protected $craneOTASoapService;
+    protected $checkArray;
+    
 
-    public function __construct(CancelBookingBuilder $cancelBookingBuilder)
+    public function __construct(CancelBookingBuilder $cancelBookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray)
     {
         $this->cancelBookingBuilder = $cancelBookingBuilder;
+        $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
+        $this->checkArray = $checkArray;
         $this->craneOTASoapService = app('CraneOTASoapService');
     }
 
@@ -62,7 +69,7 @@ class ChangeFlightController extends Controller
 
     }
 
-    public function changeFlightCommit(Request $request) {
+    public function changeFlight(Request $request) {
         $peaceId = $request->input('peace_id');
         $bookingId = $request->input('booking_id');
 
@@ -70,30 +77,55 @@ class ChangeFlightController extends Controller
         $booking = BookingRecord::where('peace_id', $peaceId)
             ->where('booking_id', $bookingId)->first();
 
-        $xml = $this->cancelBookingBuilder->cancelBookingViewOnly(
-            "LOS", 
-            "P4", 
-            "CRANE", 
-            "SCINTILLA", 
-            "SCINTILLA", 
-            "NG", 
-            $booking->booking_id, 
-            $booking->booking_reference_id,
-            "VIEW_ONLY"
+
+        $functionTicketReservation = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
+    
+        $ticketReservationViewXml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+            $booking->booking_id,
+            $booking->booking_reference_id
         );
+        
+        $responseTrv = $this->craneOTASoapService->run($functionTicketReservation, $ticketReservationViewXml);
 
-        try {
+      
+      
+                
+        if (isset($responseTrv['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']) &&
+            $this->checkArray->isAssociativeArray($responseTrv['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'])) {
+                // dd('I ran');
+                $responseTrv['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'] = 
+                [$responseTrv['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']];  
+        }
 
+        $airTravelerList =  $responseTrv['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'];
+
+        try {   
+            
+            $cancelFlightXml = $this->cancelBookingBuilder->cancelBookingCommit(            
+                $booking->booking_id,
+                $booking->booking_reference_id,           
+            );
             
             
-            $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
+            $cancelBookingFunction = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
             
-            $response = $this->craneOTASoapService->run($function, $xml);
+            $responseCancelFlight = $this->craneOTASoapService->run($cancelBookingFunction, $cancelFlightXml);
             
-            dd($response);
+            // delete the booking since it is now cancel
+            // $booking->delete();
+            // delete Invoice 
+            // $invoice = Invoice::find($invoice->id);
+            // $invoice->delete();
+
+            // delete all transactions with that invoiceid if payments have been made
+            // Transactions::where('invoice_id', $invoice->id)->delete();
+          
+
+            // dd($responseCancelFlight);
             
-            $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
-            $amount = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList']['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+            $transactionType = $responseCancelFlight['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
+            $amount = $responseCancelFlight['AirTicketReservationResponse']['airBookingList']['ticketInfo']['refundPaymentAmountList']['amount']['value']; 
+            // $amount = $responseCancelFlight['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList']['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                         
             if ($transactionType == "REFUND") {
                 
@@ -101,6 +133,13 @@ class ChangeFlightController extends Controller
                 $wallet->topUp($amount);
 
             }
+
+
+            return response()->json([
+                'error' => false,
+                'airTravelerList' => $airTravelerList,
+                'message' => 'ticket cancelled successfully'
+            ], 200);
         
         } catch (\Throwable $th) {
             return response()->json([
