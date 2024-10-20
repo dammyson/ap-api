@@ -36,6 +36,7 @@ class CreateUserRequest extends FormRequest
                 'confirmed', // Must match password confirmation
             ],
             'status' => 'sometimes|string',
+            'peace_id' => 'required|unique:users,peace_id',           
             "referrer_peace_id" => 'sometimes|exists:users,peace_id'
         ];
     }

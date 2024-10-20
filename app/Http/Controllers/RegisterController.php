@@ -29,14 +29,14 @@ class RegisterController extends Controller
     {
 
         try {
-            $peace_id =  $this->createPeaceId->generateUniquePeaceId();
+            // $peace_id =  $this->createPeaceId->generateUniquePeaceId();
 
             $create = User::create([
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
                 'email' => $request->input('email'),
                 'phone_number' => $request->input('phone_number'),
-                'peace_id' => $peace_id,
+                'peace_id' => $request->input('peace_id'),
                 'password' => Hash::make($request->input('password')),
                 'status' => $request->input('status') ?? null,
                 'points' => 0, // allocate appropriate pointts once decided
