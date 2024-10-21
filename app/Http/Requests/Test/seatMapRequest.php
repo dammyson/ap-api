@@ -73,12 +73,6 @@ class seatMapRequest extends FormRequest
             "secureFlightDataRequired"=> "required|boolean",
             "segmentStatusByFirstLeg"=> "required|string", 
             "stopQuantity"=> "required|string", 
-            "companyNameCitycode"=> "required|string", 
-            "companyNameCode" => "required|string", 
-            "companyNameCodeContext"=> "required|string",
-            "companyFullName"=> "required|string", 
-            "companyShortName"=> "required|string", 
-            "countryCode"=> "required|string", 
             "ID"=> "required|string", 
             "referenceID" => "required|string"
         ];

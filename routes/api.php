@@ -56,6 +56,7 @@ use App\Http\Controllers\Admin\TeamMembersAdminController;
 use App\Http\Controllers\Test\TicketReservationController;
 use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
+use App\Http\Controllers\RedeemTicketPeacePointController;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
@@ -117,6 +118,7 @@ Route::group(['prefix' => 'admin/'], function () {
 
         Route::group(['prefix' => 'surveys'], function () {
             Route::post('create-survey', [SurveyController::class, 'createSurvey']);
+            Route::post('create-survey-banner', [SurveyController::class, 'createSurveyBanner']);            
             Route::get('/', [UserSurveyController::class, 'indexSurvey']);
             Route::post('/survey-table', [SurveyController::class, 'surveyTable']);
             Route::group(['prefix' => '{survey}'], function () {
@@ -262,6 +264,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::prefix('verify-payment')->group(function () {
         Route::post('/ref', [TestPaymentController::class, 'verify'])->name('wallet.top_up');
     });
+
+    Route::post('redeem-ticket-with-peace-point', [RedeemTicketPeacePointController::class, 'payWithPeacePoint']);
 
 
     Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);

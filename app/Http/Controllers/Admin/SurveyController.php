@@ -29,16 +29,22 @@ class SurveyController extends Controller
             $questions = $request->input('questions');
             $duration_of_survey = $request->input('duration_of_survey');
             $points_awarded = $request->input('points_awarded');
-            
-            $image_url = $request->file('image_url')->store('survey-images');
-
+         
             $survey = Survey::create([
                 'title' => $title,
                 // 'duration_of_survey' => now()->addMinutes($duration_of_survey),
                 'duration_of_survey' => $duration_of_survey,
-                'points_awarded' => $points_awarded,
-                'image_url' => $image_url
+                'points_awarded' => $points_awarded
             ]);
+            
+            if ($request->file('image_url')) {
+                $path = $request->file('image_url')->store('survey-images');
+                // store the path to the image
+                $survey->image_url = $path;
+                // $imageUrlLink = Storage::url($path);
+                $survey->save();
+
+            }
 
             foreach($questions as $question) {
                 $quest = Question::create([
@@ -71,8 +77,22 @@ class SurveyController extends Controller
             'survey' => $survey
 
         ]);
+        
+    }
 
+    public function createSurveyBanner(Request $request) {
+        // $image_url = $request->input('image_url');
+        if ($request->file('$image_url')) {
+            $path = $request->file('image_url')->store('survey-images');
+        }
+        $image_url_link = Storage::url($path);
 
+        return response()->json([
+            "error" => true,
+            "image_url" => $path,
+            "image_url_link" => $image_url_link
+
+        ], 200);
     }
 
     public function updateSurveyImage(UpdateSurveyImageRequest $request, Survey $survey) {        
@@ -116,6 +136,12 @@ class SurveyController extends Controller
             }
 
             if ($to_date && $from_date) {
+                if ($to_date < $from_date) {
+                    return response()->json([
+                        "error" => true,
+                        "message" =>  "End date cannot be earlier than start date"
+                    ], 400);
+                }
                 $to_date = Carbon::parse($to_date)->endOfDay();
                 $query->whereBetween('created_at', [$from_date, $to_date]);
             
@@ -260,6 +286,7 @@ class SurveyController extends Controller
         foreach($requestQuestions as $requestQuestion) {
             $question = Question::find($requestQuestion['id']) ?? new Question();
             $question->question_text = $requestQuestion['question_text'];
+            $question->is_multiple_choice =  $requestQuestion['is_multiple_choice'];
             $question->survey_id = $survey->id;
             
 

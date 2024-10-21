@@ -24,7 +24,7 @@ class ForgetPasswordAdminController extends Controller
 
        if (!$admin) {
            return response()->json([
-               "error" => "true",
+               "error" => true,
                "message" => "pls enter correct email"
            ], 404);
        }
@@ -49,7 +49,7 @@ class ForgetPasswordAdminController extends Controller
         $admin->save();
 
         return response()->json([
-            "error" => "false",
+            "error" => false,
             "message" => "otp sent to email successfully",
            
         ], 200);
@@ -75,7 +75,7 @@ class ForgetPasswordAdminController extends Controller
         
            
            return response()->json([
-               'error' => 'false',
+               'error' => false,
                "message" => "You've been verified",
                "user" => $admin
            ], 200);
@@ -95,7 +95,7 @@ class ForgetPasswordAdminController extends Controller
            
            if (!$admin) {
                 return response()->json([
-                    "error" => "true",
+                    "error" => true,
                     "message" => "admin not found"
                 ], 404);
             }
@@ -104,7 +104,7 @@ class ForgetPasswordAdminController extends Controller
 
             if ($admin->otp !== $request->otp || $otp_expiration->isPast()) {
                 return response()->json([
-                    'error' => 'true',
+                    'error' => true,
                     "message" => "otp does not match or has expired"
                 ]);
             }

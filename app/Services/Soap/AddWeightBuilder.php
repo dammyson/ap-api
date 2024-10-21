@@ -2,8 +2,17 @@
 
 namespace App\Services\Soap;
 
+use App\Services\Utility\FlightNotes;
+
 class AddWeightBuilder {
-    public function addWeight(
+
+   protected $flightNotes;
+   public function __construct(FlightNotes $flightNote) {
+      $this->flightNotes = $flightNote;
+
+   }
+
+   public function addWeight(
       $adviceCodeSegmentExist,
       $bookFlightSegmentListActionCode,
       $bookFlightAddOnSegment,
@@ -61,15 +70,7 @@ class AddWeightBuilder {
       $departureFlightDistance,
       $equipmentAirEquipType,
       $equipmentChangeOfGauge,
-      $flightNotesDeiCodeOne,
-      $flightNotesExplanationOne,
-      $flightNoteOne,
-      $flightNotesDeiCodeTwo,
-      $flightNotesExplanationTwo,
-      $flightNotesNoteTwo,
-      $flightNoteDeiCodeThree,
-      $flightExplanationThree,
-      $flightNotesNoteThree,
+      $flightNotes,
       $flownMileageQty,
       $iatciFlight,
       $journeyDuration,
@@ -134,17 +135,11 @@ class AddWeightBuilder {
       $airTravelerSsrCode,
       $airTravelerSsrGroup,
       $ssrExplanation,
-      $cityCode,
-      $companyCode,
-      $bookingRequestListCodeContext,
-      $companyFullName,
-      $companyShortName,
-      $bookingReferenceCountryCode,
       $bookingReferenceIDID,
       $bookingReferenceID
 
 
-    ) {
+   ) {
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
          <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
             <soapenv:Header/>
@@ -252,21 +247,9 @@ class AddWeightBuilder {
                                        <airEquipType>' . htmlspecialchars($equipmentAirEquipType, ENT_XML1, 'UTF-8') . '</airEquipType>
                                        <changeofGauge>' . htmlspecialchars($equipmentChangeOfGauge, ENT_XML1, 'UTF-8') . '</changeofGauge>
                                     </equipment>
-                                    <flightNotes>
-                                       <deiCode>' . htmlspecialchars($flightNotesDeiCodeOne, ENT_XML1, 'UTF-8') . '</deiCode>
-                                       <explanation>' . htmlspecialchars($flightNotesExplanationOne, ENT_XML1, 'UTF-8') . '</explanation>
-                                       <note>' . htmlspecialchars($flightNoteOne, ENT_XML1, 'UTF-8') . '</note>
-                                    </flightNotes>
-                                    <flightNotes>
-                                       <deiCode>' . htmlspecialchars($flightNotesDeiCodeTwo, ENT_XML1, 'UTF-8') . '</deiCode>
-                                       <explanation>' . htmlspecialchars($flightNotesExplanationTwo, ENT_XML1, 'UTF-8') . '</explanation>
-                                       <note>' . htmlspecialchars($flightNotesNoteTwo, ENT_XML1, 'UTF-8') . '</note>
-                                    </flightNotes>
-                                    <flightNotes>
-                                       <deiCode>' . htmlspecialchars($flightNoteDeiCodeThree, ENT_XML1, 'UTF-8') . '</deiCode>
-                                       <explanation>' . htmlspecialchars($flightExplanationThree, ENT_XML1, 'UTF-8') . '</explanation>
-                                       <note>' . htmlspecialchars($flightNotesNoteThree, ENT_XML1, 'UTF-8') . '</note>
-                                    </flightNotes>
+                                    '. 
+                                       $this->flightNotes->flightNotesArray($flightNotes) 
+                                    .'
                                     <flownMileageQty>' . htmlspecialchars($flownMileageQty, ENT_XML1, 'UTF-8') . '</flownMileageQty>
                                     <iatciFlight>' . htmlspecialchars($iatciFlight, ENT_XML1, 'UTF-8') . '</iatciFlight>
                                     <journeyDuration>' . htmlspecialchars($journeyDuration, ENT_XML1, 'UTF-8') . '</journeyDuration>
@@ -364,12 +347,12 @@ class AddWeightBuilder {
                   </ancillaryRequestList>
                   <bookingReferenceID>
                      <companyName>
-                        <cityCode>' . htmlspecialchars($cityCode, ENT_XML1, 'UTF-8') . '</cityCode>
-                        <code>' . htmlspecialchars($companyCode, ENT_XML1, 'UTF-8') . '</code>
-                        <codeContext>' . htmlspecialchars($bookingRequestListCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
-                        <companyFullName>' . htmlspecialchars($companyFullName, ENT_XML1, 'UTF-8') . '</companyFullName>
-                        <companyShortName>' . htmlspecialchars($companyShortName, ENT_XML1, 'UTF-8') . '</companyShortName>
-                        <countryCode>' . htmlspecialchars($bookingReferenceCountryCode, ENT_XML1, 'UTF-8') . '</countryCode>
+                        <cityCode>LOS</cityCode>
+                        <code>P4</code>
+                        <codeContext>CRANE</codeContext>
+                        <companyFullName>SCINTILLA</companyFullName>
+                        <companyShortName>SCINTILLA</companyShortName>
+                        <countryCode>NG</countryCode>
                      </companyName>
                      <ID>' . htmlspecialchars($bookingReferenceIDID, ENT_XML1, 'UTF-8') . '</ID>
                      <referenceID>' . htmlspecialchars($bookingReferenceID, ENT_XML1, 'UTF-8') . '</referenceID>
