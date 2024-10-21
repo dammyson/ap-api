@@ -84,15 +84,7 @@ class AddWeightController extends Controller
         $departureFlightDistance = $request->input('departureFlightDistance');
         $equipmentAirEquipType = $request->input('equipmentAirEquipType');
         $equipmentChangeOfGauge = $request->input('equipmentChangeOfGauge');
-        $flightNotesDeiCodeOne = $request->input('flightNotesDeiCodeOne');
-        $flightNotesExplanationOne = $request->input('flightNotesExplanationOne');
-        $flightNoteOne = $request->input('flightNoteOne');
-        $flightNotesDeiCodeTwo = $request->input('flightNotesDeiCodeTwo');
-        $flightNotesExplanationTwo = $request->input('flightNotesExplanationTwo');
-        $flightNotesNoteTwo = $request->input('flightNotesNoteTwo');
-        $flightNoteDeiCodeThree = $request->input('flightNoteDeiCodeThree');
-        $flightExplanationThree = $request->input('flightExplanationThree');
-        $flightNotesNoteThree = $request->input('flightNotesNoteThree');
+        $flightNotes = $request->input('flightNotes');     
         $flownMileageQty = $request->input('flownMileageQty');
         $iatciFlight = $request->input('iatciFlight');
         $journeyDuration = $request->input('journeyDuration');
@@ -156,16 +148,9 @@ class AddWeightController extends Controller
         $flightSegmentSequence = $request->input('flightSegmentSequence');
         $airTravelerSsrCode = $request->input('airTravelerSsrCode');
         $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
-        $ssrExplanation = $request->input('ssrExplanation');
-        $cityCode = $request->input('cityCode');
-        $companyCode = $request->input('companyCode');
-        $bookingRequestListCodeContext = $request->input('bookingRequestListCodeContext');
-        $companyFullName = $request->input('companyFullName');
-        $companyShortName = $request->input('companyShortName');
-        $bookingReferenceCountryCode = $request->input('bookingReferenceCountryCode');
+        $ssrExplanation = $request->input('ssrExplanation');        
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
-
 
         $xml = $this->addWeightBuilder->addWeight(
             $adviceCodeSegmentExist,
@@ -225,15 +210,7 @@ class AddWeightController extends Controller
             $departureFlightDistance,
             $equipmentAirEquipType,
             $equipmentChangeOfGauge,
-            $flightNotesDeiCodeOne,
-            $flightNotesExplanationOne,
-            $flightNoteOne,
-            $flightNotesDeiCodeTwo,
-            $flightNotesExplanationTwo,
-            $flightNotesNoteTwo,
-            $flightNoteDeiCodeThree,
-            $flightExplanationThree,
-            $flightNotesNoteThree,
+            $flightNotes,
             $flownMileageQty,
             $iatciFlight,
             $journeyDuration,
@@ -298,12 +275,6 @@ class AddWeightController extends Controller
             $airTravelerSsrCode,
             $airTravelerSsrGroup,
             $ssrExplanation,
-            $cityCode,
-            $companyCode,
-            $bookingRequestListCodeContext,
-            $companyFullName,
-            $companyShortName,
-            $bookingReferenceCountryCode,
             $bookingReferenceIDID,
             $bookingReferenceID
         );
@@ -312,7 +283,7 @@ class AddWeightController extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dd($response);
+            // dd($response);
             $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
             $invoice = InvoiceRecord::find($invoiceId);

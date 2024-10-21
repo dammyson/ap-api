@@ -67,12 +67,6 @@ class SeatMapController extends Controller
         $secureFlightDataRequired = $request->input('secureFlightDataRequired');
         $segmentStatusByFirstLeg = $request->input('segmentStatusByFirstLeg'); 
         $stopQuantity = $request->input('stopQuantity'); 
-        $companyNameCitycode = $request->input('companyNameCitycode'); 
-        $companyNameCode = $request->input('companyNameCode'); 
-        $companyNameCodeContext = $request->input('companyNameCodeContext');
-        $companyFullName = $request->input('companyFullName'); 
-        $companyShortName = $request->input('companyShortName'); 
-        $countryCode = $request->input('countryCode'); 
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID');
 
@@ -127,12 +121,6 @@ class SeatMapController extends Controller
             $secureFlightDataRequired,
             $segmentStatusByFirstLeg, 
             $stopQuantity, 
-            $companyNameCitycode, 
-            $companyNameCode, 
-            $companyNameCodeContext,
-            $companyFullName, 
-            $companyShortName, 
-            $countryCode, 
             $ID, 
             $referenceID
         );
@@ -140,7 +128,7 @@ class SeatMapController extends Controller
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
 
-           
+            // dd($response);
             $airplaneCabinList = $response['AirSeatMapResponse']['seatMapResponse']['airplane']['airplaneCabinList'];
 
             $seatArray = [];

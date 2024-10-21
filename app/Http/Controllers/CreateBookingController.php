@@ -389,9 +389,7 @@ class CreateBookingController extends Controller
                     }                    
                 }
 
-            }         
-        
-          
+            }    
 
             // create invoice table   // add booking_id
             $invoice = InvoiceRecord::create([
@@ -417,8 +415,8 @@ class CreateBookingController extends Controller
                 "timeLimitUTC" => $timeLimitUTC
             ];
 
-            dump($bookingDetails);
-            dd($response);
+            // dump($bookingDetails);
+            // dd($response);
             return response()->json([
                 "error" => false,
                 "message" => "Flight booked successfully",

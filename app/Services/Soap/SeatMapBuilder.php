@@ -52,12 +52,6 @@ class SeatMapBuilder {
         $secureFlightDataRequired,
         $segmentStatusByFirstLeg, 
         $stopQuantity, 
-        $companyNameCitycode, 
-        $companyNameCode, 
-        $companyNameCodeContext,
-        $companyFullName, 
-        $companyShortName, 
-        $countryCode, 
         $ID, 
         $referenceID
     
