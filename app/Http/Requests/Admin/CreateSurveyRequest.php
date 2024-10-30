@@ -32,6 +32,7 @@ class CreateSurveyRequest extends FormRequest
             'questions.*.is_multiple_choice' => 'required|boolean',
             'questions.*.options' => 'required|array',
             'questions.*.options.*.option_text' => 'required|string',
+            'is_active' => "required|boolean",
 
         ];
     }

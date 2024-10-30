@@ -33,12 +33,6 @@ class BookingBuilder {
     }
 
     public function readBookingTK(
-        $companyCityCode, 
-        $companyCode, 
-        $companyNameCodeContext,
-        $companyFullName, 
-        $companyShortName, 
-        $countryCode, 
         $ID, 
         $referenceID
     ) {
@@ -57,12 +51,12 @@ class BookingBuilder {
                     </clientInformation>
                     <bookingReferenceID>
                        <companyName>
-                          <cityCode>' . htmlspecialchars($companyCityCode, ENT_XML1, 'UTF-8') . '</cityCode>
-                          <code>' . htmlspecialchars($companyCode, ENT_XML1, 'UTF-8') . '</code>
-                          <codeContext>' . htmlspecialchars($companyNameCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
-                          <companyFullName>' . htmlspecialchars($companyFullName, ENT_XML1, 'UTF-8') . '</companyFullName>
-                          <companyShortName>' . htmlspecialchars($companyShortName, ENT_XML1, 'UTF-8') . '</companyShortName>
-                          <countryCode>' . htmlspecialchars($countryCode, ENT_XML1, 'UTF-8') . '</countryCode>
+                          <cityCode>LOS</cityCode>
+                          <code>P4</code>
+                          <codeContext>CRANE</codeContext>
+                          <companyFullName>SCINTILLA</companyFullName>
+                          <companyShortName>SCINTILLA</companyShortName>
+                          <countryCode>NG</countryCode>
                        </companyName>
                        <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
                        <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>

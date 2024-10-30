@@ -56,17 +56,18 @@ use App\Http\Controllers\Admin\TeamMembersAdminController;
 use App\Http\Controllers\Test\TicketReservationController;
 use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
+use App\Http\Controllers\AnalyticsUserController;
 use App\Http\Controllers\RedeemTicketPeacePointController;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\Test\AddWeightController as TestAddWeightController;
+use App\Http\Controllers\TripController;
 use App\Http\Controllers\WalletController;
 use Psy\Sudo;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
-
 
 Route::group(['prefix' => 'user'], function ()  {
     Route::post('register', [RegisterController::class, 'userRegister']);
@@ -118,6 +119,7 @@ Route::group(['prefix' => 'admin/'], function () {
 
         Route::group(['prefix' => 'surveys'], function () {
             Route::post('create-survey', [SurveyController::class, 'createSurvey']);
+            Route::patch('deactivate-survey', [SurveyController::class, 'deActiveSurvey']);
             Route::post('create-survey-banner', [SurveyController::class, 'createSurveyBanner']);            
             Route::get('/', [UserSurveyController::class, 'indexSurvey']);
             Route::post('/survey-table', [SurveyController::class, 'surveyTable']);
@@ -129,8 +131,16 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::delete('delete', [SurveyController::class, 'deleteSurvey']);
                 Route::get('participants', [SurveyController::class, 'surveyParticipants']);
                 Route::get('survey-result', [SurveyController::class, 'getSurveyResults']);
+                Route::get('survey-result-gender', [SurveyController::class, 'getSurveyResultByGender']);
                 Route::put('allocate-points/{participant_id}', [SurveyController::class, 'allocatePointToParticipant']);
+                Route::delete('delete', [SurveyController::class, 'deleteSurvey']);
         
+            });
+            Route::group(['prefix' => 'questions'], function () {
+                Route::delete('{question}/delete', [SurveyController::class, 'deleteQuestion']);
+            });
+            Route::group(['prefix' => 'options'], function () {
+                Route::delete('{option}/delete', [SurveyController::class, 'deleteOption']);
             });
         });
 
@@ -235,6 +245,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
         
         Route::post('/add-seat-ssr', [AddSeatController::class, 'addSeat']);
         Route::post('/add-weight-bag-ow/invoice/{invoiceId}', [AddWeightController::class, 'addWeight']);
+        Route::post('/select-seat', [AddWeightController::class, 'selectSeat']);
         
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
         Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
@@ -281,6 +292,21 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
     Route::post('/tickets/update-seats', [TicketController::class, 'updateSeats']);
     Route::get('/booking', [BookingController::class, 'getBooking']);
+ 
+    
+    // Analytics
+    Route::group(['prefix' => 'analytics'], function() {
+        Route::get('total-flight', [AnalyticsUserController::class, 'totalFlight']);
+        Route::get('total-referrals', [AnalyticsUserController::class, 'totalReferral']);
+        
+
+        // travel recommendation
+        Route::get('featured-trip', [TripController::class, 'featuredTrip']);
+        Route::get('special-deals', [TripController::class, 'specialDeals']);
+        Route::get('favorite-cities-event', [TripController::class, 'favoriteCitiesEvent']);
+        Route::get('busiest-month', [TripController::class, 'busiestMonth']);
+        Route::get('list-countries', [TripController::class, 'listCountries']);
+    });
     
 });
 

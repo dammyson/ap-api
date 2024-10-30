@@ -65,20 +65,24 @@ class UserSurveyController extends Controller
             $user_id = $request->user()->id;
             $responses = $request->input('responses');
 
-            foreach($responses as $response) {
+            foreach ($responses as $response) {
                 $questionId = $response['question_id'];
-
-                foreach($response['option_ids'] as $optionId) {
-                    SurveyUserResponse::create([
-                        'survey_id' => $survey_id,
-                        'user_id' => $user_id,
-                        'question_id' => $questionId,
-                        'option_id' => $optionId
-                    ]);
-                    
+    
+                // Create or retrieve the SurveyUserResponse for this user and question
+                $surveyUserResponse = SurveyUserResponse::firstOrCreate([
+                    'survey_id' => $survey_id,
+                    'user_id' => $user_id,
+                    'question_id' => $questionId,
+                ]);
+    
+                // Attach selected options using the pivot table
+                foreach ($response['option_ids'] as $optionId) {
+                    // Avoid duplicate options for the same response
+                    if (!$surveyUserResponse->options()->where('option_id', $optionId)->exists()) {
+                        $surveyUserResponse->options()->attach($optionId);
+                    }
                 }
             }
-
 
 
         } catch(\Throwable $th) {
