@@ -17,6 +17,8 @@ use App\Http\Requests\Admin\CreateSurveyRequest;
 use App\Http\Requests\FilterSurveyRequest;
 use App\Http\Requests\UpdateSurveyImageRequest;
 use App\Http\Resources\SurveyResource;
+use Illuminate\Support\Facades\DB;
+
 
 class SurveyController extends Controller
 {
@@ -28,13 +30,26 @@ class SurveyController extends Controller
             $title = $request->input('title');
             $questions = $request->input('questions');
             $duration_of_survey = $request->input('duration_of_survey');
-            $points_awarded = $request->input('points_awarded');
+            $points_awarded = $request->input('points_awarded');            
+            $is_active = $request->input('is_active');
+
+            if ($is_active) {
+               $survey = Survey::where('is_active', true);
+               if ($survey) {
+                    return response()->json([
+                        "error" => true,
+                        "message" => "A survey is currently active would you like to end and begin a new one"
+                    ], 500);
+               }
+
+            }
          
             $survey = Survey::create([
                 'title' => $title,
                 // 'duration_of_survey' => now()->addMinutes($duration_of_survey),
                 'duration_of_survey' => $duration_of_survey,
-                'points_awarded' => $points_awarded
+                'points_awarded' => $points_awarded,
+                'is_active' => $is_active
             ]);
             
             if ($request->file('image_url')) {
@@ -80,19 +95,49 @@ class SurveyController extends Controller
         
     }
 
-    public function createSurveyBanner(Request $request) {
-        // $image_url = $request->input('image_url');
-        if ($request->file('$image_url')) {
-            $path = $request->file('image_url')->store('survey-images');
+    public function deActiveSurvey(Request $request) {
+        try {
+            $admin = $request->user('admin');
+    
+            if (!$admin) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You are not authorized to carry out this action'
+                ], 500);
+            } 
+    
+            $survey = Survey::where('is_active', true)->first();
+            $survey->is_active = false;
+            $survey->save();
+
+            return response()->json([
+                'error' => false,
+                'message' => 'survey deactivated successfully'
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ]);
         }
-        $image_url_link = Storage::url($path);
+    }
 
-        return response()->json([
-            "error" => true,
-            "image_url" => $path,
-            "image_url_link" => $image_url_link
 
-        ], 200);
+    public function createSurveyBanner(Request $request) {
+
+        if ($request->file('image_url')) {
+            $path = $request->file('image_url')->store('survey-images');
+
+            $image_url_link = Storage::url($path);
+    
+            return response()->json([
+                "error" => true,
+                "image_url" => $path,
+                "image_url_link" => $image_url_link
+    
+            ], 200);
+        }
     }
 
     public function updateSurveyImage(UpdateSurveyImageRequest $request, Survey $survey) {        
@@ -192,23 +237,6 @@ class SurveyController extends Controller
 
     }
 
-    public function deleteSurvey(Request $request, Survey $survey) {
-        try {
-            $survey->delete();
-
-            return response()->json([
-                'error' => false,
-                'message' => 'deleted',
-            ], 204);
-
-        } catch (\Throwable $th) {
-            return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
-        }
-
-    }
 
     public function getSurveyResults(Survey $survey) {
         try {
@@ -231,10 +259,14 @@ class SurveyController extends Controller
                 // Get total votes for this question
                 $totalVotesForQuestion = SurveyUserResponse::where('question_id', $question->id)->count();
 
+
+                
                 // For each option, calculate the percentage of votes
                 foreach ($question->options as $option) {
                     $optionVotes = SurveyUserResponse::where('question_id', $question->id)
-                                                    ->where('option_id', $option->id)
+                                                    ->whereHas('options', function($query) use($option) {
+                                                        $query->where('option_id', $option->id);
+                                                    })
                                                     ->count();
 
                     $percentage = $totalVotesForQuestion > 0 
@@ -270,6 +302,54 @@ class SurveyController extends Controller
     }
 
 
+    public function getSurveyResultByGender(Survey $survey) {
+
+        $totalResultCount = SurveyUserResponse::where("survey_id", $survey->id)->get();
+
+        // Return zero percentages if there are no responses
+        if ($totalResultCount === 0) {
+            return response()->json([
+                "error" => false,
+                "male_percentage" => 0,
+                "female_percentage" => 0
+            ]);
+        }
+        
+        // Count responses by gender in a single query to improve performance
+        $genderCounts = SurveyUserResponse::where("survey_id", $survey->id)
+            ->whereHas('user', function($query) {
+                $query->whereIn('gender', ['Male', 'Female']);
+            })
+            ->selectRaw("SUM(CASE WHEN users.gender = 'Male' THEN 1 ELSE 0 END) as male_count")
+            ->selectRaw("SUM(CASE WHEN users.gender = 'Female' THEN 1 ELSE 0 END) as female_count")
+            ->first();
+
+        $malePercentage = ($genderCounts->male_count / $totalResultCount) * 100;
+        $femalePercentage = ($genderCounts->female_count / $totalResultCount) * 100;
+
+        /*
+            $maleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
+                $query->where('gender', 'Male');
+            })->count();
+
+            $femaleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
+                $query->where('gender', 'Female');
+            })->count();
+
+            $malePercentage = ($maleResultCount / $totalResultCount) * 100;
+
+            $femalePercentage = ($femaleResultCount / $totalResultCount) * 100;
+
+        */
+
+        return response()->json([
+            "error" => false,
+            "male_percentage" => $malePercentage,
+            "female_percentage" => $femalePercentage
+        ]);
+        
+    }
+
     public function editSurvey (Request $request, Survey $survey) {      
         $title = $request->input('title');
         $duration_of_survey = $request->input('duration_of_survey');
@@ -291,7 +371,12 @@ class SurveyController extends Controller
             
 
             foreach($requestQuestion['options'] as $requestOption) {
-                $option = Option::find($requestOption['id'])  ?? new Option();
+                if (!$requestOption['id']) {
+                    $option  = new Option();
+                } else {
+                    $option = Option::find($requestOption['id']);
+
+                }
                 $option->question_id = $question->id;
                 $option->option_text = $requestOption['option_text'];
                 $option->save();
@@ -366,6 +451,36 @@ class SurveyController extends Controller
 
     }
 
+    public function deleteSurvey(Request $request, Survey $survey) {
+        try {
+            $admin = $request->user('admin');
+
+            if (!$admin) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You are not authorized to carry out this action'
+                ], 500);
+            } 
+
+            DB::transaction(function() use($survey){
+                $survey->delete();
+
+            });
+
+            return response()->json([
+                "error" => false,
+                "message" => "survey successfully deleted"
+            ]);
+
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     public function allocatePointToParticipant(Request $request, $surveyId, $participantId) {
         $points = $request->input('points');
         $reason = $request->input('reason_of_allocation');
@@ -410,7 +525,7 @@ class SurveyController extends Controller
                 'error' => false,
                 'message' => 'points have been allocated to user successfully'
             ], 200);
-
+            
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => true,
@@ -418,5 +533,68 @@ class SurveyController extends Controller
             ], 500);
         }
         
+    }
+
+    //////////// move the below to question controller
+
+    public function deleteQuestion(Request $request, Question $question) {
+        try {
+            
+            $admin = $request->user('admin');
+    
+            if (!$admin) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You are not authorized to carry out this action'
+                ], 500);
+            } 
+
+            // Use transaction with closure
+            DB::transaction(function() use ($question) {
+                $question->delete();
+            });
+
+
+            return response()->json([
+                "error" =>  false,
+                "message" => "question delete successfully"
+            ]);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteOption(Request $request, Option $option) {
+        try {
+            
+            $admin = $request->user('admin');
+    
+            if (!$admin) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You are not authorized to carry out this action'
+                ], 500);
+            } 
+
+            DB::transaction(function() use($option) {
+                $option->delete();
+
+            });
+
+            return response()->json([
+                "error" =>  false,
+                "message" => "question delete successfully"
+            ]);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 }

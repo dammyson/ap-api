@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SuperAdmin\StorePlaneRequest;
+use App\Models\FlightRecord;
 use App\Models\Plane;
+use App\Models\ReferralActivity;
 use Illuminate\Http\Request;
 
 class PlaneController extends Controller
@@ -49,4 +51,6 @@ class PlaneController extends Controller
         }
 
     }
+
+    
 }

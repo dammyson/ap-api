@@ -124,12 +124,6 @@ class BookingRequestController extends Controller
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
             $xml = $this->bookingBuilder->readBookingTK(
-                $companyCityCode, 
-                $companyCode, 
-                $companyNameCodeContext,
-                $companyFullName, 
-                $companyShortName, 
-                $countryCode, 
                 $ID, 
                 $referenceID
             );

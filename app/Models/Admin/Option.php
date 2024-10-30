@@ -14,5 +14,10 @@ class Option extends Model
         return $this->belongsTo(Question::class);
     }
 
+    // Many-to-many relationship with SurveyUserResponse
+    public function surveyUserResponses() {
+        return $this->belongsToMany(SurveyUserResponse::class, 'survey_user_response_option', 'option_id', 'survey_user_response_id');
+    }
+
     
 }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class SurveyUserResponse extends Model
 {
     use HasFactory;
-    protected $fillable = ['survey_id', 'question_id', 'option_id', 'user_id'];
+    protected $fillable = ['survey_id', 'question_id', 'user_id'];
 
     public function survey() {
         return $this->belongsTo(Survey::class);
@@ -19,11 +19,13 @@ class SurveyUserResponse extends Model
         return $this->belongsTo(Question::class);
     }
 
-    public function option() {
-        return $this->belongsTo(Option::class);
+    // Many-to-many relationship with Option
+    public function options() {
+        return $this->belongsToMany(Option::class, 'survey_user_response_option', 'survey_user_response_id', 'option_id');
     }
 
     public function user() {
         return $this->belongsTo(User::class);
     }
+
 }
