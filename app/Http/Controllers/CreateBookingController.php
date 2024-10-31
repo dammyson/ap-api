@@ -296,7 +296,6 @@ class CreateBookingController extends Controller
             $bookOriginDestinationOptionList = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
             $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         
-
             $ticketCount = 0;
 
             if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
