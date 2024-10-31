@@ -279,7 +279,7 @@ class SurveyController extends Controller
 
             return response()->json([
                 'error' => false,
-                'message' => `survey {$action} successfully`,
+                'message' => "survey {$action} successfully",
                 'survey' => $survey
             ], 200);
 
@@ -584,7 +584,7 @@ class SurveyController extends Controller
                 'survey_id' => $survey->id,
             ]);
 
-            $message = `allocated {$points} peace point to {$user->first_name} {$user->last_name} ({$user->peace_id} peace id) for`;
+            $message = "allocated {$points} peace point to {$user->first_name} {$user->last_name} ({$user->peace_id} peace id) for";
 
             event(new AdminSurveyEvent($admin, $survey, $message));
             return response()->json([
@@ -620,7 +620,7 @@ class SurveyController extends Controller
                 $question->delete();
             });
 
-            $message = `deleted question "{$question->text}" for `;
+            $message = "deleted question ({$question->text}) for ";
 
             event(new AdminSurveyEvent($admin, $survey, $message));
 
@@ -654,7 +654,7 @@ class SurveyController extends Controller
 
             });
 
-            $message = `deleted option "{$option->option_text}" in question {$question->question_text} for `;
+            $message = "deleted option ({$option->option_text}) in question {$question->question_text} for ";
 
             event(new AdminSurveyEvent($admin, $survey, $message));
 

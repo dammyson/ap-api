@@ -27,7 +27,7 @@ class AdminSurveyListener
        $action = $event->action;
        
        if ($admin instanceOf \App\Models\Admin) {
-           $description = `Admin {$admin->user_name} {$action} {$survey->title}`;
+           $description = "Admin {$admin->user_name} {$action} {$survey->title}";
     
             ActivityLog::create([
                 'admin_id' => $admin->id,
