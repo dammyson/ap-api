@@ -421,7 +421,11 @@ class SurveyController extends Controller
        
 
         foreach($requestQuestions as $requestQuestion) {
-            $question = Question::find($requestQuestion['id']) ?? new Question();
+            if (!array_key_exists('id', $requestQuestion['id'])) {
+                $question = Question::find($requestQuestion['id']); 
+            } else {
+                $question = new Question();
+            }
             $question->question_text = $requestQuestion['question_text'];
             $question->is_multiple_choice =  $requestQuestion['is_multiple_choice'];
             $question->survey_id = $survey->id;

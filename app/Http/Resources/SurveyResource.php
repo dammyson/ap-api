@@ -22,6 +22,7 @@ class SurveyResource extends JsonResource
             'image_url' => $this->image_url, 
             'points_awarded' => $this->points_awarded,
             'is_published' => $this->is_published,
+            'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'image_url_link' => Storage::url($this->image_url),
