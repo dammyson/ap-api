@@ -156,8 +156,13 @@ class TicketReservationController extends Controller
                 "message" => "Invoice already paid for"
             ], 500);
         }
-        return $paidAmount;
-        
+         
+        return response()->json([
+            "error" => false,
+            "incoming_payment" => $paidAmount,
+            "expected_payment" => $invoice->amount
+        ]);
+
         if ( $paidAmount < $invoice->amount ) {
             return response()->json([
                 "error" => false,
