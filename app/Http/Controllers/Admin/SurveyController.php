@@ -421,15 +421,16 @@ class SurveyController extends Controller
        
 
         foreach($requestQuestions as $requestQuestion) {
-            if (!array_key_exists('id', $requestQuestion)) {
+            if (array_key_exists('id', $requestQuestion)) {
                 $question = Question::find($requestQuestion['id']); 
             } else {
                 $question = new Question();
+                // dump('i ')
             }
             $question->question_text = $requestQuestion['question_text'];
             $question->is_multiple_choice =  $requestQuestion['is_multiple_choice'];
             $question->survey_id = $survey->id;
-            
+            // dd($question);
 
             foreach($requestQuestion['options'] as $requestOption) {
                 if (!array_key_exists('id', $requestOption)) {
@@ -437,8 +438,7 @@ class SurveyController extends Controller
                 } else {
                     $option = Option::find($requestOption['id']);
 
-                }
-                dump($question);
+                }                
                 $option->question_id = $question->id;
                 $option->option_text = $requestOption['option_text'];
                 $option->save();
