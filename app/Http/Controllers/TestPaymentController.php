@@ -36,7 +36,6 @@ class TestPaymentController extends Controller
 
             // convert to kobo
             $amount = $amount / 100;
-           
 
             return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
             // dd()
