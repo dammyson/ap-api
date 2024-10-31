@@ -25,7 +25,7 @@ class AdminSurveyEvent
     {
         $this->admin = $admin;
         $this->survey = $survey;
-        $this->action = $survey;
+        $this->action = $action;
     }
 
     /**
