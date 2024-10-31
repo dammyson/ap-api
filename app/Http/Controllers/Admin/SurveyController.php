@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\AdminSurveyEvent;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Admin\Option;
@@ -26,11 +27,21 @@ class SurveyController extends Controller
     public function createSurvey(CreateSurveyRequest $request) {
         
         try {
+
+            $admin = $request->user('admin');
+    
+            if (!$admin) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You are not authorized to carry out this action'
+                ], 500);
+            } 
             
             $title = $request->input('title');
             $questions = $request->input('questions');
             $duration_of_survey = $request->input('duration_of_survey');
-            $points_awarded = $request->input('points_awarded');            
+            $points_awarded = $request->input('points_awarded');  
+            $image_url = $request->input('image_url');          
             $is_active = $request->input('is_active');
 
             if ($is_active) {
@@ -49,8 +60,13 @@ class SurveyController extends Controller
                 // 'duration_of_survey' => now()->addMinutes($duration_of_survey),
                 'duration_of_survey' => $duration_of_survey,
                 'points_awarded' => $points_awarded,
-                'is_active' => $is_active
+                'is_active' => $is_active,
+                'image_url' => $image_url
             ]);
+
+            // $survey->image_url = $path;
+            // // $imageUrlLink = Storage::url($path);
+            // $survey->save();
             
             if ($request->file('image_url')) {
                 $path = $request->file('image_url')->store('survey-images');
@@ -77,7 +93,11 @@ class SurveyController extends Controller
 
             }
 
+            event( new AdminSurveyEvent($admin, $survey, "created"));
+
             $survey = new SurveyResource($survey);
+
+            
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -109,6 +129,8 @@ class SurveyController extends Controller
             $survey = Survey::where('is_active', true)->first();
             $survey->is_active = false;
             $survey->save();
+
+            event( new AdminSurveyEvent($admin, $survey, "deactived"));
 
             return response()->json([
                 'error' => false,
@@ -142,6 +164,16 @@ class SurveyController extends Controller
 
     public function updateSurveyImage(UpdateSurveyImageRequest $request, Survey $survey) {        
         try {
+
+            $admin = $request->user('admin');
+    
+            if (!$admin) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You are not authorized to carry out this action'
+                ], 500);
+            } 
+
             if ($request->file('image_url')) {
                 // store the file in the admin-profile-images folder
                     $path = $request->file('image_url')->store('survey-images');
@@ -151,6 +183,8 @@ class SurveyController extends Controller
                     $imageUrlLink = Storage::url($path);
 
                     $survey->save();
+
+                    event( new AdminSurveyEvent($admin, $survey, "updated banner for"));
 
                     return response()->json([
                         "error" => false,
@@ -170,6 +204,7 @@ class SurveyController extends Controller
 
     public function surveyTable(FilterSurveyRequest $request) {
         try {
+          
             $from_date = $request->input('from_date');
             $to_date = $request->input('to_date');
             $title = $request->input('title');
@@ -212,19 +247,31 @@ class SurveyController extends Controller
 
     public function tooglePublishSurvey(Request $request, Survey $survey) {
         try {
+            $admin = $request->user('admin');
+    
+            if (!$admin) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'You are not authorized to carry out this action'
+                ], 500);
+            } 
+
             $survey->is_published = !$survey->is_published;
             
             // if survey is not published then it is in draft
            
             $survey->save();
 
-            $message = $survey->is_published ? 'survey published successfully' 
-                    : 'survey unpublished successfully';
             
+            $action = $survey->is_published ? 'published' 
+                    : 'unpublished';
+            
+
+            event( new AdminSurveyEvent($admin, $survey, $action));
 
             return response()->json([
                 'error' => false,
-                'message' => $message,
+                'message' => `survey {$action} successfully`,
                 'survey' => $survey
             ], 200);
 
@@ -316,31 +363,31 @@ class SurveyController extends Controller
         }
         
         // Count responses by gender in a single query to improve performance
-        $genderCounts = SurveyUserResponse::where("survey_id", $survey->id)
-            ->whereHas('user', function($query) {
-                $query->whereIn('gender', ['Male', 'Female']);
-            })
-            ->selectRaw("SUM(CASE WHEN users.gender = 'Male' THEN 1 ELSE 0 END) as male_count")
-            ->selectRaw("SUM(CASE WHEN users.gender = 'Female' THEN 1 ELSE 0 END) as female_count")
-            ->first();
+        // $genderCounts = SurveyUserResponse::where("survey_id", $survey->id)
+        //     ->whereHas('user', function($query) {
+        //         $query->whereIn('gender', ['Male', 'Female']);
+        //     })
+        //     ->selectRaw("SUM(CASE WHEN users.gender = 'Male' THEN 1 ELSE 0 END) as male_count")
+        //     ->selectRaw("SUM(CASE WHEN users.gender = 'Female' THEN 1 ELSE 0 END) as female_count")
+        //     ->first();
 
-        $malePercentage = ($genderCounts->male_count / $totalResultCount) * 100;
-        $femalePercentage = ($genderCounts->female_count / $totalResultCount) * 100;
+        // $malePercentage = ($genderCounts->male_count / $totalResultCount) * 100;
+        // $femalePercentage = ($genderCounts->female_count / $totalResultCount) * 100;
 
-        /*
-            $maleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
-                $query->where('gender', 'Male');
-            })->count();
+        
+        $maleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
+            $query->where('gender', 'Male');
+        })->count();
 
-            $femaleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
-                $query->where('gender', 'Female');
-            })->count();
+        $femaleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
+            $query->where('gender', 'Female');
+        })->count();
 
-            $malePercentage = ($maleResultCount / $totalResultCount) * 100;
+        $malePercentage = ($maleResultCount / $totalResultCount) * 100;
 
-            $femalePercentage = ($femaleResultCount / $totalResultCount) * 100;
+        $femalePercentage = ($femaleResultCount / $totalResultCount) * 100;
 
-        */
+        
 
         return response()->json([
             "error" => false,
@@ -355,6 +402,8 @@ class SurveyController extends Controller
         $duration_of_survey = $request->input('duration_of_survey');
         $points_awarded = $request->input('points_awarded');
         $requestQuestions = $request->input('questions');
+
+        $admin = $request->user('admin');
 
         $survey->update([
             'title' => $title,
@@ -371,7 +420,7 @@ class SurveyController extends Controller
             
 
             foreach($requestQuestion['options'] as $requestOption) {
-                if (!$requestOption['id']) {
+                if (!array_key_exists('id', $requestOption)) {
                     $option  = new Option();
                 } else {
                     $option = Option::find($requestOption['id']);
@@ -386,6 +435,9 @@ class SurveyController extends Controller
         }   
 
         $survey->save();
+
+        event(new AdminSurveyEvent($admin, $survey, "edited"));
+
 
         $surveyData = $survey->load('questions.options');
 
@@ -467,6 +519,9 @@ class SurveyController extends Controller
 
             });
 
+
+            event(new AdminSurveyEvent($admin, $survey, "deleted"));
+
             return response()->json([
                 "error" => false,
                 "message" => "survey successfully deleted"
@@ -481,7 +536,7 @@ class SurveyController extends Controller
         }
     }
 
-    public function allocatePointToParticipant(Request $request, $surveyId, $participantId) {
+    public function allocatePointToParticipant(Request $request, Survey $survey, $participantId) {
         $points = $request->input('points');
         $reason = $request->input('reason_of_allocation');
 
@@ -518,9 +573,12 @@ class SurveyController extends Controller
                 'user_name' => $userName,
                 'point_allocated' => $points,
                 'reason_of_allocation' => $reason,
-                'survey_id' => $surveyId,
+                'survey_id' => $survey->id,
             ]);
 
+            $message = `allocated {$points} peace point to {$user->first_name} {$user->last_name} ({$user->peace_id} peace id) for`;
+
+            event(new AdminSurveyEvent($admin, $survey, $message));
             return response()->json([
                 'error' => false,
                 'message' => 'points have been allocated to user successfully'
@@ -537,7 +595,7 @@ class SurveyController extends Controller
 
     //////////// move the below to question controller
 
-    public function deleteQuestion(Request $request, Question $question) {
+    public function deleteQuestion(Request $request, Survey $survey, Question $question) {
         try {
             
             $admin = $request->user('admin');
@@ -554,6 +612,9 @@ class SurveyController extends Controller
                 $question->delete();
             });
 
+            $message = `deleted question "{$question->text}" for `;
+
+            event(new AdminSurveyEvent($admin, $survey, $message));
 
             return response()->json([
                 "error" =>  false,
@@ -568,7 +629,7 @@ class SurveyController extends Controller
         }
     }
 
-    public function deleteOption(Request $request, Option $option) {
+    public function deleteOption(Request $request, Survey $survey, Question $question, Option $option) {
         try {
             
             $admin = $request->user('admin');
@@ -584,6 +645,10 @@ class SurveyController extends Controller
                 $option->delete();
 
             });
+
+            $message = `deleted option "{$option->option_text}" in question {$question->question_text} for `;
+
+            event(new AdminSurveyEvent($admin, $survey, $message));
 
             return response()->json([
                 "error" =>  false,

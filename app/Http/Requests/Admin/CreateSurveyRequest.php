@@ -26,7 +26,8 @@ class CreateSurveyRequest extends FormRequest
             'title' => 'required|string',
             'duration_of_survey' => 'required|integer',
             'points_awarded' => 'sometimes|integer|min:0',
-            "image_url" => "sometimes|file|mimes:jpg,png|max:2048", // Treat image_url as a file
+            // "image_url" => "sometimes|file|mimes:jpg,png|max:2048", // Treat image_url as a file
+            "image_url" => "sometimes|string", // Treat image_url as a file
             'questions' => 'required|array',
             'questions.*.question_text' => 'required|string',
             'questions.*.is_multiple_choice' => 'required|boolean',

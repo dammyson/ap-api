@@ -34,11 +34,15 @@ class TestPaymentController extends Controller
             
             $amount = $verified_request["data"]["amount"];
 
+            // convert to kobo
+            $amount = $amount / 100;
+
             return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
-            
+            // dd()
             // return response()->json(['status' => true, 'data' =>  $top_up_result, 'message' => 'Wallet top up successfully'], 200);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
+        
             return response()->json(['status' => false,  'message' => 'Error processing request'], 500);
         }
     }
