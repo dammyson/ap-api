@@ -133,13 +133,18 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::get('survey-result-gender', [SurveyController::class, 'getSurveyResultByGender']);
                 Route::put('allocate-points/{participant_id}', [SurveyController::class, 'allocatePointToParticipant']);
                 Route::delete('delete', [SurveyController::class, 'deleteSurvey']);
+                Route::group(['prefix' => 'questions'], function () {
+                    Route::group(['prefix' => '{question}'], function () {  
+                        Route::delete('delete', [SurveyController::class, 'deleteQuestion']);
+                        
+                        Route::group(['prefix' => 'options'], function () {
+                            Route::delete('{option}/delete', [SurveyController::class, 'deleteOption']);
+                        });
+
+                    });
+                });
+                
         
-            });
-            Route::group(['prefix' => 'questions'], function () {
-                Route::delete('{question}/delete', [SurveyController::class, 'deleteQuestion']);
-            });
-            Route::group(['prefix' => 'options'], function () {
-                Route::delete('{option}/delete', [SurveyController::class, 'deleteOption']);
             });
         });
 

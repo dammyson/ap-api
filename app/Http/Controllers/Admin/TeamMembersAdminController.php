@@ -13,7 +13,7 @@ class TeamMembersAdminController extends Controller
     public function teamMembers(Request $request) {
         try {
             
-            $admins = new TeamMembersCollection(Admin::paginate(10));
+            $admins = new TeamMembersCollection(Admin::all());
 
             return response()->json([
                 'error' => false,
