@@ -33,7 +33,7 @@ class AdminSurveyListener
                 'admin_id' => $admin->id,
                 'role' => $admin->role,
                 'activity_type' => "Login",
-                'description' => $description,
+                'description' => "admin add a survey",
                 'ip_address' => request()->ip()
             ]);
 
