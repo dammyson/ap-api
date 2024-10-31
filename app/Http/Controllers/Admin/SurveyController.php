@@ -40,7 +40,8 @@ class SurveyController extends Controller
             $title = $request->input('title');
             $questions = $request->input('questions');
             $duration_of_survey = $request->input('duration_of_survey');
-            $points_awarded = $request->input('points_awarded');            
+            $points_awarded = $request->input('points_awarded');  
+            $image_url = $request->input('image_url');          
             $is_active = $request->input('is_active');
 
             if ($is_active) {
@@ -59,8 +60,13 @@ class SurveyController extends Controller
                 // 'duration_of_survey' => now()->addMinutes($duration_of_survey),
                 'duration_of_survey' => $duration_of_survey,
                 'points_awarded' => $points_awarded,
-                'is_active' => $is_active
+                'is_active' => $is_active,
+                'image_url' => $image_url
             ]);
+
+            // $survey->image_url = $path;
+            // // $imageUrlLink = Storage::url($path);
+            // $survey->save();
             
             if ($request->file('image_url')) {
                 $path = $request->file('image_url')->store('survey-images');
