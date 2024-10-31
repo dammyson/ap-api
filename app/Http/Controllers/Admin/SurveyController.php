@@ -357,31 +357,31 @@ class SurveyController extends Controller
         }
         
         // Count responses by gender in a single query to improve performance
-        $genderCounts = SurveyUserResponse::where("survey_id", $survey->id)
-            ->whereHas('user', function($query) {
-                $query->whereIn('gender', ['Male', 'Female']);
-            })
-            ->selectRaw("SUM(CASE WHEN users.gender = 'Male' THEN 1 ELSE 0 END) as male_count")
-            ->selectRaw("SUM(CASE WHEN users.gender = 'Female' THEN 1 ELSE 0 END) as female_count")
-            ->first();
+        // $genderCounts = SurveyUserResponse::where("survey_id", $survey->id)
+        //     ->whereHas('user', function($query) {
+        //         $query->whereIn('gender', ['Male', 'Female']);
+        //     })
+        //     ->selectRaw("SUM(CASE WHEN users.gender = 'Male' THEN 1 ELSE 0 END) as male_count")
+        //     ->selectRaw("SUM(CASE WHEN users.gender = 'Female' THEN 1 ELSE 0 END) as female_count")
+        //     ->first();
 
-        $malePercentage = ($genderCounts->male_count / $totalResultCount) * 100;
-        $femalePercentage = ($genderCounts->female_count / $totalResultCount) * 100;
+        // $malePercentage = ($genderCounts->male_count / $totalResultCount) * 100;
+        // $femalePercentage = ($genderCounts->female_count / $totalResultCount) * 100;
 
-        /*
-            $maleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
-                $query->where('gender', 'Male');
-            })->count();
+        
+        $maleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
+            $query->where('gender', 'Male');
+        })->count();
 
-            $femaleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
-                $query->where('gender', 'Female');
-            })->count();
+        $femaleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
+            $query->where('gender', 'Female');
+        })->count();
 
-            $malePercentage = ($maleResultCount / $totalResultCount) * 100;
+        $malePercentage = ($maleResultCount / $totalResultCount) * 100;
 
-            $femalePercentage = ($femaleResultCount / $totalResultCount) * 100;
+        $femalePercentage = ($femaleResultCount / $totalResultCount) * 100;
 
-        */
+        
 
         return response()->json([
             "error" => false,
