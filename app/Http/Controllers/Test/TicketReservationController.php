@@ -141,6 +141,7 @@ class TicketReservationController extends Controller
 
     public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId) {
         $invoice = InvoiceRecord::find($invoiceId);
+        $invoiceAmount = $invoice->amount;
 
         if (!$invoice) {
             return response()->json([
@@ -156,14 +157,16 @@ class TicketReservationController extends Controller
                 "message" => "Invoice already paid for"
             ], 500);
         }
-         
-        return response()->json([
-            "error" => false,
-            "incoming_payment" => $paidAmount,
-            "expected_payment" => $invoice->amount
-        ]);
+        
+        $invoiceAmount = $invoiceAmount + 0;
+        // return response()->json([
+        //     "error" => false,
+        //     "incoming_payment" => $paidAmount, 25200
+        //     "expected_payment" => $invoice->amount 25200.00
+        // ]);
 
-        if ( $paidAmount < $invoice->amount ) {
+
+        if ( $paidAmount < $invoiceAmount ) {
             return response()->json([
                 "error" => false,
                 "message" => "fund payment for ticket is less than calculated"
