@@ -166,12 +166,12 @@ class TicketReservationController extends Controller
         // ]);
 
 
-        // if ( $paidAmount < $invoiceAmount ) {
-        //     return response()->json([
-        //         "error" => false,
-        //         "message" => "fund payment for ticket is less than calculated"
-        //     ], 500);
-        // }
+        if ( $paidAmount < $invoiceAmount ) {
+            return response()->json([
+                "error" => false,
+                "message" => "fund payment for ticket is less than calculated"
+            ], 500);
+        }
 
         $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
             $bookingId,
@@ -189,10 +189,7 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            
-            return response()->json([
-                "response" => $response
-            ]);     
+           
             $invoice->is_paid = true;
             $invoice->save();
            
