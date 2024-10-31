@@ -159,19 +159,19 @@ class TicketReservationController extends Controller
         }
         
         $invoiceAmount = $invoiceAmount + 0;
-        return response()->json([
-            "error" => false,
-            "incoming_payment" => $paidAmount, 
-            "expected_payment" => $invoiceAmount
-        ]);
+        // return response()->json([
+        //     "error" => false,
+        //     "incoming_payment" => $paidAmount, 
+        //     "expected_payment" => $invoiceAmount
+        // ]);
 
 
-        if ( $paidAmount < $invoiceAmount ) {
-            return response()->json([
-                "error" => false,
-                "message" => "fund payment for ticket is less than calculated"
-            ], 500);
-        }
+        // if ( $paidAmount < $invoiceAmount ) {
+        //     return response()->json([
+        //         "error" => false,
+        //         "message" => "fund payment for ticket is less than calculated"
+        //     ], 500);
+        // }
 
         $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
             $bookingId,
