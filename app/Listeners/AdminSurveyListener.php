@@ -32,8 +32,8 @@ class AdminSurveyListener
             ActivityLog::create([
                 'admin_id' => $admin->id,
                 'role' => $admin->role,
-                'activity_type' => "Login",
-                'description' => "admin add a survey",
+                'activity_type' => "survey",
+                'description' => $description,
                 'ip_address' => request()->ip()
             ]);
 

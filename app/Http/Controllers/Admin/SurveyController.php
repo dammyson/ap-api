@@ -93,7 +93,7 @@ class SurveyController extends Controller
 
             }
 
-            event( new AdminSurveyEvent($admin, $survey, "created"));
+            event(new AdminSurveyEvent($admin, $survey, "created"));
 
             $survey = new SurveyResource($survey);
 
