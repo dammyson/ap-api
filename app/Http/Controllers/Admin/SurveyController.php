@@ -438,6 +438,7 @@ class SurveyController extends Controller
                     $option = Option::find($requestOption['id']);
 
                 }
+                dump($question);
                 $option->question_id = $question->id;
                 $option->option_text = $requestOption['option_text'];
                 $option->save();
