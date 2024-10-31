@@ -667,7 +667,7 @@ class SurveyController extends Controller
 
             return response()->json([
                 "error" =>  false,
-                "message" => "question delete successfully"
+                "message" => "option delete successfully"
             ]);
 
         } catch (\Throwable $th) {
