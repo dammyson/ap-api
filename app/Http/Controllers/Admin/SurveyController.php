@@ -45,7 +45,7 @@ class SurveyController extends Controller
             $is_active = $request->input('is_active');
 
             if ($is_active) {
-               $survey = Survey::where('is_active', true);
+               $survey = Survey::where('is_active', true)->first();
                if ($survey) {
                     return response()->json([
                         "error" => true,
@@ -127,15 +127,23 @@ class SurveyController extends Controller
             } 
     
             $survey = Survey::where('is_active', true)->first();
-            $survey->is_active = false;
-            $survey->save();
+            if ($survey) {
+                $survey->is_active = false;
+                $survey->save();
 
-            event( new AdminSurveyEvent($admin, $survey, "deactived"));
+                event( new AdminSurveyEvent($admin, $survey, "deactived"));
+    
+                return response()->json([
+                    'error' => false,
+                    'message' => 'survey deactivated successfully'
+                ], 200);
+            }
 
             return response()->json([
                 'error' => false,
-                'message' => 'survey deactivated successfully'
+                'message' => 'no current active survey'
             ], 200);
+
 
         } catch (\Throwable $th) {
             return response()->json([
