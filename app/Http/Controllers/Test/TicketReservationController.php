@@ -159,11 +159,11 @@ class TicketReservationController extends Controller
         }
         
         $invoiceAmount = $invoiceAmount + 0;
-        // return response()->json([
-        //     "error" => false,
-        //     "incoming_payment" => $paidAmount, 25200
-        //     "expected_payment" => $invoice->amount 25200.00
-        // ]);
+        return response()->json([
+            "error" => false,
+            "incoming_payment" => $paidAmount, 
+            "expected_payment" => $invoiceAmount
+        ]);
 
 
         if ( $paidAmount < $invoiceAmount ) {
