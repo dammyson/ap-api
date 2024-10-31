@@ -190,7 +190,9 @@ class TicketReservationController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
             
-            // dump($response);
+            return response()->json([
+                "response" => $response
+            ]);     
             $invoice->is_paid = true;
             $invoice->save();
            
