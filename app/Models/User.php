@@ -69,4 +69,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Tier::class);
     }
+
+    public function referralActivitiesReferee() {
+        return $this->hasOne(ReferralActivity::class, 'referee_peace_id', 'peace_id');
+    }
+
+    public function referralActivitiesAsReferrer() {
+        return $this->hasMany(ReferralActivity::class, 'referrer_peace_id', 'peace_id');
+    }
 }
