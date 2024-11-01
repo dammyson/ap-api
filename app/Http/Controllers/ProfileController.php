@@ -83,7 +83,7 @@ class ProfileController extends Controller
 
         try {
 
-            $duplicatedPeaceId = User::select('peace_id')
+            $duplicatedPeaceId = User::select('title')
                 ->groupBy('title')
                 ->get();
             
