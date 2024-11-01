@@ -273,6 +273,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::get('profile', [ProfileController::class, 'getProfile']);
         Route::post('profile/edit', [ProfileController::class, 'editProfile']);
         Route::post('change-peace-id', [ProfileController::class, 'changePeaceId']);
+        Route::post('make-peaceId-unique', [ProfileController::class, 'makePeaceIdUnique']);
         Route::post('profile/change-profile-image', [ProfileController::class, 'changeProfileImage']);
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
@@ -309,6 +310,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::get('total-flight', [AnalyticsUserController::class, 'totalFlight']);
         Route::get('total-referrals', [AnalyticsUserController::class, 'totalReferral']);
         Route::get('number-of-countries-visited', [AnalyticsUserController::class, 'countriesVisited']);
+        Route::get('total-mile-flown', [AnalyticsUserController::class, 'totalMileFlown']);
+        // Route::get('totalMileFlown')
         
 
         // travel recommendation

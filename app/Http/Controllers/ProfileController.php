@@ -79,6 +79,25 @@ class ProfileController extends Controller
         
     }
 
+    public function makePeaceIdUnique() {
+        $duplicatedPeaceId = User::select('peace_id')
+            ->groupBy('peace_id')
+            ->havingRaw('COUNT(*) > 1')
+            ->pluck('peace_id');
+        
+        foreach ($duplicatedPeaceId as $peaceId) {
+            $users =  User::where('peace_id', $peaceId)->get();
+
+            if (count($users) > 0) {
+                foreach($users as $index => $user) {
+                    $user->peace_id = $user->peace_id . '' .$index;
+                    $user->save(); 
+                }
+
+            }
+        }
+    }
+
     public function changePeaceId(ChangePeaceIdRequest $request) {
         $peaceId = $request->input('peace_id');
         try {

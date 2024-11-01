@@ -30,7 +30,8 @@ class RegisterController extends Controller
 
         try {
             // $peace_id =  $this->createPeaceId->generateUniquePeaceId();
-
+            $points = 50;
+           
             $create = User::create([
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
@@ -39,17 +40,18 @@ class RegisterController extends Controller
                 'peace_id' => $request->input('peace_id'),
                 'password' => Hash::make($request->input('password')),
                 'status' => $request->input('status') ?? null,
-                'points' => 0, // allocate appropriate pointts once decided
+                'points' => 50, // allocate appropriate pointts once decided
             
             ]);
 
             $referrer_peace_id = $request->input('referrer_peace_id');
             
             if ($referrer_peace_id) {
+                $referrer_points_earned = 20;
                 $referrer = User::where('peace_id', $referrer_peace_id)->first();
                 // dd($referrer);
                 if ($referrer) {
-                    $referrer->points += 0;
+                    $referrer->points += $referrer_points_earned;
                     $referrer->save();
 
                     $referee = $create;
@@ -61,8 +63,10 @@ class RegisterController extends Controller
                     ReferralActivity::create([
                         "referrer_peace_id" => $referrer_peace_id,
                         "referrer_user_name" => $referrer_user_name,
+                        "referrer_points_earned" => $referrer_points_earned,
                         "referee_peace_id" => $referee->peace_id,
-                        "referee_user_name" => $referee_user_name
+                        "referee_user_name" => $referee_user_name,
+                        
                     ]);
 
                 }            
