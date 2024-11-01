@@ -39,24 +39,12 @@ class AnalyticsUserController extends Controller
             $referrer_count = ReferralActivity::where('referrer_peace_id', $user->peace_id)->count();
 
             $totalPointEarned = ReferralActivity::where('referrer_peace_id', $user->peace_id)->sum('referrer_points_earned');
-            
-            // $referredUsers = ReferralActivity::where('referrer_peace_id', $user->peace_id)
-            //     ->with(['referee', function($query) {
-            //         $query->select(['id', 'first_name', 'last_name', 'points']);
-            //     }])->get()->pluck('referee');
-
-            $referredUsers = ReferralActivity::where('referrer_peace_id', $user->peace_id)
-                ->with('referee')->get()->pluck('referee');
-
 
             $referredUsers = User::whereHas('referralActivitiesAsReferrer', function ($query) use ($user) {
                     $query->where('referrer_peace_id', $user->peace_id); // Filtering by referrer's peace_id
                 })->get();
 
-            $referredUsers =  User::whereHas('referralActivitiesAsReferrer', function($query) use($user) {
-                    $query->where('peace_id', $user->peace_id);
-                })->get();
-
+           
             return response()->json([
                 'error' => false,
                 'referrer_count' => $referrer_count,

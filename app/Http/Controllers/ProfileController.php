@@ -79,71 +79,7 @@ class ProfileController extends Controller
         
     }
 
-    public function makePeaceIdUnique() {
 
-        try {
-
-            $duplicatedPeaceId = User::select('peace_id')
-                ->groupBy('peace_id')
-                ->havingRaw('COUNT(*) > 1')
-                ->pluck('peace_id');
-            
-            foreach ($duplicatedPeaceId as $peaceId) {
-                $users =  User::where('peace_id', $peaceId)->get();
-    
-                if (count($users) > 0) {
-                    foreach($users as $index => $user) {
-                        $user->peace_id = $user->peace_id . '' .$index;
-                        $user->save(); 
-                    }
-    
-                }
-            }
-        } catch (\Throwable $th){
-            return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ], 500);
-            
-        }
-
-    }
-
-    public function changePeaceId(ChangePeaceIdRequest $request) {
-        $peaceId = $request->input('peace_id');
-        try {
-            $existingUser = User::where('peace_id', $peaceId)->first();
-    
-            
-            if ($existingUser) {
-                return response()->json([
-                    "error" => false,
-                    "message" => "peace id already taken by another user"            
-                ], 500);
-            }
-    
-            $user = $request->user();
-    
-            $user->peace_id = $peaceId;
-            $user->save();
-
-            return response()->json([
-                "error" => false,
-                "message" => "peace id successfully updated",
-                "user" => $user
-            ], 200);
-
-        } catch (\Throwable $th){
-            return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ], 500);
-            
-        }
-
-        
-
-    }
 
     public function editProfile(EditProfileRequest $request) {
         $user = $request->user();  
