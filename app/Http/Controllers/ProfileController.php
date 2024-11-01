@@ -88,6 +88,10 @@ class ProfileController extends Controller
                 ->havingRaw('COUNT(*) > 1')
                 ->pluck('peace_id');
             
+            return response()->json([
+                "duplicates" => $duplicatedPeaceId
+            ]);
+            
             foreach ($duplicatedPeaceId as $peaceId) {
                 $users =  User::where('peace_id', $peaceId)->get();
     
