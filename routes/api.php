@@ -305,9 +305,10 @@ Route::group(["middleware" => ["auth:api"]], function () {
  
     
     // Analytics
-    Route::group(['prefix' => 'analytics'], function() {
+    Route::group(['prefix' => 'analytics'], function() { // 
         Route::get('total-flight', [AnalyticsUserController::class, 'totalFlight']);
         Route::get('total-referrals', [AnalyticsUserController::class, 'totalReferral']);
+        Route::get('number-of-countries-visited', [AnalyticsUserController::class, 'countriesVisited']);
         
 
         // travel recommendation

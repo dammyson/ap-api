@@ -23,6 +23,7 @@ class SurveyCollection extends ResourceCollection
                 'image_url' => $survey->image_url, 
                 'points_awarded' => $survey->points_awarded,
                 'is_published' => $survey->is_published,
+                'is_active' => $survey->is_active,
                 'created_at' => $survey->created_at,
                 'updated_at' => $survey->updated_at,
                 'image_url_link' => Storage::url($survey->image_url),

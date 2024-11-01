@@ -50,4 +50,41 @@ class AnalyticsUserController extends Controller
         }
 
     }
+
+    public function countriesVisited(Request $request) {
+        try {
+
+            $user = $request->user();
+
+            $numberOfCountriesVisited = FlightRecord::where('peace_id', $user->peace_id)->distinct('destination')->count();
+
+            return response()->json([
+                "error" => false,
+                "number_of_countries_visted" => $numberOfCountriesVisited
+            ], 200);
+
+        } catch (\Throwable $throwable) {
+            return response()->json([
+                'error' => true,
+                'message' => $throwable->getMessage()
+            ], 500); 
+        }
+    }
+
+    public function totalMileFlown(Request $request) {
+        try {
+            $user = $request->user();
+
+            FlightRecord::where('peace_id', $user->peace_id)
+                ->when('distance', function($query) {
+                    
+                });
+
+        } catch (\Throwable $throwable) {
+            return response()->json([
+                'error' => true,
+                'message' => $throwable->getMessage()
+            ], 500); 
+        }
+    }
 }
