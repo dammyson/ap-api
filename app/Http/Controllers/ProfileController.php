@@ -84,13 +84,13 @@ class ProfileController extends Controller
         try {
 
             $duplicatedPeaceId = User::select('peace_id')
-                ->groupBy('peace_id')
-                ->havingRaw('COUNT(*) > 1')
-                ->pluck('peace_id');
+                ->groupBy('title')
+                ->get();
             
-            return response()->json([
-                "duplicates" => $duplicatedPeaceId
-            ]);
+                return response()->json([
+                    'error' => false,
+                    'message' => $duplicatedPeaceId
+                ], 200);
             
             foreach ($duplicatedPeaceId as $peaceId) {
                 $users =  User::where('peace_id', $peaceId)->get();
