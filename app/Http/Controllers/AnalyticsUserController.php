@@ -36,6 +36,7 @@ class AnalyticsUserController extends Controller
         try  {
             $user = $request->user();
 
+            $referralTable = ReferralActivity::where('referrer_peace_id', $user->peace_id)->get();
             $referrer_count = ReferralActivity::where('referrer_peace_id', $user->peace_id)->count();
 
             $totalPointEarned = ReferralActivity::where('referrer_peace_id', $user->peace_id)->sum('referrer_points_earned');
@@ -49,6 +50,7 @@ class AnalyticsUserController extends Controller
                 'error' => false,
                 'referrer_count' => $referrer_count,
                 'total_point_earned' => $totalPointEarned,
+                'referralTable' => $referralTable,
                 'referred_users' => $referredUsers
             ], 200);
 
