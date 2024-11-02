@@ -156,17 +156,25 @@ class SurveyController extends Controller
 
     public function createSurveyBanner(Request $request) {
 
-        if ($request->file('image_url')) {
-            $path = $request->file('image_url')->store('survey-images');
+        try {
+            if ($request->file('image_url')) {
+                $path = $request->file('image_url')->store('survey-images');
+    
+                $image_url_link = Storage::url($path);
+        
+                return response()->json([
+                    "error" => false,
+                    "image_url" => $path,
+                    "image_url_link" => $image_url_link
+        
+                ], 200);
+            }
 
-            $image_url_link = Storage::url($path);
-    
+        }  catch (\Throwable $th) {
             return response()->json([
-                "error" => true,
-                "image_url" => $path,
-                "image_url_link" => $image_url_link
-    
-            ], 200);
+                'error' => true,
+                'message' => $th->getMessage()
+            ]);
         }
     }
 

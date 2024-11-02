@@ -11,6 +11,7 @@ class AirportController extends Controller
     public function storeAirport(StoreAirportRequest $request) {
 
         try {
+            
             $airport = Airport::create([
                 'city_id' => $request['city_id'],
                 'name' => $request['name']
