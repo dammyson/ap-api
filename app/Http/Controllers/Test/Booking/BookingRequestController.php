@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Test\Booking;
 
 use Illuminate\Http\Request;
 use App\Models\BookingRecord;
+use App\Models\InvoiceRecord;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\BookingBuilder;
 use App\Http\Requests\Test\Booking\ReadBookingRequest;
@@ -36,6 +37,8 @@ class BookingRequestController extends Controller
 
             $booking = BookingRecord::where('booking_id', $bookingId)
                         ->where('peace_id', $peaceId)->first();
+
+            $invoice = InvoiceRecord::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
     
             if (!$booking) {
                 return response()->json([
@@ -73,7 +76,8 @@ class BookingRequestController extends Controller
 
         return response()->json([
             'error' => false,
-            'booking_data' => $response
+            'booking_data' => $response,
+            'invoice_id' => $invoice->id
         ]);
 
     }
