@@ -12,10 +12,10 @@ use App\Services\Utility\CheckDevice;
 
 class LoginController extends Controller
 {
-    protected $checkDevice;
-    public function __construct(CheckDevice $checkDevice) {
-        $this->$checkDevice = $checkDevice;
-    }
+    // protected $checkDevice;
+    // public function __construct(CheckDevice $checkDevice) {
+    //     $this->$checkDevice = $checkDevice;
+    // }
 
     public function login(UserLoginRequest $request)
     {
