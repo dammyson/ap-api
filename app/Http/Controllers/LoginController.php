@@ -35,8 +35,16 @@ class LoginController extends Controller
 
                 $userAgent = $request->header('User-Agent');
                 
-                $this->checkDevice->checkDeviceType($userAgent, $user);
-                return response()->json(['is_correct' => true, 'message' => 'Login Successful', 'data' => $data], 200);
+                $deviceType = $this->checkDevice->checkDeviceType($userAgent, $user);
+                $screenResolution = $this->checkDevice->saveScreenSize($user, $request->screen_resolution);
+                
+                return response()->json([
+                    'is_correct' => true, 
+                    'message' => 'Login Successful', 
+                    'deviceType' => $deviceType,
+                    'screenResolution' => $screenResolution,
+                    'data' => $data
+                ], 200);
 
             } else {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);

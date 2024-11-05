@@ -12,7 +12,9 @@ use Illuminate\Http\Request;
 use App\Models\FlightTicketType;
 use App\Models\ScreenResolution;
 use App\Models\TransactionRecord;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserCollection;
 
 class DashboardAdminController extends Controller
 {
@@ -162,87 +164,67 @@ class DashboardAdminController extends Controller
         ], 200);
     }
 
-    public function userByDevice(Request $request) {
-        $user = $request->user();
 
-        if (!$user->is_admin) { 
+    public function userByDeviceTwo(Request $request) {
+        try {
+            // $today = Carbon::now();
+            $sevenDaysAgo = Carbon::now()->subDays(7);
+
+            $androidUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'Android')->count();
+            $iosUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->count();
+
+            $percentageOfAndroid = $androidUsers > 0 ? ($androidUsers / ($androidUsers + $iosUsers)) * 100 : 0;
+            $percentageOfIos = $iosUsers > 0 ? ($iosUsers / ($androidUsers + $iosUsers)) * 100 : 0;
+
+            $amountAndroid = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'Android')->sum('amount');
+            $amountIos = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->sum('amount');
+
+            return response()->json([
+                "error" => false,
+                "android_percent" => $percentageOfAndroid,
+                "ios_percent" => $percentageOfIos,
+                "android_revenue" => $amountAndroid,
+                "ios_revenue" => $amountIos
+            ], 200);
+
+        } catch(\Throwable $th) {
             return response()->json([
                 'error' => true,
-                'message' => 'unauthorized'
-            ], 400);
+                'message' => $th->getMessage()
+            ]);
         }
-
-        $sevenDaysAgo = Carbon::now()->subDays(7);
-    
-        // Count and total amount for Android devices
-        $androidDeviceCount = Device::where('device_type', 'Android')
-            ->whereHas('revenues', function($query) use ($sevenDaysAgo) {
-                $query->where('created_at', '>=', $sevenDaysAgo);
-            })
-            ->count();
         
-        $androidTotalRevenue = Revenue::whereHas('device', function($query) {
-                $query->where('device_type', 'Android');
-            })
-            ->where('created_at', '>=', $sevenDaysAgo)
-            ->sum('amount');
-
-        // Count and total amount for iOS devices
-        $iosDeviceCount = Device::where('device_type', 'IOS')
-            ->whereHas('revenues', function($query) use ($sevenDaysAgo) {
-                $query->where('created_at', '>=', $sevenDaysAgo);
-            })
-            ->count();
-        
-        $iosTotalAmount = Revenue::whereHas('device', function($query) {
-                $query->where('device_type', 'IOS');
-            })
-            ->where('created_at', '>=', $sevenDaysAgo)
-            ->sum('amount');
-
-
-        return response()->json([
-            'error' => false,
-            'android_device_count' => $androidDeviceCount,
-            'android_device_revenue' => $androidTotalRevenue,
-            'ios_device_count' => $iosDeviceCount,
-            'iosTotalAmount' => $iosTotalAmount
-        ], 200);
     }
 
     public function screenResolution(Request $request) {
-        $user = $request->user();
 
-        if (!$user->is_admin) { 
-            return response()->json([
-                'error' => true,
-                'message' => 'unauthorized'
-            ], 400);
-        }
+        $screenResolutions = ScreenResolution::select('screen_resolution', DB::raw('count(*) as count'))
+            ->groupBy('screen_resolution')
+            ->get();
 
-        $screenResolution = ScreenResolution::all();
+        $screenResolutions = $screenResolutions->map(function($screenResolution) {
+            return [
+                "screen_resolution" => $screenResolution->screen_resolution,
+                "count" => $screenResolution->count,
+                "percentage" => round((($screenResolution->count / User::count()) * 100), 2),
+            ];
+        
+        });
+
 
         return response()->json([
             'error' => false,
-            'users_and_screenResolution' => $screenResolution
+            'users_and_screenResolution' => $screenResolutions
         ]);
         
     }
 
     public function totalRegisteredUsersTable(Request $request) {
         try {
-            $user = $request->user();
-
-            if (!$user->is_admin) { 
-                return response()->json([
-                    'error' => true,
-                    'message' => 'unauthorized'
-                ], 400);
-            }
-
-            $totalRegisteredUsers = User::where('is_admin', false);
+            $users = User::withCount('flightRecords as total_booked_flight')->get();
                
-
+            return new UserCollection($users);
+            
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => true,

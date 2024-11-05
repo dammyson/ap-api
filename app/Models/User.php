@@ -77,4 +77,10 @@ class User extends Authenticatable
     public function referralActivitiesAsReferrer() {
         return $this->hasMany(ReferralActivity::class, 'referrer_peace_id', 'peace_id');
     }
+
+    // Define the relationship with FlightRecord
+    public function flightRecords()
+    {
+        return $this->hasMany(FlightRecord::class, 'peace_id', 'peace_id');
+    }
 }
