@@ -32,7 +32,7 @@ class CreateUserRequest extends FormRequest
                 'min:6', // At least six characters
                 'regex:/[A-Z]/', // Must contain at least one uppercase letter
                 'regex:/[0-9]/', // Must contain at least one number
-                'regex:/[@$!%*#?&]/', // Must contain at least one special character
+                'regex:/[@$_!%*#?&]/', // Must contain at least one special character
                 'confirmed', // Must match password confirmation
             ],
             'status' => 'sometimes|string',

@@ -18,6 +18,8 @@ class TransactionRecord extends Model
         'invoice_number', 
         'invoice_id',
         'ticket_type',
+        'device_type',
+        'day_of_week'
         
     ];
 }

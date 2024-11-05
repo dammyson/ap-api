@@ -10,6 +10,7 @@ use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Models\ReferralActivity;
 use App\Models\User;
 use App\Services\AutoGenerate\CreatePeaceId;
+use App\Services\Utility\CheckDevice;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -19,10 +20,12 @@ class RegisterController extends Controller
 {
     //
     public $createPeaceId;
+    public $checkDevice;
 
-    public function __construct(CreatePeaceId $createPeaceId)
+    public function __construct(CreatePeaceId $createPeaceId, CheckDevice $checkDevice)
     {
         $this->createPeaceId = $createPeaceId;
+        $this->checkDevice = $checkDevice;
     }
     
     public function userRegister(CreateUserRequest $request)
@@ -72,8 +75,10 @@ class RegisterController extends Controller
                 }            
             }
 
-           
-           
+            $userAgent = $request->header('User-Agent');
+                
+            $deviceType = $this->checkDevice->checkDeviceType($userAgent, $create);
+            $screenResolution = $this->checkDevice->saveScreenSize($create, $request->screen_resolution);
           
         } catch (\Exception $exception) {
             return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
@@ -82,7 +87,13 @@ class RegisterController extends Controller
         $data['user'] =  $create;
         $data['token'] =  $create->createToken('Nova')->accessToken;
 
-        return response()->json(['error' => false, 'message' => 'Client registration successful. Verification code sent to your email.', 'data' => $data], 201);
+        return response()->json([
+            'error' => false, 
+            'message' => 'Client registration successful. Verification code sent to your email.', 
+            'data' => $data,
+            'device_type' => $deviceType,
+            'screen_resolution' => $screenResolution
+        ], 201);
 
     }
 

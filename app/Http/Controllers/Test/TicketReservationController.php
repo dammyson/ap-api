@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Test;
 
+use Carbon\Carbon;
+use App\Models\Device;
 use App\Models\Wallet;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
@@ -11,6 +13,7 @@ use App\Models\InvoiceRecord;
 use App\Models\TransactionType;
 use App\Models\TransactionRecord;
 use App\Http\Controllers\Controller;
+use App\Services\Utility\CheckArray;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Requests\Test\Ticket\TicketReservationCommitRequest;
 use App\Http\Requests\Ticket\TicketReservationViewOnlyTwoARequest;
@@ -18,7 +21,6 @@ use App\Http\Requests\Test\Ticket\TicketReservationCommitRTRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationCommitTwoARequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRTRequest;
-use App\Services\Utility\CheckArray;
 
 class TicketReservationController extends Controller
 {
@@ -205,7 +207,8 @@ class TicketReservationController extends Controller
             $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
             $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNumber'];
             
-
+            $dayOfWeek = Carbon::now()->format('1');
+            $userDevice = Device::where('user_id', $user->id);
             // if (array_key_exists('couponInfoList', $ticketItemList)) {
             if ($this->checkArray->isAssociativeArray($ticketItemList)) {
                 $paymentReferenceID = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
@@ -226,7 +229,9 @@ class TicketReservationController extends Controller
                         'peace_id' => $peaceId,
                         'ticket_type' => 'ticket',
                         'user_id' => $user->id,
-                        'invoice_id' => $invoice->id
+                        'invoice_id' => $invoice->id,
+                        'device_type' => $userDevice->device_type,
+                        'day_of_week' => $dayOfWeek
                     ]);                    
                 
                 }
@@ -243,7 +248,9 @@ class TicketReservationController extends Controller
                             'peace_id' => $peaceId,
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
-                            'invoice_id' => $invoice->id
+                            'invoice_id' => $invoice->id,
+                            'device_type' => $userDevice->device_type,
+                            'day_of_week' => $dayOfWeek
                         ]
                     ); 
                     
@@ -274,7 +281,9 @@ class TicketReservationController extends Controller
                             'peace_id' => $peaceId,
                             'ticket_type' => 'ticket',
                             'user_id' => $user->id,
-                            'invoice_id' => $invoice->id
+                            'invoice_id' => $invoice->id,
+                            'device_type' => $userDevice->device_type,
+                            'day_of_week' => $dayOfWeek
                         ]);  
 
                         
@@ -291,14 +300,15 @@ class TicketReservationController extends Controller
                             'peace_id' => $peaceId,
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
-                            'invoice_id' => $invoice->id
+                            'invoice_id' => $invoice->id,
+                            'device_type' => $userDevice->device_type,
+                            'day_of_week' => $dayOfWeek
                         ]); 
                     }                
                 }
             }
 
-            // dump($response);
-            
+            // dump($response);            
 
             return response()->json([
                 "error" => false,

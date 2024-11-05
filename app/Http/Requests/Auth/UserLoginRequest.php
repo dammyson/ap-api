@@ -24,6 +24,7 @@ class UserLoginRequest extends FormRequest
         return [
             'credential' => 'required|email',
             'password' => 'required',
+            'screen_resolution' => 'required|string'
         ];
     }
 }
