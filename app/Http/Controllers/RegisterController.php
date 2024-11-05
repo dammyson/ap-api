@@ -20,12 +20,12 @@ class RegisterController extends Controller
 {
     //
     public $createPeaceId;
-    public $checkDevice;
+    // public $checkDevice;
 
-    public function __construct(CreatePeaceId $createPeaceId, CheckDevice $checkDevice)
+    public function __construct(CreatePeaceId $createPeaceId)
     {
         $this->createPeaceId = $createPeaceId;
-        $this->checkDevice = $checkDevice;
+        // $this->checkDevice = $checkDevice;
     }
     
     public function userRegister(CreateUserRequest $request)
@@ -75,10 +75,10 @@ class RegisterController extends Controller
                 }            
             }
 
-            $userAgent = $request->header('User-Agent');
+            // $userAgent = $request->header('User-Agent');
                 
-            $deviceType = $this->checkDevice->checkDeviceType($userAgent, $create);
-            $screenResolution = $this->checkDevice->saveScreenSize($create, $request->screen_resolution);
+            // $deviceType = $this->checkDevice->checkDeviceType($userAgent, $create);
+            // $screenResolution = $this->checkDevice->saveScreenSize($create, $request->screen_resolution);
           
         } catch (\Exception $exception) {
             return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
@@ -91,8 +91,8 @@ class RegisterController extends Controller
             'error' => false, 
             'message' => 'Client registration successful. Verification code sent to your email.', 
             'data' => $data,
-            'device_type' => $deviceType,
-            'screen_resolution' => $screenResolution
+            // 'device_type' => $deviceType,
+            // 'screen_resolution' => $screenResolution
         ], 201);
 
     }
