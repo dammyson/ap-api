@@ -6,11 +6,13 @@ use App\Http\Requests\Auth\UserLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+// use App\Services\Utility\CheckDevice;
+
 use App\Services\Utility\CheckDevice;
 
 class LoginController extends Controller
 {
-    public $checkDevice;
+    protected $checkDevice;
     public function __construct(CheckDevice $checkDevice) {
         $this->$checkDevice = $checkDevice;
     }
@@ -33,16 +35,16 @@ class LoginController extends Controller
                 $data['user'] = $user;
                 $data['token'] = $user->createToken('Nova')->accessToken;
 
-                $userAgent = $request->header('User-Agent');
+                // $userAgent = $request->header('User-Agent');
                 
-                $deviceType = $this->checkDevice->checkDeviceType($userAgent, $user);
-                $screenResolution = $this->checkDevice->saveScreenSize($user, $request->screen_resolution);
+                // $deviceType = $this->checkDevice->checkDeviceType($userAgent, $user);
+                // $screenResolution = $this->checkDevice->saveScreenSize($user, $request->screen_resolution);
                 
                 return response()->json([
                     'is_correct' => true, 
                     'message' => 'Login Successful', 
-                    'deviceType' => $deviceType,
-                    'screenResolution' => $screenResolution,
+                    // 'deviceType' => $deviceType,
+                    // 'screenResolution' => $screenResolution,
                     'data' => $data
                 ], 200);
 
