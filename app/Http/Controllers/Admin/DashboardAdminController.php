@@ -6,34 +6,71 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Device;
 use App\Models\Ticket;
+use App\Models\Revenue;
+use App\Models\FlightRecord;
 use Illuminate\Http\Request;
 use App\Models\FlightTicketType;
-use App\Http\Controllers\Controller;
-use App\Models\Revenue;
 use App\Models\ScreenResolution;
+use App\Models\TransactionRecord;
+use App\Http\Controllers\Controller;
 
 class DashboardAdminController extends Controller
 {
-    public function totalRegisteredUsers(Request $request) {
-        $user = $request->user();
+    public function getWeeklyUserRegistrationAnalysis()
+    {
+        // Get the current date and date of 7 days ago
+        $currentDate = Carbon::now();
+        $startDate = Carbon::now()->subDays(7);
 
-        if (!$user->is_admin) { 
-            return response()->json([
-                'error' => true,
-                'message' => 'unauthorized'
-            ], 400);
+        // Query the number of users registered in the last 7 days
+        $userCountLast7Days = User::whereBetween('created_at', [$startDate, $currentDate])->count();
+
+        // Query the number of users registered in the 7 days before the last 7 days
+        $previousStartDate = Carbon::now()->subDays(14);
+        $previousEndDate = Carbon::now()->subDays(7);
+        $userCountPrevious7Days = User::whereBetween('created_at', [$previousStartDate, $previousEndDate])->count();
+
+        // Calculate the percentage change
+        if ($userCountPrevious7Days > 0) {
+            $percentageChange = (($userCountLast7Days - $userCountPrevious7Days) / $userCountPrevious7Days) * 100;
+        } else {
+            $percentageChange = $userCountLast7Days > 0 ? 100 : 0; // Handle edge cases
         }
 
-        $sevenDaysAgo = Carbon::now()->subDays(7);
+        // Prepare the result
+        $result = [
+            'total_users_registered_last_7_days' => $userCountLast7Days,
+            'percentage_change_vs_last_7_days' => round($percentageChange, 2) . '%'
+        ];
 
-        $usersCount = User::where('is_admin', false)
-            ->where('created_at', '>=', $sevenDaysAgo)
-            ->count();
+        return response()->json($result);
+    }
+
+
+    public function totalRegisteredUsers(Request $request) {
+        $today = Carbon::now();
+        $lastSevenDays = Carbon::now()->subDays(7)->endOfDay();
+        $userCountLast7Days = User::whereBetween('created_at', [$today, $lastSevenDays])->count();
+        
+
+        $lastFourteenDays = Carbon::now()->subDays(14)->endOfDay();
+        $totalRegisteredUsersLastFourteenDays = User::whereBetween('created_at', [$lastSevenDays, $lastFourteenDays])->count();
+
+
+        if ($totalRegisteredUsersLastFourteenDays > 0) {
+            $percentChange = (($userCountLast7Days -  $totalRegisteredUsersLastFourteenDays )/ $totalRegisteredUsersLastFourteenDays) * 100; 
+
+        }  else {
+            $percentageChange = $userCountLast7Days > 0 ? 100 : 0; // Handle edge cases
+        }
+
 
         return response()->json([
-            'error' => false,
-            'registeredUsersCountLastSevenDays' => $usersCount
-        ], 200);
+            "error" => false,
+            "total_registered_users_last_seven_days" => $userCountLast7Days,
+            "percentage" => $percentChange
+        ]);
+    
     }
 
     public function purchasedTicket(Request $request) {
@@ -46,13 +83,23 @@ class DashboardAdminController extends Controller
             ], 400);
         }
         
+        $today = Carbon::now();
         $sevenDaysAgo = Carbon::now()->subDays(7);
-        
-        $ticketsCountSevenDaysAgo = Ticket::where('created_at', '>=', $sevenDaysAgo)->count();
+        $fourteenDaysAgo = Carbon::now()->subDays(14);
+
+
+        $ticket7DaysAgo = FlightRecord::whereBetween('created_at', [$sevenDaysAgo, $today])->count();
+        $ticket14DaysAgo = FlightRecord::whereBetween('created_at', [$sevenDaysAgo, $fourteenDaysAgo])->count();
+
+        $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
+        // $ticketsCountSevenDaysAgo = Ticket::where('created_at', '>=', $sevenDaysAgo)->count();
 
         return response()->json([
             'error' => false,
-            'ticketCountLastSevenDays' => $ticketsCountSevenDaysAgo
+            'ticket7DaysAgo' => $ticket7DaysAgo,
+            'percentageChange' => $percentageChange,
+            'ticketCountLastSevenDays' => $ticket7DaysAgo,
+
         ], 200);
     }
 
@@ -66,13 +113,52 @@ class DashboardAdminController extends Controller
             ], 400);
         }
 
-        $sevenDaysAgo = Carbon::now()->subDays(7);
+        $today = Carbon::now();
+        $sevenDaysAgo = Carbon::now()->subDays(7)->endOfDay();
+        $fourteenDaysAgo = Carbon::now()->subDays(14)->endOfDay();
+        // $totalRevenue = FlightTicketType::where('created_at', '>=', $sevenDaysAgo)->sum('price');
 
-        $totalRevenue = FlightTicketType::where('created_at', '>=', $sevenDaysAgo)->sum('price');
+        $total7daysRevenue = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, $today])->count();
+        $total14daysRevenue = TransactionRecord::whereBetween('created_at', [$fourteenDaysAgo, $sevenDaysAgo])->count();
+
+
+        $percentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
 
         return response()->json([
             'error' => false,
-            'totalRevenueLastSevenDays' => $totalRevenue
+            'totalRevenueLastSevenDays' => $total7daysRevenue
+        ], 200);
+    }
+
+    public function ticketViaApp(Request $request) {
+        $tickets = TransactionRecord::where('ticket_type', 'ticket')->get();
+        $Ancillary = TransactionRecord::where('ticket_type', 'Ancillary')->get();
+
+        $totalRevenue = TransactionRecord::get();
+
+        return response()->json([
+            'error' => false,
+            'tickets' => $tickets
+        ], 200);
+
+    }
+
+    public function ancillaryViaApp(Request $request) {
+        $Ancillary = TransactionRecord::where('ticket_type', 'Ancillary')->get();
+
+
+        return response()->json([
+            'error' => false,
+            'ancillary_tickets' => $Ancillary
+        ], 200);
+    }
+
+    public function totalRevenueViaApp(Request $request) {
+        $totalRevenue = TransactionRecord::get();
+
+        return response()->json([
+            'error' => false,
+            'total_revenue' => $totalRevenue
         ], 200);
     }
 
