@@ -128,7 +128,8 @@ class DashboardAdminController extends Controller
 
         return response()->json([
             'error' => false,
-            'totalRevenueLastSevenDays' => $total7daysRevenue
+            'totalRevenueLastSevenDays' => $total7daysRevenue,
+            'percentageChange' => $percentageChange
         ], 200);
     }
 
@@ -224,7 +225,7 @@ class DashboardAdminController extends Controller
             $users = User::withCount('flightRecords as total_booked_flight')->get();
                
             return new UserCollection($users);
-            
+
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => true,
