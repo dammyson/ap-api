@@ -6,10 +6,15 @@ use App\Http\Requests\Auth\UserLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Services\Utility\CheckDevice;
 
 class LoginController extends Controller
 {
-    //
+    public $checkDevice;
+    public function __construct(CheckDevice $checkDevice) {
+        $this->$checkDevice = $checkDevice;
+    }
+
     public function login(UserLoginRequest $request)
     {
         try{
@@ -28,6 +33,9 @@ class LoginController extends Controller
                 $data['user'] = $user;
                 $data['token'] = $user->createToken('Nova')->accessToken;
 
+                $userAgent = $request->header('User-Agent');
+                
+                $this->checkDevice->checkDeviceType($userAgent, $user);
                 return response()->json(['is_correct' => true, 'message' => 'Login Successful', 'data' => $data], 200);
 
             } else {
