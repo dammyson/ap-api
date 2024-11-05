@@ -8,7 +8,7 @@ use App\Models\ScreenResolution;
 use Illuminate\Http\Request;
 
 class CheckDevice {
-    public function checkDeviceType ($userAgent, User $user) {        
+    public function checkDeviceType($userAgent, User $user) {        
 
         // $userAgent = $request->header('User-Agent');
         $userDevice = Device::where('user_id', $user->id)->first();
