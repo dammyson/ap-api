@@ -68,7 +68,8 @@ use Psy\Sudo;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 Route::post('test/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
-Route::post('two-a', [CreateBookingController::class, 'createBookingTwoA']);
+Route::post('/search-flights', [FlightController::class, 'searchFlightsTwo']);
+Route::post('two-a', [CreateBookingController::class, 'createBookingTwo']);
 
 
 Route::group(['prefix' => 'user'], function ()  {
