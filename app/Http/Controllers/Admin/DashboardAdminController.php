@@ -91,7 +91,7 @@ class DashboardAdminController extends Controller
             'error' => false,
             'ticket7DaysAgo' => $ticket7DaysAgo,
             'percentageChange' => $percentageChange,
-            'ticketCountLastSevenDays' => $ticket7DaysAgo,
+            'ticketCountLastSevenDays' => $ticket14DaysAgo,
 
         ], 200);
     }
