@@ -72,7 +72,7 @@ class FlightController extends Controller
             $response = $this->craneOTASoapService->run($function, $xml);
             
             // dd($response);
-            return $response;
+            // return $response;
 
             $result = "";
 

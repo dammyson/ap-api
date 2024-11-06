@@ -422,9 +422,8 @@ class CreateBookingController extends Controller
             return response()->json([
                 "error" => false,
                 "message" => "Flight booked successfully",
-                "amount" => "amount",
-                "bookingDetails" => $bookingDetails,
-                "response" => $response
+                "amount" => $amount,
+                "bookingDetails" => $bookingDetails
             ], 200);
 
         } catch (\Exception $e) {
