@@ -244,6 +244,33 @@ class CreateBookingController extends Controller
         }
     }
 
+    public function createBookingTwo(CreateBookingTwoARequest $request){
+        $validated = $request->validated();
+        $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
+        $airTravelerList = $validated["airTravelerList"];
+        $airTravelerListChild = $validated['airTravelerChildList']; 
+        $requestPurpose = $request->input('requestPurpose');
+        $specialServiceRequestList = $validated['specialServiceRequestList'];
+        
+
+        $xml = $this->createBookingBuilder->createBookingTwoA(
+            $CreateBookOriginDestinationOptionList,
+            $airTravelerList,
+            $airTravelerListChild,
+            $requestPurpose,
+            $specialServiceRequestList
+        );
+
+       // dd($xml);
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
+    
+
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        dd($response);
+    }
+
 
     public function createBookingTwoA(CreateBookingTwoARequest $request){
         $validated = $request->validated();

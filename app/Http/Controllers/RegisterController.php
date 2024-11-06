@@ -41,6 +41,7 @@ class RegisterController extends Controller
                 'email' => $request->input('email'),
                 'phone_number' => $request->input('phone_number'),
                 'peace_id' => $request->input('peace_id'),
+                // 'peace_id' => $peace_id,
                 'password' => Hash::make($request->input('password')),
                 'status' => $request->input('status') ?? null,
                 'points' => 50, // allocate appropriate pointts once decided

@@ -33,6 +33,43 @@ class FlightController extends Controller
      * Search for flights based on provided criteria.
      */
 
+     public function searchFlightsTwo(SearchFlightRequest $request)
+    {
+
+
+        $departureDateTime = $request->input('departure_date');
+        $ArrivalDateTime = $request->input('arrival_date');
+        $destinationLocationCode = $request->input('arrival_airport');
+        $originLocationCode = $request->input('departure_airport');
+
+        $quantity = $request->input('passengers');
+        
+        $tripType = $request->input('trip_type');
+
+        $validated = $request->validated();
+
+      
+        $travelerInformation = $validated["travelerInformation"];
+        $travelerInformation_count = count($travelerInformation);
+
+      
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
+
+        if ($request->input('trip_type') == "ONE_WAY") {
+            $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType);
+        } else  if ($request->input('trip_type') == "ROUND_TRIP") {
+            $xml = $this->soapRequestBuilder->GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType,  $ArrivalDateTime);
+        } else {
+            $multiDirectionalFlights = $validated['multi_directional_flights'];
+
+            $xml = $this->soapRequestBuilder->GetFlightMultiCity( $multiDirectionalFlights, $travelerInformation, $tripType);
+        }
+
+        
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
+    }
     
     public function searchFlights(SearchFlightRequest $request)
     {
