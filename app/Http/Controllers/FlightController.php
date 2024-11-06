@@ -58,7 +58,7 @@ class FlightController extends Controller
 
         if ($request->input('trip_type') == "ONE_WAY") {
             $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType);
-            dd($xml);
+            // dd($xml);
         } else  if ($request->input('trip_type') == "ROUND_TRIP") {
             $xml = $this->soapRequestBuilder->GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType,  $ArrivalDateTime);
         } else {
