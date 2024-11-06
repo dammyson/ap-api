@@ -69,7 +69,7 @@ use Psy\Sudo;
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 Route::post('test/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
 Route::post('/search-flights', [FlightController::class, 'searchFlightsTwo']);
-Route::post('two-a', [CreateBookingController::class, 'createBookingTwo']);
+Route::post('test-two-a', [CreateBookingController::class, 'createBookingTwo']);
 
 
 Route::group(['prefix' => 'user'], function ()  {
@@ -225,6 +225,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
                 Route::post('rt', [CreateBookingController::class, 'createBookingRT']);
                 Route::post('ow', [CreateBookingController::class, 'createBookingOW']);
                 Route::post('two-a', [CreateBookingController::class, 'createBookingTwoA']);
+                Route::post('test-two-a', [CreateBookingController::class, 'createBookingTwo']);
             });
 
         });
