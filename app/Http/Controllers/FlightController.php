@@ -71,8 +71,9 @@ class FlightController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
             
+            dd($response);
 
-             $result = "";
+            $result = "";
 
             if ($request->input('trip_type') == "ONE_WAY") {
                 $originDestinationOptionList = $response['Availability']['availabilityResultList']['availabilityRouteList']['availabilityByDateList']['originDestinationOptionList'];
