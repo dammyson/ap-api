@@ -67,6 +67,9 @@ use App\Http\Controllers\WalletController;
 use Psy\Sudo;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
+Route::post('test/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
+Route::post('two-a', [CreateBookingController::class, 'createBookingTwoA']);
+
 
 Route::group(['prefix' => 'user'], function ()  {
     Route::post('register', [RegisterController::class, 'userRegister']);
