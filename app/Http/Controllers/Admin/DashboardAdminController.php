@@ -84,27 +84,24 @@ class DashboardAdminController extends Controller
         $ticket7DaysAgo = FlightRecord::whereBetween('created_at', [$sevenDaysAgo, $today])->count();
         $ticket14DaysAgo = FlightRecord::whereBetween('created_at', [$fourteenDaysAgo, $sevenDaysAgo])->count();
 
-        $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
+        if ($ticket14DaysAgo > 0) {
+            $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
+
+        }  else {
+            $percentageChange = $ticket7DaysAgo > 0 ? 100 : 0; // Handle edge cases
+        }
         // $ticketsCountSevenDaysAgo = Ticket::where('created_at', '>=', $sevenDaysAgo)->count();
 
         return response()->json([
             'error' => false,
             'ticket7DaysAgo' => $ticket7DaysAgo,
-            'percentageChange' => round($percentageChange, 2),
+            'percentageChange' => round($percentageChange, 2) . '%',
             'ticketCountLastSevenDays' => $ticket14DaysAgo,
 
         ], 200);
     }
 
     public function totalRevenue(Request $request) {
-        $user = $request->user();
-
-        if (!$user->is_admin) { 
-            return response()->json([
-                'error' => true,
-                'message' => 'unauthorized'
-            ], 400);
-        }
 
         $today = Carbon::now();
         $sevenDaysAgo = Carbon::now()->subDays(7)->endOfDay();
@@ -114,8 +111,13 @@ class DashboardAdminController extends Controller
         $total7daysRevenue = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, $today])->count();
         $total14daysRevenue = TransactionRecord::whereBetween('created_at', [$fourteenDaysAgo, $sevenDaysAgo])->count();
 
-
-        $percentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
+        
+        if ($total14daysRevenue > 0) { 
+            $percentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
+       
+        } else {
+            $percentageChange = $total14daysRevenue > 0 ? 100 : 0; // Handle edge cases
+        }
 
         return response()->json([
             'error' => false,
