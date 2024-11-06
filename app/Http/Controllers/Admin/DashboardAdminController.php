@@ -236,16 +236,9 @@ class DashboardAdminController extends Controller
 
     public function totalPurchasedTicketTable(Request $request) {
         try {
-            $user = $request->user();
+            $ticketPurchased = TransactionRecord::with('user')->get();
 
-            if (!$user->is_admin) { 
-                return response()->json([
-                    'error' => true,
-                    'message' => 'unauthorized'
-                ], 400);
-            }
-
-            $tickets = Ticket::with(['flight_ticket_types', 'users']);
+            // $tickets = Ticket::with(['flight_ticket_types', 'users']);
 
         }  catch (\Throwable $th) {
             return response()->json([
@@ -256,7 +249,7 @@ class DashboardAdminController extends Controller
 
         return response()->json([
             'error' => false,
-            'tickets_info' => $tickets
+            'tickets_info' => $ticketPurchased
         ]);
     }
 
