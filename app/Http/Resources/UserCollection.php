@@ -37,7 +37,8 @@ class UserCollection extends ResourceCollection
 
     public function getTotalBookedFlight($user) {
 
-        $totalBookedFlight = FlightRecord::where("peace_id", $user->peace_id)->count();
-        return $user->peace_id;
+        $totalBookedFlight = FlightRecord::where("peace_id", $user->peace_id)->get();
+        $totalBookedFlight = count($totalBookedFlight);
+        return $totalBookedFlight;
     }
 }
