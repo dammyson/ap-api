@@ -216,7 +216,8 @@ class DashboardAdminController extends Controller
 
     public function totalRegisteredUsersTable(Request $request) {
         try {
-            $users = User::withCount('flightRecords as total_booked_flight')->get();
+            // $users = User::withCount('flightRecords as total_booked_flight')->get();
+            $users = User::get();
                
             return new UserCollection($users);
 
