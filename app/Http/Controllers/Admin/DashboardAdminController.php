@@ -51,7 +51,7 @@ class DashboardAdminController extends Controller
 
     public function totalRegisteredUsers(Request $request) {
         $today = Carbon::now();
-        $lastSevenDays = Carbon::now()->subDays(7)->endOfDay();
+        $lastSevenDays = Carbon::now()->subDays(7);
         $userCountLast7Days = User::whereBetween('created_at', [$today, $lastSevenDays])->count();
         
 
