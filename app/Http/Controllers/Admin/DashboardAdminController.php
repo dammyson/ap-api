@@ -236,9 +236,9 @@ class DashboardAdminController extends Controller
 
     public function totalPurchasedTicketTable(Request $request) {
         try {
-            $ticketPurchased = TransactionRecord::with('user', function ($query) {
+            $ticketPurchased = TransactionRecord::with(['user' => function ($query) {
                 $query->select('id', 'first_name', 'last_name', 'email');
-            })->get();
+            }])->get();
 
             // $tickets = Ticket::with(['flight_ticket_types', 'users']);
 
