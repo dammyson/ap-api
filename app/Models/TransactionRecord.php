@@ -22,4 +22,8 @@ class TransactionRecord extends Model
         'day_of_week'
         
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class, 'peace_id', 'peace_id');
+    }
 }
