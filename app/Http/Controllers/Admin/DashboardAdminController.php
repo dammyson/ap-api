@@ -116,13 +116,14 @@ class DashboardAdminController extends Controller
             $percentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
        
         } else {
-            $percentageChange = $total14daysRevenue > 0 ? 100 : 0; // Handle edge cases
+            $percentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
         }
 
         return response()->json([
             'error' => false,
-            'totalRevenueLastSevenDays' => $total7daysRevenue,
-            'percentageChange' => $percentageChange
+            'total14daysRevenue' => $total14daysRevenue,
+            'percentageChange' => $percentageChange,
+            'total7daysRevenue' => $total7daysRevenue,
         ], 200);
     }
 
