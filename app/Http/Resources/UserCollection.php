@@ -26,7 +26,7 @@ class UserCollection extends ResourceCollection
                 "status" => "null",
                 "last_login" => "null",
                 // "total_booked_flight" => $user->total_booked_flight ?? 0,
-                "total_booked_flight" => $this->getTotalBookedFlight($user) ?? 0,
+                "total_booked_flight" => $this->getTotalBookedFlight($user),
                 "miles_accumulated" => "null",
                 "image_url" => $user->image_url,
                 "image_url_link" => Storage::url($user->image_url),
