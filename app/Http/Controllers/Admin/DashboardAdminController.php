@@ -82,8 +82,13 @@ class DashboardAdminController extends Controller
 
 
         $ticket7DaysAgo = FlightRecord::whereBetween('created_at', [$sevenDaysAgo, $today])->count();
-        $ticket14DaysAgo = FlightRecord::whereBetween('created_at', [$sevenDaysAgo, $fourteenDaysAgo])->count();
+        $ticket14DaysAgo = FlightRecord::whereBetween('created_at', [$fourteenDaysAgo, $sevenDaysAgo])->count();
 
+        dump($sevenDaysAgo);
+        dump($fourteenDaysAgo);
+        dump($ticket7DaysAgo);
+        dump($ticket14DaysAgo);
+        
         $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
         // $ticketsCountSevenDaysAgo = Ticket::where('created_at', '>=', $sevenDaysAgo)->count();
 
