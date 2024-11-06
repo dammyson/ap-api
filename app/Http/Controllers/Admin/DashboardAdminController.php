@@ -90,7 +90,7 @@ class DashboardAdminController extends Controller
         return response()->json([
             'error' => false,
             'ticket7DaysAgo' => $ticket7DaysAgo,
-            'percentageChange' => $percentageChange,
+            'percentageChange' => round($percentageChange, 2),
             'ticketCountLastSevenDays' => $ticket14DaysAgo,
 
         ], 200);
