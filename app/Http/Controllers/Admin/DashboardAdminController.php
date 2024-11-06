@@ -75,16 +75,7 @@ class DashboardAdminController extends Controller
     
     }
 
-    public function purchasedTicket(Request $request) {
-        $user = $request->user();
-
-        if (!$user->is_admin) { 
-            return response()->json([
-                'error' => true,
-                'message' => 'unauthorized'
-            ], 400);
-        }
-        
+    public function purchasedTicket(Request $request) {        
         $today = Carbon::now();
         $sevenDaysAgo = Carbon::now()->subDays(7);
         $fourteenDaysAgo = Carbon::now()->subDays(14);
