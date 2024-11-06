@@ -108,8 +108,8 @@ class DashboardAdminController extends Controller
         $fourteenDaysAgo = Carbon::now()->subDays(14)->endOfDay();
         // $totalRevenue = FlightTicketType::where('created_at', '>=', $sevenDaysAgo)->sum('price');
 
-        $total7daysRevenue = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, $today])->count();
-        $total14daysRevenue = TransactionRecord::whereBetween('created_at', [$fourteenDaysAgo, $sevenDaysAgo])->count();
+        $total7daysRevenue = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, $today])->sum('amount');
+        $total14daysRevenue = TransactionRecord::whereBetween('created_at', [$fourteenDaysAgo, $sevenDaysAgo])->sum('amount');
 
         
         if ($total14daysRevenue > 0) { 
