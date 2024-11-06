@@ -302,6 +302,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('change-flight', [ChangeFlightController::class, 'changeFlight']);
     Route::post('change-flight-view-only', [ChangeFlightController::class, 'changeFlightViewOnly']);
     
+    Route::post('/search-flight-two', [FlightController::class, 'searchFlightsTwo']);
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);
     Route::get('/city', [CityController::class, 'indexCity']);
