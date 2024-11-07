@@ -437,6 +437,7 @@ class SurveyController extends Controller
                 }
             } else {
                 $question = new Question();
+                
                 // dump('i ')
             }
 
@@ -445,6 +446,7 @@ class SurveyController extends Controller
             $question->is_multiple_choice =  $requestQuestion['is_multiple_choice'];
             $question->survey_id = $survey->id;
             // dd($question);
+            $question->save();
 
             foreach($requestQuestion['options'] as $requestOption) {
                 if (!array_key_exists('id', $requestOption)) {
@@ -460,7 +462,6 @@ class SurveyController extends Controller
                 $option->save();
             }
 
-            $question->save();
         }   
 
         $survey->save();
