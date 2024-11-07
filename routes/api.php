@@ -202,6 +202,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
             Route::post('/view-only-two-a', [TicketReservationController::class, 'ticketReservationViewOnlyTwoA']);
             Route::post('/commit-two-a', [TicketReservationController::class, 'ticktReservationCommitTwoA']);
             Route::post('/commit/invoice/{invoiceId}', [TicketReservationController::class, 'ticketReservationCommit']);
+            Route::post('/commit-test', [TicketReservationController::class, 'testTicketReservationCommit']);
             Route::post('/commit-rt', [TicketReservationController::class, 'ticketReservationCommitRT']);
 
         });

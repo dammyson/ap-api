@@ -141,6 +141,24 @@ class TicketReservationController extends Controller
         }  
     }
 
+    public function testTicketReservationCommit(Request $request) {
+        $bookingId = $request->input('ID');
+        $bookingReferenceId = $request->input('reference_id');
+        $paidAmount = $request->input('value');
+        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
+            $bookingId,
+            $bookingReferenceId,           
+            $paidAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
+          
+        );
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
+
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
+
+    }
+
     public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId) {
         $invoice = InvoiceRecord::find($invoiceId);
         $invoiceAmount = $invoice->amount;
@@ -161,12 +179,6 @@ class TicketReservationController extends Controller
         }
         
         $invoiceAmount = $invoiceAmount + 0;
-        // return response()->json([
-        //     "error" => false,
-        //     "incoming_payment" => $paidAmount, 
-        //     "expected_payment" => $invoiceAmount
-        // ]);
-
 
         if ( $paidAmount < $invoiceAmount ) {
             return response()->json([
