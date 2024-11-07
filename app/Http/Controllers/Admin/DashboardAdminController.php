@@ -22,19 +22,18 @@ class DashboardAdminController extends Controller
     {
         // Get the current date and date of 7 days ago
         $currentDate = Carbon::now();
-        $startDate = Carbon::now()->subDays(7);
+        $date7DaysAgo = Carbon::now()->subDays(7);
 
         // Query the number of users registered in the last 7 days
-        $userCountLast7Days = User::whereBetween('created_at', [$startDate, $currentDate])->count();
+        $userCountLast7Days = User::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
 
         // Query the number of users registered in the 7 days before the last 7 days
-        $previousStartDate = Carbon::now()->subDays(14);
-        $previousEndDate = Carbon::now()->subDays(7);
-        $userCountPrevious7Days = User::whereBetween('created_at', [$previousStartDate, $previousEndDate])->count();
+        $date14DaysAgo= Carbon::now()->subDays(14);
+        $userCount14Ago = User::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
 
         // Calculate the percentage change
-        if ($userCountPrevious7Days > 0) {
-            $percentageChange = (($userCountLast7Days - $userCountPrevious7Days) / $userCountPrevious7Days) * 100;
+        if ($userCount14Ago > 0) {
+            $percentageChange = (($userCountLast7Days - $userCount14Ago) / $userCount14Ago) * 100;
         } else {
             $percentageChange = $userCountLast7Days > 0 ? 100 : 0; // Handle edge cases
         }
@@ -42,7 +41,8 @@ class DashboardAdminController extends Controller
         // Prepare the result
         $result = [
             'total_users_registered_last_7_days' => $userCountLast7Days,
-            'percentage_change_vs_last_7_days' => round($percentageChange, 2) . '%'
+            'percentage_change_vs_last_7_days' => round($percentageChange, 2) . '%',
+            'total_user_count_14_days_ago' => $userCount14Ago
         ];
 
         return response()->json($result);
@@ -121,9 +121,9 @@ class DashboardAdminController extends Controller
 
         return response()->json([
             'error' => false,
-            'total14daysRevenue' => $total14daysRevenue,
-            'percentageChange' => $percentageChange,
             'total7daysRevenue' => $total7daysRevenue,
+            'percentageChange' => round($percentageChange, 2) . '%',
+            'total14daysRevenue' => $total14daysRevenue,
         ], 200);
     }
 
