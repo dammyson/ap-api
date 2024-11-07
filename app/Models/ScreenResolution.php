@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class ScreenResolution extends Model
 {
     use HasFactory;
-    protected $fillable = ['number_of_users', 'screen_resolution'];
+    protected $fillable = ['user_id', 'screen_resolution'];
     
 }

@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Auth\UserLoginRequest;
+use App\Models\User;
+use App\Models\Device;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 // use App\Services\Utility\CheckDevice;
 
 use App\Services\Utility\CheckDevice;
+use App\Http\Requests\Auth\UserLoginRequest;
+use App\Models\ScreenResolution;
 
 class LoginController extends Controller
 {
@@ -20,6 +22,8 @@ class LoginController extends Controller
     public function login(UserLoginRequest $request)
     {
         try{
+            $deviceType = $request->input('device_type');
+            $screenResolution = $request->input('screen_resolution');
             // $user = User::where('email', $request->credential);
             $user = User::where(function ($query) use ($request) {
                 $query->where('email', $request->credential)
@@ -40,6 +44,35 @@ class LoginController extends Controller
                 // $deviceType = $this->checkDevice->checkDeviceType($userAgent, $user);
                 // $screenResolution = $this->checkDevice->saveScreenSize($user, $request->screen_resolution);
                 
+
+                
+                if ($deviceType) {
+                    $userDevice = Device::where('user_id', $user->id)->first();
+                    if (!$userDevice) {
+                        Device::create([
+                            'user_id' => $user->id,
+                            'device_type' => $deviceType
+                        ]);
+                    } else {
+                        $userDevice->device_type = $deviceType;
+                        $userDevice->save();
+                    }
+                }
+
+                if ($screenResolution) {
+                    $userScreenResolution = ScreenResolution::where('user_id', $user->id)->first();
+
+                    if(!$userScreenResolution) {
+                        ScreenResolution::create([
+                            'user_id' => $user->id,
+                            'screen_resolution' => $screenResolution
+                        ]);
+                    } else {
+                        $userScreenResolution->screen_resolution = $screenResolution;
+                        $userScreenResolution->save();
+                    }
+                }
+
                 return response()->json([
                     'is_correct' => true, 
                     'message' => 'Login Successful', 

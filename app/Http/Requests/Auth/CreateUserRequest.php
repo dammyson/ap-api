@@ -37,7 +37,9 @@ class CreateUserRequest extends FormRequest
             ],
             'status' => 'sometimes|string',
             'peace_id' => 'required|unique:users,peace_id',           
-            "referrer_peace_id" => 'sometimes|exists:users,peace_id'
+            "referrer_peace_id" => 'sometimes|exists:users,peace_id',
+            "device_type" => 'sometimes|string',            
+            'screen_resolution' => 'sometimes|string'
         ];
     }
 }
