@@ -436,7 +436,7 @@ class SurveyController extends Controller
                 // dump('i ')
             }
 
-            dd($requestQuestion);
+            // dd($requestQuestion);
             $question->question_text = $requestQuestion['question_text'];
             $question->is_multiple_choice =  $requestQuestion['is_multiple_choice'];
             $question->survey_id = $survey->id;
