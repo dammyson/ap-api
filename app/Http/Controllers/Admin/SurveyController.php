@@ -447,7 +447,9 @@ class SurveyController extends Controller
                     $option  = new Option();
                 } else {
                     $option = Option::find($requestOption['id']);
-
+                    if (!$option) {
+                        $option  = new Option();
+                    }
                 }                
                 $option->question_id = $question->id;
                 $option->option_text = $requestOption['option_text'];
