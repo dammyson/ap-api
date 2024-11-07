@@ -217,7 +217,8 @@ class TicketReservationController extends Controller
             // get the list of all the tickets 
             $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
             $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
-            $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNumber'];
+            // for is_associative array at for this bookOriginDestinationOptionList
+            // $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][index]['bookFlightSegmentList']['flightSegment']['flightNumber'];
             
             $dayOfWeek = Carbon::now()->format('1');
             $userDevice = Device::where('user_id', $user->id)->first();
