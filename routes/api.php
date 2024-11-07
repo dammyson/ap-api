@@ -92,7 +92,7 @@ Route::group(['prefix' => 'admin/'], function () {
 
     Route::middleware('auth:admin')->group(function () {    
         Route::group(['prefix' => 'dashboard'], function () {
-            Route::get('total-registered-users', [DashboardAdminController::class, 'totalRegisteredUsers']);
+            Route::get('total-registered-users', [DashboardAdminController::class, 'getWeeklyUserRegistrationAnalysis']);
             Route::get('ticket-purchased', [DashboardAdminController::class, 'purchasedTicket']);
             Route::get('total-revenue', [DashboardAdminController::class, 'totalRevenue']);
 
