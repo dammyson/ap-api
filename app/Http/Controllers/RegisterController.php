@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Auth\ChangePasswordRequest;
-use App\Http\Requests\Auth\CreateUserRequest;
-use App\Http\Requests\Auth\ForgotPasswordRequest;
-use App\Http\Requests\Auth\ResetPasswordRequest;
-use App\Http\Requests\Auth\VerifyOtpRequest;
-use App\Models\ReferralActivity;
 use App\Models\User;
-use App\Services\AutoGenerate\CreatePeaceId;
-use App\Services\Utility\CheckDevice;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Device;
 use Illuminate\Http\Request;
+use App\Models\ReferralActivity;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-
+use App\Services\Utility\CheckDevice;
+use App\Http\Requests\Auth\VerifyOtpRequest;
+use App\Services\AutoGenerate\CreatePeaceId;
+use App\Http\Requests\Auth\CreateUserRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Models\ScreenResolution;
 
 class RegisterController extends Controller
 {
@@ -34,6 +35,8 @@ class RegisterController extends Controller
         try {
             // $peace_id =  $this->createPeaceId->generateUniquePeaceId();
             $points = 50;
+            $deviceType = $request->input('device_type');
+            $screenResolution = $request->input('screen_resolution');
            
             $create = User::create([
                 'first_name' => $request->input('first_name'),
@@ -47,6 +50,21 @@ class RegisterController extends Controller
                 'points' => 50, // allocate appropriate pointts once decided
             
             ]);
+
+            if ($deviceType) {
+                Device::create([
+                    'user_id' => $create->id,
+                    'device_type' => $deviceType
+                ]);
+
+            }
+
+            if ($screenResolution) {
+                ScreenResolution::create([
+                    'user_id' => $create->id,
+                    'screen_resolution' => $screenResolution
+                ]);
+            }
 
             $referrer_peace_id = $request->input('referrer_peace_id');
             

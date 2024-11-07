@@ -12,6 +12,7 @@ class CheckDevice {
 
         // $userAgent = $request->header('User-Agent');
         $userDevice = Device::where('user_id', $user->id)->first();
+        
         if (strpos($userAgent, 'Android') !== false) {
             $deviceType = 'Android';
         
