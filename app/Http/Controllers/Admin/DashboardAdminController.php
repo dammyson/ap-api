@@ -121,9 +121,9 @@ class DashboardAdminController extends Controller
 
         return response()->json([
             'error' => false,
-            'total14daysRevenue' => $total14daysRevenue,
-            'percentageChange' => $percentageChange,
             'total7daysRevenue' => $total7daysRevenue,
+            'percentageChange' => round($percentageChange, 2) . '%',
+            'total14daysRevenue' => $total14daysRevenue,
         ], 200);
     }
 
