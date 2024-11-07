@@ -431,6 +431,9 @@ class SurveyController extends Controller
         foreach($requestQuestions as $requestQuestion) {
             if (array_key_exists('id', $requestQuestion)) {
                 $question = Question::find($requestQuestion['id']); 
+                if (!$question) {
+                    $question = new Question();
+                }
             } else {
                 $question = new Question();
                 // dump('i ')
