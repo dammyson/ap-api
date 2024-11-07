@@ -36,6 +36,7 @@ class DashboardAdminController extends Controller
             $percentageChange = (($userCountLast7Days - $userCount14Ago) / $userCount14Ago) * 100;
         } else {
             $percentageChange = $userCountLast7Days > 0 ? 100 : 0; // Handle edge cases
+        
         }
 
         // Prepare the result
@@ -43,6 +44,7 @@ class DashboardAdminController extends Controller
             'total_users_registered_last_7_days' => $userCountLast7Days,
             'percentage_change_vs_last_7_days' => round($percentageChange, 2) . '%',
             'total_user_count_14_days_ago' => $userCount14Ago
+
         ];
 
         return response()->json($result);
