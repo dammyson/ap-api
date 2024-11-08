@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Services\Http\SoapClientService;
 use App\Services\Soap\SoapRequestBuilder;
+use App\Services\Utility\CheckArray;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
 
@@ -18,13 +19,15 @@ class FlightController extends Controller
     protected $craneOTASoapService;
     protected $craneAncillaryOTASoapService;
     protected $soapRequestBuilder;
+    protected $checkArray;
 
     
-    public function __construct(SoapRequestBuilder $soapRequestBuilder)
+    public function __construct(SoapRequestBuilder $soapRequestBuilder, CheckArray $checkArray)
     {
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->soapRequestBuilder = $soapRequestBuilder;
+        $this->checkArray = $checkArray;
     }
 
     
@@ -69,7 +72,51 @@ class FlightController extends Controller
 
         
         $response = $this->craneOTASoapService->run($function, $xml);
-        return $response;
+        // dd($response);
+            // return $response;
+
+        $result = "";
+
+        if ($request->input('trip_type') == "ONE_WAY") {
+            $originDestinationOptionList = $response['Availability']['availabilityResultList']['availabilityRouteList']['availabilityByDateList']['originDestinationOptionList'];
+            $result0 = $this->groupFaresByCabinTwo($originDestinationOptionList, $quantity, $travelerInformation_count);
+            $rt = new \stdClass();
+            $rt->departure = $result0;
+            $result = $rt;
+        } else  if ($request->input('trip_type') == "ROUND_TRIP") {
+            $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
+            $result0 = $this->groupFaresByCabinTwo($originDestinationOptionList0, $quantity, $travelerInformation_count);
+            $originDestinationOptionList1 = $response['Availability']['availabilityResultList']['availabilityRouteList'][1]['availabilityByDateList']['originDestinationOptionList'];
+            $result1 = $this->groupFaresByCabinTwo($originDestinationOptionList1, $quantity,  $travelerInformation_count);
+
+            $rt = new \stdClass();
+            $rt->departure = $result0;
+            $rt->arrival = $result1;
+            $result = $rt;
+        }else{
+            $availabilityRouteList = $response['Availability']['availabilityResultList']['availabilityRouteList'];
+
+            $multiDirectionalFlights = $validated['multi_directional_flights'];
+
+            $rt = new \stdClass();
+
+            for ($i = 0; $i < count( $availabilityRouteList); $i++) {
+
+                $mainkey =  $multiDirectionalFlights[$i]['departure_airport'] . " - " .  $multiDirectionalFlights[$i]['arrival_airport'];
+
+                $originDestinationOptionList =  $availabilityRouteList[$i];
+                
+                $result = $this->groupFaresByCabin($originDestinationOptionList['availabilityByDateList']['originDestinationOptionList'], $quantity, $travelerInformation_count);
+                $rt->{$mainkey}  =  $result;
+            }
+            // $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
+            // dd(  $availabilityRouteList);
+
+            $result = $rt;
+
+        }
+        
+        return response()->json($result);
     }
 
     
@@ -214,5 +261,110 @@ class FlightController extends Controller
         }
 
         return $itemsCollection;
+    }
+
+    public function groupFaresByCabinTwo($originDestinationOptionList, $quantity,  $count)
+    {
+       // dd($originDestinationOptionList);
+
+        $itemsCollection = collect();
+        if (!$this->checkArray->isAssociativeArray($originDestinationOptionList)) {
+            foreach ($originDestinationOptionList as  $originDestinationOptionItems) {
+                $fareComponentGroupList = $originDestinationOptionItems['fareComponentGroupList'];
+                $bookingClassList = $fareComponentGroupList['boundList']['availFlightSegmentList']["bookingClassList"];
+                $flightSegment = $fareComponentGroupList['boundList']['availFlightSegmentList']["flightSegment"];
+                $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
+                $fareComponentList = $fareComponentGroupList['fareComponentList'];
+    
+                // dd($grouped_bookingClassList);
+                //dd($fareComponentList);
+                $cabinData = new \stdClass();
+                $cabinData->flightSegment = $flightSegment;
+    
+                foreach ($grouped_bookingClassList as $cabin => $items) {
+                    $reversedItems = $items->reverse();
+                    foreach ($reversedItems as $item) {
+                        if ($quantity <= (int)$item['resBookDesigQuantity']) {
+                            $cabinData->$cabin['availability'] = $item;
+    
+                            foreach ($fareComponentList as $fareComponentItem) {
+    
+                               $passengerFareInfoList = $fareComponentItem['passengerFareInfoList'];
+                             
+                                if($count == 1){
+                                    if ($item['resBookDesigCode'] == $passengerFareInfoList['fareInfoList']['resBookDesigCode']) {
+                                        $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                        $cabinData->$cabin['fareInfoList'] = [$passengerFareInfoList];
+                                        break;
+                                    }
+                                }else{
+    
+                                    foreach ($passengerFareInfoList  as $passengerFareInfoItem) {
+                                        if ($item['resBookDesigCode'] == $passengerFareInfoItem['fareInfoList']['resBookDesigCode']) {
+                                            $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                            $cabinData->$cabin['fareInfoList'] = $passengerFareInfoList;
+                                            break;
+                                        }
+                                    }
+                                }
+    
+                            }
+                            break;
+                        }
+                    }
+                }
+                $itemsCollection->push($cabinData);
+
+            } 
+            
+        }
+        else {
+            $fareComponentGroupList = $originDestinationOptionList['fareComponentGroupList']; 
+            $bookingClassList = $fareComponentGroupList["boundList"]['availFlightSegmentList']['bookingClassList'];
+            $flightSegment = $fareComponentGroupList['boundList']['availFlightSegmentList']["flightSegment"];
+            $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
+            $fareComponentList = $fareComponentGroupList['fareComponentList'];
+
+            $cabinData = new \stdClass();
+            $cabinData->flightSegment = $flightSegment;
+
+            foreach ($grouped_bookingClassList as $cabin => $items) {
+                $reversedItems = $items->reverse();
+                foreach ($reversedItems as $item) {
+                    if ($quantity <= (int)$item['resBookDesigQuantity']) {
+                        $cabinData->$cabin['availability'] = $item;
+
+                        foreach ($fareComponentList as $fareComponentItem) {
+
+                           $passengerFareInfoList = $fareComponentItem['passengerFareInfoList'];
+                         
+                            if($count == 1){
+                                if ($item['resBookDesigCode'] == $passengerFareInfoList['fareInfoList']['resBookDesigCode']) {
+                                    $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                    $cabinData->$cabin['fareInfoList'] = [$passengerFareInfoList];
+                                    break;
+                                }
+                            }else{
+
+                                foreach ($passengerFareInfoList  as $passengerFareInfoItem) {
+                                    if ($item['resBookDesigCode'] == $passengerFareInfoItem['fareInfoList']['resBookDesigCode']) {
+                                        $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                        $cabinData->$cabin['fareInfoList'] = $passengerFareInfoList;
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+                        break;
+                    }
+                }
+            }
+            $itemsCollection->push($cabinData);
+        }
+
+        return $itemsCollection;
+
+
     }
 }
