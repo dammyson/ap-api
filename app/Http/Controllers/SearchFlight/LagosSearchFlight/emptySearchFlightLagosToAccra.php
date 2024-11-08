@@ -12,7 +12,8 @@ array:1 [ // app/Http/Controllers/FlightController.php:74
               0 => array:3 [
                 "locationCode" => "LOS"
                 "locationName" => "Lagos"
-                "locationNameLanguage" => "EN"
+                "locationNameLanguage" => "
+                EN"
               ]
               1 => array:3 [
                 "locationCode" => "ACC"
