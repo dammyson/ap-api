@@ -24,6 +24,12 @@ class GetAirportMatrixController extends Controller
 
         try {
             $response = $this->craneOTASoapService->run($function, $xml);
+            if(!array_key_exists('AirPortMatrixResponse', $response)) {
+                return response()->json([
+                    'error' => true,
+                    'response' => $response
+                ]);
+            }
             $airportMatrixList = $response['AirPortMatrixResponse']['airPortMatrixInfo']['airPortMatrixList'];
             $availableFlights = [];
             
