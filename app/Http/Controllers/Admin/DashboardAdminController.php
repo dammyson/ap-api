@@ -23,12 +23,12 @@ class DashboardAdminController extends Controller
         // Get the current date and date of 7 days ago
         $currentDate = Carbon::now();
         $date7DaysAgo = Carbon::now()->subDays(7);
+        $date14DaysAgo= Carbon::now()->subDays(14);
 
         // Query the number of users registered in the last 7 days
         $userCountLast7Days = User::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
 
-        // Query the number of users registered in the 7 days before the last 7 days
-        $date14DaysAgo= Carbon::now()->subDays(14);
+        // Query the number of users registered in the 7 days before the last 7 days        
         $userCount14Ago = User::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
 
         // Calculate the percentage change
@@ -39,15 +39,48 @@ class DashboardAdminController extends Controller
         
         }
 
-        // Prepare the result
-        $result = [
-            'total_users_registered_last_7_days' => $userCountLast7Days,
-            'percentage_change_vs_last_7_days' => round($percentageChange, 2) . '%',
-            'total_user_count_14_days_ago' => $userCount14Ago
+        // purchased-ticket
+        $ticket7DaysAgo = FlightRecord::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
+        $ticket14DaysAgo = FlightRecord::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
 
-        ];
+        if ($ticket14DaysAgo > 0) {
+            $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
 
-        return response()->json($result);
+        }  else {
+            $percentageChange = $ticket7DaysAgo > 0 ? 100 : 0; // Handle edge cases
+        }
+
+        // total-revenue
+
+        $total7daysRevenue = TransactionRecord::whereBetween('created_at', [$date7DaysAgo, $currentDate])->sum('amount');
+        $total14daysRevenue = TransactionRecord::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->sum('amount');
+
+
+        if ($total14daysRevenue > 0) { 
+            $percentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
+
+        } else {
+            $percentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
+        }
+
+        return response()->json([
+            "error" => false,
+            "total_registered-users" => [
+                "percentage" => round($percentageChange, 2),
+                "total_registered_users_last_seven_days" => $userCountLast7Days
+            ],
+
+            "total_purchased_ticket" => [
+                'ticket7DaysAgo' => $ticket7DaysAgo,
+                'percentageChange' => round($percentageChange, 2)               
+            ],
+            
+            "total_revenue" => [
+                'total7daysRevenue' => $total7daysRevenue,
+                'percentageChange' => round($percentageChange, 2)
+            ]
+
+        ]);
     }
 
 
@@ -68,48 +101,7 @@ class DashboardAdminController extends Controller
             $percentageChange = $userCountLast7Days > 0 ? 100 : 0; // Handle edge cases
         }
 
-        // purchased-ticket
-        $ticket7DaysAgo = FlightRecord::whereBetween('created_at', [$lastSevenDays, $today])->count();
-        $ticket14DaysAgo = FlightRecord::whereBetween('created_at', [$lastFourteenDays, $lastSevenDays])->count();
-
-        if ($ticket14DaysAgo > 0) {
-            $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
-
-        }  else {
-            $percentageChange = $ticket7DaysAgo > 0 ? 100 : 0; // Handle edge cases
-        }
-
-        // total-revenue
-
-        $total7daysRevenue = TransactionRecord::whereBetween('created_at', [$lastSevenDays, $today])->sum('amount');
-        $total14daysRevenue = TransactionRecord::whereBetween('created_at', [$lastFourteenDays, $lastSevenDays])->sum('amount');
-
         
-        if ($total14daysRevenue > 0) { 
-            $percentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
-       
-        } else {
-            $percentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
-        }
-
-        return response()->json([
-            "error" => false,
-            "total_registered-users" => [
-                "percentage" => round($percentageChange, 2),
-                "total_registered_users_last_seven_days" => $userCountLast7Days
-            ],
-
-            "total_purchased_ticket" => [
-                'ticket7DaysAgo' => $ticket7DaysAgo,
-                'percentageChange' => round($percentageChange, 2)               
-            ],
-             
-            "total_revenue" => [
-                'total7daysRevenue' => $total7daysRevenue,
-                'percentageChange' => round($percentageChange, 2)
-            ]
-
-        ]);
     
     }
 
