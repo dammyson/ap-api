@@ -173,7 +173,7 @@ class FlightController extends Controller
             $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
             $fareComponentList = $fareComponentGroupList['fareComponentList'];
 
-            dd($grouped_bookingClassList);
+            // dd($grouped_bookingClassList);
             //dd($fareComponentList);
             $cabinData = new \stdClass();
             $cabinData->flightSegment = $flightSegment;
