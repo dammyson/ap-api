@@ -31,7 +31,34 @@ class FlightController extends Controller
     }
 
     
+    
+    public function searchFlightsTwo(SearchFlightRequest $request)
+    {
 
+        $departureDateTime = $request->input('departure_date');
+        $ArrivalDateTime = $request->input('arrival_date');
+        $destinationLocationCode = $request->input('arrival_airport');
+        $originLocationCode = $request->input('departure_airport');
+
+        $quantity = $request->input('passengers');
+        
+        $tripType = $request->input('trip_type');
+
+        $validated = $request->validated();
+
+      
+        $travelerInformation = $validated["travelerInformation"];
+        $travelerInformation_count = count($travelerInformation);
+
+      
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
+
+        if ($request->input('trip_type') == "ONE_WAY") {
+            $xml = $this->soapRequestBuilder->GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType);
+            dd($xml);
+        } 
+    }
     /**
      * Search for flights based on provided criteria.
     */
@@ -85,13 +112,21 @@ class FlightController extends Controller
                         'message' => "this flight is short of neccessary data"
                     ], 500);
                 }
-                
+
                 $originDestinationOptionList = $response['Availability']['availabilityResultList']['availabilityRouteList']['availabilityByDateList']['originDestinationOptionList'];
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList, $quantity, $travelerInformation_count);
                 $rt = new \stdClass();
                 $rt->departure = $result0;
                 $result = $rt;
             } else  if ($request->input('trip_type') == "ROUND_TRIP") {
+                $availabilityByDateList = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList'];
+                if(!array_key_exists('originDestinationOptionList', $availabilityByDateList)) {
+                    return response()->json([
+                        'error' => true,
+                        'message' => "this flight is short of neccessary data"
+                    ], 500);
+                }
+
                 $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
                 if(!$originDestinationOptionList0) {
                     return response()->json([
