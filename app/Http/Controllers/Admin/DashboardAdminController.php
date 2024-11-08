@@ -65,7 +65,7 @@ class DashboardAdminController extends Controller
 
         return response()->json([
             "error" => false,
-            "total_registered-users" => [
+            "total_registered_users" => [
                 "total_registered_users_last_seven_days" => $userCountLast7Days,
                 "percentage" => round($percentageChange, 2)
             ],
