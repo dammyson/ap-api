@@ -123,7 +123,6 @@ class FlightController extends Controller
     public function searchFlights(SearchFlightRequest $request)
     {
 
-
         $departureDateTime = $request->input('departure_date');
         $ArrivalDateTime = $request->input('arrival_date');
         $destinationLocationCode = $request->input('arrival_airport');
@@ -213,15 +212,61 @@ class FlightController extends Controller
        // dd($originDestinationOptionList);
 
         $itemsCollection = collect();
-        foreach ($originDestinationOptionList as  $originDestinationOptionItems) {
-            $fareComponentGroupList = $originDestinationOptionItems['fareComponentGroupList'];
-            $bookingClassList = $fareComponentGroupList['boundList']['availFlightSegmentList']["bookingClassList"];
+        if (!$this->checkArray->isAssociativeArray($originDestinationOptionList)) {
+            foreach ($originDestinationOptionList as  $originDestinationOptionItems) {
+                $fareComponentGroupList = $originDestinationOptionItems['fareComponentGroupList'];
+                $bookingClassList = $fareComponentGroupList['boundList']['availFlightSegmentList']["bookingClassList"];
+                $flightSegment = $fareComponentGroupList['boundList']['availFlightSegmentList']["flightSegment"];
+                $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
+                $fareComponentList = $fareComponentGroupList['fareComponentList'];
+
+                // dd($grouped_bookingClassList);
+                //dd($fareComponentList);
+                $cabinData = new \stdClass();
+                $cabinData->flightSegment = $flightSegment;
+
+                foreach ($grouped_bookingClassList as $cabin => $items) {
+                    $reversedItems = $items->reverse();
+                    foreach ($reversedItems as $item) {
+                        if ($quantity <= (int)$item['resBookDesigQuantity']) {
+                            $cabinData->$cabin['availability'] = $item;
+
+                            foreach ($fareComponentList as $fareComponentItem) {
+
+                            $passengerFareInfoList = $fareComponentItem['passengerFareInfoList'];
+                            
+                                if($count == 1){
+                                    if ($item['resBookDesigCode'] == $passengerFareInfoList['fareInfoList']['resBookDesigCode']) {
+                                        $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                        $cabinData->$cabin['fareInfoList'] = [$passengerFareInfoList];
+                                        break;
+                                    }
+                                }else{
+
+                                    foreach ($passengerFareInfoList  as $passengerFareInfoItem) {
+                                        if ($item['resBookDesigCode'] == $passengerFareInfoItem['fareInfoList']['resBookDesigCode']) {
+                                            $cabinData->$cabin['cost'] = $fareComponentItem['pricingOverview']['totalAmount'];
+                                            $cabinData->$cabin['fareInfoList'] = $passengerFareInfoList;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
+                            break;
+                        }
+                    }
+                }
+                $itemsCollection->push($cabinData);
+            }
+
+        } else {
+            $fareComponentGroupList = $originDestinationOptionList['fareComponentGroupList']; 
+            $bookingClassList = $fareComponentGroupList["boundList"]['availFlightSegmentList']['bookingClassList'];
             $flightSegment = $fareComponentGroupList['boundList']['availFlightSegmentList']["flightSegment"];
             $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
             $fareComponentList = $fareComponentGroupList['fareComponentList'];
 
-            // dd($grouped_bookingClassList);
-            //dd($fareComponentList);
             $cabinData = new \stdClass();
             $cabinData->flightSegment = $flightSegment;
 
