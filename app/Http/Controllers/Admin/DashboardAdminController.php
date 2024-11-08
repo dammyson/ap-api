@@ -57,7 +57,7 @@ class DashboardAdminController extends Controller
         $userCountLast7Days = User::whereBetween('created_at', [$today, $lastSevenDays])->count();
         
 
-        $lastFourteenDays = Carbon::now()->subDays(14)->endOfDay();
+        $lastFourteenDays = Carbon::now()->subDays(14);
         $totalRegisteredUsersLastFourteenDays = User::whereBetween('created_at', [$lastSevenDays, $lastFourteenDays])->count();
 
 
@@ -68,11 +68,47 @@ class DashboardAdminController extends Controller
             $percentageChange = $userCountLast7Days > 0 ? 100 : 0; // Handle edge cases
         }
 
+        // purchased-ticket
+        $ticket7DaysAgo = FlightRecord::whereBetween('created_at', [$lastSevenDays, $today])->count();
+        $ticket14DaysAgo = FlightRecord::whereBetween('created_at', [$lastFourteenDays, $lastSevenDays])->count();
+
+        if ($ticket14DaysAgo > 0) {
+            $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
+
+        }  else {
+            $percentageChange = $ticket7DaysAgo > 0 ? 100 : 0; // Handle edge cases
+        }
+
+        // total-revenue
+
+        $total7daysRevenue = TransactionRecord::whereBetween('created_at', [$lastSevenDays, $today])->sum('amount');
+        $total14daysRevenue = TransactionRecord::whereBetween('created_at', [$lastFourteenDays, $lastSevenDays])->sum('amount');
+
+        
+        if ($total14daysRevenue > 0) { 
+            $percentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
+       
+        } else {
+            $percentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
+        }
 
         return response()->json([
             "error" => false,
-            "total_registered_users_last_seven_days" => $userCountLast7Days,
-            "percentage" => $percentageChange
+            "total_registered-users" => [
+                "percentage" => round($percentageChange, 2),
+                "total_registered_users_last_seven_days" => $userCountLast7Days
+            ],
+
+            "total_purchased_ticket" => [
+                'ticket7DaysAgo' => $ticket7DaysAgo,
+                'percentageChange' => round($percentageChange, 2)               
+            ],
+             
+            "total_revenue" => [
+                'total7daysRevenue' => $total7daysRevenue,
+                'percentageChange' => round($percentageChange, 2)
+            ]
+
         ]);
     
     }
@@ -97,7 +133,7 @@ class DashboardAdminController extends Controller
         return response()->json([
             'error' => false,
             'ticket7DaysAgo' => $ticket7DaysAgo,
-            'percentageChange' => round($percentageChange, 2) . '%',
+            'percentageChange' => round($percentageChange, 2),
             'ticketCountLastSevenDays' => $ticket14DaysAgo,
 
         ], 200);
