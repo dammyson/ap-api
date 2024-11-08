@@ -79,12 +79,24 @@ class FlightController extends Controller
 
             if ($request->input('trip_type') == "ONE_WAY") {
                 $originDestinationOptionList = $response['Availability']['availabilityResultList']['availabilityRouteList']['availabilityByDateList']['originDestinationOptionList'];
+                if(!$originDestinationOptionList) {
+                    return response()->json([
+                        'error' => true,
+                        'message' => "this flight is short of neccessary data"
+                    ], 500);
+                }
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList, $quantity, $travelerInformation_count);
                 $rt = new \stdClass();
                 $rt->departure = $result0;
                 $result = $rt;
             } else  if ($request->input('trip_type') == "ROUND_TRIP") {
                 $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
+                if(!$originDestinationOptionList0) {
+                    return response()->json([
+                        'error' => true,
+                        'message' => "this flight is short of neccessary data"
+                    ], 500);
+                }
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity, $travelerInformation_count);
                 $originDestinationOptionList1 = $response['Availability']['availabilityResultList']['availabilityRouteList'][1]['availabilityByDateList']['originDestinationOptionList'];
                 $result1 = $this->groupFaresByCabin($originDestinationOptionList1, $quantity,  $travelerInformation_count);
