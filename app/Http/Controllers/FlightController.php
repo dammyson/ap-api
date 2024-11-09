@@ -154,17 +154,17 @@ class FlightController extends Controller
                 $fareComponentGroupList = $originDestinationOptionItems['fareComponentGroupList'];
                 $bookingClassList = $fareComponentGroupList['boundList']['availFlightSegmentList']["bookingClassList"];
                 $flightSegment = $fareComponentGroupList['boundList']['availFlightSegmentList']["flightSegment"];
-                // if(!is_array($flightSegment['flightNotes'])) {
-                //     $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
-                // }
+                if(!is_array($flightSegment['flightNotes'])) {
+                    $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
+                }
 
                 // dd($flightSegment);
                 
-                if(array_key_exists('deiCode', $flightSegment['flightNotes'])) {
-                    $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
+                // if(array_key_exists('deiCode', $flightSegment['flightNotes'])) {
+                //     $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
 
                     
-                }
+                // }
                 
                 $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
                 $fareComponentList = $fareComponentGroupList['fareComponentList'];
@@ -216,12 +216,15 @@ class FlightController extends Controller
             $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
             $fareComponentList = $fareComponentGroupList['fareComponentList'];
 
-
-            if(array_key_exists('deiCode', $flightSegment['flightNotes'])) {
+            if (is_array($flightSegment['flightNotes'])) {
                 $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
 
-                
             }
+
+            // if(array_key_exists('deiCode', $flightSegment['flightNotes'])) {
+            //     $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
+                
+            // }
             $cabinData = new \stdClass();
             $cabinData->flightSegment = $flightSegment;
 
