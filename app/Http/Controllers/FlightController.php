@@ -215,6 +215,7 @@ class FlightController extends Controller
             $flightSegment = $fareComponentGroupList['boundList']['availFlightSegmentList']["flightSegment"];
             $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
             $fareComponentList = $fareComponentGroupList['fareComponentList'];
+            
 
             dd($flightSegment);
             $cabinData = new \stdClass();
