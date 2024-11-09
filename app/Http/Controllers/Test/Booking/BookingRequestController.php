@@ -68,7 +68,7 @@ class BookingRequestController extends Controller
 
             $flightNotes = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['adviceCodeSegmentExist']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'];
             if(!is_array($flightNotes)) {
-                $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['adviceCodeSegmentExist']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['adviceCodeSegmentExist']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['adviceCodeSegmentExist']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'];
             }
             
         } catch (\Throwable $th) {
