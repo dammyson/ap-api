@@ -154,6 +154,14 @@ class FlightController extends Controller
                 $fareComponentGroupList = $originDestinationOptionItems['fareComponentGroupList'];
                 $bookingClassList = $fareComponentGroupList['boundList']['availFlightSegmentList']["bookingClassList"];
                 $flightSegment = $fareComponentGroupList['boundList']['availFlightSegmentList']["flightSegment"];
+                // if(!is_array($flightSegment['flightNotes'])) {
+                //     $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
+                // }
+                
+                if(array_key_exists('deiCode', $flightSegment['flightNotes'])) {
+                    $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
+                }
+                
                 $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
                 $fareComponentList = $fareComponentGroupList['fareComponentList'];
 
