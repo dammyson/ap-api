@@ -66,14 +66,14 @@ class BookingRequestController extends Controller
                     [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']];
             }
 
-            $flightSegment = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment'];
-            if(!is_array($flightSegment['flightNotes'])) {
-                $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
-            }
-            
-            // if(array_key_exists('deiCode', $flightNotes)) {
-            //     $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes']];
+            $flightNotes = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'];
+            // if(!is_array($flightSegment['flightNotes'])) {
+            //     $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
             // }
+            
+            if(array_key_exists('deiCode', $flightNotes)) {
+                $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes']];
+            }
             
         } catch (\Throwable $th) {
             return response()->json([
