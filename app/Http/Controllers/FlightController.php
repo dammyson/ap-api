@@ -158,13 +158,6 @@ class FlightController extends Controller
                     $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
                 }
 
-                // dd($flightSegment);
-                
-                // if(array_key_exists('deiCode', $flightSegment['flightNotes'])) {
-                //     $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
-
-                    
-                // }
                 
                 $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
                 $fareComponentList = $fareComponentGroupList['fareComponentList'];
