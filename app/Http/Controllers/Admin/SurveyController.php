@@ -274,13 +274,33 @@ class SurveyController extends Controller
                 ], 500);
             } 
 
-            $survey->is_published = !$survey->is_published;
+            // if this survey is not published check if there is an active survey
+            if (!$survey->is_published) {
+                $activeSurvey = Survey::where('is_active', true)->first();
+                if ($activeSurvey) {
+                    return response()->json([
+                        "error" => true,
+                        "message" => "A survey is currently active would you like to end and begin a new one"
+                    ], 500);
+                }
+
+                $survey->is_published = true;
+                $survey->is_active = true;
+                
+            } else {
+                $survey->is_published = false;
+                $survey->is_active = false;
+            }   
+            
+            $survey->save();
+            
+
+            // $survey->is_published = !$survey->is_published;
             
             // if survey is not published then it is in draft
            
-            $survey->save();
-
             
+             
             $action = $survey->is_published ? 'published' 
                     : 'unpublished';
             
