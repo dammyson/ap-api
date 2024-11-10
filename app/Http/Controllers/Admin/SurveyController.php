@@ -458,9 +458,7 @@ class SurveyController extends Controller
         $survey->update([
             'title' => $title,
             'duration_of_survey' => $duration_of_survey,
-            'points_awarded' => $points_awarded,
-            'is_published' => $is_published,
-            'is_active' => $is_active
+            'points_awarded' => $points_awarded
         ]);
        
 
