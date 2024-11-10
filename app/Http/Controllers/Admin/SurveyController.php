@@ -418,7 +418,7 @@ class SurveyController extends Controller
 
         $femaleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
             $query->where('gender', 'Female');
-        })->count();
+        })->count(); 
 
         $malePercentage = ($maleResultCount / $totalResultCount) * 100;
 
