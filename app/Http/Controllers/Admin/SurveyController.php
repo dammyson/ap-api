@@ -445,20 +445,22 @@ class SurveyController extends Controller
         $admin = $request->user('admin');        
 
         if ($is_active) {
-            $survey = Survey::where('is_active', true)->first();
-            if ($survey) {
+            $activeSurvey = Survey::where('is_active', true)->first();
+            if ($activeSurvey) {
                  return response()->json([
                      "error" => true,
                      "message" => "A survey is currently active would you like to end and begin a new one"
                  ], 500);
             }
 
-         }
+        }
 
         $survey->update([
             'title' => $title,
             'duration_of_survey' => $duration_of_survey,
-            'points_awarded' => $points_awarded
+            'points_awarded' => $points_awarded,
+            'is_active' => $is_active,
+            'is_published' => $is_published
         ]);
        
 
