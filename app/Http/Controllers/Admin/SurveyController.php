@@ -442,9 +442,7 @@ class SurveyController extends Controller
         $is_published = $request->input('is_published');
         $is_active = $request->input('is_active');
 
-        $admin = $request->user('admin');
-
-        
+        $admin = $request->user('admin');        
 
         if ($is_active) {
             $survey = Survey::where('is_active', true)->first();
@@ -461,8 +459,8 @@ class SurveyController extends Controller
             'title' => $title,
             'duration_of_survey' => $duration_of_survey,
             'points_awarded' => $points_awarded,
-            'is_published' => $is_published ? true : false,
-            'is_active' => $is_active ? true : false
+            'is_published' => $is_published,
+            'is_active' => $is_active
         ]);
        
 
