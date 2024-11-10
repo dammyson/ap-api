@@ -46,14 +46,13 @@ class SurveyController extends Controller
             $is_published = $request->input('is_published');
 
             if ($is_active) {
-               $survey = Survey::where('is_active', true)->first();
-               if ($survey) {
+                $activeSurvey = Survey::where('is_active', true)->first();
+                if ($activeSurvey) {
                     return response()->json([
                         "error" => true,
                         "message" => "A survey is currently active would you like to end and begin a new one"
                     ], 500);
-               }
-
+                }                
             }
          
             $survey = Survey::create([
@@ -440,13 +439,30 @@ class SurveyController extends Controller
         $duration_of_survey = $request->input('duration_of_survey');
         $points_awarded = $request->input('points_awarded');
         $requestQuestions = $request->input('questions');
+        $is_published = $request->input('is_published');
+        $is_active = $request->input('is_active');
 
         $admin = $request->user('admin');
+
+        
+
+        if ($is_active) {
+            $survey = Survey::where('is_active', true)->first();
+            if ($survey) {
+                 return response()->json([
+                     "error" => true,
+                     "message" => "A survey is currently active would you like to end and begin a new one"
+                 ], 500);
+            }
+
+         }
 
         $survey->update([
             'title' => $title,
             'duration_of_survey' => $duration_of_survey,
             'points_awarded' => $points_awarded,
+            'is_published' => $is_published ? true : false,
+            'is_active' => $is_active ? true : false
         ]);
        
 
