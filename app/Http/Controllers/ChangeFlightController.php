@@ -157,7 +157,7 @@ class ChangeFlightController extends Controller
                 $transactionType = $responseCancelFlight['AirCancelBookingResponse']['airBookingList']['ticketInfo']['pricingType'];
                 $refundAmount = $responseCancelFlight['AirCancelBookingResponse']['airBookingList']['ticketInfo']['refundPaymentAmountList']['amount']['value'];
                     
-                dump('refund ran');
+                // dump('refund ran');
                 if ($transactionType === "REFUND") {
                     $wallet = Wallet::where('user_id', $user->id)->first();
                     if ($wallet) {
