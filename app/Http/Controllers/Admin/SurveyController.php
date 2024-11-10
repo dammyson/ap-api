@@ -43,6 +43,7 @@ class SurveyController extends Controller
             $points_awarded = $request->input('points_awarded');  
             $image_url = $request->input('image_url');          
             $is_active = $request->input('is_active');
+            $is_published = $request->input('is_published');
 
             if ($is_active) {
                $survey = Survey::where('is_active', true)->first();
@@ -61,6 +62,7 @@ class SurveyController extends Controller
                 'duration_of_survey' => $duration_of_survey,
                 'points_awarded' => $points_awarded,
                 'is_active' => $is_active,
+                'is_published' => $is_published,
                 'image_url' => $image_url
             ]);
 

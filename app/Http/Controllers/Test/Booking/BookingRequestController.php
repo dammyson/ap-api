@@ -50,15 +50,12 @@ class BookingRequestController extends Controller
             $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
                     $booking->booking_id,
                     $booking->booking_reference_id
-            );
-    
+            );    
             
             $response = $this->craneOTASoapService->run($function, $xml);
 
             // dd($response);
 
-
-                    
             if (isset($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']) &&
                 $this->isAssociativeArray($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'])) {
                     // dd('I ran');
@@ -70,9 +67,8 @@ class BookingRequestController extends Controller
            
             
             if(array_key_exists('deiCode', $flightNotes)) {
-                // $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes']];
                 $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
-                // $flightNotes = [$flightNotes];
+                
             }
             
         } catch (\Throwable $th) {
