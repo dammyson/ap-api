@@ -83,6 +83,17 @@ class AnalyticsUserController extends Controller
         }
     }
 
+    public function flightTable(Request $request) {
+        $user = $request->user();
+        $flightRecord = FlightRecord::where('peace_id', $user->peace_id)->get();
+
+        return response()->json([
+            "error" => false,
+            "flightRecord" => $flightRecord
+        ], 200);
+
+    }
+
     public function totalMileFlown(Request $request) {
         try {
             $user = $request->user();
