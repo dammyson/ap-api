@@ -268,9 +268,59 @@ class CreateBookingController extends Controller
 
         $response = $this->craneOTASoapService->run($function, $xml);
 
+        $ticketType = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']["bookFlightSegmentList"]["bookingClass"]["cabin"];
+        $totalDistance = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']["flightSegment"]["distance"];
+        $journeyDuration = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']["flightSegment"]["journeyDuration"];
+        dump($ticketType);
+        dump($totalDistance);
+        dump($journeyDuration);
+        // dd('i ran');
+
+        $hours = 0;
+        $minutes = 0;
+
+        if (preg_match('/PT(\d+H)?(\d+M)?/', $journeyDuration, $matches)) {
+            // Check if hours and minutes are present in the matched groups
+            if (!empty($matches[1])) {
+                $hours = (int) rtrim($matches[1], 'H');
+            }
+            if (!empty($matches[2])) {
+                $minutes = (int) rtrim($matches[2], 'M');
+            }
+        }
+
+        // Calculate total duration in hours
+        $totalHours = $hours + ($minutes / 60);
+        dd($totalHours);
+        // origin_city,
+        // destination_city,
+        // ticket_type,
+        // $flight_distance,
+        // $flight_duration
+
+
+        //ti
+        FlightRecord::create([
+            // 'origin' => $origin, 
+            "origin_city" => $arrival_city,
+            // 'destination' => $destination, 
+            "destination_city" => $destination_city,
+            // 'arrival_time' => $arrival_time, 
+            // 'departure_time'=> $departure_time,
+            // 'peace_id' => $user->peace_id, 
+            // 'passenger_name' =>  $ticketItemList['airTraveler']["personName"]["givenName"],
+            // 'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
+            // 'trip_type' => 'ONE_WAY',
+            // 'ticket_type' => new 
+            // 'flight_distance' => new 
+            // 'flight_duration' => new
+            // 'booking_id' => $bookingId
+        ]);  
+
         // dd($response);
          // ['arrivalAirport']['cityInfo']['city']['country']['locationName'];
         dump($response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName']);
+        dump($response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['country']['locationName']);
     }
 
 
@@ -333,7 +383,9 @@ class CreateBookingController extends Controller
                 $arrival_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
                 $departure_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureDateTime'];
                 $origin = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+                $originCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName'];
                 $destination = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                $destinationCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
                 
                 if ($this->checkArray->isAssociativeArray($ticketItemList)) {                     
                     FlightRecord::create([

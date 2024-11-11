@@ -9,8 +9,8 @@ array:1 [ // app/Http/Controllers/CreateBookingController.php:271
               "bookOriginDestinationOptionList" => array:1 [
                 "bookFlightSegmentList" => array:11 [ 
                   "actionCode" => "HK"
-                  "addOnSegment" => "false"
-                  "bookingClass" => array:3 [
+                  "addOnSegment" => "false"  
+                  "bookingClass" => array:3 [ 
                     "cabin" => "ECONOMY"
                     "resBookDesigCode" => "V"
                     "resBookDesigQuantity" => "0"
@@ -91,7 +91,7 @@ array:1 [ // app/Http/Controllers/CreateBookingController.php:271
                     "flightSegmentID" => "1148755"
                     "ondControlled" => "false"
                     "sector" => "DOMESTIC"
-                    "accumulatedDuration" => ""
+                    "accumulatedDuration" => "" 
                     "codeshare" => "false"
                     "distance" => "469"
                     "equipment" => array:2 [
