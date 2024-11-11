@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ExcitingCity;
-use App\Models\FavoriteCityEvent;
-use App\Models\FeaturedTrip;
 use App\Models\Flight;
-use App\Models\FlightRecord;
 use App\Models\SpecialDeal;
+use App\Models\ExcitingCity;
+use App\Models\FeaturedTrip;
+use App\Models\FlightRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\FavoriteCityEvent;
+use Illuminate\Support\Facades\DB;
 
 class TripController extends Controller
 {
@@ -101,7 +102,7 @@ class TripController extends Controller
         try {
             $user = $request->user();
             
-            // $totalFlightRecord = FlightRecord::where('peace_id', $user->peace_id)->get();
+            $totalFlightCount = FlightRecord::where('peace_id', $user->peace_id)->count();
 
             // $flightRecord = FlightRecord::where('peace_id', $user->peace_id)
             //     ->groupBy('destination')->sortBy('desc')->select('destination')->take(7)->get();
@@ -109,9 +110,14 @@ class TripController extends Controller
             // $totalFlightCount = $totalFlightRecord->count();
 
             $destinations = FlightRecord::where('peace_id', $user->peace_id)
-                ->select('destination')
-                ->groupBy('destination')->get();
+                ->select('destination', DB::raw('count(*) as count'))                
+                ->groupBy('destination')->get()
+                ->map(function($destination) use($totalFlightCount) {
+                $destination->percentage = $totalFlightCount > 0 ? round(((($destination->count)/ $totalFlightCount) * 100), 2) : 0;
+                return $destination;
+            });
             
+                       
             return response()->json([
                 'error' => false,
                 // 'flightRecord' => $flightRecord,
