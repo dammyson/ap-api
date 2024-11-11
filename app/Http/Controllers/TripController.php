@@ -109,7 +109,7 @@ class TripController extends Controller
             // $totalFlightCount = $totalFlightRecord->count();
 
             $destinations = FlightRecord::where('peace_id', $user->peace_id)
-                ->select('destination', 'destination_city', 'passenger_name')
+                ->select('destination')
                 ->groupBy('destination')->get();
             
             return response()->json([
