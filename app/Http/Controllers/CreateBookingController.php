@@ -579,6 +579,10 @@ class CreateBookingController extends Controller
         // Calculate total duration in hours
         $totalHours = $hours + ($minutes / 60);
 
+        if (is_float($totalHours) && $totalHours != floor($totalHours)) {
+            $totalHours = round($totalHours, 2);
+        }
+
         return $totalHours;
     }
     
