@@ -141,14 +141,18 @@ class TripController extends Controller
         $endMonth = '';
 
         try {
+            $user = $request->user();
 
-            $busyMonthChartData = FlightRecord::groupBy('created_at', function($query) use($startMonth, $endMonth) {
-                $query->whereBetween('created_at', [$startMonth, $endMonth]);
-            })->get();
+            $flightRecord = FlightRecord::where('peace_id', $user->peace_id)
+                ->select(DB::raw('YEAR(departure_time) as year'), DB::raw('MONTH(departure_time) as month', DB::raw('COUNT(*) as count')))
+                ->group(DB::raw('YEAR(departure_time) as year'), DB::raw('MONTH(departure_time)'))
+                ->get();
+                
     
             return response()->json([
                 'error' => false,
-                'busy_month_chart_data' => $busyMonthChartData
+                'flight_record' => $flightRecord
+                // 'busy_month_chart_data' => $busyMonthChartData
             ], 200);
 
         } catch (\Throwable $throwable) {
