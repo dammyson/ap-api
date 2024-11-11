@@ -268,6 +268,8 @@ class CreateBookingController extends Controller
 
         $response = $this->craneOTASoapService->run($function, $xml);
 
+        dd($response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']);
+
         $ticketType = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']["bookFlightSegmentList"]["bookingClass"]["cabin"];
         $totalDistance = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']["flightSegment"]["distance"];
         $journeyDuration = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']["flightSegment"]["journeyDuration"];
