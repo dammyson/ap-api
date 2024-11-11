@@ -101,20 +101,20 @@ class TripController extends Controller
         try {
             $user = $request->user();
             
-            $totalFlightRecord = FlightRecord::where('peace_id', $user->peace_id)->get();
+            // $totalFlightRecord = FlightRecord::where('peace_id', $user->peace_id)->get();
 
-            $flightRecord = FlightRecord::where('peace_id', $user->peace_id)
-                ->groupBy('destination')->sortBy('desc')->select('destination')->take(7)->get();
+            // $flightRecord = FlightRecord::where('peace_id', $user->peace_id)
+            //     ->groupBy('destination')->sortBy('desc')->select('destination')->take(7)->get();
     
-            $totalFlightCount = $totalFlightRecord->count();
+            // $totalFlightCount = $totalFlightRecord->count();
 
             $destinations = FlightRecord::where('peace_id', $user->peace_id)
                 ->groupBy('destination')->get();
             
             return response()->json([
                 'error' => false,
-                'flightRecord' => $flightRecord,
-                'total_flight_count' => $totalFlightCount,
+                // 'flightRecord' => $flightRecord,
+                // 'total_flight_count' => $totalFlightCount,
                 'destinations' => $destinations
             ], 200);
             
