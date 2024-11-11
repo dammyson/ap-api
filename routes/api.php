@@ -318,6 +318,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::get('total-referrals', [AnalyticsUserController::class, 'totalReferral']);
         Route::get('number-of-countries-visited', [AnalyticsUserController::class, 'countriesVisited']);
         Route::get('total-mile-flown', [AnalyticsUserController::class, 'totalMileFlown']);
+        Route::get('flight-table', [AnalyticsUserController::class, 'flightTable']);
         // Route::get('totalMileFlown')
         
 
