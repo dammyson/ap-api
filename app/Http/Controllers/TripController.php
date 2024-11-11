@@ -107,11 +107,15 @@ class TripController extends Controller
                 ->groupBy('destination')->sortBy('desc')->select('destination')->take(7)->get();
     
             $totalFlightCount = $totalFlightRecord->count();
+
+            $destinations = FlightRecord::where('peace_id', $user->peace_id)
+                ->groupBy('destination')->get();
             
             return response()->json([
                 'error' => false,
                 'flightRecord' => $flightRecord,
-                'total_flight_count' => $totalFlightCount
+                'total_flight_count' => $totalFlightCount,
+                'destinations' => $destinations
             ], 200);
             
         } catch (\Throwable $throwable) {

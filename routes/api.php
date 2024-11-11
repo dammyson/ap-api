@@ -172,6 +172,10 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::patch('profile/change-password', [ChangePasswordAdminController::class, 'ChangeAdminPassword']);
         });
 
+        Route::post('featured-trip', [TripController::class, 'featuredTrip']);
+        Route::post('special-deals', [TripController::class, 'specialDeals']);
+        Route::post('favorite-cities-event', [TripController::class, 'favoriteCitiesEvent']);
+
         Route::post('admin-logout', [RegisterAdminController::class, 'logoutAdmin']);
 
 
@@ -321,8 +325,9 @@ Route::group(["middleware" => ["auth:api"]], function () {
         // Route::get('delete', [AnalyticsUserController::class, 'deleteFlight']); //135;
         // Route::get('totalMileFlown')
         
-
+        
         // travel recommendation
+        Route::get('travel-pattern', [TripController::class, 'travelPattern']);
         Route::get('featured-trip', [TripController::class, 'featuredTrip']);
         Route::get('special-deals', [TripController::class, 'specialDeals']);
         Route::get('favorite-cities-event', [TripController::class, 'favoriteCitiesEvent']);
