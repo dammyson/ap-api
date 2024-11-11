@@ -147,7 +147,7 @@ class TripController extends Controller
                 ->select(DB::raw('YEAR(departure_time) as year'), DB::raw('MONTH(departure_time) as month', DB::raw('COUNT(*) as count')))
                 ->groupBy(DB::raw('YEAR(departure_time)'), DB::raw('MONTH(departure_time)'))
                 ->orderBy(DB::raw('YEAR(departure_time)'))
-                ->orderBy(DB::raw('MONTH(departure_time'))
+                ->orderBy(DB::raw('MONTH(departure_time)'))
                 ->get();
             
             $data = [];
