@@ -143,15 +143,32 @@ class TripController extends Controller
         try {
             $user = $request->user();
 
-            $flightRecord = FlightRecord::where('peace_id', $user->peace_id)
+            $flightRecords = FlightRecord::where('peace_id', $user->peace_id)                                
                 ->select(DB::raw('YEAR(departure_time) as year'), DB::raw('MONTH(departure_time) as month', DB::raw('COUNT(*) as count')))
                 ->groupBy(DB::raw('YEAR(departure_time)'), DB::raw('MONTH(departure_time)'))
+                ->orderBy(DB::raw('YEAR(departure_time)'))
+                ->orderBy(DB::raw('MONTH(departure_time'))
                 ->get();
+            
+            $data = [];
+            foreach($flightRecords as $flightRecord) {
+                $year = $flightRecord->year;
+                $month = Carbon::create($flightRecord->month)->format('F');
+
+                if (!isset($data[$year])) {
+                    $data[$year]['labels'] = [];
+                    $data[$month]['counts'] = []; 
+                }
+
+                $data[$year]['labels'][] = $month;
+                $data[$year]['counts'][] = $flightRecord->count;
+
+            }
                 
     
             return response()->json([
                 'error' => false,
-                'flight_record' => $flightRecord
+                'flight_record' => $data
                 // 'busy_month_chart_data' => $busyMonthChartData
             ], 200);
 
