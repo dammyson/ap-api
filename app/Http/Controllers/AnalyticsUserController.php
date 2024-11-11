@@ -113,4 +113,14 @@ class AnalyticsUserController extends Controller
             ], 500); 
         }
     }
+
+    public function deleteFlight() {
+        $flightRecord = FlightRecord::find(135);
+        $flightRecord->delete();
+
+        response()->json([
+            'error' => false,
+            'message' => 'flight deleted successfully'
+        ]);
+    }
 }

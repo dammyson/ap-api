@@ -382,6 +382,7 @@ class CreateBookingController extends Controller
             $ticketCount = 0;
 
             if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
+
                 $flightSegment = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment'];
 
                 $arrival_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
@@ -394,6 +395,10 @@ class CreateBookingController extends Controller
                 $flightDistance = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["distance"];
                 $flightDuration = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                 
+
+                $totalHours = $this->getFlightHours($flightDuration);
+
+
                 if ($this->checkArray->isAssociativeArray($ticketItemList)) {                     
                     FlightRecord::create([
                         'origin' => $origin, 
@@ -409,7 +414,7 @@ class CreateBookingController extends Controller
                         'destination_city' => $destinationCity,
                         'ticket_type' => $ticketType,
                         'flight_distance' => $flightDistance,
-                        'flight_duration' => $flightDuration
+                        'flight_duration' => $totalHours
                     ]);  
                     $ticketCount += 1;
 
@@ -429,7 +434,7 @@ class CreateBookingController extends Controller
                             'destination_city' => $destinationCity,
                             'ticket_type' => $ticketType,
                             'flight_distance' => $flightDistance,
-                            'flight_duration' => $flightDuration
+                            'flight_duration' => $totalHours
                         ]); 
                         
                         $ticketCount += 1;
@@ -451,6 +456,8 @@ class CreateBookingController extends Controller
                         $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
                         $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                         
+                        $totalHours = $this->getFlightHours($flightDuration);
+
                         FlightRecord::create([
                             'origin' => $origin, 
                             'destination' => $destination, 
@@ -465,7 +472,7 @@ class CreateBookingController extends Controller
                             'destination_city' => $destinationCity,
                             'ticket_type' => $ticketType,
                             'flight_distance' => $flightDistance,
-                            'flight_duration' => $flightDuration
+                            'flight_duration' => $totalHours
                         ]);  
 
 
@@ -488,6 +495,8 @@ class CreateBookingController extends Controller
                             $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
                             $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                             
+                            $totalHours = $this->getFlightHours($flightDuration);
+
                             FlightRecord::create([
                                 'origin' => $origin, 
                                 'destination' => $destination, 
@@ -502,7 +511,7 @@ class CreateBookingController extends Controller
                                 'destination_city' => $destinationCity,
                                 'ticket_type' => $ticketType,
                                 'flight_distance' => $flightDistance,
-                                'flight_duration' => $flightDuration
+                                'flight_duration' => $totalHours
                             ]); 
                             
                             $ticketCount += 1;
@@ -551,6 +560,27 @@ class CreateBookingController extends Controller
         }
     }
 
+
+
+    private function getFlightHours($flightDuration) {
+        $hours = 0;
+        $minutes = 0;
+
+        if (preg_match('/PT(\d+H)?(\d+M)?/', $flightDuration, $matches)) {
+            // Check if hours and minutes are present in the matched groups
+            if (!empty($matches[1])) {
+                $hours = (int) rtrim($matches[1], 'H');
+            }
+            if (!empty($matches[2])) {
+                $minutes = (int) rtrim($matches[2], 'M');
+            }
+        }
+
+        // Calculate total duration in hours
+        $totalHours = $hours + ($minutes / 60);
+
+        return $totalHours;
+    }
     
 
     private function isAssociativeArray($array) {
