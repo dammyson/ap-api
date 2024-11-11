@@ -160,12 +160,12 @@ class TripController extends Controller
                 $month = Carbon::create($flightRecord->month)->format('F');
 
                 if (!isset($data[$year])) {
-                    $data[$year]['labels'] = [];
+                    $data[$year]['months'] = [];
                     $data[$month]['counts'] = []; 
                 }
 
-                $data[$year]['labels'][] = $month;
-                $data[$year]['labels'][$month]['count'] = $flightRecord->count;
+                // $data[$year]['labels'][] = $month;
+                $data[$year]['months'][$month]['count'] = $flightRecord->count;
                 // $data[$month]['counts'][] = $flightRecord->count;
 
             }
