@@ -382,12 +382,17 @@ class CreateBookingController extends Controller
             $ticketCount = 0;
 
             if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
+                $flightSegment = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment'];
+
                 $arrival_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
                 $departure_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureDateTime'];
                 $origin = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                $originCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName'];
                 $destination = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                $originCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName'];
                 $destinationCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
+                $ticketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
+                $flightDistance = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["distance"];
+                $flightDuration = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                 
                 if ($this->checkArray->isAssociativeArray($ticketItemList)) {                     
                     FlightRecord::create([
@@ -399,7 +404,12 @@ class CreateBookingController extends Controller
                         'passenger_name' =>  $ticketItemList['airTraveler']["personName"]["givenName"],
                         'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
                         'trip_type' => 'ONE_WAY',
-                        'booking_id' => $bookingId
+                        'booking_id' => $bookingId,                        
+                        'origin_city' => $originCity,
+                        'destination_city' => $destinationCity,
+                        'ticket_type' => $ticketType,
+                        'flight_distance' => $flightDistance,
+                        'flight_duration' => $flightDuration
                     ]);  
                     $ticketCount += 1;
 
@@ -414,7 +424,12 @@ class CreateBookingController extends Controller
                             'passenger_name' => $ticketItem['airTraveler']["personName"]["givenName"],
                             'passenger_type' => $ticketItem['airTraveler']['passengerTypeCode'],
                             'trip_type' => 'ONE_WAY',
-                            'booking_id' => $bookingId
+                            'booking_id' => $bookingId,
+                            'origin_city' => $originCity,
+                            'destination_city' => $destinationCity,
+                            'ticket_type' => $ticketType,
+                            'flight_distance' => $flightDistance,
+                            'flight_duration' => $flightDuration
                         ]); 
                         
                         $ticketCount += 1;
@@ -430,6 +445,11 @@ class CreateBookingController extends Controller
                         $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
                         $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
                         $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                        $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName'];
+                        $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
+                        $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
+                        $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
+                        $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                         
                         FlightRecord::create([
                             'origin' => $origin, 
@@ -440,8 +460,14 @@ class CreateBookingController extends Controller
                             'passenger_name' =>  $ticketItemList['airTraveler']["personName"]["givenName"],
                             'passenger_type' => $ticketItemList['airTraveler']['passengerTypeCode'],
                             'trip_type' => 'MULTI_CITY',
-                            'booking_id' => $bookingId
+                            'booking_id' => $bookingId,
+                            'origin_city' => $originCity,
+                            'destination_city' => $destinationCity,
+                            'ticket_type' => $ticketType,
+                            'flight_distance' => $flightDistance,
+                            'flight_duration' => $flightDuration
                         ]);  
+
 
                         $ticketCount += 1;
                     
@@ -456,6 +482,11 @@ class CreateBookingController extends Controller
                             $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
                             $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
                             $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                            $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName'];
+                            $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
+                            $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
+                            $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
+                            $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                             
                             FlightRecord::create([
                                 'origin' => $origin, 
@@ -466,7 +497,12 @@ class CreateBookingController extends Controller
                                 'passenger_name'=> $passengerName,
                                 'passenger_type' => $passengeType,
                                 'trip_type' => 'MULTI_CITY',
-                                'booking_id' => $bookingId
+                                'booking_id' => $bookingId,
+                                'origin_city' => $originCity,
+                                'destination_city' => $destinationCity,
+                                'ticket_type' => $ticketType,
+                                'flight_distance' => $flightDistance,
+                                'flight_duration' => $flightDuration
                             ]); 
                             
                             $ticketCount += 1;
