@@ -144,7 +144,11 @@ class TripController extends Controller
             $user = $request->user();
 
             $flightRecords = FlightRecord::where('peace_id', $user->peace_id)                                
-                ->select(DB::raw('YEAR(departure_time) as year'), DB::raw('MONTH(departure_time) as month', DB::raw('COUNT(*) as count')))
+                ->select(
+                    DB::raw('YEAR(departure_time) as year'), 
+                    DB::raw('MONTH(departure_time) as month'),
+                    DB::raw('COUNT(*) as count')
+                )
                 ->groupBy(DB::raw('YEAR(departure_time)'), DB::raw('MONTH(departure_time)'))
                 ->orderBy(DB::raw('YEAR(departure_time)'))
                 ->orderBy(DB::raw('MONTH(departure_time)'))
