@@ -165,7 +165,8 @@ class TripController extends Controller
                 }
 
                 $data[$year]['labels'][] = $month;
-                $data[$month]['counts'][] = $flightRecord->count;
+                $data[$year]['labels'][$month]['count'] = $flightRecord->count;
+                // $data[$month]['counts'][] = $flightRecord->count;
 
             }
                 
