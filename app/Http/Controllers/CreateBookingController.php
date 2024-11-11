@@ -268,7 +268,9 @@ class CreateBookingController extends Controller
 
         $response = $this->craneOTASoapService->run($function, $xml);
 
-        dd($response);
+        // dd($response);
+         // ['arrivalAirport']['cityInfo']['city']['country']['locationName'];
+        dump($response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName']);
     }
 
 
