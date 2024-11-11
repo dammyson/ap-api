@@ -18,6 +18,11 @@ class FlightRecord extends Model
         'passenger_name',
         'passenger_type',
         'trip_type',
-        'booking_id'
+        'booking_id',
+        'origin_city',
+        'destination_city',
+        'ticket_type',
+        'flight_distance',
+        'flight_duration'
     ];
 }
