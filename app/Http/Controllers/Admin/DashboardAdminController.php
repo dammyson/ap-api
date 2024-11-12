@@ -118,12 +118,12 @@ class DashboardAdminController extends Controller
 
                 foreach($transactionRecords as $transactionRecord) {
                     if(isset($data[$transactionRecord->week])) {
-                        $data[$transactionRecord->week] = [];
+                        $data[$transactionRecord->week] = collect();
                     }
-                    $data[$transactionRecord->week][] = [
+                    $data[$transactionRecord->week]->push([
                         "day_of_week" => $transactionRecord->day_name,
                         "total_amount" => $transactionRecord->total_amount
-                    ]; 
+                    ]); 
 
                 }                
 
