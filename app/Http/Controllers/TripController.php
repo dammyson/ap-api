@@ -196,7 +196,7 @@ class TripController extends Controller
         $data = [];
         foreach($ranges as $range => [$min, $max]) {
             $numOfFlights = FlightRecord::where('peace_id', $user->peace_id)
-                ->whereBetween('flight_duration', [$min, $max])->count();
+                ->whereBetween(DB::raw('CAST(flight_duration AS DECIMAL(5,2))'), [$min, $max])->count();
             
             $data[$range] = $numOfFlights;
         }
