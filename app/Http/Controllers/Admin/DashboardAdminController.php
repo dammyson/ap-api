@@ -83,15 +83,90 @@ class DashboardAdminController extends Controller
         ]);
     }
 
-    public function ticketViaApp(Request $request) {
-        $tickets = TransactionRecord::where('ticket_type', 'ticket')->get();
-        $Ancillary = TransactionRecord::where('ticket_type', 'Ancillary')->get();
+    public function ticketViaAppTwo(Request $request) {
+        $filter = $request->input('filter');
+        try {
+            // if ($filter == "yearly") {
+                $year = $request->input('year') ?? Carbon::now()->year;
 
-        $totalRevenue = TransactionRecord::get();
+                $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+                    ->whereYear('created_at', $year)
+                    ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(amount) as total_amount'))
+                    ->groupBy(DB::raw('MONTH(created_at)'))
+                    ->get();
+    
+                return response()->json([
+                    'error' => false,
+                    'transaction_records' => $transactionRecords
+                ]);
+    
+            // }
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+    public function ticketViaApp(Request $request) {
+        $filter = $request->input('filter');
+        $data = [];
+        if ($filter == "yearly") {
+            $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+                ->select(DB::raw('YEAR(created_at) as year'), DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+                ->groupBy(DB::raw('YEAR(created_at'), DB::raw('MONTH(created_at'))
+                ->get();
+            
+            foreach($transactionRecords as $transactionRecord) {
+                if(!isset($data[$transactionRecord->year])) {
+                    $data[$transactionRecord->year] = [];
+                }
+
+                $data[$transactionRecord->year]['months'][$transactionRecord->month] = $transactionRecord->count;
+            }
+
+        }
+
+        if ($filter == "monthly") {
+            $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+                ->where(DB::raw('YEAR(created_at)'), carbon::create(now())->year)
+                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('WEEK(created_at) as week'), DB::raw('COUNT(*) as count'))
+                ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('WEEK(created_at)'))
+                ->get();
+
+            foreach($transactionRecords as $transactionRecord) {
+                if(!isset($transactionRecord[$transactionRecord->month]['weekly'][$transactionRecord->week])) {
+                    $transactionRecord[$transactionRecord->month]['weekly'][$transactionRecord->week] = [];
+                }
+
+                $transactionRecord[$transactionRecord->month]['weekly'][$transactionRecord->week][] = $transactionRecord->count();
+            }
+        }
+
+        if ($filter == "weekly") {
+            $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+                ->where(DB::raw('YEAR(created_at)'), carbon::create(now())->year)
+                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('WEEK(created_at) as week'), DB::raw('DAY(created_at) as day'))
+                ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('WEEK(created_at)', DB::raw('DAY(created_at)')))
+                ->get();
+
+            foreach($transactionRecords as $transactionRecord) {
+                if(!isset($data[$transactionRecord->month])) {
+                    $data[$transactionRecord->month] = [];
+
+                }
+
+                $data[$transactionRecord->month]['weeks'][$transactionRecord->week]['days'][$transactionRecord->day] = $transactionRecord->count;
+
+
+            }
+        }
+      
 
         return response()->json([
             'error' => false,
-            'tickets' => $tickets
+            'tickets' => $data
         ], 200);
 
     }
