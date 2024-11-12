@@ -145,6 +145,18 @@ class DashboardAdminController extends Controller
                 $startOfWeek = Carbon::now()->startOfWeek(); // Typically Monday
                 $endOfWeek = Carbon::now()->endOfWeek();     // Typically Sunday
 
+
+                // Define an array for all days of the week with default total_amount as 0
+                $daysOfWeek = [
+                    "Monday" => ["day_of_week" => "Monday", "total_amount" => 0],
+                    "Tuesday" => ["day_of_week" => "Tuesday", "total_amount" => 0],
+                    "Wednesday" => ["day_of_week" => "Wednesday", "total_amount" => 0],
+                    "Thursday" => ["day_of_week" => "Thursday", "total_amount" => 0],
+                    "Friday" => ["day_of_week" => "Friday", "total_amount" => 0],
+                    "Saturday" => ["day_of_week" => "Saturday", "total_amount" => 0],
+                    "Sunday" => ["day_of_week" => "Sunday", "total_amount" => 0],
+                ];
+
                 $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -159,6 +171,24 @@ class DashboardAdminController extends Controller
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
                 
+
+                // Populate ticket data with query results
+                foreach ($ticketRecord as $transactionRecord) {
+                    $dayName = $transactionRecord->day_name;
+                    $daysOfWeek[$dayName]['total_amount'] = (int) $transactionRecord->total_amount;
+                }
+
+                // Convert the daysOfWeek array to a non-associative array for JSON response
+                $ticketData = array_values($daysOfWeek);
+
+                return response()->json([
+                    'error' => false,
+                    'ticket' => [ 
+                        'ticket_amount' => $ticketAmount,
+                        "ticket_data" => $ticketData
+                    ]
+                ]);
+
                 $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
