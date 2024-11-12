@@ -135,10 +135,6 @@ class TripController extends Controller
     }
 
     public function busiestMonth(Request $request) {
-        // $startMonth = Carbon::startOfMonth();
-        // $endMonth = Carbon::endOfMonth()->endOfDay;
-        $startMonth = '';
-        $endMonth = '';
 
         try {
             $user = $request->user();
@@ -183,6 +179,32 @@ class TripController extends Controller
                 'message' => $throwable->getMessage()
             ], 500); 
         }
+    }
+
+    public function averageFlightDuration(Request $request) {
+        $user = $request->user();
+
+        $ranges =  [
+            '0-3' => ['0', '3'],
+            '4-6' => ['4', '6'],
+            '7-8' => ['7', '8'],
+            '9-12' => ['9', '12'],
+            '13-14' => ['13', '14'],
+            '15-17' => ['15', '17'],
+        ];
+
+        $data = [];
+        foreach($ranges as $range => [$min, $max]) {
+            $numOfFlights = FlightRecord::where('peace_id', $user->peace_id)
+                ->whereBetween('flight_duration', [$min, $max])->count();
+            
+            $data[$range] = $numOfFlights;
+        }
+
+        return response()->json([
+            'error' => false,
+            'average_trip_data' => $data
+        ]);
     }
 
     public function listCountries(Request $request) {
