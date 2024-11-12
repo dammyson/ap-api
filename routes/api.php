@@ -332,6 +332,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::get('special-deals', [TripController::class, 'specialDeals']);
         Route::get('favorite-cities-event', [TripController::class, 'favoriteCitiesEvent']);
         Route::get('busiest-month', [TripController::class, 'busiestMonth']);
+        Route::get('average-flight-duration', [TripController::class, 'averageFlightDuration']);
         Route::get('list-countries', [TripController::class, 'listCountries']);
     });
     
