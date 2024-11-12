@@ -103,6 +103,10 @@ class DashboardAdminController extends Controller
     
             }
             else if ($filter == "weekly") {
+                
+                $year = $request->input('year') ?? Carbon::now()->year;
+                $month = $request->input('month') ?? Carbon::now()->month;
+
                 $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -113,7 +117,7 @@ class DashboardAdminController extends Controller
                 $data = [];
 
                 foreach($transactionRecords as $transactionRecord) {
-                    if(!$data[$transactionRecord->week]) {
+                    if(isset($data[$transactionRecord->week])) {
                         $data[$transactionRecord->week] = [];
                     }
                     $data[$transactionRecord->week][] = [
