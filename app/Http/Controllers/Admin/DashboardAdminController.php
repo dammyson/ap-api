@@ -127,31 +127,75 @@ class DashboardAdminController extends Controller
                 $year = $request->input('year') ?? Carbon::now()->year;
                 $month = $request->input('month') ?? Carbon::now()->month;
 
-                $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+                $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
                     ->groupBy('week', 'day_name')
                     ->get();
                 
-                $data = [];
+                $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
+                    ->groupBy('week', 'day_name')
+                    ->get();
 
-                foreach($transactionRecords as $transactionRecord) {
-                    if(!isset($data[$transactionRecord->week])) {
-                        $data[$transactionRecord->week] = [];
+                $revenueRecord = TransactionRecord::whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
+                    ->groupBy('week', 'day_name')
+                    ->get();
+                
+                $ticketData = [];
+                $ancillaryData = [];
+                $revenueData = [];
+
+                foreach($ticketRecord as $transactionRecord) {
+                    if(!isset($ticketData[$transactionRecord->week])) {
+                        $ticketData[$transactionRecord->week] = [];
                     }
-                    $data[$transactionRecord->week][] = [
+                    $ticketData[$transactionRecord->week][] = [
                         "day_of_week" => $transactionRecord->day_name,
                         "total_amount" => $transactionRecord->total_amount
                     ]; 
 
-                }                
+                }  
+                
+                foreach($ancillaryRecord as $transactionRecord) {
+                    if(!isset($ancillaryData[$transactionRecord->week])) {
+                        $ancillaryData[$transactionRecord->week] = [];
+                    }
+                    $ancillaryData[$transactionRecord->week][] = [
+                        "day_of_week" => $transactionRecord->day_name,
+                        "total_amount" => $transactionRecord->total_amount
+                    ]; 
+
+                }  
+                 
+                foreach($revenueRecord as $transactionRecord) {
+                    if(!isset($revenueData[$transactionRecord->week])) {
+                        $revenueData[$transactionRecord->week] = [];
+                    }
+                    $revenueData[$transactionRecord->week][] = [
+                        "day_of_week" => $transactionRecord->day_name,
+                        "total_amount" => $transactionRecord->total_amount
+                    ]; 
+
+                }   
 
                 return response()->json([
                     'error' => false,
-                    'data' => $data,
-                    'transaction_records' => $transactionRecords
-                ]);
+                    'ticket' => [ 
+                        "ticket_data" => $ticketData
+                    ],
+                    'ancillary' => [
+                        "ancillary_data" => $ancillaryData
+                    ], 
+                    'revenue' => [
+                        'revenue_data' => $revenueData
+                    ]
+                ], 200);
             }
 
         } catch (\Throwable $th) {
