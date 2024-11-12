@@ -211,7 +211,7 @@ class TripController extends Controller
         $user = $request->user();
 
         try {
-            $listOfCountries = FlightRecord::where('peace_id', $user->peace_id)->select('arrival', 'destination')->get();
+            $listOfCountries = FlightRecord::where('peace_id', $user->peace_id)->select('origin', 'destination')->get();
             
             return response()->json([
                 'error' => false,
