@@ -124,15 +124,15 @@ class DashboardAdminController extends Controller
                     'error' => false,
                     'ticket' => [ 
                         "ticket_data" => $ticketRecord,
-                        "ticket_amount" => $ticketAmount
+                        "ticket_amount" => (int)  $ticketAmount
                     ],
                     'ancillary' => [
                         "ancillary_data" => $ancillaryRecord,
-                        "ancillary_amount" => $ancillaryAmount
+                        "ancillary_amount" => (int)  $ancillaryAmount
                     ], 
                     'revenue' => [
                         'revenue_data' => $revenueRecord,
-                        'revenue_amount' => $revenueAmount
+                        'revenue_amount' => (int)  $revenueAmount
                     ]
                 ], 200);
     
@@ -141,35 +141,40 @@ class DashboardAdminController extends Controller
                 
                 $year = $request->input('year') ?? Carbon::now()->year;
                 $month = $request->input('month') ?? Carbon::now()->month;
+                $week = $request->input('month') ?? Carbon::now()->week;
 
                 $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
-                    ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
-                    ->groupBy('week', 'day_name')
+                    ->whereWeek('created_at', $week)
+                    ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
+                    ->groupBy('day_name')
                     ->get();
                 
                 $ticketAmount = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
+                    ->whereWeek('created_at', $week)
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
                 
                 $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
-                    ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
-                    ->groupBy('week', 'day_name')
+                    ->whereWeek('created_at', $week)
+                    ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
+                    ->groupBy('day_name')
                     ->get();
 
                 $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
                         ->whereYear('created_at', $year)
                         ->whereMonth('created_at', $month)
+                        ->whereWeek('created_at', $week)
                         ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
                 $revenueRecord = TransactionRecord::whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
-                    ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
-                    ->groupBy('week', 'day_name')
+                    ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
+                    ->groupBy('day_name')
                     ->get();
                 
                 $revenueAmount = TransactionRecord::whereYear('created_at', $year)
@@ -186,7 +191,7 @@ class DashboardAdminController extends Controller
                     }
                     $ticketData[$transactionRecord->week][] = [
                         "day_of_week" => $transactionRecord->day_name,
-                        "total_amount" => $transactionRecord->total_amount
+                        "total_amount" => (int) $transactionRecord->total_amount
                     ]; 
 
                 }  
@@ -197,7 +202,7 @@ class DashboardAdminController extends Controller
                     }
                     $ancillaryData[$transactionRecord->week][] = [
                         "day_of_week" => $transactionRecord->day_name,
-                        "total_amount" => $transactionRecord->total_amount
+                        "total_amount" => (int) $transactionRecord->total_amount
                     ]; 
 
                 }  
@@ -208,7 +213,7 @@ class DashboardAdminController extends Controller
                     }
                     $revenueData[$transactionRecord->week][] = [
                         "day_of_week" => $transactionRecord->day_name,
-                        "total_amount" => $transactionRecord->total_amount
+                        "total_amount" => (int) $transactionRecord->total_amount
                     ]; 
 
                 }   
