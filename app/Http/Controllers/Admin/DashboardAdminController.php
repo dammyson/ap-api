@@ -98,7 +98,7 @@ class DashboardAdminController extends Controller
 
                 $ticketAmount =  TransactionRecord::where('ticket_type', 'ticket')
                         ->whereYear('created_at', $year)
-                        ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+                        ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
                 $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
@@ -108,7 +108,7 @@ class DashboardAdminController extends Controller
 
                 $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
                         ->whereYear('created_at', $year)                    
-                        ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+                        ->sum(DB::raw('CAST(amount AS SIGNED)'));
                 
                 $revenueRecord =  TransactionRecord::whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
@@ -116,7 +116,7 @@ class DashboardAdminController extends Controller
                     ->get();
 
                 $revenueAmount = TransactionRecord::whereYear('created_at', $year)                    
-                    ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+                    ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
 
     
@@ -152,7 +152,7 @@ class DashboardAdminController extends Controller
                 $ticketAmount = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
-                    ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+                    ->sum(DB::raw('CAST(amount AS SIGNED)'));
                 
                 $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
@@ -164,7 +164,7 @@ class DashboardAdminController extends Controller
                 $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
                         ->whereYear('created_at', $year)
                         ->whereMonth('created_at', $month)
-                        ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+                        ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
                 $revenueRecord = TransactionRecord::whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -174,7 +174,7 @@ class DashboardAdminController extends Controller
                 
                 $revenueAmount = TransactionRecord::whereYear('created_at', $year)
                         ->whereMonth('created_at', $month)
-                        ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+                        ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
                 $ticketData = [];
                 $ancillaryData = [];
@@ -239,7 +239,7 @@ class DashboardAdminController extends Controller
         }
     }
 
-    
+
     public function ticketViaApp(Request $request) {
         $filter = $request->input('filter');
         $data = [];
