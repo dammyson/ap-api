@@ -107,7 +107,7 @@ class DashboardAdminController extends Controller
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
-                    ->groupBy('week_name', 'day_name')
+                    ->groupBy('week', 'day_name')
                     ->get();
                 
                 $data = [];
