@@ -141,12 +141,14 @@ class DashboardAdminController extends Controller
                 
                 $year = $request->input('year') ?? Carbon::now()->year;
                 $month = $request->input('month') ?? Carbon::now()->month;
-                $week = $request->input('month') ?? Carbon::now()->week;
+                // Define the current week's start and end dates
+                $startOfWeek = Carbon::now()->startOfWeek(); // Typically Monday
+                $endOfWeek = Carbon::now()->endOfWeek();     // Typically Sunday
 
                 $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
-                    ->whereWeek('created_at', $week)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
                     ->groupBy('day_name')
                     ->get();
@@ -154,31 +156,33 @@ class DashboardAdminController extends Controller
                 $ticketAmount = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
-                    ->whereWeek('created_at', $week)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
                 
                 $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
-                    ->whereWeek('created_at', $week)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
                     ->groupBy('day_name')
                     ->get();
 
                 $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
-                        ->whereYear('created_at', $year)
-                        ->whereMonth('created_at', $month)
-                        ->whereWeek('created_at', $week)
-                        ->sum(DB::raw('CAST(amount AS SIGNED)'));
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                    ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
                 $revenueRecord = TransactionRecord::whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
                     ->groupBy('day_name')
                     ->get();
                 
                 $revenueAmount = TransactionRecord::whereYear('created_at', $year)
                         ->whereMonth('created_at', $month)
+                        ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                         ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
                 $ticketData = [];
