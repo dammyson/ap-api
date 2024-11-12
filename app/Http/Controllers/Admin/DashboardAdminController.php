@@ -86,8 +86,9 @@ class DashboardAdminController extends Controller
     public function ticketViaAppTwo(Request $request) {
         $filter = $request->input('filter');
         try {
-            // if ($filter == "yearly") {
-                $year = $request->input('year') ?? Carbon::now()->year;
+            $year = $request->input('year') ?? Carbon::now()->year;
+            $month = $request->input('month') ?? Carbon::now()->month;
+            if ($filter == "yearly") {
 
                 $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
@@ -100,7 +101,20 @@ class DashboardAdminController extends Controller
                     'transaction_records' => $transactionRecords
                 ]);
     
-            // }
+            }
+            else if ($filter == "weekly") {
+                $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
+                    ->groupBy('week', 'day_name')
+                    ->get();
+
+                return response()->json([
+                    'error' => false,
+                    'transaction_records' => $transactionRecords
+                ]);
+            }
 
         } catch (\Throwable $th) {
             return response()->json([
