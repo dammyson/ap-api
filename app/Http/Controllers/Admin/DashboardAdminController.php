@@ -96,28 +96,43 @@ class DashboardAdminController extends Controller
                     ->groupBy(DB::raw('month_name'))
                     ->get();
 
+                $ticketAmount =  TransactionRecord::where('ticket_type', 'ticket')
+                        ->whereYear('created_at', $year)
+                        ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+
                 $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
+
+                $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
+                        ->whereYear('created_at', $year)                    
+                        ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
                 
                 $revenueRecord =  TransactionRecord::whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
 
+                $revenueAmount = TransactionRecord::whereYear('created_at', $year)                    
+                    ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+
+
     
                 return response()->json([
                     'error' => false,
                     'ticket' => [ 
-                        "ticket_data" => $ticketRecord
+                        "ticket_data" => $ticketRecord,
+                        "ticket_amount" => $ticketAmount
                     ],
                     'ancillary' => [
-                        "ancillary_data" => $ancillaryRecord
+                        "ancillary_data" => $ancillaryRecord,
+                        "ancillary_amount" => $ancillaryAmount
                     ], 
                     'revenue' => [
-                        'revenue_data' => $revenueRecord
+                        'revenue_data' => $revenueRecord,
+                        'revenue_amount' => $revenueAmount
                     ]
                 ], 200);
     
@@ -134,6 +149,11 @@ class DashboardAdminController extends Controller
                     ->groupBy('week', 'day_name')
                     ->get();
                 
+                $ticketAmount = TransactionRecord::where('ticket_type', 'ticket')
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+                
                 $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -141,12 +161,21 @@ class DashboardAdminController extends Controller
                     ->groupBy('week', 'day_name')
                     ->get();
 
+                $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
+                        ->whereYear('created_at', $year)
+                        ->whereMonth('created_at', $month)
+                        ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+
                 $revenueRecord = TransactionRecord::whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->select(DB::raw('WEEK(created_at) as week'), DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
                     ->groupBy('week', 'day_name')
                     ->get();
                 
+                $revenueAmount = TransactionRecord::whereYear('created_at', $year)
+                        ->whereMonth('created_at', $month)
+                        ->sum(DB::raw('SUM(CAST(amount AS SIGNED))'));
+
                 $ticketData = [];
                 $ancillaryData = [];
                 $revenueData = [];
@@ -187,12 +216,16 @@ class DashboardAdminController extends Controller
                 return response()->json([
                     'error' => false,
                     'ticket' => [ 
+                        'ticket_amount' => $ticketAmount,
                         "ticket_data" => $ticketData
                     ],
                     'ancillary' => [
+                        "ancillary_amount" => $ancillaryAmount,
                         "ancillary_data" => $ancillaryData
+
                     ], 
                     'revenue' => [
+                        'revenue_amount' => $revenueAmount,
                         'revenue_data' => $revenueData
                     ]
                 ], 200);
@@ -205,6 +238,8 @@ class DashboardAdminController extends Controller
             ]);
         }
     }
+
+    
     public function ticketViaApp(Request $request) {
         $filter = $request->input('filter');
         $data = [];
