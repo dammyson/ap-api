@@ -91,8 +91,8 @@ class DashboardAdminController extends Controller
 
                 $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
-                    ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(amount) as total_amount'))
-                    ->groupBy(DB::raw('MONTH(created_at)'))
+                    ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(amount) as total_amount'))
+                    ->groupBy(DB::raw('month_name'))
                     ->get();
     
                 return response()->json([
