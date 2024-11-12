@@ -83,7 +83,7 @@ class DashboardAdminController extends Controller
         ]);
     }
 
-    public function ticketViaAppTwo(Request $request) {
+    public function revenueGraph(Request $request) {
         $filter = $request->input('filter');
         try {
             $year = $request->input('year') ?? Carbon::now()->year;
@@ -265,25 +265,6 @@ class DashboardAdminController extends Controller
             'tickets' => $data
         ], 200);
 
-    }
-
-    public function ancillaryViaApp(Request $request) {
-        $Ancillary = TransactionRecord::where('ticket_type', 'Ancillary')->get();
-
-
-        return response()->json([
-            'error' => false,
-            'ancillary_tickets' => $Ancillary
-        ], 200);
-    }
-
-    public function totalRevenueViaApp(Request $request) {
-        $totalRevenue = TransactionRecord::get();
-
-        return response()->json([
-            'error' => false,
-            'total_revenue' => $totalRevenue
-        ], 200);
     }
 
 
