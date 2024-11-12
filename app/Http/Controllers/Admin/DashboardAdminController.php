@@ -90,16 +90,36 @@ class DashboardAdminController extends Controller
             $month = $request->input('month') ?? Carbon::now()->month;
             if ($filter == "yearly") {
 
-                $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+                $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
+
+                $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
+                    ->whereYear('created_at', $year)
+                    ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
+                    ->groupBy(DB::raw('month_name'))
+                    ->get();
+                
+                $revenueRecord =  TransactionRecord::whereYear('created_at', $year)
+                    ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
+                    ->groupBy(DB::raw('month_name'))
+                    ->get();
+
     
                 return response()->json([
                     'error' => false,
-                    'transaction_records' => $transactionRecords
-                ]);
+                    'ticket' => [ 
+                        "ticket_data" => $ticketRecord
+                    ],
+                    'ancillary' => [
+                        "ancillary_data" => $ancillaryRecord
+                    ], 
+                    'revenue' => [
+                        'revenue_data' => $revenueRecord
+                    ]
+                ], 200);
     
             }
             else if ($filter == "weekly") {
