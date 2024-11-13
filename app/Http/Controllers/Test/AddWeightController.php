@@ -366,13 +366,58 @@ class AddWeightController extends Controller
         $responseCode = $request->input('responseCode');
         $sequenceNumber = $request->input('sequenceNumber');
         $status = $request->input('status');
-        $airTravelerList = $request->input('airTravelerList');
-        $ancillaryRequestList  = $request->input('ancillaryRequestList');
-        // $airTravelerSequence = $request->input('airTravelerSequence');
-        // $flightSegmentSequence = $request->input('flightSegmentSequence');
-        // $airTravelerSsrCode = $request->input('airTravelerSsrCode');
-        // $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
-        // $ssrExplanation = $request->input('ssrExplanation');
+        // $airTravelerList = $request->input('airTravelerList');
+        // $ancillaryRequestList  = $request->input('ancillaryRequestList');
+        $accompaniedByInfant = $request->input('accompaniedByInfant');
+        $airTravelerbirthDate = $request->input('airTravelerbirthDate');
+        $contactPersonEmail = $request->input('contactPersonEmail');
+        $airTravelerListEmailMarkedForSendingRezInfo = $request->input('airTravelerListEmailMarkedForSendingRezInfo');
+        $emailPreferred = $request->input('emailPreferred');
+        $emailSharedMarketInd = $request->input('emailSharedMarketInd');
+        $airTravelerListPersonNameGivenName = $request->input('airTravelerListPersonNameGivenName');
+        $airTravelerListpersonNameShareMarketInd = $request->input('airTravelerListpersonNameShareMarketInd');
+        $airTravelerListPersonNameSurname = $request->input('airTravelerListPersonNameSurname');
+        $phoneNumberAreaCode = $request->input('phoneNumberAreaCode');
+        $phoneCountryCode = $request->input('phoneCountryCode');
+        $phoneNumberEmailMarkedForSendingRezInfo = $request->input('phoneNumberEmailMarkedForSendingRezInfo');
+        $phoneNumberPreferred = $request->input('phoneNumberPreferred');
+        $phoneNumberShareMarketInd = $request->input('phoneNumberShareMarketInd');
+        $phoneNumberSubscriberNumber = $request->input('phoneNumberSubscriberNumber');
+        $airTravelerShareContactInfo = $request->input('airTravelerShareContactInfo');
+        $airTravelerShareMarketInd = $request->input('airTravelerShareMarketInd');
+        $useForInvoicing = $request->input('useForInvoicing');
+        $documentInfoBirthDate = $request->input('documentInfoBirthDate');
+        $documentHolderFormattedGivenName = $request->input('documentHolderFormattedGivenName');
+        $documentHolderFormattedShareMarketInd = $request->input('documentHolderFormattedShareMarketInd');
+        $documentHolderFormattedSurname = $request->input('documentHolderFormattedSurname');
+        $documentHolderFormattedGender = $request->input('documentHolderFormattedGender');
+        $emergencyContactInfoshareMarketInd = $request->input('emergencyContactInfoshareMarketInd');
+        $decline = $request->input('decline');
+        $emergencyContactMarkedForSendingRezInfo = $request->input('emergencyContactMarkedForSendingRezInfo');
+        $emergencyContactPreferred = $request->input('emergencyContactPreferred');
+        $emergencyContactShareMarketInd = $request->input('emergencyContactShareMarketInd');
+        $shareContactInfo = $request->input('shareContactInfo');
+        $airTravelerGender = $request->input('airTravelerGender');
+        $airTravelerHasStrecher = $request->input('airTravelerHasStrecher');
+        $parentSequence = $request->input('parentSequence');
+        $passengerTypeCode = $request->input('passengerTypeCode');
+        $personNameGivenName = $request->input('personNameGivenName');
+        $personNameTitle = $request->input('personNameTitle');
+        $personNameshareMarketInd = $request->input('personNameshareMarketInd');
+        $personNameSurname = $request->input('personNameSurname');
+        $personNameENGivenName = $request->input('personNameENGivenName');
+        $personNameENTitle = $request->input('personNameENTitle');
+        $personNameENShareMarketInd = $request->input('personNameENShareMarketInd');
+        $personNameENShareMarketSurname = $request->input('personNameENShareMarketSurname');
+        $requestedSeatCount = $request->input('requestedSeatCount');
+        $shareMarketInd = $request->input('shareMarketInd');
+        $travelerReferenceID = $request->input('travelerReferenceID');
+        $airTravelUnaccompaniedMinor = $request->input('airTravelUnaccompaniedMinor');
+        $airTravelerSequence = $request->input('airTravelerSequence');
+        $flightSegmentSequence = $request->input('flightSegmentSequence');
+        $airTravelerSsrCode = $request->input('airTravelerSsrCode');
+        $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
+        $ssrExplanation = $request->input('ssrExplanation');
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
 
@@ -449,13 +494,56 @@ class AddWeightController extends Controller
             $responseCode,
             $sequenceNumber,
             $status,
-            $airTravelerList,
-            $ancillaryRequestList,
-            // $airTravelerSequence,
-            // $flightSegmentSequence,
-            // $airTravelerSsrCode,
-            // $airTravelerSsrGroup,
-            // $ssrExplanation,
+            $accompaniedByInfant,
+            $airTravelerbirthDate,
+            $contactPersonEmail,
+            $airTravelerListEmailMarkedForSendingRezInfo,
+            $emailPreferred,
+            $emailSharedMarketInd,
+            $airTravelerListPersonNameGivenName,
+            $airTravelerListpersonNameShareMarketInd,
+            $airTravelerListPersonNameSurname,
+            $phoneNumberAreaCode,
+            $phoneCountryCode,
+            $phoneNumberEmailMarkedForSendingRezInfo,
+            $phoneNumberPreferred,
+            $phoneNumberShareMarketInd,
+            $phoneNumberSubscriberNumber,
+            $airTravelerShareContactInfo,
+            $airTravelerShareMarketInd,
+            $useForInvoicing,
+            $documentInfoBirthDate,
+            $documentHolderFormattedGivenName,
+            $documentHolderFormattedShareMarketInd,
+            $documentHolderFormattedSurname,
+            $documentHolderFormattedGender,
+            $emergencyContactInfoshareMarketInd,
+            $decline,
+            $emergencyContactMarkedForSendingRezInfo,
+            $emergencyContactPreferred,
+            $emergencyContactShareMarketInd,
+            $shareContactInfo,
+            $airTravelerGender,
+            $airTravelerHasStrecher,
+            $parentSequence,
+            $passengerTypeCode,
+            $personNameGivenName,
+            $personNameTitle,
+            $personNameshareMarketInd,
+            $personNameSurname,
+            $personNameENGivenName,
+            $personNameENTitle,
+            $personNameENShareMarketInd,
+            $personNameENShareMarketSurname,
+            $requestedSeatCount,
+            $shareMarketInd,
+            $travelerReferenceID,
+            $airTravelUnaccompaniedMinor,
+            $airTravelerSequence,
+            $flightSegmentSequence,
+            $airTravelerSsrCode,
+            $airTravelerSsrGroup,
+            $ssrExplanation,
             $bookingReferenceIDID,
             $bookingReferenceID
         );
@@ -488,15 +576,15 @@ class AddWeightController extends Controller
             $invoice->save();
 
             // Use preg_match to extract the number
-            // preg_match('/\d+/', $ssrExplanation, $matches);
+            preg_match('/\d+/', $ssrExplanation, $matches);
 
-            // // $matches[0] will contain the number
-            // $quantity = $matches[0];
+            // $matches[0] will contain the number
+            $quantity = $matches[0];
 
             InvoiceItem::create([
                 'invoice_id' => $invoice->id,
                 'product' => 'Baggages', // baggages or ticket shopping
-                'quantity' => 1,
+                'quantity' => $quantity,
                 // total_passengers => $totalPassengers  // this field would be removed
                 'price' => $baggagePrice
             ]);
