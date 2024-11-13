@@ -408,7 +408,7 @@ class CreateBookingBuilder
             $this->airTravelerList($airTravelerList) .' '.
 
            
-           $this->airTravelerChildList($airTravelerChildList)
+            $this->airTravelerChildList($airTravelerChildList)
                 
             
             .'
