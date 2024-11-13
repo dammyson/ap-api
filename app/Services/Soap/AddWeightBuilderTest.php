@@ -130,11 +130,10 @@ class AddWeightBuilderTest {
       $shareMarketInd,
       $travelerReferenceID,
       $airTravelUnaccompaniedMinor,
-      $airTravelerSequence,
-      $flightSegmentSequence,
-      $airTravelerSsrCode,
-      $airTravelerSsrGroup,
-      $ssrExplanation,
+
+      $ancillaryRequestList,
+
+
       $bookingReferenceIDID,
       $bookingReferenceID
 
@@ -337,15 +336,9 @@ class AddWeightBuilderTest {
                      <shareMarketInd>' . htmlspecialchars($shareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
                      <travelerReferenceID>' . htmlspecialchars($travelerReferenceID, ENT_XML1, 'UTF-8') . '</travelerReferenceID>
                      <unaccompaniedMinor>' . htmlspecialchars($airTravelUnaccompaniedMinor, ENT_XML1, 'UTF-8') . '</unaccompaniedMinor>
-                  </airTravelerList>
-                  <ancillaryRequestList>
-                     <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
-                     <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                     <ssrCode>' . htmlspecialchars($airTravelerSsrCode, ENT_XML1, 'UTF-8') . '</ssrCode>
-                     <ssrGroup>' . htmlspecialchars($airTravelerSsrGroup, ENT_XML1, 'UTF-8') . '</ssrGroup>
-                     <ssrExplanation>' . htmlspecialchars($ssrExplanation, ENT_XML1, 'UTF-8') . '</ssrExplanation>
-                  </ancillaryRequestList>
-                  <bookingReferenceID>
+                  </airTravelerList>'.
+                  $this->ancillaryRequestList($ancillaryRequestList)
+                  .'<bookingReferenceID>
                      <companyName>
                         <cityCode>LOS</cityCode>
                         <code>P4</code>
@@ -363,5 +356,22 @@ class AddWeightBuilderTest {
       </soapenv:Envelope>';
       
       return $xml;  
+   }
+
+   public function ancillaryRequestList($ancillaryRequestList) {
+
+        $xml = '';
+        
+        foreach ($ancillaryRequestList as $string) {
+            $xml .= '<ancillaryRequestList>
+                        <airTravelerSequence>' . htmlspecialchars($string['airTravelerSequence'], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                        <flightSegmentSequence>' . htmlspecialchars($string['flightSegmentSequence'], ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                        <ssrCode>' . htmlspecialchars($string['airTravelerSsrCode'], ENT_XML1, 'UTF-8') . '</ssrCode>
+                        <ssrGroup>' . htmlspecialchars($string['airTravelerSsrGroup'], ENT_XML1, 'UTF-8') . '</ssrGroup>
+                        <ssrExplanation>' . htmlspecialchars($string['ssrExplanation'], ENT_XML1, 'UTF-8') . '</ssrExplanation>
+                    </ancillaryRequestList>';
+        }
+        
+        return $xml;
    }
 }

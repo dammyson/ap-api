@@ -13,7 +13,7 @@ class AddWeightControllerTest extends Controller
 {
     protected $addWeightBuilderTest;
     protected $craneAncillaryOTASoapService;
-    
+
     public function __construct(AddWeightBuilderTest $addWeightBuilderTest) {
         $this->addWeightBuilderTest = $addWeightBuilderTest;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
@@ -138,11 +138,16 @@ class AddWeightControllerTest extends Controller
         $shareMarketInd = $request->input('shareMarketInd');
         $travelerReferenceID = $request->input('travelerReferenceID');
         $airTravelUnaccompaniedMinor = $request->input('airTravelUnaccompaniedMinor');
-        $airTravelerSequence = $request->input('airTravelerSequence');
-        $flightSegmentSequence = $request->input('flightSegmentSequence');
-        $airTravelerSsrCode = $request->input('airTravelerSsrCode');
-        $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
-        $ssrExplanation = $request->input('ssrExplanation');        
+
+        $ancillaryRequestList = $request->input('ancillaryRequestList');
+        
+        // $airTravelerSequence = $request->input('airTravelerSequence');
+        // $flightSegmentSequence = $request->input('flightSegmentSequence');
+        // $airTravelerSsrCode = $request->input('airTravelerSsrCode');
+        // $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
+        // $ssrExplanation = $request->input('ssrExplanation');      
+        
+        
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
 
@@ -264,11 +269,7 @@ class AddWeightControllerTest extends Controller
             $shareMarketInd,
             $travelerReferenceID,
             $airTravelUnaccompaniedMinor,
-            $airTravelerSequence,
-            $flightSegmentSequence,
-            $airTravelerSsrCode,
-            $airTravelerSsrGroup,
-            $ssrExplanation,
+            $ancillaryRequestList,
             $bookingReferenceIDID,
             $bookingReferenceID
         );
@@ -278,6 +279,14 @@ class AddWeightControllerTest extends Controller
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
             dd($response);
+
+
+
+
+
+
+
+
             $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
             $invoice = InvoiceRecord::find($invoiceId);
