@@ -191,14 +191,6 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dd($response);
-
-
-
-
-
-
-
 
             $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
@@ -227,18 +219,23 @@ class AddWeightControllerTest extends Controller
             $invoice->save();
 
             // Use preg_match to extract the number
-            preg_match('/\d+/', $ssrExplanation, $matches);
+            
+            foreach ($ancillaryRequestList as $ancillaryRequest) {
+                $ssrExplanation = $ancillaryRequest['ssrExplanation'];
+                preg_match('/\d+/', $ssrExplanation, $matches);
+    
+                // $matches[0] will contain the number
+                $quantity = $matches[0];
 
-            // $matches[0] will contain the number
-            $quantity = $matches[0];
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'product' => 'Baggages', // baggages or ticket shopping
+                    'quantity' => $quantity,
+                    // total_passengers => $totalPassengers  // this field would be removed
+                    'price' => $baggagePrice
+                ]);
 
-            InvoiceItem::create([
-                'invoice_id' => $invoice->id,
-                'product' => 'Baggages', // baggages or ticket shopping
-                'quantity' => $quantity,
-                // total_passengers => $totalPassengers  // this field would be removed
-                'price' => $baggagePrice
-            ]);
+            }
 
             return response()->json([
                 "error" => false,
