@@ -53,7 +53,7 @@ class AddWeightRequestTest extends FormRequest
             "arrivalAirportLanguage" => "required|string",
             "arrivalAirportLocationCode" => "required|string",
             "arrivalAirportLocationName" => "required|string",
-            "arrivalAirportTerminal" => "required|string",
+            "arrivalAirportTerminal" => "sometimes|string",
             "arrivalAirportTimeZoneInfo" => "required|string",
             "arrivalDateTime" => "required|string",
             "arrivalDateTimeUTC" => "required|string",
