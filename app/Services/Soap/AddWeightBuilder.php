@@ -85,8 +85,6 @@ class AddWeightBuilder {
       $responseCode,
       $sequenceNumber,
       $status,
-      // $airTravelerList,
-      // $ancillaryRequestList,
       $accompaniedByInfant,
       $airTravelerbirthDate,
       $contactPersonEmail,
@@ -137,7 +135,6 @@ class AddWeightBuilder {
       $airTravelerSsrCode,
       $airTravelerSsrGroup,
       $ssrExplanation,
-
       $bookingReferenceIDID,
       $bookingReferenceID
 
@@ -210,11 +207,9 @@ class AddWeightBuilder {
                                        <codeContext>' . htmlspecialchars($arrivalAirportCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
                                        <language>' . htmlspecialchars($arrivalAirportLanguage, ENT_XML1, 'UTF-8') . '</language>
                                        <locationCode>' . htmlspecialchars($arrivalAirportLocationCode, ENT_XML1, 'UTF-8') . '</locationCode>
-                                       <locationName>' . htmlspecialchars($arrivalAirportLocationName, ENT_XML1, 'UTF-8') . '</locationName>'. 
-
-                                       isset($arrivalAirportTerminal) ?  '<terminal>' . htmlspecialchars($arrivalAirportTerminal, ENT_XML1, 'UTF-8') . '</terminal>'  : '';
-                                      
-                                      '<timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                       <locationName>' . htmlspecialchars($arrivalAirportLocationName, ENT_XML1, 'UTF-8') . '</locationName>
+                                       <terminal>' . htmlspecialchars($arrivalAirportTerminal, ENT_XML1, 'UTF-8') . '</terminal>
+                                       <timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                                     </arrivalAirport>
                                     <arrivalDateTime>' . htmlspecialchars($arrivalDateTime, ENT_XML1, 'UTF-8') . '</arrivalDateTime>
                                     <arrivalDateTimeUTC>' . htmlspecialchars($arrivalDateTimeUTC, ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
@@ -260,7 +255,6 @@ class AddWeightBuilder {
                                     <journeyDuration>' . htmlspecialchars($journeyDuration, ENT_XML1, 'UTF-8') . '</journeyDuration>
                                     <onTimeRate>' . htmlspecialchars($onTimeRate, ENT_XML1, 'UTF-8') . '</onTimeRate>
                                     <remark>' . htmlspecialchars($remark, ENT_XML1, 'UTF-8') . '</remark>
-
                                     <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequired, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
                                     <segmentStatusByFirstLeg>' . htmlspecialchars($segmentStatusByFirstLeg, ENT_XML1, 'UTF-8') . '</segmentStatusByFirstLeg>
                                     <stopQuantity>' . htmlspecialchars($stopQuantity, ENT_XML1, 'UTF-8') . '</stopQuantity>
@@ -276,94 +270,93 @@ class AddWeightBuilder {
                      </bookOriginDestinationOptions>
                   </airItinerary>
                   <airTravelerList>
-                  <accompaniedByInfant>' . htmlspecialchars($accompaniedByInfant, ENT_XML1, 'UTF-8') . '</accompaniedByInfant>
-                  <birthDate>' . htmlspecialchars($airTravelerbirthDate, ENT_XML1, 'UTF-8') . '</birthDate>
-                  <contactPerson>
-                     <email>
-                        <email>' . htmlspecialchars($contactPersonEmail, ENT_XML1, 'UTF-8') . '</email>
-                        <markedForSendingRezInfo>' . htmlspecialchars($airTravelerListEmailMarkedForSendingRezInfo, ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
-                        <preferred>' . htmlspecialchars($emailPreferred, ENT_XML1, 'UTF-8') . '</preferred>
-                        <shareMarketInd>' . htmlspecialchars($emailSharedMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     </email>
+                     <accompaniedByInfant>' . htmlspecialchars($accompaniedByInfant, ENT_XML1, 'UTF-8') . '</accompaniedByInfant>
+                     <birthDate>' . htmlspecialchars($airTravelerbirthDate, ENT_XML1, 'UTF-8') . '</birthDate>
+                     <contactPerson>
+                        <email>
+                           <email>' . htmlspecialchars($contactPersonEmail, ENT_XML1, 'UTF-8') . '</email>
+                           <markedForSendingRezInfo>' . htmlspecialchars($airTravelerListEmailMarkedForSendingRezInfo, ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
+                           <preferred>' . htmlspecialchars($emailPreferred, ENT_XML1, 'UTF-8') . '</preferred>
+                           <shareMarketInd>' . htmlspecialchars($emailSharedMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                        </email>
+                        <personName>
+                           <givenName>' . htmlspecialchars($airTravelerListPersonNameGivenName, ENT_XML1, 'UTF-8') . '</givenName>
+                           <shareMarketInd>' . htmlspecialchars($airTravelerListpersonNameShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                           <surname>' . htmlspecialchars($airTravelerListPersonNameSurname, ENT_XML1, 'UTF-8') . '</surname>
+                        </personName>
+                        <phoneNumber>
+                           <areaCode>' . htmlspecialchars($phoneNumberAreaCode, ENT_XML1, 'UTF-8') . '</areaCode>
+                           <countryCode>' . htmlspecialchars($phoneCountryCode, ENT_XML1, 'UTF-8') . '</countryCode>
+                           <markedForSendingRezInfo>' . htmlspecialchars($phoneNumberEmailMarkedForSendingRezInfo, ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
+                           <preferred>' . htmlspecialchars($phoneNumberPreferred, ENT_XML1, 'UTF-8') . '</preferred>
+                           <shareMarketInd>' . htmlspecialchars($phoneNumberShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                           <subscriberNumber>' . htmlspecialchars($phoneNumberSubscriberNumber, ENT_XML1, 'UTF-8') . '</subscriberNumber>
+                        </phoneNumber>
+                        <shareContactInfo>' . htmlspecialchars($airTravelerShareContactInfo, ENT_XML1, 'UTF-8') . '</shareContactInfo>
+                        <shareMarketInd>' . htmlspecialchars($airTravelerShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                        <useForInvoicing>' . htmlspecialchars($useForInvoicing, ENT_XML1, 'UTF-8') . '</useForInvoicing>
+                     </contactPerson>
+                     <documentInfoList>
+                        <birthDate>' . htmlspecialchars($documentInfoBirthDate, ENT_XML1, 'UTF-8') . '</birthDate>
+                        <docHolderFormattedName>
+                           <givenName>' . htmlspecialchars($documentHolderFormattedGivenName, ENT_XML1, 'UTF-8') . '</givenName>
+                           <shareMarketInd>' . htmlspecialchars($documentHolderFormattedShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                           <surname>' . htmlspecialchars($documentHolderFormattedSurname, ENT_XML1, 'UTF-8') . '</surname>
+                        </docHolderFormattedName>
+                        <gender>' . htmlspecialchars($documentHolderFormattedGender, ENT_XML1, 'UTF-8') . '</gender>
+                     </documentInfoList>
+                     <emergencyContactInfo>
+                        <contactName>
+                           <shareMarketInd>' . htmlspecialchars($emergencyContactInfoshareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                        </contactName>
+                        <decline>' . htmlspecialchars($decline, ENT_XML1, 'UTF-8') . '</decline>
+                        <email>
+                           <markedForSendingRezInfo>' . htmlspecialchars($emergencyContactMarkedForSendingRezInfo, ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
+                           <preferred>' . htmlspecialchars($emergencyContactPreferred, ENT_XML1, 'UTF-8') . '</preferred>
+                           <shareMarketInd>' . htmlspecialchars($emergencyContactShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                        </email>
+                        <shareContactInfo>' . htmlspecialchars($shareContactInfo, ENT_XML1, 'UTF-8') . '</shareContactInfo>
+                     </emergencyContactInfo>
+                     <gender>' . htmlspecialchars($airTravelerGender, ENT_XML1, 'UTF-8') . '</gender>
+                     <hasStrecher>' . htmlspecialchars($airTravelerHasStrecher, ENT_XML1, 'UTF-8') . '</hasStrecher>
+                     <parentSequence>' . htmlspecialchars($parentSequence, ENT_XML1, 'UTF-8') . '</parentSequence>
+                     <passengerTypeCode>' . htmlspecialchars($passengerTypeCode, ENT_XML1, 'UTF-8') . '</passengerTypeCode>
                      <personName>
-                        <givenName>' . htmlspecialchars($airTravelerListPersonNameGivenName, ENT_XML1, 'UTF-8') . '</givenName>
-                        <shareMarketInd>' . htmlspecialchars($airTravelerListpersonNameShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                        <surname>' . htmlspecialchars($airTravelerListPersonNameSurname, ENT_XML1, 'UTF-8') . '</surname>
+                        <givenName>' . htmlspecialchars($personNameGivenName, ENT_XML1, 'UTF-8') . '</givenName>
+                        <nameTitle>' . htmlspecialchars($personNameTitle, ENT_XML1, 'UTF-8') . '</nameTitle>
+                        <shareMarketInd>' . htmlspecialchars($personNameshareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                        <surname>' . htmlspecialchars($personNameSurname, ENT_XML1, 'UTF-8') . '</surname>
                      </personName>
-                     <phoneNumber>
-                        <areaCode>' . htmlspecialchars($phoneNumberAreaCode, ENT_XML1, 'UTF-8') . '</areaCode>
-                        <countryCode>' . htmlspecialchars($phoneCountryCode, ENT_XML1, 'UTF-8') . '</countryCode>
-                        <markedForSendingRezInfo>' . htmlspecialchars($phoneNumberEmailMarkedForSendingRezInfo, ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
-                        <preferred>' . htmlspecialchars($phoneNumberPreferred, ENT_XML1, 'UTF-8') . '</preferred>
-                        <shareMarketInd>' . htmlspecialchars($phoneNumberShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                        <subscriberNumber>' . htmlspecialchars($phoneNumberSubscriberNumber, ENT_XML1, 'UTF-8') . '</subscriberNumber>
-                     </phoneNumber>
-                     <shareContactInfo>' . htmlspecialchars($airTravelerShareContactInfo, ENT_XML1, 'UTF-8') . '</shareContactInfo>
-                     <shareMarketInd>' . htmlspecialchars($airTravelerShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     <useForInvoicing>' . htmlspecialchars($useForInvoicing, ENT_XML1, 'UTF-8') . '</useForInvoicing>
-                  </contactPerson>
-                  <documentInfoList>
-                     <birthDate>' . htmlspecialchars($documentInfoBirthDate, ENT_XML1, 'UTF-8') . '</birthDate>
-                     <docHolderFormattedName>
-                        <givenName>' . htmlspecialchars($documentHolderFormattedGivenName, ENT_XML1, 'UTF-8') . '</givenName>
-                        <shareMarketInd>' . htmlspecialchars($documentHolderFormattedShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                        <surname>' . htmlspecialchars($documentHolderFormattedSurname, ENT_XML1, 'UTF-8') . '</surname>
-                     </docHolderFormattedName>
-                     <gender>' . htmlspecialchars($documentHolderFormattedGender, ENT_XML1, 'UTF-8') . '</gender>
-                  </documentInfoList>
-                  <emergencyContactInfo>
-                     <contactName>
-                        <shareMarketInd>' . htmlspecialchars($emergencyContactInfoshareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     </contactName>
-                     <decline>' . htmlspecialchars($decline, ENT_XML1, 'UTF-8') . '</decline>
-                     <email>
-                        <markedForSendingRezInfo>' . htmlspecialchars($emergencyContactMarkedForSendingRezInfo, ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
-                        <preferred>' . htmlspecialchars($emergencyContactPreferred, ENT_XML1, 'UTF-8') . '</preferred>
-                        <shareMarketInd>' . htmlspecialchars($emergencyContactShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     </email>
-                     <shareContactInfo>' . htmlspecialchars($shareContactInfo, ENT_XML1, 'UTF-8') . '</shareContactInfo>
-                  </emergencyContactInfo>
-                  <gender>' . htmlspecialchars($airTravelerGender, ENT_XML1, 'UTF-8') . '</gender>
-                  <hasStrecher>' . htmlspecialchars($airTravelerHasStrecher, ENT_XML1, 'UTF-8') . '</hasStrecher>
-                  <parentSequence>' . htmlspecialchars($parentSequence, ENT_XML1, 'UTF-8') . '</parentSequence>
-                  <passengerTypeCode>' . htmlspecialchars($passengerTypeCode, ENT_XML1, 'UTF-8') . '</passengerTypeCode>
-                  <personName>
-                     <givenName>' . htmlspecialchars($personNameGivenName, ENT_XML1, 'UTF-8') . '</givenName>
-                     <nameTitle>' . htmlspecialchars($personNameTitle, ENT_XML1, 'UTF-8') . '</nameTitle>
-                     <shareMarketInd>' . htmlspecialchars($personNameshareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     <surname>' . htmlspecialchars($personNameSurname, ENT_XML1, 'UTF-8') . '</surname>
-                  </personName>
-                  <personNameEN>
-                     <givenName>' . htmlspecialchars($personNameENGivenName, ENT_XML1, 'UTF-8') . '</givenName>
-                     <nameTitle>' . htmlspecialchars($personNameENTitle, ENT_XML1, 'UTF-8') . '</nameTitle>
-                     <shareMarketInd>' . htmlspecialchars($personNameENShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     <surname>' . htmlspecialchars($personNameENShareMarketSurname, ENT_XML1, 'UTF-8') . '</surname>
-                  </personNameEN>
-                  <requestedSeatCount>' . htmlspecialchars($requestedSeatCount, ENT_XML1, 'UTF-8') . '</requestedSeatCount>
-                  <shareMarketInd>' . htmlspecialchars($shareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                  <travelerReferenceID>' . htmlspecialchars($travelerReferenceID, ENT_XML1, 'UTF-8') . '</travelerReferenceID>
-                  <unaccompaniedMinor>' . htmlspecialchars($airTravelUnaccompaniedMinor, ENT_XML1, 'UTF-8') . '</unaccompaniedMinor>
-               </airTravelerList>
-                  
-               <ancillaryRequestList>
-                  <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
-                  <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                  <ssrCode>' . htmlspecialchars($airTravelerSsrCode, ENT_XML1, 'UTF-8') . '</ssrCode>
-                  <ssrGroup>' . htmlspecialchars($airTravelerSsrGroup, ENT_XML1, 'UTF-8') . '</ssrGroup>
-                  <ssrExplanation>' . htmlspecialchars($ssrExplanation, ENT_XML1, 'UTF-8') . '</ssrExplanation>
-               </ancillaryRequestList>
-               <bookingReferenceID>
-                  <companyName>
-                     <cityCode>LOS</cityCode>
-                     <code>P4</code>
-                     <codeContext>CRANE</codeContext>
-                     <companyFullName>SCINTILLA</companyFullName>
-                     <companyShortName>SCINTILLA</companyShortName>
-                     <countryCode>NG</countryCode>
-                  </companyName>
-                  <ID>' . htmlspecialchars($bookingReferenceIDID, ENT_XML1, 'UTF-8') . '</ID>
-                  <referenceID>' . htmlspecialchars($bookingReferenceID, ENT_XML1, 'UTF-8') . '</referenceID>
-               </bookingReferenceID>
+                     <personNameEN>
+                        <givenName>' . htmlspecialchars($personNameENGivenName, ENT_XML1, 'UTF-8') . '</givenName>
+                        <nameTitle>' . htmlspecialchars($personNameENTitle, ENT_XML1, 'UTF-8') . '</nameTitle>
+                        <shareMarketInd>' . htmlspecialchars($personNameENShareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                        <surname>' . htmlspecialchars($personNameENShareMarketSurname, ENT_XML1, 'UTF-8') . '</surname>
+                     </personNameEN>
+                     <requestedSeatCount>' . htmlspecialchars($requestedSeatCount, ENT_XML1, 'UTF-8') . '</requestedSeatCount>
+                     <shareMarketInd>' . htmlspecialchars($shareMarketInd, ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                     <travelerReferenceID>' . htmlspecialchars($travelerReferenceID, ENT_XML1, 'UTF-8') . '</travelerReferenceID>
+                     <unaccompaniedMinor>' . htmlspecialchars($airTravelUnaccompaniedMinor, ENT_XML1, 'UTF-8') . '</unaccompaniedMinor>
+                  </airTravelerList>
+                  <ancillaryRequestList>
+                     <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                     <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                     <ssrCode>' . htmlspecialchars($airTravelerSsrCode, ENT_XML1, 'UTF-8') . '</ssrCode>
+                     <ssrGroup>' . htmlspecialchars($airTravelerSsrGroup, ENT_XML1, 'UTF-8') . '</ssrGroup>
+                     <ssrExplanation>' . htmlspecialchars($ssrExplanation, ENT_XML1, 'UTF-8') . '</ssrExplanation>
+                  </ancillaryRequestList>
+                  <bookingReferenceID>
+                     <companyName>
+                        <cityCode>LOS</cityCode>
+                        <code>P4</code>
+                        <codeContext>CRANE</codeContext>
+                        <companyFullName>SCINTILLA</companyFullName>
+                        <companyShortName>SCINTILLA</companyShortName>
+                        <countryCode>NG</countryCode>
+                     </companyName>
+                     <ID>' . htmlspecialchars($bookingReferenceIDID, ENT_XML1, 'UTF-8') . '</ID>
+                     <referenceID>' . htmlspecialchars($bookingReferenceID, ENT_XML1, 'UTF-8') . '</referenceID>
+                  </bookingReferenceID>
                </AddSsrRequest>
                </impl:AddSsr>
          </soapenv:Body>
@@ -371,102 +364,4 @@ class AddWeightBuilder {
       
       return $xml;  
    }
-
-   public function ancillaryRequestList($ancillaryRequestList) {
-      $xml = '';
-
-      foreach($ancillaryRequestList as $string) {
-         $xml .= '<ancillaryRequestList>
-                     <airTravelerSequence>' . htmlspecialchars($string["airTravelerSequence"], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
-                     <flightSegmentSequence>' . htmlspecialchars($string["flightSegmentSequence"], ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                     <ssrCode>' . htmlspecialchars($string["airTravelerSsrCode"], ENT_XML1, 'UTF-8') . '</ssrCode>
-                     <ssrGroup>' . htmlspecialchars($string["airTravelerSsrGroup"], ENT_XML1, 'UTF-8') . '</ssrGroup>
-                     <ssrExplanation>' . htmlspecialchars($string["ssrExplanation"], ENT_XML1, 'UTF-8') . '</ssrExplanation>
-                  </ancillaryRequestList>';
-      }
-      return $xml;
-   }
-
-   public function airTravelerList(
-      $airTravelerList
-   ) {
-      $xml = '';
-
-      foreach ($airTravelerList as $string) {
-         $xml .= '
-            <airTravelerList>
-               <accompaniedByInfant>' . htmlspecialchars($string["accompaniedByInfant"], ENT_XML1, 'UTF-8') . '</accompaniedByInfant>
-               <birthDate>' . htmlspecialchars($string["airTravelerbirthDate"], ENT_XML1, 'UTF-8') . '</birthDate>
-               <contactPerson>
-                  <email>
-                     <email>' . htmlspecialchars($string["contactPersonEmail"], ENT_XML1, 'UTF-8') . '</email>
-                     <markedForSendingRezInfo>' . htmlspecialchars($string["airTravelerListEmailMarkedForSendingRezInfo"], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
-                     <preferred>' . htmlspecialchars($string["emailPreferred"], ENT_XML1, 'UTF-8') . '</preferred>
-                     <shareMarketInd>' . htmlspecialchars($string["emailSharedMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                  </email>
-                  <personName>
-                     <givenName>' . htmlspecialchars($string["airTravelerListPersonNameGivenName"], ENT_XML1, 'UTF-8') . '</givenName>
-                     <shareMarketInd>' . htmlspecialchars($string["airTravelerListpersonNameShareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     <surname>' . htmlspecialchars($string["airTravelerListPersonNameSurname"], ENT_XML1, 'UTF-8') . '</surname>
-                  </personName>
-                  <phoneNumber>
-                     <areaCode>' . htmlspecialchars($string["phoneNumberAreaCode"], ENT_XML1, 'UTF-8') . '</areaCode>
-                     <countryCode>' . htmlspecialchars($string["phoneCountryCode"], ENT_XML1, 'UTF-8') . '</countryCode>
-                     <markedForSendingRezInfo>' . htmlspecialchars($string["phoneNumberEmailMarkedForSendingRezInfo"], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
-                     <preferred>' . htmlspecialchars($string["phoneNumberPreferred"], ENT_XML1, 'UTF-8') . '</preferred>
-                     <shareMarketInd>' . htmlspecialchars($string["phoneNumberShareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     <subscriberNumber>' . htmlspecialchars($string["phoneNumberSubscriberNumber"], ENT_XML1, 'UTF-8') . '</subscriberNumber>
-                  </phoneNumber>
-                  <shareContactInfo>' . htmlspecialchars($string["airTravelerShareContactInfo"], ENT_XML1, 'UTF-8') . '</shareContactInfo>
-                  <shareMarketInd>' . htmlspecialchars($string["airTravelerShareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                  <useForInvoicing>' . htmlspecialchars($string["useForInvoicing"], ENT_XML1, 'UTF-8') . '</useForInvoicing>
-               </contactPerson>
-               <documentInfoList>
-                  <birthDate>' . htmlspecialchars($string["documentInfoBirthDate"], ENT_XML1, 'UTF-8') . '</birthDate>
-                  <docHolderFormattedName>
-                     <givenName>' . htmlspecialchars($string["documentHolderFormattedGivenName"], ENT_XML1, 'UTF-8') . '</givenName>
-                     <shareMarketInd>' . htmlspecialchars($string["documentHolderFormattedShareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                     <surname>' . htmlspecialchars($string["documentHolderFormattedSurname"], ENT_XML1, 'UTF-8') . '</surname>
-                  </docHolderFormattedName>
-                  <gender>' . htmlspecialchars($string["documentHolderFormattedGender"], ENT_XML1, 'UTF-8') . '</gender>
-               </documentInfoList>
-               <emergencyContactInfo>
-                  <contactName>
-                     <shareMarketInd>' . htmlspecialchars($string["emergencyContactInfoshareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                  </contactName>
-                  <decline>' . htmlspecialchars($string["decline"], ENT_XML1, 'UTF-8') . '</decline>
-                  <email>
-                     <markedForSendingRezInfo>' . htmlspecialchars($string["emergencyContactMarkedForSendingRezInfo"], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
-                     <preferred>' . htmlspecialchars($string["emergencyContactPreferred"], ENT_XML1, 'UTF-8') . '</preferred>
-                     <shareMarketInd>' . htmlspecialchars($string["emergencyContactShareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                  </email>
-                  <shareContactInfo>' . htmlspecialchars($string["shareContactInfo"], ENT_XML1, 'UTF-8') . '</shareContactInfo>
-               </emergencyContactInfo>
-               <gender>' . htmlspecialchars($string["airTravelerGender"], ENT_XML1, 'UTF-8') . '</gender>
-               <hasStrecher>' . htmlspecialchars($string["airTravelerHasStrecher"], ENT_XML1, 'UTF-8') . '</hasStrecher>
-               <parentSequence>' . htmlspecialchars($string["parentSequence"], ENT_XML1, 'UTF-8') . '</parentSequence>
-               <passengerTypeCode>' . htmlspecialchars($string["passengerTypeCode"], ENT_XML1, 'UTF-8') . '</passengerTypeCode>
-               <personName>
-                  <givenName>' . htmlspecialchars($string["personNameGivenName"], ENT_XML1, 'UTF-8') . '</givenName>
-                  <nameTitle>' . htmlspecialchars($string["personNameTitle"], ENT_XML1, 'UTF-8') . '</nameTitle>
-                  <shareMarketInd>' . htmlspecialchars($string["personNameshareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                  <surname>' . htmlspecialchars($string["personNameSurname"], ENT_XML1, 'UTF-8') . '</surname>
-               </personName>
-               <personNameEN>
-                  <givenName>' . htmlspecialchars($string["personNameENGivenName"], ENT_XML1, 'UTF-8') . '</givenName>
-                  <nameTitle>' . htmlspecialchars($string["personNameENTitle"], ENT_XML1, 'UTF-8') . '</nameTitle>
-                  <shareMarketInd>' . htmlspecialchars($string["personNameENShareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-                  <surname>' . htmlspecialchars($string["personNameENShareMarketSurname"], ENT_XML1, 'UTF-8') . '</surname>
-               </personNameEN>
-               <requestedSeatCount>' . htmlspecialchars($string["requestedSeatCount"], ENT_XML1, 'UTF-8') . '</requestedSeatCount>
-               <shareMarketInd>' . htmlspecialchars($string["shareMarketInd"], ENT_XML1, 'UTF-8') . '</shareMarketInd>
-               <travelerReferenceID>' . htmlspecialchars($string["travelerReferenceID"], ENT_XML1, 'UTF-8') . '</travelerReferenceID>
-               <unaccompaniedMinor>' . htmlspecialchars($string["airTravelUnaccompaniedMinor"], ENT_XML1, 'UTF-8') . '</unaccompaniedMinor>
-            </airTravelerList>';
-      }
-
-      return $xml;
-   }
 }
-
-
