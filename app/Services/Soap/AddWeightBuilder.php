@@ -208,11 +208,10 @@ class AddWeightBuilder {
                                     <flownMileageQty>' . htmlspecialchars($flownMileageQty, ENT_XML1, 'UTF-8') . '</flownMileageQty>
                                     <iatciFlight>' . htmlspecialchars($iatciFlight, ENT_XML1, 'UTF-8') . '</iatciFlight>
                                     <journeyDuration>' . htmlspecialchars($journeyDuration, ENT_XML1, 'UTF-8') . '</journeyDuration>
-                                    <onTimeRate>' . htmlspecialchars($onTimeRate, ENT_XML1, 'UTF-8') . '</onTimeRate>'. 
-                                    
-                                    isset($remark) ?  '<remark>' . htmlspecialchars($remark, ENT_XML1, 'UTF-8') . '</remark>' : '';
+                                    <onTimeRate>' . htmlspecialchars($onTimeRate, ENT_XML1, 'UTF-8') . '</onTimeRate>
+                                    <remark>' . htmlspecialchars($remark, ENT_XML1, 'UTF-8') . '</remark>
 
-                                    '<secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequired, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
+                                    <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequired, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
                                     <segmentStatusByFirstLeg>' . htmlspecialchars($segmentStatusByFirstLeg, ENT_XML1, 'UTF-8') . '</segmentStatusByFirstLeg>
                                     <stopQuantity>' . htmlspecialchars($stopQuantity, ENT_XML1, 'UTF-8') . '</stopQuantity>
                                     </flightSegment>
@@ -254,7 +253,7 @@ class AddWeightBuilder {
 
    public function ancillaryRequestList($ancillaryRequestList) {
       $xml = '';
-      
+
       foreach($ancillaryRequestList as $string) {
          $xml .= '<ancillaryRequestList>
                      <airTravelerSequence>' . htmlspecialchars($string["airTravelerSequence"], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
