@@ -207,9 +207,13 @@ class AddWeightBuilderTest {
                                     <flownMileageQty>' . htmlspecialchars($flownMileageQty, ENT_XML1, 'UTF-8') . '</flownMileageQty>
                                     <iatciFlight>' . htmlspecialchars($iatciFlight, ENT_XML1, 'UTF-8') . '</iatciFlight>
                                     <journeyDuration>' . htmlspecialchars($journeyDuration, ENT_XML1, 'UTF-8') . '</journeyDuration>
-                                    <onTimeRate>' . htmlspecialchars($onTimeRate, ENT_XML1, 'UTF-8') . '</onTimeRate>
-                                    <remark>' . htmlspecialchars($remark, ENT_XML1, 'UTF-8') . '</remark>
-                                    <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequired, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
+                                    <onTimeRate>' . htmlspecialchars($onTimeRate, ENT_XML1, 'UTF-8') . '</onTimeRate>'.
+
+                                    $this->checkRemark($remark)
+                                    
+
+
+                                    .'<secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequired, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
                                     <segmentStatusByFirstLeg>' . htmlspecialchars($segmentStatusByFirstLeg, ENT_XML1, 'UTF-8') . '</segmentStatusByFirstLeg>
                                     <stopQuantity>' . htmlspecialchars($stopQuantity, ENT_XML1, 'UTF-8') . '</stopQuantity>
                                     </flightSegment>
@@ -243,6 +247,13 @@ class AddWeightBuilderTest {
       </soapenv:Envelope>';
       
       return $xml;  
+   }
+
+   public function checkRemark($remark) {
+        if($remark) {
+        return '<remark>' . htmlspecialchars($remark, ENT_XML1, 'UTF-8') . '</remark>';
+        }
+        return '';
    }
 
    public function ancillaryRequestList($ancillaryRequestList) {
