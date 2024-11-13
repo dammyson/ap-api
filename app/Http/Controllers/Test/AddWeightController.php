@@ -558,18 +558,21 @@ class AddWeightController extends Controller
             // if user has not paid set the new invoice balance else generate a new invoice
             
             $baggagePrice = 0;
-            if (!$invoice->is_paid) {
-                $baggagePrice = $invoice->amount - $amount;
-                $baggagePrice = abs($baggagePrice);
-                $invoice->amount = $amount;
-                
-            } else { 
+            if ($invoice) {
+                if (!$invoice->is_paid) {
+                    $baggagePrice = $invoice->amount - $amount;
+                    $baggagePrice = abs($baggagePrice);
+                    $invoice->amount = $amount;
+                    
+                }
+            }else { 
                 $invoice = InvoiceRecord::create([
                     'amount' => $amount,
                     'booking_id' => $bookingId
                 ]);
                 $baggagePrice = $amount;
             }
+            
             $invoice->is_paid = false;
             $invoice->save();
 
