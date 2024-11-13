@@ -1,131 +1,132 @@
 <?php
 array:1 [ // app/Http/Controllers/Test/Booking/BookingRequestController.php:141
-    "AirBookingResponse" => array:1 [
-      "airBookingList" => array:1 [
-        "airReservation" => array:18 [
-          "airItinerary" => array:2 [
-            "adviceCodeSegmentExist" => "false"
-            "bookOriginDestinationOptions" => array:1 [
-              "bookOriginDestinationOptionList" => array:1 [
-                "bookFlightSegmentList" => array:11 [
-                  "actionCode" => "HK"
-                  "addOnSegment" => "false"
-                  "bookingClass" => array:3 [
-                    "cabin" => "ECONOMY"
-                    "resBookDesigCode" => "V"
-                    "resBookDesigQuantity" => "0"
-                  ]
-                  "fareInfo" => array:9 [
-                    "cabin" => "ECONOMY"
-                    "cabinClassCode" => "Y"
-                    "fareBaggageAllowance" => array:3 [
-                      "allowanceType" => "WEIGHT"
-                      "maxAllowedPieces" => "0"
-                      "maxAllowedWeight" => array:2 [
-                        "unitOfMeasureCode" => "KG"
-                        "weight" => "15"
-                      ]
-                    ]
-                    "fareGroupName" => "Eco Non Flexi Dom"
-                    "fareReferenceCode" => "VRTN"
-                    "fareReferenceID" => "0fe3789a81d712c1be1d8b3d18fd7120e1ac9b4adc1fd21ec389bd57fb51f1510d7f22471486f8dec452b85ac44f44b07c2d7aa51428aff1820234ed9184184b1b60602b1f5aee38db38691e1bb207f3beb78b35aedc98e5ced916"
-                    "fareReferenceName" => "VRTNIG"
-                    "flightSegmentSequence" => "0"
-                    "resBookDesigCode" => "V"
-                  ]
-                  "flightSegment" => array:25 [
-                    "airline" => array:2 [
-                      "code" => "P4"
-                      "codeContext" => "IATA"
-                    ]
-                    "arrivalAirport" => array:6 [
-                      "cityInfo" => array:2 [
-                        "city" => array:3 [
-                          "locationCode" => "LOS"
-                          "locationName" => "Lagos"
-                          "locationNameLanguage" => "EN"
-                        ]
-                        "country" => array:4 [
-                          "locationCode" => "NG"
-                          "locationName" => "Nigeria"
-                          "locationNameLanguage" => "EN"
-                          "currency" => array:1 [
-                            "code" => "NGN"
-                          ]
-                        ]
-                      ]
-                      "codeContext" => "IATA"
-                      "language" => "EN"
-                      "locationCode" => "LOS"
-                      "locationName" => "Lagos"
-                      "timeZoneInfo" => "Africa/Lagos"
-                    ]
-                    "arrivalDateTime" => "2024-12-15T13:00:00+01:00"
-                    "arrivalDateTimeUTC" => "2024-12-15T12:00:00+01:00"
-                    "departureAirport" => array:6 [
-                      "cityInfo" => array:2 [
-                        "city" => array:3 [
-                          "locationCode" => "ENU"
-                          "locationName" => "Enugu"
-                          "locationNameLanguage" => "EN"
-                        ]
-                        "country" => array:4 [
-                          "locationCode" => "NG"
-                          "locationName" => "Nigeria"
-                          "locationNameLanguage" => "EN"
-                          "currency" => array:1 [
-                            "code" => "NGN"
-                          ]
-                        ]
-                      ]
-                      "codeContext" => "IATA"
-                      "language" => "EN"
-                      "locationCode" => "ENU"
-                      "locationName" => "Enugu"
-                      "timeZoneInfo" => "Africa/Lagos"
-                    ]
-                    "departureDateTime" => "2024-12-15T11:50:00+01:00"
-                    "departureDateTimeUTC" => "2024-12-15T10:50:00+01:00"
-                    "flightNumber" => "7103"
-                    "flightSegmentID" => "1148774"
-                    "ondControlled" => "false"
-                    "sector" => "DOMESTIC"
-                    "accumulatedDuration" => ""
-                    "codeshare" => "false"
-                    "distance" => "469"
-                    "equipment" => array:2 [
-                      "airEquipType" => "ERJ195-12C/112Y"
-                      "changeofGauge" => "false"
-                    ]
-                    "flightNotes" => array:3 [
-                      "deiCode" => "504"
-                      "explanation" => "Secure Flight Info"
-                      "note" => "T"
-                    ]
-                    "flownMileageQty" => "0"
-                    "groundDuration" => ""
-                    "iatciFlight" => "false"
-                    "journeyDuration" => "PT1H10M"
-                    "onTimeRate" => "0"
-                    "secureFlightDataRequired" => "true"
-                    "segmentStatusByFirstLeg" => "RZ"
-                    "stopQuantity" => "0"
-                    "trafficRestriction" => array:2 [
-                      "code" => ""
-                      "explanation" => ""
-                    ]
-                  ]
-                  "involuntaryPermissionGiven" => "false"
-                  "legStatus" => "RZ"
-                  "referenceID" => "15862934"
-                  "responseCode" => "HK"
-                  "sequenceNumber" => "0"
-                  "status" => "HK"
+  "AirBookingResponse" => array:1 [
+    "airBookingList" => array:1 [
+      "airReservation" => array:18 [
+        "airItinerary" => array:2 [
+          "adviceCodeSegmentExist" => "false"
+          "bookOriginDestinationOptions" => array:1 [
+            "bookOriginDestinationOptionList" => array:1 [
+              "bookFlightSegmentList" => array:11 [
+                "actionCode" => "HK"
+                "addOnSegment" => "false"
+                "bookingClass" => array:3 [
+                  "cabin" => "ECONOMY"
+                  "resBookDesigCode" => "V"
+                  "resBookDesigQuantity" => "0"
                 ]
+                "fareInfo" => array:9 [
+                  "cabin" => "ECONOMY"
+                  "cabinClassCode" => "Y"
+                  "fareBaggageAllowance" => array:3 [
+                    "allowanceType" => "WEIGHT"
+                    "maxAllowedPieces" => "0"
+                    "maxAllowedWeight" => array:2 [
+                      "unitOfMeasureCode" => "KG"
+                      "weight" => "15"
+                    ]
+                  ]
+                  "fareGroupName" => "Eco Non Flexi Dom"
+                  "fareReferenceCode" => "VRTN"
+                  "fareReferenceID" => "0fe3789a81d712c1be1d8b3d18fd7120e1ac9b4adc1fd21ec38cbc50fa54f3570d7f22471486f8dec452b85ac44f44b07c2d7aa51428aff1820234ed9184184b1b60602b1f5aee38db3869a1667fb082121d15be0f498c8e5ddde0"
+                  "fareReferenceName" => "VRTNIG"
+                  "flightSegmentSequence" => "0"
+                  "resBookDesigCode" => "V"
+                ]
+                "flightSegment" => array:25 [
+                  "airline" => array:2 [
+                    "code" => "P4"
+                    "codeContext" => "IATA"
+                  ]
+                  "arrivalAirport" => array:6 [
+                    "cityInfo" => array:2 [
+                      "city" => array:3 [
+                        "locationCode" => "LOS"
+                        "locationName" => "Lagos"
+                        "locationNameLanguage" => "EN"
+                      ]
+                      "country" => array:4 [
+                        "locationCode" => "NG"
+                        "locationName" => "Nigeria"
+                        "locationNameLanguage" => "EN"
+                        "currency" => array:1 [
+                          "code" => "NGN"
+                        ]
+                      ]
+                    ]
+                    "codeContext" => "IATA"
+                    "language" => "EN"
+                    "locationCode" => "LOS"
+                    "locationName" => "Lagos"
+                    "timeZoneInfo" => "Africa/Lagos"
+                  ]
+                  "arrivalDateTime" => "2024-12-15T13:00:00+01:00"
+                  "arrivalDateTimeUTC" => "2024-12-15T12:00:00+01:00"
+                  "departureAirport" => array:6 [
+                    "cityInfo" => array:2 [
+                      "city" => array:3 [
+                        "locationCode" => "ENU"
+                        "locationName" => "Enugu"
+                        "locationNameLanguage" => "EN"
+                      ]
+                      "country" => array:4 [
+                        "locationCode" => "NG"
+                        "locationName" => "Nigeria"
+                        "locationNameLanguage" => "EN"
+                        "currency" => array:1 [
+                          "code" => "NGN"
+                        ]
+                      ]
+                    ]
+                    "codeContext" => "IATA"
+                    "language" => "EN"
+                    "locationCode" => "ENU"
+                    "locationName" => "Enugu"
+                    "timeZoneInfo" => "Africa/Lagos"
+                  ]
+                  "departureDateTime" => "2024-12-15T11:50:00+01:00"
+                  "departureDateTimeUTC" => "2024-12-15T10:50:00+01:00"
+                  "flightNumber" => "7103"
+                  "flightSegmentID" => "1148774"
+                  "ondControlled" => "false"
+                  "sector" => "DOMESTIC"
+                  "accumulatedDuration" => ""
+                  "codeshare" => "false"
+                  "distance" => "469"
+                  "equipment" => array:2 [
+                    "airEquipType" => "ERJ195-12C/112Y"
+                    "changeofGauge" => "false"
+                  ]
+                  "flightNotes" => array:3 [
+                    "deiCode" => "504"
+                    "explanation" => "Secure Flight Info"
+                    "note" => "T"
+                  ]
+                  "flownMileageQty" => "0"
+                  "groundDuration" => ""
+                  "iatciFlight" => "false"
+                  "journeyDuration" => "PT1H10M"
+                  "onTimeRate" => "0"
+                  "secureFlightDataRequired" => "true"
+                  "segmentStatusByFirstLeg" => "RZ"
+                  "stopQuantity" => "0"
+                  "trafficRestriction" => array:2 [
+                    "code" => ""
+                    "explanation" => ""
+                  ]
+                ]
+                "involuntaryPermissionGiven" => "false"
+                "legStatus" => "RZ"
+                "referenceID" => "15862935"
+                "responseCode" => "HK"
+                "sequenceNumber" => "0"
+                "status" => "HK"
               ]
             ]
           ]
-          "airTravelerList" => array:16 [
+        ]
+        "airTravelerList" => array:2 [
+          0 => array:16 [
             "accompaniedByInfant" => "false"
             "birthDate" => "1991-08-08T00:00:00+01:00"
             "companyInfo" => ""
@@ -192,37 +193,86 @@ array:1 [ // app/Http/Controllers/Test/Booking/BookingRequestController.php:141
             ]
             "requestedSeatCount" => "1"
             "shareMarketInd" => "false"
-            "travelerReferenceID" => "16004819"
+            "travelerReferenceID" => "16004820"
             "unaccompaniedMinor" => "false"
           ]
-          "arrangerInfo" => array:8 [
-            "agencyCode" => "SCINTILLA"
-            "agencyName" => "SCINTILLA"
-            "agencyType" => "AG"
-            "contactInfo" => array:5 [
-              "companyInfo" => array:6 [
-                "cityCode" => "LOS"
-                "code" => "P4"
-                "codeContext" => "CRANE"
-                "companyFullName" => "SCINTILLA"
-                "companyShortName" => "SCINTILLA"
-                "countryCode" => "NG"
-              ]
-              "personName" => array:2 [
+          1 => array:16 [
+            "accompaniedByInfant" => "false"
+            "birthDate" => "1991-08-08T00:00:00+01:00"
+            "companyInfo" => ""
+            "contactPerson" => array:6 [
+              "email" => array:4 [
+                "email" => "BBB.TEST@HITITCS.COM"
+                "markedForSendingRezInfo" => "false"
+                "preferred" => "false"
                 "shareMarketInd" => "false"
-                "surname" => "SCINTILLA"
               ]
-              "shareContactInfo" => "false"
+              "personName" => array:3 [
+                "givenName" => "BBB"
+                "shareMarketInd" => "false"
+                "surname" => "TEST"
+              ]
+              "phoneNumber" => array:6 [
+                "areaCode" => "532"
+                "countryCode" => "+90"
+                "markedForSendingRezInfo" => "false"
+                "preferred" => "false"
+                "shareMarketInd" => "false"
+                "subscriberNumber" => "2222222"
+              ]
+              "shareContactInfo" => "true"
               "shareMarketInd" => "false"
               "useForInvoicing" => "false"
             ]
-            "currency" => "NGN"
-            "IATANumber" => "12345678"
-            "userCode" => "SC"
-            "userName" => "SCINTILLA"
+            "documentInfoList" => array:3 [
+              "birthDate" => "1991-08-08T00:00:00+01:00"
+              "docHolderFormattedName" => array:3 [
+                "givenName" => "BBB"
+                "shareMarketInd" => "false"
+                "surname" => "TEST"
+              ]
+              "gender" => "F"
+            ]
+            "emergencyContactInfo" => array:4 [
+              "contactName" => array:1 [
+                "shareMarketInd" => "false"
+              ]
+              "decline" => "false"
+              "email" => array:3 [
+                "markedForSendingRezInfo" => "false"
+                "preferred" => "false"
+                "shareMarketInd" => "false"
+              ]
+              "shareContactInfo" => "false"
+            ]
+            "gender" => "F"
+            "hasStrecher" => "false"
+            "parentSequence" => "-1"
+            "passengerTypeCode" => "ADLT"
+            "personName" => array:4 [
+              "givenName" => "BBB"
+              "nameTitle" => "MRS"
+              "shareMarketInd" => "false"
+              "surname" => "TEST"
+            ]
+            "personNameEN" => array:4 [
+              "givenName" => "BBB"
+              "nameTitle" => "MRS"
+              "shareMarketInd" => "false"
+              "surname" => "TEST"
+            ]
+            "requestedSeatCount" => "1"
+            "shareMarketInd" => "false"
+            "travelerReferenceID" => "16004821"
+            "unaccompaniedMinor" => "false"
           ]
-          "bookingReferenceIDList" => array:3 [
-            "companyName" => array:6 [
+        ]
+        "arrangerInfo" => array:8 [
+          "agencyCode" => "SCINTILLA"
+          "agencyName" => "SCINTILLA"
+          "agencyType" => "AG"
+          "contactInfo" => array:5 [
+            "companyInfo" => array:6 [
               "cityCode" => "LOS"
               "code" => "P4"
               "codeContext" => "CRANE"
@@ -230,131 +280,257 @@ array:1 [ // app/Http/Controllers/Test/Booking/BookingRequestController.php:141
               "companyShortName" => "SCINTILLA"
               "countryCode" => "NG"
             ]
-            "ID" => "12CR66"
-            "referenceID" => "13439484"
+            "personName" => array:2 [
+              "shareMarketInd" => "false"
+              "surname" => "SCINTILLA"
+            ]
+            "shareContactInfo" => "false"
+            "shareMarketInd" => "false"
+            "useForInvoicing" => "false"
           ]
-          "bookingType" => "R"
-          "dateCreated" => "2024-11-13T10:18:23+01:00"
-          "emergencyContactRequired" => "false"
-          "FFPReservation" => "false"
-          "groupBooking" => "false"
-          "nonTicketedElementsExist" => "true"
-          "pnrPaxInBlackList" => "false"
-          "rlocCompleted" => "true"
-          "smsSaleApplicable" => "false"
-          "specialRequestDetails" => array:1 [
-            "specialServiceRequestList" => array:4 [
-              0 => array:8 [
-                "airTravelerSequence" => "1"
-                "flightSegmentSequence" => "0"
-                "paymentStatus" => "FR"
-                "SSR" => array:15 [
-                  "allowedQuantityPerPassenger" => "1"
-                  "bundleRelatedSsr" => "false"
-                  "code" => "CTCM"
-                  "entryDate" => "2024-11-13T10:18:24+01:00"
-                  "exchangeable" => "false"
-                  "explanation" => "90 532 1111111"
-                  "extraBaggage" => "false"
-                  "free" => "true"
-                  "groupCode" => "OTH"
-                  "groupCodeExplanation" => "OTH"
-                  "iciAllowed" => "false"
-                  "refundable" => "false"
-                  "showOnItinerary" => "false"
-                  "ssrReasonCode" => "USER_SELECTION"
-                  "unitOfMeasureExist" => "false"
-                ]
-                "serviceQuantity" => "1"
-                "specialServiceReferenceId" => "30449184"
-                "status" => "HK"
-                "ticketed" => "false"
+          "currency" => "NGN"
+          "IATANumber" => "12345678"
+          "userCode" => "SC"
+          "userName" => "SCINTILLA"
+        ]
+        "bookingReferenceIDList" => array:3 [
+          "companyName" => array:6 [
+            "cityCode" => "LOS"
+            "code" => "P4"
+            "codeContext" => "CRANE"
+            "companyFullName" => "SCINTILLA"
+            "companyShortName" => "SCINTILLA"
+            "countryCode" => "NG"
+          ]
+          "ID" => "12CR67"
+          "referenceID" => "13439485"
+        ]
+        "bookingType" => "R"
+        "dateCreated" => "2024-11-13T12:25:36+01:00"
+        "emergencyContactRequired" => "false"
+        "FFPReservation" => "false"
+        "groupBooking" => "false"
+        "nonTicketedElementsExist" => "true"
+        "pnrPaxInBlackList" => "false"
+        "rlocCompleted" => "true"
+        "smsSaleApplicable" => "false"
+        "specialRequestDetails" => array:1 [
+          "specialServiceRequestList" => array:8 [
+            0 => array:8 [
+              "airTravelerSequence" => "1"
+              "flightSegmentSequence" => "0"
+              "paymentStatus" => "FR"
+              "SSR" => array:15 [
+                "allowedQuantityPerPassenger" => "1"
+                "bundleRelatedSsr" => "false"
+                "code" => "CTCM"
+                "entryDate" => "2024-11-13T12:25:36+01:00"
+                "exchangeable" => "false"
+                "explanation" => "90 532 1111111"
+                "extraBaggage" => "false"
+                "free" => "true"
+                "groupCode" => "OTH"
+                "groupCodeExplanation" => "OTH"
+                "iciAllowed" => "false"
+                "refundable" => "false"
+                "showOnItinerary" => "false"
+                "ssrReasonCode" => "USER_SELECTION"
+                "unitOfMeasureExist" => "false"
               ]
-              1 => array:8 [
-                "airTravelerSequence" => "1"
-                "flightSegmentSequence" => "0"
-                "paymentStatus" => "FR"
-                "SSR" => array:15 [
-                  "allowedQuantityPerPassenger" => "1"
-                  "bundleRelatedSsr" => "false"
-                  "code" => "CTCE"
-                  "entryDate" => "2024-11-13T10:18:24+01:00"
-                  "exchangeable" => "false"
-                  "explanation" => "AAA.TEST@HITITCS.COM"
-                  "extraBaggage" => "false"
-                  "free" => "true"
-                  "groupCode" => "OTH"
-                  "groupCodeExplanation" => "OTH"
-                  "iciAllowed" => "false"
-                  "refundable" => "false"
-                  "showOnItinerary" => "false"
-                  "ssrReasonCode" => "USER_SELECTION"
-                  "unitOfMeasureExist" => "false"
-                ]
-                "serviceQuantity" => "1"
-                "specialServiceReferenceId" => "30449185"
-                "status" => "HK"
-                "ticketed" => "false"
+              "serviceQuantity" => "1"
+              "specialServiceReferenceId" => "30449202"
+              "status" => "HK"
+              "ticketed" => "false"
+            ]
+            1 => array:8 [
+              "airTravelerSequence" => "1"
+              "flightSegmentSequence" => "0"
+              "paymentStatus" => "FR"
+              "SSR" => array:15 [
+                "allowedQuantityPerPassenger" => "1"
+                "bundleRelatedSsr" => "false"
+                "code" => "CTCE"
+                "entryDate" => "2024-11-13T12:25:36+01:00"
+                "exchangeable" => "false"
+                "explanation" => "AAA.TEST@HITITCS.COM"
+                "extraBaggage" => "false"
+                "free" => "true"
+                "groupCode" => "OTH"
+                "groupCodeExplanation" => "OTH"
+                "iciAllowed" => "false"
+                "refundable" => "false"
+                "showOnItinerary" => "false"
+                "ssrReasonCode" => "USER_SELECTION"
+                "unitOfMeasureExist" => "false"
               ]
-              2 => array:8 [
-                "airTravelerSequence" => "1"
-                "flightSegmentSequence" => "0"
-                "paymentStatus" => "FR"
-                "SSR" => array:15 [
-                  "allowedQuantityPerPassenger" => "0"
-                  "bundleRelatedSsr" => "false"
-                  "code" => "DOCS"
-                  "entryDate" => "2024-11-13T10:18:25+01:00"
-                  "exchangeable" => "false"
-                  "explanation" => "/////08AUG91/M//TEST/AAA"
-                  "extraBaggage" => "false"
-                  "free" => "true"
-                  "groupCode" => "OTH"
-                  "groupCodeExplanation" => "OTH"
-                  "iciAllowed" => "false"
-                  "refundable" => "false"
-                  "showOnItinerary" => "false"
-                  "ssrReasonCode" => "USER_SELECTION"
-                  "unitOfMeasureExist" => "false"
-                ]
-                "serviceQuantity" => "1"
-                "specialServiceReferenceId" => "30449186"
-                "status" => "HK"
-                "ticketed" => "false"
+              "serviceQuantity" => "1"
+              "specialServiceReferenceId" => "30449203"
+              "status" => "HK"
+              "ticketed" => "false"
+            ]
+            2 => array:8 [
+              "airTravelerSequence" => "2"
+              "flightSegmentSequence" => "0"
+              "paymentStatus" => "FR"
+              "SSR" => array:15 [
+                "allowedQuantityPerPassenger" => "1"
+                "bundleRelatedSsr" => "false"
+                "code" => "CTCM"
+                "entryDate" => "2024-11-13T12:25:36+01:00"
+                "exchangeable" => "false"
+                "explanation" => "90 532 2222222"
+                "extraBaggage" => "false"
+                "free" => "true"
+                "groupCode" => "OTH"
+                "groupCodeExplanation" => "OTH"
+                "iciAllowed" => "false"
+                "refundable" => "false"
+                "showOnItinerary" => "false"
+                "ssrReasonCode" => "USER_SELECTION"
+                "unitOfMeasureExist" => "false"
               ]
-              3 => array:8 [
-                "airTravelerSequence" => "1"
-                "flightSegmentSequence" => "1"
-                "paymentStatus" => "FR"
-                "SSR" => array:15 [
-                  "allowedQuantityPerPassenger" => "0"
-                  "bundleRelatedSsr" => "false"
-                  "code" => "CCSF"
-                  "entryDate" => "2024-11-13T10:18:25+01:00"
-                  "exchangeable" => "false"
-                  "explanation" => "CALL CENTER - SERVICE CHARGE"
-                  "extraBaggage" => "false"
-                  "free" => "true"
-                  "groupCode" => "OTH"
-                  "groupCodeExplanation" => "OTH"
-                  "iciAllowed" => "false"
-                  "refundable" => "false"
-                  "showOnItinerary" => "false"
-                  "ssrReasonCode" => "AUTO_APPLY_SSR"
-                  "unitOfMeasureExist" => "false"
-                ]
-                "serviceQuantity" => "1"
-                "specialServiceReferenceId" => "30449187"
-                "status" => "HK"
-                "ticketed" => "false"
+              "serviceQuantity" => "1"
+              "specialServiceReferenceId" => "30449204"
+              "status" => "HK"
+              "ticketed" => "false"
+            ]
+            3 => array:8 [
+              "airTravelerSequence" => "2"
+              "flightSegmentSequence" => "0"
+              "paymentStatus" => "FR"
+              "SSR" => array:15 [
+                "allowedQuantityPerPassenger" => "1"
+                "bundleRelatedSsr" => "false"
+                "code" => "CTCE"
+                "entryDate" => "2024-11-13T12:25:36+01:00"
+                "exchangeable" => "false"
+                "explanation" => "BBB.TEST@HITITCS.COM"
+                "extraBaggage" => "false"
+                "free" => "true"
+                "groupCode" => "OTH"
+                "groupCodeExplanation" => "OTH"
+                "iciAllowed" => "false"
+                "refundable" => "false"
+                "showOnItinerary" => "false"
+                "ssrReasonCode" => "USER_SELECTION"
+                "unitOfMeasureExist" => "false"
               ]
+              "serviceQuantity" => "1"
+              "specialServiceReferenceId" => "30449205"
+              "status" => "HK"
+              "ticketed" => "false"
+            ]
+            4 => array:8 [
+              "airTravelerSequence" => "1"
+              "flightSegmentSequence" => "0"
+              "paymentStatus" => "FR"
+              "SSR" => array:15 [
+                "allowedQuantityPerPassenger" => "0"
+                "bundleRelatedSsr" => "false"
+                "code" => "DOCS"
+                "entryDate" => "2024-11-13T12:25:37+01:00"
+                "exchangeable" => "false"
+                "explanation" => "/////08AUG91/M//TEST/AAA"
+                "extraBaggage" => "false"
+                "free" => "true"
+                "groupCode" => "OTH"
+                "groupCodeExplanation" => "OTH"
+                "iciAllowed" => "false"
+                "refundable" => "false"
+                "showOnItinerary" => "false"
+                "ssrReasonCode" => "USER_SELECTION"
+                "unitOfMeasureExist" => "false"
+              ]
+              "serviceQuantity" => "1"
+              "specialServiceReferenceId" => "30449206"
+              "status" => "HK"
+              "ticketed" => "false"
+            ]
+            5 => array:8 [
+              "airTravelerSequence" => "2"
+              "flightSegmentSequence" => "0"
+              "paymentStatus" => "FR"
+              "SSR" => array:15 [
+                "allowedQuantityPerPassenger" => "0"
+                "bundleRelatedSsr" => "false"
+                "code" => "DOCS"
+                "entryDate" => "2024-11-13T12:25:37+01:00"
+                "exchangeable" => "false"
+                "explanation" => "/////08AUG91/F//TEST/BBB"
+                "extraBaggage" => "false"
+                "free" => "true"
+                "groupCode" => "OTH"
+                "groupCodeExplanation" => "OTH"
+                "iciAllowed" => "false"
+                "refundable" => "false"
+                "showOnItinerary" => "false"
+                "ssrReasonCode" => "USER_SELECTION"
+                "unitOfMeasureExist" => "false"
+              ]
+              "serviceQuantity" => "1"
+              "specialServiceReferenceId" => "30449207"
+              "status" => "HK"
+              "ticketed" => "false"
+            ]
+            6 => array:8 [
+              "airTravelerSequence" => "1"
+              "flightSegmentSequence" => "1"
+              "paymentStatus" => "FR"
+              "SSR" => array:15 [
+                "allowedQuantityPerPassenger" => "0"
+                "bundleRelatedSsr" => "false"
+                "code" => "CCSF"
+                "entryDate" => "2024-11-13T12:25:37+01:00"
+                "exchangeable" => "false"
+                "explanation" => "CALL CENTER - SERVICE CHARGE"
+                "extraBaggage" => "false"
+                "free" => "true"
+                "groupCode" => "OTH"
+                "groupCodeExplanation" => "OTH"
+                "iciAllowed" => "false"
+                "refundable" => "false"
+                "showOnItinerary" => "false"
+                "ssrReasonCode" => "AUTO_APPLY_SSR"
+                "unitOfMeasureExist" => "false"
+              ]
+              "serviceQuantity" => "1"
+              "specialServiceReferenceId" => "30449208"
+              "status" => "HK"
+              "ticketed" => "false"
+            ]
+            7 => array:8 [
+              "airTravelerSequence" => "2"
+              "flightSegmentSequence" => "1"
+              "paymentStatus" => "FR"
+              "SSR" => array:15 [
+                "allowedQuantityPerPassenger" => "0"
+                "bundleRelatedSsr" => "false"
+                "code" => "CCSF"
+                "entryDate" => "2024-11-13T12:25:37+01:00"
+                "exchangeable" => "false"
+                "explanation" => "CALL CENTER - SERVICE CHARGE"
+                "extraBaggage" => "false"
+                "free" => "true"
+                "groupCode" => "OTH"
+                "groupCodeExplanation" => "OTH"
+                "iciAllowed" => "false"
+                "refundable" => "false"
+                "showOnItinerary" => "false"
+                "ssrReasonCode" => "AUTO_APPLY_SSR"
+                "unitOfMeasureExist" => "false"
+              ]
+              "serviceQuantity" => "1"
+              "specialServiceReferenceId" => "30449209"
+              "status" => "HK"
+              "ticketed" => "false"
             ]
           ]
-          "ticketOnDeparture" => "false"
-          "ticketTimeLimit" => "2024-11-16T10:18:25+01:00"
-          "ticketTimeLimitUTC" => "2024-11-16T09:18:25+01:00"
-          "timeZone" => "Africa/Lagos"
         ]
+        "ticketOnDeparture" => "false"
+        "ticketTimeLimit" => "2024-11-16T12:25:37+01:00"
+        "ticketTimeLimitUTC" => "2024-11-16T11:25:37+01:00"
+        "timeZone" => "Africa/Lagos"
       ]
     ]
   ]
+]

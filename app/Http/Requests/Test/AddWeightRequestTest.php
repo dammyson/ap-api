@@ -87,7 +87,7 @@ class AddWeightRequestTest extends FormRequest
             "iatciFlight" => "required|boolean",
             "journeyDuration" => "required|string",
             "onTimeRate" => "required|string",
-            "remark" => "required|string",
+            "remark" => "sometimes|string",
             "secureFlightDataRequired" => "required|boolean",
             "segmentStatusByFirstLeg" => "required|string",
             "stopQuantity" => "required|string",

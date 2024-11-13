@@ -356,7 +356,7 @@ class AddWeightController extends Controller
         $iatciFlight = $request->input('iatciFlight');
         $journeyDuration = $request->input('journeyDuration');
         $onTimeRate = $request->input('onTimeRate');
-        $remark = $request->input('remark');
+        $remark = $request->input('remark') ?? false;
         $secureFlightDataRequired = $request->input('secureFlightDataRequired');
         $segmentStatusByFirstLeg = $request->input('segmentStatusByFirstLeg');
         $stopQuantity = $request->input('stopQuantity');
