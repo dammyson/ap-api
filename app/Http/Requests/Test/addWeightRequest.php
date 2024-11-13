@@ -144,12 +144,18 @@ class addWeightRequest extends FormRequest
             "airTravelerList.*.travelerReferenceID" => "required|string",
             "airTravelerList.*.airTravelUnaccompaniedMinor" => "required|boolean",
 
-            "ancillaryRequestList"  => "required|array",            
-            "ancillaryRequestList.*.airTravelerSequence" => "required|string",
-            "ancillaryRequestList.*.flightSegmentSequence" => "required|string",
-            "ancillaryRequestList.*.airTravelerSsrCode" => "required|string",
-            "ancillaryRequestList.*.airTravelerSsrGroup" => "required|string",
-            "ancillaryRequestList.*.ssrExplanation" => "required|string",
+            // "ancillaryRequestList"  => "required|array",            
+            // "ancillaryRequestList.*.airTravelerSequence" => "required|string",
+            // "ancillaryRequestList.*.flightSegmentSequence" => "required|string",
+            // "ancillaryRequestList.*.airTravelerSsrCode" => "required|string",
+            // "ancillaryRequestList.*.airTravelerSsrGroup" => "required|string",
+            // "ancillaryRequestList.*.ssrExplanation" => "required|string",
+
+            "airTravelerSequence" => "required|string",
+            "flightSegmentSequence" => "required|string",
+            "airTravelerSsrCode" => "required|string",
+            "airTravelerSsrGroup" => "required|string",
+            "ssrExplanation" => "required|string",
 
             "bookingReferenceIDID" => "required|string",
             "bookingReferenceID" => "required|string"

@@ -367,7 +367,12 @@ class AddWeightController extends Controller
         $sequenceNumber = $request->input('sequenceNumber');
         $status = $request->input('status');
         $airTravelerList = $request->input('airTravelerList');
-        $ancillaryRequestList  = $request->input('ancillaryRequestList');  
+        // $ancillaryRequestList  = $request->input('ancillaryRequestList');
+        $airTravelerSequence = $request->input('airTravelerSequence');
+        $flightSegmentSequence = $request->input('flightSegmentSequence');
+        $airTravelerSsrCode = $request->input('airTravelerSsrCode');
+        $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
+        $ssrExplanation = $request->input('ssrExplanation');
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
 
@@ -445,7 +450,12 @@ class AddWeightController extends Controller
             $sequenceNumber,
             $status,
             $airTravelerList,
-            $ancillaryRequestList,
+            // $ancillaryRequestList,
+            $airTravelerSequence,
+            $flightSegmentSequence,
+            $airTravelerSsrCode,
+            $airTravelerSsrGroup,
+            $ssrExplanation,
             $bookingReferenceIDID,
             $bookingReferenceID
         );
