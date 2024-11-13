@@ -8,6 +8,7 @@ use App\Models\InvoiceRecord;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\AddWeightBuilderTest;
 use App\Http\Requests\Test\addWeightRequest;
+use App\Http\Requests\Test\AddWeightRequestTest;
 
 class AddWeightControllerTest extends Controller
 {
@@ -20,7 +21,7 @@ class AddWeightControllerTest extends Controller
         
     }
 
-    public function addWeightTest(addWeightRequest $request, $invoiceId) {
+    public function addWeightTest(AddWeightRequestTest $request, $invoiceId) {
         $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
         $bookFlightSegmentListActionCode = $request->input('bookFlightSegmentListActionCode');
         $bookFlightAddOnSegment = $request->input('bookFlightAddOnSegment');

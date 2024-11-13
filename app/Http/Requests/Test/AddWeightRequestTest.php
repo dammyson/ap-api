@@ -147,8 +147,7 @@ class AddWeightRequestTest extends FormRequest
             "ancillaryRequestList.*.flightSegmentSequence" => "required|string",
             "ancillaryRequestList.*.airTravelerSsrCode" => "required|string",
             "ancillaryRequestList.*.airTravelerSsrGroup" => "required|string",
-            "ancillaryRequestList.*.ssrExplanation" => "required|string",    
-
+            "ancillaryRequestList.*.ssrExplanation" => "required|string",
             "bookingReferenceIDID" => "required|string",
             "bookingReferenceID" => "required|string"
         ];
