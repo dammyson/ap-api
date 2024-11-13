@@ -86,12 +86,12 @@ class AddWeightBuilder {
       $sequenceNumber,
       $status,
       $airTravelerList,
-      // $ancillaryRequestList,
-      $airTravelerSequence,
-      $flightSegmentSequence,
-      $airTravelerSsrCode,
-      $airTravelerSsrGroup,
-      $ssrExplanation,
+      $ancillaryRequestList,
+      // $airTravelerSequence,
+      // $flightSegmentSequence,
+      // $airTravelerSsrCode,
+      // $airTravelerSsrGroup,
+      // $ssrExplanation,
 
       $bookingReferenceIDID,
       $bookingReferenceID
@@ -231,19 +231,21 @@ class AddWeightBuilder {
                      </bookOriginDestinationOptions>
                   </airItinerary>'.
                   
-                  $this->airTravelerList($airTravelerList);
+                  $this->airTravelerList($airTravelerList) .' '.
 
-                  // $this->ancillaryRequestList($ancillaryRequestList);
-                  '<ancillaryRequestList>
-                     <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
-                     <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                     <ssrCode>' . htmlspecialchars($airTravelerSsrCode, ENT_XML1, 'UTF-8') . '</ssrCode>
-                     <ssrGroup>' . htmlspecialchars($airTravelerSsrGroup, ENT_XML1, 'UTF-8') . '</ssrGroup>
-                     <ssrExplanation>' . htmlspecialchars($ssrExplanation, ENT_XML1, 'UTF-8') . '</ssrExplanation>
-                  </ancillaryRequestList>
+                  $this->ancillaryRequestList($ancillaryRequestList)
+                  .
+                  
+                  // '<ancillaryRequestList>
+                  //    <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                  //    <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                  //    <ssrCode>' . htmlspecialchars($airTravelerSsrCode, ENT_XML1, 'UTF-8') . '</ssrCode>
+                  //    <ssrGroup>' . htmlspecialchars($airTravelerSsrGroup, ENT_XML1, 'UTF-8') . '</ssrGroup>
+                  //    <ssrExplanation>' . htmlspecialchars($ssrExplanation, ENT_XML1, 'UTF-8') . '</ssrExplanation>
+                  // </ancillaryRequestList>
 
                   
-                  <bookingReferenceID>
+                  '<bookingReferenceID>
                      <companyName>
                         <cityCode>LOS</cityCode>
                         <code>P4</code>
