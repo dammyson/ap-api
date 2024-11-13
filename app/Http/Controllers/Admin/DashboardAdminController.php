@@ -83,8 +83,7 @@ class DashboardAdminController extends Controller
         ]);
     }
 
-    public function revenueGraph(Request $request) {
-        $filter = $request->input('filter');
+    public function revenueGraph(Request $request, $filter) {
         try {
             $year = $request->input('year') ?? Carbon::now()->year;
             $month = $request->input('month') ?? Carbon::now()->month;
@@ -137,7 +136,7 @@ class DashboardAdminController extends Controller
                 ], 200);
     
             }
-            else if ($filter == "weekly") {
+            else {
                 
                 $year = $request->input('year') ?? Carbon::now()->year;
                 $month = $request->input('month') ?? Carbon::now()->month;
