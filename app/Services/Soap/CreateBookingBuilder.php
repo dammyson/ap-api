@@ -242,7 +242,7 @@ class CreateBookingBuilder
                      <journeyDuration>' . htmlspecialchars($string['journeyDuration'], ENT_XML1, 'UTF-8') . '</journeyDuration>
                      <onTimeRate>' . htmlspecialchars($string['onTimeRate'], ENT_XML1, 'UTF-8') . '</onTimeRate>'.
 
-                    $this->checkRemark($string['remark'])
+                    $this->checkRemark($string)
 
                     
 
@@ -260,9 +260,9 @@ class CreateBookingBuilder
     }
 
 
-    public function checkRemark($remark) {
-        if ($remark) {
-            return  '<remark>' . htmlspecialchars($remark, ENT_XML1, 'UTF-8') . '</remark>';
+    public function checkRemark($string) {
+        if (isset($string['remark'])) {
+            return  '<remark>' . htmlspecialchars($string['remark'], ENT_XML1, 'UTF-8') . '</remark>';
         }
     }
     public function flightNotes(
