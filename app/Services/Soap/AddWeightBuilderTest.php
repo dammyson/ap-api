@@ -161,9 +161,11 @@ class AddWeightBuilderTest {
                                        <codeContext>' . htmlspecialchars($arrivalAirportCodeContext, ENT_XML1, 'UTF-8') . '</codeContext>
                                        <language>' . htmlspecialchars($arrivalAirportLanguage, ENT_XML1, 'UTF-8') . '</language>
                                        <locationCode>' . htmlspecialchars($arrivalAirportLocationCode, ENT_XML1, 'UTF-8') . '</locationCode>
-                                       <locationName>' . htmlspecialchars($arrivalAirportLocationName, ENT_XML1, 'UTF-8') . '</locationName>
-                                       <terminal>' . htmlspecialchars($arrivalAirportTerminal, ENT_XML1, 'UTF-8') . '</terminal>
-                                       <timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                       <locationName>' . htmlspecialchars($arrivalAirportLocationName, ENT_XML1, 'UTF-8') . '</locationName>'. 
+
+                                       $this->checkTerminal($arrivalAirportTerminal)
+                                      
+                                       .'<timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                                     </arrivalAirport>
                                     <arrivalDateTime>' . htmlspecialchars($arrivalDateTime, ENT_XML1, 'UTF-8') . '</arrivalDateTime>
                                     <arrivalDateTimeUTC>' . htmlspecialchars($arrivalDateTimeUTC, ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
@@ -249,8 +251,14 @@ class AddWeightBuilderTest {
       return $xml;  
    }
 
+
+   public function checkTerminal($arrivalAirportTerminal) {
+        if (isset($arrivalAirportTerminal)) {
+            return  '<terminal>' . htmlspecialchars($arrivalAirportTerminal, ENT_XML1, 'UTF-8') . '</terminal>';
+        }
+   }
    public function checkRemark($remark) {
-        if($remark) {
+        if(isset($remark)) {
         return '<remark>' . htmlspecialchars($remark, ENT_XML1, 'UTF-8') . '</remark>';
         }
         return '';
