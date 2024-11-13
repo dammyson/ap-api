@@ -1,109 +1,117 @@
 <?php
-{
-  "error": false,
-  "ticket": {
-      "ticket_amount": "1806156",
-      "ticket_data": {
-          "43": [
-              {
-                  "day_of_week": "Friday",
-                  "total_amount": "124904"
-              }
-          ],
-          "44": [
-              {
-                  "day_of_week": "Sunday",
-                  "total_amount": "124904"
-              },
-              {
-                  "day_of_week": "Monday",
-                  "total_amount": "144202"
-              },
-              {
-                  "day_of_week": "Tuesday",
-                  "total_amount": "150104"
-              },
-              {
-                  "day_of_week": "Wednesday",
-                  "total_amount": "150104"
-              },
-              {
-                  "day_of_week": "Thursday",
-                  "total_amount": "172418"
-              },
-              {
-                  "day_of_week": "Saturday",
-                  "total_amount": "375808"
-              }
-          ],
-          "45": [
-              {
-                  "day_of_week": "Sunday",
-                  "total_amount": "313904"
-              },
-              {
-                  "day_of_week": "Tuesday",
-                  "total_amount": "249808"
-              }
-          ]
-      }
-  },
-  "ancillary": {
-      "ancillary_amount": "1500",
-      "ancillary_data": {
-          "44": [
-              {
-                  "day_of_week": "Saturday",
-                  "total_amount": "1500"
-              }
-          ]
-      }
-  },
-  "revenue": {
-      "revenue_amount": "1807656",
-      "revenue_data": {
-          "43": [
-              {
-                  "day_of_week": "Friday" ?? "",
-                  "total_amount": "124904"
-              }
-          ],
-          "44": [
-              {
-                  "day_of_week": "Sunday",
-                  "total_amount": "124904"
-              },
-              {
-                  "day_of_week": "Monday",
-                  "total_amount": "144202"
-              },
-              {
-                  "day_of_week": "Tuesday",
-                  "total_amount": "150104"
-              },
-              {
-                  "day_of_week": "Wednesday",
-                  "total_amount": "150104"
-              },
-              {
-                  "day_of_week": "Thursday",
-                  "total_amount": "172418"
-              },
-              {
-                  "day_of_week": "Saturday",
-                  "total_amount": "377308"
-              }
-          ],
-          "45": [
-              {
-                  "day_of_week": "Sunday",
-                  "total_amount": "313904"
-              },
-              {
-                  "day_of_week": "Tuesday",
-                  "total_amount": "249808"
-              }
-          ]
-      }
-  }
-}
+$adviceCodeSegmentExist,
+      $bookFlightSegmentListActionCode,
+      $bookFlightAddOnSegment,
+      $bookingClassCabin,
+      $bookingClassResBookDesigCode,
+      $resBookDesignQuantity,
+      $fareInfoCabin,
+      $fareInfoCabinClassCode,
+      $fareBaggageAllowanceType,
+      $fareBaggageMaxAllowedPieces,
+      $unitOfMeasureCode,
+      $fareBaggageAllowanceWeight,
+      $fareGroupName,
+      $fareReferenceCode,
+      $fareReferenceID,
+      $fareReferenceName,
+      $bookFlightSegmentSequence,
+      $resBookDesigCode,
+      $flightSegmentCode,
+      $flightSegmentCodeContext,
+      $arrivalAirportCityLocationCode,
+      $arrivalAirportCityLocationName,
+      $arrivalAirportCityLocationNameLanguage,
+      $arrivalAirportCountryLocationCode,
+      $arrivalAirportCountryLocationName,
+      $arrivalAirportCountryLocationNameLanguage,
+      $arrivalAirportCountryCurrencyCode,
+      $arrivalAirportCodeContext,
+      $arrivalAirportLanguage,
+      $arrivalAirportLocationCode,
+      $arrivalAirportLocationName,
+      $arrivalAirportTerminal,
+      $arrivalAirportTimeZoneInfo,
+      $arrivalDateTime,
+      $arrivalDateTimeUTC,
+      $departureAirportCitytLocationCode,
+      $departureAirportCityLocationName,
+      $departureAirportCityLocationNameLanguage,
+      $departureAirportCountryLocationCode,
+      $departureAirportCountryLocationName,
+      $departureCountryLocationNameLanguage,
+      $departureCountryCurrencyCode,
+      $departureAirportCodeContext,
+      $departureAirportLanguage,
+      $departureAirportLocationCode,
+      $departureAirportLocationName,
+      $departureAirportTimeZoneInfo,
+      $departureDateTime,
+      $departureDateTimeUTC,
+      $flightNumber,
+      $flightSegmentID,
+      $ondControlled,
+      $departureAirportSector,
+      $departureFlightCodeShare,
+      $departureFlightDistance,
+      $equipmentAirEquipType,
+      $equipmentChangeOfGauge,
+      $flightNotes,
+      $flownMileageQty,
+      $iatciFlight,
+      $journeyDuration,
+      $onTimeRate,
+      $remark,
+      $secureFlightDataRequired,
+      $segmentStatusByFirstLeg,
+      $stopQuantity,
+      $involuntaryPermissionGiven,
+      $legStatus,
+      $referenceID,
+      $responseCode,
+      $sequenceNumber,
+      $status,
+      $accompaniedByInfant,
+      $airTravelerbirthDate,
+      $contactPersonEmail,
+      $airTravelerListEmailMarkedForSendingRezInfo,
+      $emailPreferred,
+      $emailSharedMarketInd,
+      $airTravelerListPersonNameGivenName,
+      $airTravelerListpersonNameShareMarketInd,
+      $airTravelerListPersonNameSurname,
+      $phoneNumberAreaCode,
+      $phoneCountryCode,
+      $phoneNumberEmailMarkedForSendingRezInfo,
+      $phoneNumberPreferred,
+      $phoneNumberShareMarketInd,
+      $phoneNumberSubscriberNumber,
+      $airTravelerShareContactInfo,
+      $airTravelerShareMarketInd,
+      $useForInvoicing,
+      $documentInfoBirthDate,
+      $documentHolderFormattedGivenName,
+      $documentHolderFormattedShareMarketInd,
+      $documentHolderFormattedSurname,
+      $documentHolderFormattedGender,
+      $emergencyContactInfoshareMarketInd,
+      $decline,
+      $emergencyContactMarkedForSendingRezInfo,
+      $emergencyContactPreferred,
+      $emergencyContactShareMarketInd,
+      $shareContactInfo,
+      $airTravelerGender,
+      $airTravelerHasStrecher,
+      $parentSequence,
+      $passengerTypeCode,
+      $personNameGivenName,
+      $personNameTitle,
+      $personNameshareMarketInd,
+      $personNameSurname,
+      $personNameENGivenName,
+      $personNameENTitle,
+      $personNameENShareMarketInd,
+      $personNameENShareMarketSurname,
+      $requestedSeatCount,
+      $shareMarketInd,
+      $travelerReferenceID,

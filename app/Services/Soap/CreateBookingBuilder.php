@@ -240,12 +240,16 @@ class CreateBookingBuilder
                      <flownMileageQty>' . htmlspecialchars($string['flownMileageQty'], ENT_XML1, 'UTF-8') . '</flownMileageQty>
                      <iatciFlight>' . htmlspecialchars($string['iatciFlight'], ENT_XML1, 'UTF-8') . '</iatciFlight>
                      <journeyDuration>' . htmlspecialchars($string['journeyDuration'], ENT_XML1, 'UTF-8') . '</journeyDuration>
-                     <onTimeRate>' . htmlspecialchars($string['onTimeRate'], ENT_XML1, 'UTF-8') . '</onTimeRate>
-                     <remark>' . htmlspecialchars($string['remark'], ENT_XML1, 'UTF-8') . '</remark>
-                     <secureFlightDataRequired>' . htmlspecialchars($string['secureFlightDataRequired'], ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
+                     <onTimeRate>' . htmlspecialchars($string['onTimeRate'], ENT_XML1, 'UTF-8') . '</onTimeRate>'.
+
+                    isset($string['remark']) ? '<remark>' . htmlspecialchars($string['remark'], ENT_XML1, 'UTF-8') . '</remark>' : '';
+
+                    
+
+                    '<secureFlightDataRequired>' . htmlspecialchars($string['secureFlightDataRequired'], ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
                      <stopQuantity>' . htmlspecialchars($string['stopQuantity'], ENT_XML1, 'UTF-8') . '</stopQuantity>
                      <ticketType>' . htmlspecialchars($string['ticketType'], ENT_XML1, 'UTF-8') . '</ticketType>
-                    </flightSegment>
+                     </flightSegment>
                     <involuntaryPermissionGiven/>
                     <sequenceNumber/>
                     </bookFlightSegmentList>
@@ -256,6 +260,11 @@ class CreateBookingBuilder
     }
 
 
+    public function checkRemark($remark) {
+        if ($remark) {
+            return  '<remark>' . htmlspecialchars($remark, ENT_XML1, 'UTF-8') . '</remark>';
+        }
+    }
     public function flightNotes(
         $flightNotes
     ) {
