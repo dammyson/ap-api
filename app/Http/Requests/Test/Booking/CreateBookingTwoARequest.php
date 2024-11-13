@@ -89,7 +89,7 @@ class CreateBookingTwoARequest extends FormRequest
             'CreateBookOriginDestinationOptionList.*.iatciFlight' => 'required|boolean',
             'CreateBookOriginDestinationOptionList.*.journeyDuration' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.onTimeRate' => 'required|string',
-            'CreateBookOriginDestinationOptionList.*.remark' => 'required|string',
+            'CreateBookOriginDestinationOptionList.*.remark' => 'sometimes|string',
             'CreateBookOriginDestinationOptionList.*.secureFlightDataRequired' => 'required|boolean',
             'CreateBookOriginDestinationOptionList.*.stopQuantity' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.ticketType' => 'required|string',
