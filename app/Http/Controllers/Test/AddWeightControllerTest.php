@@ -94,51 +94,7 @@ class AddWeightControllerTest extends Controller
         $responseCode = $request->input('responseCode');
         $sequenceNumber = $request->input('sequenceNumber');
         $status = $request->input('status');
-        $accompaniedByInfant = $request->input('accompaniedByInfant');
-        $airTravelerbirthDate = $request->input('airTravelerbirthDate');
-        $contactPersonEmail = $request->input('contactPersonEmail');
-        $airTravelerListEmailMarkedForSendingRezInfo = $request->input('airTravelerListEmailMarkedForSendingRezInfo');
-        $emailPreferred = $request->input('emailPreferred');
-        $emailSharedMarketInd = $request->input('emailSharedMarketInd');
-        $airTravelerListPersonNameGivenName = $request->input('airTravelerListPersonNameGivenName');
-        $airTravelerListpersonNameShareMarketInd = $request->input('airTravelerListpersonNameShareMarketInd');
-        $airTravelerListPersonNameSurname = $request->input('airTravelerListPersonNameSurname');
-        $phoneNumberAreaCode = $request->input('phoneNumberAreaCode');
-        $phoneCountryCode = $request->input('phoneCountryCode');
-        $phoneNumberEmailMarkedForSendingRezInfo = $request->input('phoneNumberEmailMarkedForSendingRezInfo');
-        $phoneNumberPreferred = $request->input('phoneNumberPreferred');
-        $phoneNumberShareMarketInd = $request->input('phoneNumberShareMarketInd');
-        $phoneNumberSubscriberNumber = $request->input('phoneNumberSubscriberNumber');
-        $airTravelerShareContactInfo = $request->input('airTravelerShareContactInfo');
-        $airTravelerShareMarketInd = $request->input('airTravelerShareMarketInd');
-        $useForInvoicing = $request->input('useForInvoicing');
-        $documentInfoBirthDate = $request->input('documentInfoBirthDate');
-        $documentHolderFormattedGivenName = $request->input('documentHolderFormattedGivenName');
-        $documentHolderFormattedShareMarketInd = $request->input('documentHolderFormattedShareMarketInd');
-        $documentHolderFormattedSurname = $request->input('documentHolderFormattedSurname');
-        $documentHolderFormattedGender = $request->input('documentHolderFormattedGender');
-        $emergencyContactInfoshareMarketInd = $request->input('emergencyContactInfoshareMarketInd');
-        $decline = $request->input('decline');
-        $emergencyContactMarkedForSendingRezInfo = $request->input('emergencyContactMarkedForSendingRezInfo');
-        $emergencyContactPreferred = $request->input('emergencyContactPreferred');
-        $emergencyContactShareMarketInd = $request->input('emergencyContactShareMarketInd');
-        $shareContactInfo = $request->input('shareContactInfo');
-        $airTravelerGender = $request->input('airTravelerGender');
-        $airTravelerHasStrecher = $request->input('airTravelerHasStrecher');
-        $parentSequence = $request->input('parentSequence');
-        $passengerTypeCode = $request->input('passengerTypeCode');
-        $personNameGivenName = $request->input('personNameGivenName');
-        $personNameTitle = $request->input('personNameTitle');
-        $personNameshareMarketInd = $request->input('personNameshareMarketInd');
-        $personNameSurname = $request->input('personNameSurname');
-        $personNameENGivenName = $request->input('personNameENGivenName');
-        $personNameENTitle = $request->input('personNameENTitle');
-        $personNameENShareMarketInd = $request->input('personNameENShareMarketInd');
-        $personNameENShareMarketSurname = $request->input('personNameENShareMarketSurname');
-        $requestedSeatCount = $request->input('requestedSeatCount');
-        $shareMarketInd = $request->input('shareMarketInd');
-        $travelerReferenceID = $request->input('travelerReferenceID');
-        $airTravelUnaccompaniedMinor = $request->input('airTravelUnaccompaniedMinor');
+        $airTravelerList = $request->input('airTravelerList');
 
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         
@@ -225,51 +181,7 @@ class AddWeightControllerTest extends Controller
             $responseCode,
             $sequenceNumber,
             $status,
-            $accompaniedByInfant,
-            $airTravelerbirthDate,
-            $contactPersonEmail,
-            $airTravelerListEmailMarkedForSendingRezInfo,
-            $emailPreferred,
-            $emailSharedMarketInd,
-            $airTravelerListPersonNameGivenName,
-            $airTravelerListpersonNameShareMarketInd,
-            $airTravelerListPersonNameSurname,
-            $phoneNumberAreaCode,
-            $phoneCountryCode,
-            $phoneNumberEmailMarkedForSendingRezInfo,
-            $phoneNumberPreferred,
-            $phoneNumberShareMarketInd,
-            $phoneNumberSubscriberNumber,
-            $airTravelerShareContactInfo,
-            $airTravelerShareMarketInd,
-            $useForInvoicing,
-            $documentInfoBirthDate,
-            $documentHolderFormattedGivenName,
-            $documentHolderFormattedShareMarketInd,
-            $documentHolderFormattedSurname,
-            $documentHolderFormattedGender,
-            $emergencyContactInfoshareMarketInd,
-            $decline,
-            $emergencyContactMarkedForSendingRezInfo,
-            $emergencyContactPreferred,
-            $emergencyContactShareMarketInd,
-            $shareContactInfo,
-            $airTravelerGender,
-            $airTravelerHasStrecher,
-            $parentSequence,
-            $passengerTypeCode,
-            $personNameGivenName,
-            $personNameTitle,
-            $personNameshareMarketInd,
-            $personNameSurname,
-            $personNameENGivenName,
-            $personNameENTitle,
-            $personNameENShareMarketInd,
-            $personNameENShareMarketSurname,
-            $requestedSeatCount,
-            $shareMarketInd,
-            $travelerReferenceID,
-            $airTravelUnaccompaniedMinor,
+            $airTravelerList,
             $ancillaryRequestList,
             $bookingReferenceIDID,
             $bookingReferenceID
