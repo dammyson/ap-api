@@ -70,7 +70,7 @@ class CustomerAdminController extends Controller
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
         
-        $flightRecord = TransactionRecord::where('user_id', $user->id)
+        $revenueData = TransactionRecord::where('user_id', $user->id)
             ->whereYear('created_at', $year)
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             // ->whereWeek('created_at', $week)
@@ -78,7 +78,11 @@ class CustomerAdminController extends Controller
             ->groupBy('day_name')
             ->get();
 
-        dd($flightRecord);
+        
+        return response()->json([
+            "error" => false,
+            "revenue_data" => $revenueData
+        ], 200);
 
 
     }
