@@ -70,7 +70,6 @@ class CustomerAdminController extends Controller
         
         $flightRecord = TransactionRecord::where('user_id', $user->id)
             ->whereYear('created_at', $year)
-            ->whereMonth('created_at', $month)
             ->whereWeek('created_at', $week)
             ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
             ->groupBy('day_name')
