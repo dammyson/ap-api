@@ -66,11 +66,14 @@ class CustomerAdminController extends Controller
     public function revenueCustomerChart(Request $request, User $user) {
         $year = Carbon::now()->year;
         $month = Carbon::now()->month;
-        $week = Carbon::now()->week;
+        // $week = Carbon::now()->week;
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
         
         $flightRecord = TransactionRecord::where('user_id', $user->id)
             ->whereYear('created_at', $year)
-            ->whereWeek('created_at', $week)
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            // ->whereWeek('created_at', $week)
             ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
             ->groupBy('day_name')
             ->get();
