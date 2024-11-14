@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\AdminCustomerEvent;
 use App\Models\Admin;
 use App\Events\AdminLoginEvent;
 use App\Events\AdminSurveyEvent;
+use App\Listeners\AdminCustomerListener;
 use App\Observers\AdminObserver;
 use App\Listeners\AdminLoginListener;
 use App\Listeners\AdminSurveyListener;
@@ -45,6 +47,11 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(
             AdminSurveyEvent::class,
             AdminSurveyListener::class
+        );
+
+        Event::listen(
+            AdminCustomerEvent::class,
+            AdminCustomerListener::class
         );
     }
 

@@ -2,24 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\AdminCustomerEvent;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Events\AdminSurveyEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CustomerCollection;
 
 class CustomerAdminController extends Controller
 {
     public function customerInformation(Request $request) {
         try {
-            $user = $request->user();
 
-            if (!$user->is_admin) { 
-                return response()->json([
-                    'error' => true,
-                    'message' => 'unauthorized'
-                ], 400);
-            }
+            $users = User::all();
 
-            $users = User::where('is_admin', false);
+            $customerCollection = new CustomerCollection($users);
 
         }  catch (\Throwable $th) {
             return response()->json([
@@ -30,8 +27,36 @@ class CustomerAdminController extends Controller
 
         return response()->json([
             'error' => false,
-            'users_table_data' => $users
+            'users_table_data' => $customerCollection
         ]);
+    }
+
+    public function awardPointManually(Request $request, User $user) {
+        $admin = $request->user('admin');
+        $points = $request->input('points');
+        $reason = $request->input('reason');
+
+        try {
+                $message = "reason {$reason}";
+            
+                $user->points += $points;
+                $user->save();
+            
+                event( new AdminCustomerEvent($admin,  $points, $user, $reason));
+
+                return response()->json([
+                    'error' => 'false',
+                    'points' => $points,
+                    'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
+                ], 200);
+
+        }  catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
     }
 
     public function activityLog(Request $request) {
