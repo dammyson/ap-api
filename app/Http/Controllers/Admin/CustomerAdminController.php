@@ -72,8 +72,7 @@ class CustomerAdminController extends Controller
         
         $revenueData = TransactionRecord::where('user_id', $user->id)
             ->whereYear('created_at', $year)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            // ->whereWeek('created_at', $week)
+            // ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
             ->groupBy('day_name')
             ->get();
