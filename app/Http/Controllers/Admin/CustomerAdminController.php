@@ -11,6 +11,7 @@ use App\Events\AdminCustomerEvent;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomerCollection;
+use App\Models\TransactionRecord;
 
 class CustomerAdminController extends Controller
 {
@@ -67,7 +68,7 @@ class CustomerAdminController extends Controller
         $month = Carbon::now()->month;
         $week = Carbon::now()->week;
         
-        $flightRecord = FlightRecord::where('peace_id', $user->peace_id)
+        $flightRecord = TransactionRecord::where('user_id', $user->id)
             ->whereYear('created_at',$year)
             ->whereMonth('created_at', $month)
             ->whereWeek('created_at', $week)
