@@ -76,10 +76,11 @@ class CustomerAdminController extends Controller
             ->groupBy('day_name')
             ->get();
 
+        $organiseData = $this->organiseChart($revenueData);
         
         return response()->json([
             "error" => false,
-            "revenue_data" => $revenueData
+            "revenue_data" => $organiseData
         ], 200);
 
 
@@ -88,25 +89,32 @@ class CustomerAdminController extends Controller
 
     protected function organiseChart($items) {
         $daysOfWeek = [
-            "Monday" => 0,
-            "Tuesday" => 0,
-            "Wednesday" => 0,
-            "Thursday" => 0,
-            "Friday" => 0,
-            "Saturday" => 0,
-            "Sunday" => 0
+            "Monday" => ["day_of_week" => "Monday", "total_amount" => 0],
+            "Tuesday" => ["day_of_week" => "Tuesday", "total_amount" => 0],
+            "Wednesday" => ["day_of_week" => "Wednesday", "total_amount" => 0],
+            "Thursday" => ["day_of_week" => "Thursday", "total_amount" => 0],
+            "Friday" => ["day_of_week" => "Friday", "total_amount" => 0],
+            "Saturday" => ["day_of_week" => "Saturday", "total_amount" => 0],
+            "Sunday" => ["day_of_week" => "Sunday", "total_amount" => 0]
 
         ];
 
         $data = [];
-        foreach(array_keys($daysOfWeek) as $dayOfWeek) {
-            if(!isset($items[$dayOfWeek])) {
-                $data[] = [ "day_name"  => $dayOfWeek, "total_amount" => 0];
-            } else {
-                $data[] = ["day_name" => $dayOfWeek, "total_amount" => 0];
-            }
+        // foreach(array_keys($daysOfWeek) as $dayOfWeek) {
+        //     if(!isset($items[$dayOfWeek])) {
+        //         $data[] = [ "day_name"  => $dayOfWeek, "total_amount" => 0];
+        //     } else {
+        //         $data[] = ["day_name" => $dayOfWeek, "total_amount" => 0];
+        //     }
 
+        // }
+   
+        foreach($items as $item) {
+            $dayName = $item->day_name;
+            $daysOfWeek[$dayName]["total_amount"] = $item->total_amount;
         }
+
+        return array_values($daysOfWeek);
     }
 
     public function activityLog(Request $request) {
