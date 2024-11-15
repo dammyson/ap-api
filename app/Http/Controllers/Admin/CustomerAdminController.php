@@ -70,17 +70,53 @@ class CustomerAdminController extends Controller
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
         
-        $revenueData = TransactionRecord::whereYear('created_at', $year)
-            // ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+        $totalRevenue = TransactionRecord::whereYear('created_at', $year)
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
             ->groupBy('day_name')
             ->get();
 
-        $organiseData = $this->organiseChart($revenueData);
+        $totalRevenueAmount = TransactionRecord::whereYear('created_at', $year)
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->sum('amount');
+        
+        $flightBooking = TransactionRecord::whereYear('created_at', $year)
+            ->where('ticket_type', 'ticket')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('day_name')
+            ->get();
+        
+        $flightBookingAmount = TransactionRecord::whereYear('created_at', $year)
+            ->where('ticket_type', 'ticket')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->sum('amount');    
+            
+        $appPurchase = TransactionRecord::whereYear('created_at', $year)
+            ->where('ticket_type', 'Ancillary')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('day_name')
+            ->get();
+        
+        $appPurchaseAmount = TransactionRecord::whereYear('created_at', $year)
+            ->where('ticket_type', 'Ancillary')
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->sum('amount'); 
+
+        $totalRevenue = $this->organiseChart($totalRevenue);
+        $flightBooking = $this->organiseChart($flightBooking);
+        $appPurchase = $this->organiseChart($appPurchase);
         
         return response()->json([
             "error" => false,
-            "revenue_data" => $organiseData
+            "total_flight_amount" => $flightBookingAmount,
+            "flight_booking" => $flightBooking,
+            "app_purchase_amount" => $appPurchaseAmount,
+            "app_purchase" => $appPurchase,
+            "total_revenue_amount" => $totalRevenueAmount,
+            "total_revenue" => $totalRevenue
+
         ], 200);
 
 
@@ -89,13 +125,13 @@ class CustomerAdminController extends Controller
 
     protected function organiseChart($items) {
         $daysOfWeek = [
-            "Monday" => ["day_of_week" => "Monday", "total_amount" => 0],
-            "Tuesday" => ["day_of_week" => "Tuesday", "total_amount" => 0],
-            "Wednesday" => ["day_of_week" => "Wednesday", "total_amount" => 0],
-            "Thursday" => ["day_of_week" => "Thursday", "total_amount" => 0],
-            "Friday" => ["day_of_week" => "Friday", "total_amount" => 0],
-            "Saturday" => ["day_of_week" => "Saturday", "total_amount" => 0],
-            "Sunday" => ["day_of_week" => "Sunday", "total_amount" => 0]
+            "Monday" => ["name" => "Monday", "total_amount" => 0],
+            "Tuesday" => ["name" => "Tuesday", "total_amount" => 0],
+            "Wednesday" => ["name" => "Wednesday", "total_amount" => 0],
+            "Thursday" => ["name" => "Thursday", "total_amount" => 0],
+            "Friday" => ["name" => "Friday", "total_amount" => 0],
+            "Saturday" => ["name" => "Saturday", "total_amount" => 0],
+            "Sunday" => ["name" => "Sunday", "total_amount" => 0]
 
         ];
 
