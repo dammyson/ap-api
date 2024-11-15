@@ -70,36 +70,42 @@ class CustomerAdminController extends Controller
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
         
-        $totalRevenue = TransactionRecord::whereYear('created_at', $year)
+        $totalRevenue = TransactionRecord::where('peace_id', $user->peace_id)
+            ->whereYear('created_at', $year)
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
             ->groupBy('day_name')
             ->get();
 
-        $totalRevenueAmount = TransactionRecord::whereYear('created_at', $year)
+        $totalRevenueAmount = TransactionRecord::where('peace_id', $user->peace_id)
+            ->whereYear('created_at', $year)
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->sum('amount');
         
-        $flightBooking = TransactionRecord::whereYear('created_at', $year)
+        $flightBooking = TransactionRecord::where('peace_id', $user->peace_id)
+            ->whereYear('created_at', $year)
             ->where('ticket_type', 'ticket')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
             ->groupBy('day_name')
             ->get();
         
-        $flightBookingAmount = TransactionRecord::whereYear('created_at', $year)
+        $flightBookingAmount = TransactionRecord::where('peace_id', $user->peace_id)
+            ->whereYear('created_at', $year)
             ->where('ticket_type', 'ticket')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->sum('amount');    
             
-        $appPurchase = TransactionRecord::whereYear('created_at', $year)
+        $appPurchase = TransactionRecord::where('peace_id', $user->peace_id)
+            ->whereYear('created_at', $year)
             ->where('ticket_type', 'Ancillary')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
             ->groupBy('day_name')
             ->get();
         
-        $appPurchaseAmount = TransactionRecord::whereYear('created_at', $year)
+        $appPurchaseAmount = TransactionRecord::where('peace_id', $user->peace_id)
+            ->whereYear('created_at', $year)
             ->where('ticket_type', 'Ancillary')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->sum('amount'); 
