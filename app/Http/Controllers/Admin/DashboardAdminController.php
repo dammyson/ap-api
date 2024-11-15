@@ -94,6 +94,7 @@ class DashboardAdminController extends Controller
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
+                
 
                 $ticketAmount =  TransactionRecord::where('ticket_type', 'ticket')
                         ->whereYear('created_at', $year)
@@ -104,6 +105,7 @@ class DashboardAdminController extends Controller
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
+                
 
                 $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
                         ->whereYear('created_at', $year)                    
@@ -117,23 +119,11 @@ class DashboardAdminController extends Controller
                 $revenueAmount = TransactionRecord::whereYear('created_at', $year)                    
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
-
+                $ticketRecord = $this->organiseYear($ticketRecord);
+                $ancillaryRecord = $this->organiseYear($ancillaryRecord);
+                $ticketRecord = $this->organiseYear($revenueRecord);
     
-                return response()->json([
-                    'error' => false,
-                    'ticket' => [ 
-                        "ticket_data" => $ticketRecord,
-                        "ticket_amount" => (int)  $ticketAmount
-                    ],
-                    'ancillary' => [
-                        "ancillary_data" => $ancillaryRecord,
-                        "ancillary_amount" => (int)  $ancillaryAmount
-                    ], 
-                    'revenue' => [
-                        'revenue_data' => $revenueRecord,
-                        'revenue_amount' => (int)  $revenueAmount
-                    ]
-                ], 200);
+                
     
             }
             else {
@@ -160,7 +150,7 @@ class DashboardAdminController extends Controller
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));  
                 
 
-                $ticketData = $this->extractDayOfWeek($ticketRecord);               
+                $ticketRecord = $this->organiseWeek($ticketRecord);               
 
                 $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
@@ -177,7 +167,7 @@ class DashboardAdminController extends Controller
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
-                $ancillaryData = $this->extractDayOfWeek($ancillaryRecord);
+                $ancillaryRecord = $this->organiseWeek($ancillaryRecord);
 
                 $revenueRecord = TransactionRecord::whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -186,30 +176,29 @@ class DashboardAdminController extends Controller
                     ->groupBy('day_name')
                     ->get();
 
-                $revenueData = $this->extractDayOfWeek($revenueRecord);
+                $revenueRecord = $this->organiseWeek($revenueRecord);
                 
                 $revenueAmount = TransactionRecord::whereYear('created_at', $year)
                         ->whereMonth('created_at', $month)
                         ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                         ->sum(DB::raw('CAST(amount AS SIGNED)'));
-
-                return response()->json([
-                    'error' => false,
-                    'ticket' => [ 
-                        'ticket_amount' => $ticketAmount,
-                        "ticket_data" => $ticketData
-                    ],
-                    'ancillary' => [
-                        "ancillary_amount" => $ancillaryAmount,
-                        "ancillary_data" => $ancillaryData
-
-                    ], 
-                    'revenue' => [
-                        'revenue_amount' => $revenueAmount,
-                        'revenue_data' => $revenueData
-                    ]
-                ], 200);
             }
+
+            return response()->json([
+                'error' => false,
+                'ticket' => [ 
+                    "ticket_data" => $ticketRecord,
+                    "ticket_amount" => (int)  $ticketAmount
+                ],
+                'ancillary' => [
+                    "ancillary_data" => $ancillaryRecord,
+                    "ancillary_amount" => (int)  $ancillaryAmount
+                ], 
+                'revenue' => [
+                    'revenue_data' => $revenueRecord,
+                    'revenue_amount' => (int)  $revenueAmount
+                ]
+            ], 200);
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -219,22 +208,50 @@ class DashboardAdminController extends Controller
         }
     }
 
-    private function extractDayOfWeek($transactionArray) {
+    private function organiseWeek($transactionArray) {
         // Define an array for all days of the week with default total_amount as 0
         $daysOfWeek = [
-            "Monday" => ["day_of_week" => "Monday", "total_amount" => 0],
-            "Tuesday" => ["day_of_week" => "Tuesday", "total_amount" => 0],
-            "Wednesday" => ["day_of_week" => "Wednesday", "total_amount" => 0],
-            "Thursday" => ["day_of_week" => "Thursday", "total_amount" => 0],
-            "Friday" => ["day_of_week" => "Friday", "total_amount" => 0],
-            "Saturday" => ["day_of_week" => "Saturday", "total_amount" => 0],
-            "Sunday" => ["day_of_week" => "Sunday", "total_amount" => 0],
+            "Monday" => ["name" => "Monday", "total_amount" => 0],
+            "Tuesday" => ["name" => "Tuesday", "total_amount" => 0],
+            "Wednesday" => ["name" => "Wednesday", "total_amount" => 0],
+            "Thursday" => ["name" => "Thursday", "total_amount" => 0],
+            "Friday" => ["name" => "Friday", "total_amount" => 0],
+            "Saturday" => ["name" => "Saturday", "total_amount" => 0],
+            "Sunday" => ["name" => "Sunday", "total_amount" => 0],
         ];
 
          // Populate ticket data with query results
         foreach ($transactionArray as $transaction) {
             $dayName = $transaction->day_name;
             $daysOfWeek[$dayName]['total_amount'] = (int) $transaction->total_amount;
+        }
+
+        // Convert the daysOfWeek array to a non-associative array for JSON response
+        return array_values($daysOfWeek);
+        
+    } 
+
+    private function organiseYear($transactionArray) {
+        // Define an array for all days of the week with default total_amount as 0
+        $daysOfWeek = [
+            "January" => ["name" => "January", "total_amount" => 0],
+            "Febuary" => ["name" => "Febuary", "total_amount" => 0],
+            "March" => ["name" => "March", "total_amount" => 0],
+            "April" => ["name" => "April", "total_amount" => 0],
+            "May" => ["name" => "May", "total_amount" => 0],
+            "June" => ["name" => "June", "total_amount" => 0],
+            "July" => ["name" => "July", "total_amount" => 0],
+            "August" => ["name" => "August", "total_amount" => 0],
+            "September" => ["name" => "September", "total_amount" => 0],
+            "October" => ["name" => "October", "total_amount" => 0],
+            "November" => ["name" => "November", "total_amount" => 0],
+            "December" => ["name" => "December", "total_amount" => 0]
+        ];
+
+         // Populate ticket data with query results
+        foreach ($transactionArray as $transaction) {
+            $monthName = $transaction->month_name;
+            $daysOfWeek[$monthName]['total_amount'] = (int) $transaction->total_amount;
         }
 
         // Convert the daysOfWeek array to a non-associative array for JSON response
