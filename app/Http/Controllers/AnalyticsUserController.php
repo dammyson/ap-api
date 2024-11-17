@@ -113,8 +113,7 @@ class AnalyticsUserController extends Controller
 
         try {
 
-            $userTickets = TransactionRecord::where('peace_id', $user->peace_id)
-                ->whereYear('created_at', $year)
+            $userTickets = TransactionRecord::whereYear('created_at', $year)
                 ->where('ticket_type', 'ticket')
                 ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as total_count'))
                 ->groupBy('month')
