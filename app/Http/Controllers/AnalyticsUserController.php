@@ -118,11 +118,20 @@ class AnalyticsUserController extends Controller
                 ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('COUNT(*) as total_count'))
                 ->groupBy(DB::raw('month_name'))
                 ->get();
+
+            $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
+                ->whereYear('created_at', $year)
+                ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
+                ->groupBy(DB::raw('month_name'))
+                ->get();
+
+            
             
             $organisedUserTickets = $this->organiseYearlyChart($userTickets);
     
             return response()->json([
                 "error" => false,
+                "ticket_record" => $ticketRecord,
                 "grouped" => $userTickets,
                 "user_tickets" => $organisedUserTickets
             ], 200);
