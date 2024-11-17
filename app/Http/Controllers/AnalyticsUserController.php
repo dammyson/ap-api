@@ -109,7 +109,7 @@ class AnalyticsUserController extends Controller
 
     public function countriesAndCityChart(Request $request) {
         $user = $request->user();
-        $year = Carbon::now()->year();
+        $year = Carbon::now()->year;
 
         try {
 
