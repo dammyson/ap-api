@@ -124,6 +124,7 @@ class AnalyticsUserController extends Controller
     
             return response()->json([
                 "error" => false,
+                "grouped" => $userTickets,
                 "user_tickets" => $organisedUserTickets
             ], 200);
         
