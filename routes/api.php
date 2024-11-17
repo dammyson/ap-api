@@ -323,6 +323,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::get('total-referrals', [AnalyticsUserController::class, 'totalReferral']);
         Route::get('number-of-countries-visited', [AnalyticsUserController::class, 'countriesVisited']);
         Route::get('total-mile-flown', [AnalyticsUserController::class, 'totalMileFlown']);
+        Route::get('countries-and-cities-charts', [AnalyticsUserController::class, 'countriesAndCityChart']);
         // Route::get('delete', [AnalyticsUserController::class, 'deleteFlight']); //135;
         // Route::get('totalMileFlown')
         
