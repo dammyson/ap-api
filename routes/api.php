@@ -302,6 +302,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('create-wallet', [WalletController::class, 'createWallet']);
         Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
         Route::get('upcoming-trips', [AnalyticsUserController::class, 'upcomingTrips']);
+
+        Route::get('getpoint', [ProfileController::class, 'getPoint']);
     });
 
 

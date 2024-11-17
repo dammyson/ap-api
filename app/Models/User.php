@@ -82,5 +82,6 @@ class User extends Authenticatable
     public function flightRecords()
     {
         return $this->hasMany(FlightRecord::class, 'peace_id', 'peace_id');
+        return $this->hasOne(TierPoint::class);
     }
 }

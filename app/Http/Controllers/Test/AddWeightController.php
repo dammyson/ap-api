@@ -550,7 +550,7 @@ class AddWeightController extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dd($response);
+             dd($response);
             $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
             $invoice = InvoiceRecord::find($invoiceId);
