@@ -110,6 +110,7 @@ class AnalyticsUserController extends Controller
     public function countriesAndCityChart(Request $request) {
         $user = $request->user();
         $year = Carbon::now()->year;
+        $testyear = Carbon::now()->year();
 
         try {
 
@@ -131,6 +132,7 @@ class AnalyticsUserController extends Controller
     
             return response()->json([
                 "error" => false,
+                "testyear" => $testyear,
                 "ticket_record" => $ticketRecord,
                 "grouped" => $userTickets,
                 "user_tickets" => $organisedUserTickets
@@ -162,8 +164,8 @@ class AnalyticsUserController extends Controller
         ];
 
         foreach($userTickets as $item) {
-            if($item["month"]) {
-                $yearly[$item["month"]]["total_count"] = $item["total_count"];
+            if($item["month_name"]) {
+                $yearly[$item["month_name"]]["total_count"] = $item["total_count"];
             }
         }
 
