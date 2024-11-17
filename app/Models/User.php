@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Tier::class);
     }
+
+    public function tierPoint()
+    {
+        return $this->hasOne(TierPoint::class);
+    }
 }
