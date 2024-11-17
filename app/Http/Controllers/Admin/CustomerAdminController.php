@@ -49,7 +49,7 @@ class CustomerAdminController extends Controller
                 event( new AdminCustomerEvent($admin,  $points, $user, $reason));
 
                 return response()->json([
-                    'error' => 'false',
+                    'error' => false,
                     'points' => $points,
                     'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
                 ], 200);
