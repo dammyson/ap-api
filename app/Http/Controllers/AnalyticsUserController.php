@@ -110,31 +110,20 @@ class AnalyticsUserController extends Controller
     public function countriesAndCityChart(Request $request) {
         $user = $request->user();
         $year = Carbon::now()->year;
-        $testyear = Carbon::now()->year();
 
         try {
 
-            $userTickets = TransactionRecord::whereYear('created_at', $year)
+            $userTickets = TransactionRecord::where('peace_id', $user->peace_id)
+                ->whereYear('created_at', $year)
                 ->where('ticket_type', 'ticket')
                 ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('COUNT(*) as total_count'))
                 ->groupBy(DB::raw('month_name'))
                 ->get();
-
-            $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
-                ->whereYear('created_at', $year)
-                ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
-                ->groupBy(DB::raw('month_name'))
-                ->get();
-
-            
             
             $organisedUserTickets = $this->organiseYearlyChart($userTickets);
     
             return response()->json([
                 "error" => false,
-                "testyear" => $testyear,
-                "ticket_record" => $ticketRecord,
-                "grouped" => $userTickets,
                 "user_tickets" => $organisedUserTickets
             ], 200);
         
