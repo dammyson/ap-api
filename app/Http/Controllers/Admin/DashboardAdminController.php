@@ -323,7 +323,7 @@ class DashboardAdminController extends Controller
     }
 
 
-    public function userByDeviceTwo(Request $request) {
+    public function userByDevice(Request $request) {
         try {
             // $today = Carbon::now();
             $sevenDaysAgo = Carbon::now()->subDays(7);
