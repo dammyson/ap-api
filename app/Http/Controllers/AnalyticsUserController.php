@@ -115,8 +115,8 @@ class AnalyticsUserController extends Controller
 
             $userTickets = TransactionRecord::whereYear('created_at', $year)
                 ->where('ticket_type', 'ticket')
-                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as total_count'))
-                ->groupBy('month')
+                ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('COUNT(*) as total_count'))
+                ->groupBy(DB::raw('month_name'))
                 ->get();
             
             $organisedUserTickets = $this->organiseYearlyChart($userTickets);
