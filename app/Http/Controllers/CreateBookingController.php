@@ -395,6 +395,7 @@ class CreateBookingController extends Controller
                 $destinationCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
                 $ticketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
                 $flightDistance = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["distance"];
+                $flightNumber = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["flightNumber"];
                 $flightDuration = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                 
 
@@ -416,6 +417,7 @@ class CreateBookingController extends Controller
                         'destination_city' => $destinationCity,
                         'ticket_type' => $ticketType,
                         'flight_distance' => $flightDistance,
+                        // 'flight_number' => $flightNumber,
                         'flight_duration' => $totalHours
                     ]);  
                     $ticketCount += 1;
@@ -436,6 +438,7 @@ class CreateBookingController extends Controller
                             'destination_city' => $destinationCity,
                             'ticket_type' => $ticketType,
                             'flight_distance' => $flightDistance,
+                            // 'flight_Number' => $flightNumber,
                             'flight_duration' => $totalHours
                         ]); 
                         
@@ -456,6 +459,7 @@ class CreateBookingController extends Controller
                         $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
                         $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
                         $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
+                        $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
                         $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                         
                         $totalHours = $this->getFlightHours($flightDuration);
@@ -474,6 +478,7 @@ class CreateBookingController extends Controller
                             'destination_city' => $destinationCity,
                             'ticket_type' => $ticketType,
                             'flight_distance' => $flightDistance,
+                            // 'flight_number' => $flightNumber,
                             'flight_duration' => $totalHours
                         ]);  
 
@@ -495,6 +500,7 @@ class CreateBookingController extends Controller
                             $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
                             $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
                             $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
+                            $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
                             $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                             
                             $totalHours = $this->getFlightHours($flightDuration);
@@ -513,6 +519,7 @@ class CreateBookingController extends Controller
                                 'destination_city' => $destinationCity,
                                 'ticket_type' => $ticketType,
                                 'flight_distance' => $flightDistance,
+                                // 'flight_number' => $flightNumber,
                                 'flight_duration' => $totalHours
                             ]); 
                             
