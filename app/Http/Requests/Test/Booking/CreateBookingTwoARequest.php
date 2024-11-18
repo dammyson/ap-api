@@ -128,7 +128,6 @@ class CreateBookingTwoARequest extends FormRequest
             "specialServiceRequestList.*.airTravelerSequence" => "required|string",
             "specialServiceRequestList.*.flightSegmentSequence" => "required|string",
             "specialServiceRequestList.*.SSRCode" => "required|string",
-            "specialServiceRequestList.*.SSRGroup" => "sometimes|string",
             "specialServiceRequestList.*.SSRExplanation" => "required|string",            
             "specialServiceRequestList.*.ticketedServiceQuantity" => "required|string",
             "specialServiceRequestList.*.ticketedStatus" => "required|string",  
