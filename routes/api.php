@@ -290,6 +290,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
         Route::post('create-wallet', [WalletController::class, 'createWallet']);
+        Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
     });
 
 
