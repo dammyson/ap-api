@@ -163,6 +163,29 @@ class AnalyticsUserController extends Controller
 
     }
 
+    protected function tripHistory(Request $request) {
+        $user = $request->user();
+
+        try {
+            $tripHistory = FlightRecord::where('peace_id', $user->peace_id)
+                ->where('departure_time', '<=', Carbon::now())
+                // ->where('is_paid', true)
+                ->select('origin_city', 'destination_city')
+                ->get();
+    
+            return response()->json([
+                "error" => false,
+                "trip_history" => $tripHistory
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                "error" => true,
+                "message" => $th->getMessage()
+            ]);
+        }
+    }
+
     // public function deleteFlight() {
     //     $flightRecord = FlightRecord::find(135);
     //     $flightRecord->delete();
