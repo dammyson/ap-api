@@ -398,7 +398,7 @@ class CreateBookingController extends Controller
                 $flightNumber = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["flightNumber"];
                 $flightDuration = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                 
-                dd($flightNumber);
+                
 
                 $totalHours = $this->getFlightHours($flightDuration);
 
@@ -438,7 +438,7 @@ class CreateBookingController extends Controller
                             'origin_city' => $originCity,
                             'destination_city' => $destinationCity,
                             'ticket_type' => $ticketType,
-                            'flight_Number' => $flightNumber,
+                            'flight_number' => $flightNumber,
                             'flight_distance' => $flightDistance,
                             'flight_duration' => $totalHours
                         ]); 
@@ -462,7 +462,7 @@ class CreateBookingController extends Controller
                         $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
                         $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
                         $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
-                        dd($flightNumber);
+                        
                         $totalHours = $this->getFlightHours($flightDuration);
 
                         FlightRecord::create([
@@ -504,7 +504,7 @@ class CreateBookingController extends Controller
                             $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
                             $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
                             
-                            dd($flightNumber);
+                            
                             $totalHours = $this->getFlightHours($flightDuration);
 
                             FlightRecord::create([
