@@ -417,7 +417,7 @@ class CreateBookingController extends Controller
                         'destination_city' => $destinationCity,
                         'ticket_type' => $ticketType,
                         'flight_distance' => $flightDistance,
-                        // 'flight_number' => $flightNumber,
+                        'flight_number' => $flightNumber,
                         'flight_duration' => $totalHours
                     ]);  
                     $ticketCount += 1;
@@ -438,7 +438,7 @@ class CreateBookingController extends Controller
                             'destination_city' => $destinationCity,
                             'ticket_type' => $ticketType,
                             'flight_distance' => $flightDistance,
-                            // 'flight_Number' => $flightNumber,
+                            'flight_Number' => $flightNumber,
                             'flight_duration' => $totalHours
                         ]); 
                         
@@ -478,7 +478,7 @@ class CreateBookingController extends Controller
                             'destination_city' => $destinationCity,
                             'ticket_type' => $ticketType,
                             'flight_distance' => $flightDistance,
-                            // 'flight_number' => $flightNumber,
+                            'flight_number' => $flightNumber,
                             'flight_duration' => $totalHours
                         ]);  
 
@@ -519,7 +519,7 @@ class CreateBookingController extends Controller
                                 'destination_city' => $destinationCity,
                                 'ticket_type' => $ticketType,
                                 'flight_distance' => $flightDistance,
-                                // 'flight_number' => $flightNumber,
+                                'flight_number' => $flightNumber,
                                 'flight_duration' => $totalHours
                             ]); 
                             
