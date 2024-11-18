@@ -22,6 +22,7 @@ class FlightRecord extends Model
         'origin_city',
         'destination_city',
         'ticket_type',
+        'flight_number',
         'flight_distance',
         'flight_duration'
     ];
