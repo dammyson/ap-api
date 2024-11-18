@@ -167,7 +167,8 @@ class AnalyticsUserController extends Controller
         $user = $request->user();
 
         try {
-            $tripHistory = FlightRecord::where('departure_time', '>=', Carbon::now())
+            $tripHistory = FlightRecord::where('peace_id', $user->peace_id)
+                ->where('departure_time', '<=', Carbon::now())
                 // ->where('is_paid', true)
                 ->select('origin_city', 'destination_city')
                 ->get();
