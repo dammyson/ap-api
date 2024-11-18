@@ -261,13 +261,14 @@ class CreateBookingController extends Controller
             $specialServiceRequestList
         );
 
-    //    dd($xml);
+       // dd($xml);
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
-    
 
         $response = $this->craneOTASoapService->run($function, $xml);
+
         dd($response);
+
 
         // dd($response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']);
 
