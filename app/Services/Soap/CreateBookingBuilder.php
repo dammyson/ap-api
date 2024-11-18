@@ -445,8 +445,8 @@ class CreateBookingBuilder
                             <bundleRelatedSsr/>
                             <code>' . htmlspecialchars($string['SSRCode'], ENT_XML1, 'UTF-8') . '</code>
                             <exchangeable/>
+                            <group>' . htmlspecialchars($string['SSRGroup'], ENT_XML1, 'UTF-8') . '</group>
                             <explanation>' . htmlspecialchars($string['SSRExplanation'], ENT_XML1, 'UTF-8') . '</explanation>
-                            <ssrGroup>' . htmlspecialchars($string['SSRGroup'], ENT_XML1, 'UTF-8') . '</ssrGroup>
                             <extraBaggage/>
                             <free/>
                             <iciAllowed/>
