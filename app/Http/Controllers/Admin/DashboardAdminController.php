@@ -329,13 +329,13 @@ class DashboardAdminController extends Controller
             $sevenDaysAgo = Carbon::now()->subDays(7);
 
             $androidUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'Android')->count();
-            $iosUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->count();
+            $iosUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'Ios')->count();
 
             $percentageOfAndroid = $androidUsers > 0 ? ($androidUsers / ($androidUsers + $iosUsers)) * 100 : 0;
             $percentageOfIos = $iosUsers > 0 ? ($iosUsers / ($androidUsers + $iosUsers)) * 100 : 0;
 
             $amountAndroid = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'Android')->sum('amount');
-            $amountIos = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->sum('amount');
+            $amountIos = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'Ios')->sum('amount');
 
             return response()->json([
                 "error" => false,
