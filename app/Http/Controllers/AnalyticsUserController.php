@@ -163,7 +163,7 @@ class AnalyticsUserController extends Controller
 
     }
 
-    protected function tripHistory(Request $request) {
+    public function tripHistory(Request $request) {
         $user = $request->user();
 
         try {
