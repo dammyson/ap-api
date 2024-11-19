@@ -318,11 +318,11 @@ class CreateBookingTestBuilder
                             <code>XBAG</code>
                             <codeContext>IATA</codeContext>
                             <exchangeable>false</exchangeable>
-                            <explanation>XBAG</explanation>
+                            <explanation>2KG</explanation>
                             <extraBaggage>true</extraBaggage>
                             <free>false</free>
-                            <groupCode>BAG</groupCode>
-                            <groupCodeExplanation>5KG</groupCodeExplanation>
+                            <groupCode>BAGGAGE</groupCode>
+                            <groupCodeExplanation>2KG</groupCodeExplanation>
                             <iciAllowed>false</iciAllowed>
                             <refundable>false</refundable>
                             <showOnItinerary>false</showOnItinerary>
