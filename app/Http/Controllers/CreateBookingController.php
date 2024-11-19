@@ -12,6 +12,7 @@ use App\Services\Soap\CreateBookingBuilder;
 use App\Http\Requests\Test\Booking\CreateBookingOWRequest;
 use App\Http\Requests\Test\Booking\CreateBookingRTRequest;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
+use App\Services\Soap\CreateBookingTestBuilder;
 use App\Services\Utility\CheckArray;
 
 class CreateBookingController extends Controller
@@ -20,13 +21,15 @@ class CreateBookingController extends Controller
     protected $craneOTASoapService;
     protected $craneAncillaryOTASoapService;
     protected $checkArray;
+    protected $createBookingTestBuilder;
 
-    public function __construct(CreateBookingBuilder $createBookingBuilder, CheckArray $checkArray) {
+    public function __construct(CreateBookingBuilder $createBookingBuilder, CreateBookingTestBuilder $createBookingTestBuilder, CheckArray $checkArray) {
         $this->createBookingBuilder = $createBookingBuilder;
 
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->checkArray = $checkArray;
+        $this->createBookingTestBuilder = $createBookingTestBuilder;
     }
 
     public function createBookingRT(CreateBookingRTRequest $request) {
@@ -253,7 +256,7 @@ class CreateBookingController extends Controller
         $specialServiceRequestList = $validated['specialServiceRequestList'];
         
 
-        $xml = $this->createBookingBuilder->createBookingTwoA(
+        $xml = $this->createBookingTestBuilder->createBookingTestTwoA(
             $CreateBookOriginDestinationOptionList,
             $airTravelerList,
             $airTravelerListChild,

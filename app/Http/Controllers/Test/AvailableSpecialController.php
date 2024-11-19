@@ -44,7 +44,7 @@ class AvailableSpecialController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
 
         $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
-        dd($response);
+        return $response;
     }
 
     public function AvailableSpecialServiceOW(AvailableSpecialServiceOWRequest $request) {
