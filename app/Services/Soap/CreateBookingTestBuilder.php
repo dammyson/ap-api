@@ -315,7 +315,7 @@ class CreateBookingTestBuilder
                         <SSR>
                             <allowedQuantityPerPassenger>0</allowedQuantityPerPassenger>
                             <bundleRelatedSsr>false</bundleRelatedSsr>
-                            <code>5BAG</code>
+                            <code>XBAG</code>
                             <codeContext>IATA</codeContext>
                             <exchangeable>false</exchangeable>
                             <explanation>5BAG</explanation>
