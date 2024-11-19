@@ -5,12 +5,6 @@ namespace App\Services\Soap;
 class AvailableSpecialServiceBuilder {
 
     public function AvailableSpecialServiceTwoA (
-      $cityCode, 
-      $code, 
-      $codeContext, 
-      $companyFullName,
-      $companyShortName, 
-      $countryCode, 
       $ID, 
       $referenceID
       ) {
@@ -29,12 +23,12 @@ class AvailableSpecialServiceBuilder {
                  </clientInformation>
                  <bookingReferenceID>
                     <companyName>
-                       <cityCode>' . htmlspecialchars($cityCode, ENT_XML1, 'UTF-8') . '</cityCode>
-                       <code>' . htmlspecialchars($code, ENT_XML1, 'UTF-8') . '</code>
-                       <codeContext>' . htmlspecialchars($codeContext, ENT_XML1, 'UTF-8') . '</codeContext>
-                       <companyFullName>' . htmlspecialchars($companyFullName, ENT_XML1, 'UTF-8') . '</companyFullName>
-                       <companyShortName>' . htmlspecialchars($companyShortName, ENT_XML1, 'UTF-8') . '</companyShortName>
-                       <countryCode>' . htmlspecialchars($countryCode, ENT_XML1, 'UTF-8') . '</countryCode>
+                       <cityCode>LOS</cityCode>
+                       <code>P4</code>
+                       <codeContext>CRANE</codeContext>
+                       <companyFullName>SCINTILLA</companyFullName>
+                       <companyShortName>SCINTILLA</companyShortName>
+                       <countryCode>NG</countryCode>
                     </companyName>
                     <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
                     <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
@@ -51,12 +45,6 @@ class AvailableSpecialServiceBuilder {
 
 
     public function AvailableSpecialServiceOW(
-      $cityCode, 
-      $code, 
-      $codeContext, 
-      $companyFullName, 
-      $companyShortName, 
-      $companyCountryCode, 
       $ID, 
       $referenceID
       ) {
@@ -74,16 +62,16 @@ class AvailableSpecialServiceBuilder {
                     <preferredCurrency>NGN</preferredCurrency>
                  </clientInformation>
                  <bookingReferenceID>
-                 <companyName>
-                    <cityCode>' . htmlspecialchars($cityCode, ENT_XML1, 'UTF-8') . '</cityCode>
-                    <code>' . htmlspecialchars($code, ENT_XML1, 'UTF-8') . '</code>
-                    <codeContext>' . htmlspecialchars($codeContext, ENT_XML1, 'UTF-8') . '</codeContext>
-                    <companyFullName>' . htmlspecialchars($companyFullName, ENT_XML1, 'UTF-8') . '</companyFullName>
-                    <companyShortName>' . htmlspecialchars($companyShortName, ENT_XML1, 'UTF-8') . '</companyShortName>
-                    <countryCode>' . htmlspecialchars($companyCountryCode, ENT_XML1, 'UTF-8') . '</countryCode>
-                 </companyName>
-                 <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
-                 <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
+                     <companyName>
+                        <cityCode>LOS</cityCode>
+                        <code>P4</code>
+                        <codeContext>CRANE</codeContext>
+                        <companyFullName>SCINTILLA</companyFullName>
+                        <companyShortName>SCINTILLA</companyShortName>
+                        <countryCode>NG</countryCode>
+                     </companyName>
+                     <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
+                     <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
                  </bookingReferenceID>
                  <cabinUpgradeAvailable/>
                  <frequentFlyerRedemption/>
@@ -97,12 +85,6 @@ class AvailableSpecialServiceBuilder {
 
 
    public function AvailableSpecialServiceRT(
-      $cityCode, 
-      $code, 
-      $codeContext, 
-      $companyFullName, 
-      $companyShortName, 
-      $countryCode, 
       $ID, 
       $referenceID
    ) {
@@ -121,13 +103,13 @@ class AvailableSpecialServiceBuilder {
               </clientInformation>
               <bookingReferenceID>
                  <companyName>
-                 <cityCode>' . htmlspecialchars($cityCode, ENT_XML1, 'UTF-8') . '</cityCode>
-                 <code>' . htmlspecialchars($code, ENT_XML1, 'UTF-8') . '</code>
-                 <codeContext>' . htmlspecialchars($codeContext, ENT_XML1, 'UTF-8') . '</codeContext>
-                 <companyFullName>' . htmlspecialchars($companyFullName, ENT_XML1, 'UTF-8') . '</companyFullName>
-                 <companyShortName>' . htmlspecialchars($companyShortName, ENT_XML1, 'UTF-8') . '</companyShortName>
-                 <countryCode>' . htmlspecialchars($countryCode, ENT_XML1, 'UTF-8') . '</countryCode>
-                 </companyName>
+                       <cityCode>LOS</cityCode>
+                       <code>P4</code>
+                       <codeContext>CRANE</codeContext>
+                       <companyFullName>SCINTILLA</companyFullName>
+                       <companyShortName>SCINTILLA</companyShortName>
+                       <countryCode>NG</countryCode>
+                    </companyName>
                  <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
                  <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
               </bookingReferenceID>
