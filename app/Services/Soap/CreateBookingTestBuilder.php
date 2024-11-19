@@ -321,8 +321,8 @@ class CreateBookingTestBuilder
                             <explanation>XBAG</explanation>
                             <extraBaggage>true</extraBaggage>
                             <free>false</free>
-                            <groupCode>5</groupCode>
-                            <groupCodeExplanation>BAG</groupCodeExplanation>
+                            <groupCode>BAG</groupCode>
+                            <groupCodeExplanation>5KG</groupCodeExplanation>
                             <iciAllowed>false</iciAllowed>
                             <refundable>false</refundable>
                             <showOnItinerary>false</showOnItinerary>
