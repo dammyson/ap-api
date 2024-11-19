@@ -322,7 +322,7 @@ class CreateBookingTestBuilder
                             <extraBaggage>true</extraBaggage>
                             <free>false</free>
                             <groupCode>BAGGAGE</groupCode>
-                            <groupCodeExplanation>2KG</groupCodeExplanation>
+                            <groupCodeExplanation>BAGGAGE</groupCodeExplanation>
                             <iciAllowed>false</iciAllowed>
                             <refundable>false</refundable>
                             <showOnItinerary>false</showOnItinerary>
