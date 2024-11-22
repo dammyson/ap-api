@@ -264,7 +264,7 @@ class CreateBookingController extends Controller
             $specialServiceRequestList
         );
 
-       // dd($xml);
+    //    dd($xml);
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
 
@@ -348,14 +348,14 @@ class CreateBookingController extends Controller
             $specialServiceRequestList
         );
 
-       // dd($xml);
+    //    dd($xml);
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            // dd($response);
+            dd($response);
 
             if (!array_key_exists('AirBookingResponse', $response)) {
                 return response()->json([

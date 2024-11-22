@@ -313,22 +313,18 @@ class CreateBookingTestBuilder
                         <airTravelerSequence>' . htmlspecialchars($string['airTravelerSequence'], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
                         <flightSegmentSequence>' . htmlspecialchars($string['flightSegmentSequence'], ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
                         <SSR>
-                            <allowedQuantityPerPassenger>0</allowedQuantityPerPassenger>
-                            <bundleRelatedSsr>false</bundleRelatedSsr>
-                            <code>XBAG</code>
-                            <codeContext>IATA</codeContext>
-                            <exchangeable>false</exchangeable>
-                            <explanation>2KG</explanation>
-                            <extraBaggage>true</extraBaggage>
-                            <free>false</free>
-                            <groupCode>BAGGAGE</groupCode>
-                            <groupCodeExplanation>BAGGAGE</groupCodeExplanation>
-                            <iciAllowed>false</iciAllowed>
-                            <refundable>false</refundable>
-                            <showOnItinerary>false</showOnItinerary>
-                            <unitOfMeasureExist>true</unitOfMeasureExist>
-                        </SSR>
-                        
+                            <allowedQuantityPerPassenger/>
+                            <bundleRelatedSsr/>
+                            <code>' . htmlspecialchars($string['SSRCode'], ENT_XML1, 'UTF-8') . '</code>
+                            <explanation>' . htmlspecialchars($string['SSRExplanation'], ENT_XML1, 'UTF-8') . '</explanation>
+                            <exchangeable/>
+                            <extraBaggage/>
+                            <free/>
+                            <iciAllowed/>
+                            <refundable/>
+                            <showOnItinerary/>
+                            <unitOfMeasureExist/>
+                        </SSR>                        
                         <serviceQuantity>' . htmlspecialchars($string['ticketedServiceQuantity'], ENT_XML1, 'UTF-8') . '</serviceQuantity>
                         <status>' . htmlspecialchars($string['ticketedStatus'], ENT_XML1, 'UTF-8') . '</status>
                         <ticketed/>
