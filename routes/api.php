@@ -91,9 +91,9 @@ Route::group(['prefix' => 'admin/'], function () {
     Route::post('forgot-password', [ForgetPasswordAdminController::class, 'forgotPassword']);
     Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
     Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
-
+    
     Route::middleware('auth:admin')->group(function () {    
-        Route::group(['prefix' => 'dashboard'], function () {
+        Route::group(['prefix' => 'dashboard/screen-resolution'], function () {
             Route::get('weekly-analysis', [DashboardAdminController::class, 'weeklyAnalysis']);
             Route::get('revenue-graph/{filter}', [DashboardAdminController::class, 'revenueGraph']);
             Route::get('user-by-device', [DashboardAdminController::class, 'userByDevice']);

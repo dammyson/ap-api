@@ -355,7 +355,7 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            dd($response);
+            // dd($response);
 
             if (!array_key_exists('AirBookingResponse', $response)) {
                 return response()->json([
@@ -393,10 +393,10 @@ class CreateBookingController extends Controller
                 $arrival_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
                 $departure_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureDateTime'];
                 $origin = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                $arrivalAirportLocationCode = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
+                // $arrivalAirportLocationCode = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
                 $destination = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                $departureAirportLocationCode = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                $originCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName'];
+                // $departureAirportLocationCode = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
+                $originCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
                 $destinationCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
                 $ticketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
                 $flightDistance = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["distance"];
@@ -461,8 +461,8 @@ class CreateBookingController extends Controller
                         $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
                         $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
                         $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                        $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName'];
-                        $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
+                        $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
+                        $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
                         $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
                         $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
                         $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
@@ -502,8 +502,8 @@ class CreateBookingController extends Controller
                             $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
                             $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
                             $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                            $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['cityInfo']['city']['locationName'];
-                            $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['cityInfo']['city']['locationName'];
+                            $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
+                            $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
                             $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
                             $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
                             $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
