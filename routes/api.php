@@ -63,6 +63,7 @@ use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
+use App\Http\Controllers\Test\ReissuePNRController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\WalletController;
 use Psy\Sudo;
@@ -90,9 +91,9 @@ Route::group(['prefix' => 'admin/'], function () {
     Route::post('forgot-password', [ForgetPasswordAdminController::class, 'forgotPassword']);
     Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
     Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
-
+    
     Route::middleware('auth:admin')->group(function () {    
-        Route::group(['prefix' => 'dashboard'], function () {
+        Route::group(['prefix' => 'dashboard/screen-resolution'], function () {
             Route::get('weekly-analysis', [DashboardAdminController::class, 'weeklyAnalysis']);
             Route::get('revenue-graph/{filter}', [DashboardAdminController::class, 'revenueGraph']);
             Route::get('user-by-device', [DashboardAdminController::class, 'userByDevice']);
@@ -251,6 +252,15 @@ Route::group(["middleware" => ["auth:api"]], function() {
             Route::post('md', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductMD']);
             Route::post('two-a', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductTwoA']);
             Route::post('ow', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductOW']);
+        });
+
+        Route::group(['prefix' => 'reissue-ticket-pnr'], function() {
+            Route::post('reissue', [ReissuePNRController::class, 'reissueTicketPNR']);
+            Route::post('commit', [ReissuePNRController::class, 'reissueTicketCommit']);
+            Route::post('addFlightPreview', [ReissuePNRController::class, 'reissuePnrAddFlightPreview']);
+            Route::post('addFlightCommit', [ReissuePNRController::class, 'reissuePnrAddFlightCommit']);
+            Route::post('reissuePnrCancelFlightPreview', [ReissuePNRController::class, 'reissuePnrCancelFlightPreview']);
+            Route::post('reissuePnrCancelFlightCommit', [ReissuePNRController::class, 'reissuePnrCancelFlightCommit']);
         });
 
         Route::group(["prefix" => "cancel-booking"], function () {
