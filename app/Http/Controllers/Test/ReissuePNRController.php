@@ -712,9 +712,9 @@ class ReissuePNRController extends Controller
             $statusTwo
         );        
         $user = $request->user();
-        if (!$user->device_type) {
-            $deviceType = "ANDROID";
-        }
+
+        $deviceType = $user->device_type ?? "ANDROID";
+       
 
         $dayOfWeek = Carbon::now()->format('1');
         // dd($xml);
