@@ -330,19 +330,23 @@ class DashboardAdminController extends Controller
 
             $androidUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'ANDROID')->count();
             $iosUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->count();
+            $otherUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'UNKNOWN')->count();
 
-            $percentageOfAndroid = $androidUsers > 0 ? ($androidUsers / ($androidUsers + $iosUsers)) * 100 : 0;
-            $percentageOfIos = $iosUsers > 0 ? ($iosUsers / ($androidUsers + $iosUsers)) * 100 : 0;
+            $percentageOfAndroid = $androidUsers > 0 ? ($androidUsers / ($androidUsers + $iosUsers + $otherUsers)) * 100 : 0;
+            $percentageOfIos = $iosUsers > 0 ? ($iosUsers / ($androidUsers + $iosUsers + $otherUsers)) * 100 : 0;
+            $percentageOfOthers = $iosUsers > 0 ? ($iosUsers / ($androidUsers + $iosUsers + $otherUsers)) * 100 : 0;
 
             $amountAndroid = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'ANDROID')->sum('amount');
             $amountIos = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->sum('amount');
+            $amountUnknown = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'UNKNOWN')->sum('amount');
 
             return response()->json([
                 "error" => false,
                 "android_percent" => $percentageOfAndroid,
                 "ios_percent" => $percentageOfIos,
                 "android_revenue" => $amountAndroid,
-                "ios_revenue" => $amountIos
+                "ios_revenue" => $amountIos,
+                
             ], 200);
 
         } catch(\Throwable $th) {
