@@ -93,7 +93,7 @@ Route::group(['prefix' => 'admin/'], function () {
     Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
     
     Route::middleware('auth:admin')->group(function () {    
-        Route::group(['prefix' => 'dashboard/screen-resolution'], function () {
+        Route::group(['prefix' => 'dashboard'], function () {
             Route::get('weekly-analysis', [DashboardAdminController::class, 'weeklyAnalysis']);
             Route::get('revenue-graph/{filter}', [DashboardAdminController::class, 'revenueGraph']);
             Route::get('user-by-device', [DashboardAdminController::class, 'userByDevice']);
