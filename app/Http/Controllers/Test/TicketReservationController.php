@@ -221,12 +221,9 @@ class TicketReservationController extends Controller
             // $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][index]['bookFlightSegmentList']['flightSegment']['flightNumber'];
             
             $dayOfWeek = Carbon::now()->format('1');
-            $deviceType = Device::where('user_id', $user->id)->first();
+            $userDevice = Device::where('user_id', $user->id)->first();
 
-            if (!$deviceType) {
-                $deviceType = 'Android';
-            }
-
+           
             // if (array_key_exists('couponInfoList', $ticketItemList)) {
             if ($this->checkArray->isAssociativeArray($ticketItemList)) {
                 $paymentReferenceID = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
@@ -248,8 +245,7 @@ class TicketReservationController extends Controller
                         'ticket_type' => 'ticket',
                         'user_id' => $user->id,
                         'invoice_id' => $invoice->id,
-                        // 'device_type' => $deviceType->device_type,
-                        'device_type' => $deviceType,
+                        'device_type' => $userDevice->device_type ?? "ANDROID",
                         'day_of_week' => $dayOfWeek
                     ]);                    
                 
@@ -268,8 +264,7 @@ class TicketReservationController extends Controller
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
-                            // 'device_type' => $deviceType->device_type,
-                            'device_type' => $deviceType,
+                            'device_type' => $userDevice->device_type ?? "ANDROID",
                             'day_of_week' => $dayOfWeek
                         ]
                     ); 
@@ -302,8 +297,7 @@ class TicketReservationController extends Controller
                             'ticket_type' => 'ticket',
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
-                            // 'device_type' => $deviceType->device_type,
-                            'device_type' => $deviceType,
+                            'device_type' => $userDevice->device_type ?? "ANDROID",
                             'day_of_week' => $dayOfWeek
                         ]);  
 
@@ -322,8 +316,7 @@ class TicketReservationController extends Controller
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
-                            // 'device_type' => $deviceType->device_type,
-                            'device_type' => $deviceType,
+                            'device_type' => $userDevice->device_type ?? "ANDROID",
                             'day_of_week' => $dayOfWeek
                         ]); 
                     }                
