@@ -424,7 +424,8 @@ class CreateBookingController extends Controller
                         'ticket_type' => $ticketType,
                         'flight_number' => $flightNumber,
                         'flight_distance' => $flightDistance,
-                        'flight_duration' => $totalHours
+                        'flight_duration' => $totalHours,
+                        'amount' => $amount
                     ]);  
                     $ticketCount += 1;
 
@@ -445,7 +446,8 @@ class CreateBookingController extends Controller
                             'ticket_type' => $ticketType,
                             'flight_number' => $flightNumber,
                             'flight_distance' => $flightDistance,
-                            'flight_duration' => $totalHours
+                            'flight_duration' => $totalHours,
+                            'amount' => $amount
                         ]); 
                         
                         $ticketCount += 1;
@@ -485,7 +487,8 @@ class CreateBookingController extends Controller
                             'ticket_type' => $ticketType,
                             'flight_distance' => $flightDistance,
                             'flight_number' => $flightNumber,
-                            'flight_duration' => $totalHours
+                            'flight_duration' => $totalHours,
+                            'amount' => $amount
                         ]);  
 
 
@@ -527,7 +530,8 @@ class CreateBookingController extends Controller
                                 'ticket_type' => $ticketType,
                                 'flight_distance' => $flightDistance,
                                 'flight_number' => $flightNumber,
-                                'flight_duration' => $totalHours
+                                'flight_duration' => $totalHours,
+                                'amount' => $amount
                             ]); 
                             
                             $ticketCount += 1;
