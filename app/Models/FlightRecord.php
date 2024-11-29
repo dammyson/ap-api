@@ -24,6 +24,7 @@ class FlightRecord extends Model
         'ticket_type',
         'flight_number',
         'flight_distance',
-        'flight_duration'
+        'flight_duration',
+        'amount'
     ];
 }
