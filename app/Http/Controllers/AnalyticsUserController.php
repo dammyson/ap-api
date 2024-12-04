@@ -168,12 +168,35 @@ class AnalyticsUserController extends Controller
 
         try {
             $tripHistory = FlightRecord::where('departure_time', '<=', Carbon::now()->toIso8601String())
+                ->where('peace_id', $user->peace_id)
                 // ->where('is_paid', true)
                 ->get();
     
             return response()->json([
                 "error" => false,
                 "trip_history" => $tripHistory
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                "error" => true,
+                "message" => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function upcomingTrips(Request $request) {
+        $user = $request->user();
+
+        try {
+            $upcomingTrip = FlightRecord::where('departure_time', '>', Carbon::now()->toIso8601String())
+                ->where('peace_id', $user->peace_id)
+                // ->where('is_paid', true)
+                ->get();
+    
+            return response()->json([
+                "error" => false,
+                "upcoming_trip" => $upcomingTrip
             ], 200);
 
         } catch (\Throwable $th) {
