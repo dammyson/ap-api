@@ -12,18 +12,21 @@ use App\Http\Requests\Test\Booking\ReadBookingTkRequest;
 use App\Http\Requests\Test\Booking\RetrievePNRHistoryRequest;
 use App\Http\Requests\Test\Booking\RetrieveTicketHistoryRequest;
 use App\Services\Soap\TicketReservationRequestBuilder;
+use App\Services\Utility\CheckArray;
 
 class BookingRequestController extends Controller
 {
     protected $bookingBuilder;
     protected $ticketReservationRequestBuilder;
     protected $craneOTASoapService;
+    protected $checkArray;
     
-    public function __construct(BookingBuilder $bookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder)
+    public function __construct(BookingBuilder $bookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray)
     {
       $this->bookingBuilder = $bookingBuilder; 
       $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
       $this->craneOTASoapService = app("CraneOTASoapService");
+      $this->checkArray = $checkArray;
       
     }
 
@@ -63,12 +66,25 @@ class BookingRequestController extends Controller
                     [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']];
             }
 
-            $flightNotes = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'];
+            $bookOriginDestinationOptionLists = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
            
-            
-            if(array_key_exists('deiCode', $flightNotes)) {
-                $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+            if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+                foreach ($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
+                    if(array_key_exists('deiCode', $flightNotes)) {
+                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                    
+                    }
+
+                }
+
+            } else {
+                $flightNotes = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
+
+                if(array_key_exists('deiCode', $flightNotes)) {
+                    $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
                 
+                }
             }
             
         } catch (\Throwable $th) {
