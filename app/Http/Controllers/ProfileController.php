@@ -45,6 +45,7 @@ class ProfileController extends Controller
     public function changeProfileImage(ChangeProfileImageRequest $request) {
         $user = $request->user(); 
         
+        // dd("I ran");
         try {
             if ($request->file('image_url')) {
                 // store the user image in a folder;
@@ -53,7 +54,7 @@ class ProfileController extends Controller
                     Storage::delete($oldPath);
 
                 }
-                $path = $request->file('image_url')->store('users-images-folder');
+                $path = $request->file('image_url')->store('users-images-folder', 'public');
                 // store the path to the image in the image_url column
                 $user->image_url = $path;
                 $user->save();
@@ -63,6 +64,7 @@ class ProfileController extends Controller
                     "error" => false,
                     "message" => "Profile picture updated successfully",
                     "user" => $user,
+                    "image_url" => $user->image_url,
                     "image_url_link" => $imageUrlLink
                     
                 ], 200);
