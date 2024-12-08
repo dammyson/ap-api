@@ -352,35 +352,70 @@ class ReissuePNRController extends Controller
         $invoice->amount = $amount;
 
         $invoice->save();
-        $bookFlightSegmentList = $response["ReissuePnrPreviewResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"]["bookFlightSegmentList"];
-        $arrival_time = $bookFlightSegmentList["flightSegment"]["arrivalDateTime"];
-        $departure_time = $bookFlightSegmentList["flightSegment"]["departureDateTime"];
-        $newOrigin = $bookFlightSegmentList['flightSegment']['arrivalAirport']['locationName'];
-        $newDestination = $bookFlightSegmentList['flightSegment']['departureAirport']['locationName'];
-        $newTicketType = $bookFlightSegmentList["bookingClass"]["cabin"];
-        
-        $newOriginCity = $bookFlightSegmentList['flightSegment']['arrivalAirport']['locationCode'];
-        
-        $newDestinationCity = $bookFlightSegmentList['flightSegment']['departureAirport']['locationCode'];
-        $newFlightDistance = $bookFlightSegmentList['flightSegment']["distance"];
-        $newFlightNumber = $bookFlightSegmentList['flightSegment']["flightNumber"];
-        $newFlightDuration = $bookFlightSegmentList['flightSegment']["journeyDuration"];
-        
+        $bookOriginDestinationOptionLists = $response["ReissuePnrPreviewResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
+           
+        if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+            foreach ($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                $arrival_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["arrivalDateTime"];
+                $departure_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["departureDateTime"];
+                $newOrigin = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationName'];
+                $newDestination = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationName'];
+                $newTicketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
+                
+                $newOriginCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationCode'];
+                
+                $newDestinationCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationCode'];
+                $newFlightDistance = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["distance"];
+                $newFlightNumber = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["flightNumber"];
+                $newFlightDuration = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["journeyDuration"];
+                
 
-        $newTotalHours = $this->getFlightHours($newFlightDuration);
+                $newTotalHours = $this->getFlightHours($newFlightDuration);
 
-        FlightRecord::where('booking_id', $ID)->update([
-            "origin" => $newOrigin,
-            "destination" => $newDestination,
-            'arrival_time' => $arrival_time, 
-            'departure_time'=> $departure_time,
-            "origin_city" => $newOriginCity,
-            "destination_city" => $newDestinationCity,
-            'ticket_type' => $newTicketType,
-            "flight_number" => $newFlightNumber,
-            "flight_distance" => $newFlightDistance,
-            "flight_duration" => $newTotalHours
-        ]);
+                FlightRecord::where('booking_id', $ID)->update([
+                    "origin" => $newOrigin,
+                    "destination" => $newDestination,
+                    'arrival_time' => $arrival_time, 
+                    'departure_time'=> $departure_time,
+                    "origin_city" => $newOriginCity,
+                    "destination_city" => $newDestinationCity,
+                    'ticket_type' => $newTicketType,
+                    "flight_number" => $newFlightNumber,
+                    "flight_distance" => $newFlightDistance,
+                    "flight_duration" => $newTotalHours
+                ]);
+            }
+
+        } else {
+            $arrival_time = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["flightSegment"]["arrivalDateTime"];
+            $departure_time = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["flightSegment"]["departureDateTime"];
+            $newOrigin = $bookOriginDestinationOptionLists["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationName'];
+            $newDestination = $bookOriginDestinationOptionLists["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationName'];
+            $newTicketType = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["bookingClass"]["cabin"];
+            
+            $newOriginCity = $bookOriginDestinationOptionLists["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationCode'];
+            
+            $newDestinationCity = $bookOriginDestinationOptionLists["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationCode'];
+            $newFlightDistance = $bookOriginDestinationOptionLists["bookFlightSegmentList"]['flightSegment']["distance"];
+            $newFlightNumber = $bookOriginDestinationOptionLists["bookFlightSegmentList"]['flightSegment']["flightNumber"];
+            $newFlightDuration = $bookOriginDestinationOptionLists["bookFlightSegmentList"]['flightSegment']["journeyDuration"];
+            
+
+            $newTotalHours = $this->getFlightHours($newFlightDuration);
+
+            FlightRecord::where('booking_id', $ID)->update([
+                "origin" => $newOrigin,
+                "destination" => $newDestination,
+                'arrival_time' => $arrival_time, 
+                'departure_time'=> $departure_time,
+                "origin_city" => $newOriginCity,
+                "destination_city" => $newDestinationCity,
+                'ticket_type' => $newTicketType,
+                "flight_number" => $newFlightNumber,
+                "flight_distance" => $newFlightDistance,
+                "flight_duration" => $newTotalHours
+            ]);
+        }           
 
         $ticketCount = FlightRecord::where('booking_id', $ID)->count();
         // create invoice_items table
