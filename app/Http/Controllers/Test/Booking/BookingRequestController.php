@@ -67,15 +67,40 @@ class BookingRequestController extends Controller
             }
 
             $bookOriginDestinationOptionLists = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
-           
+            // $helperArray = [];
+
             if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
-                foreach ($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                // foreach ($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                //     if (array_key_exists('bookFlightSegmentList', $bookOriginDestinationOptionList)) {
+                //         $helperArray[] = $bookOriginDestinationOptionList;
+                //     }
+                    
+                // }
+
+                $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
+                    return array_key_exists('bookFlightSegmentList', $option);
+                });
+
+                $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'] = $filteredOptions;
+
+                foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
                     $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
                     if(array_key_exists('deiCode', $flightNotes)) {
-                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                        
+                    }
+                    
+                }
+
+            } else if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists) && count($bookOriginDestinationOptionLists) > 1) {
+                
+                foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
+                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
+    
+                    if(array_key_exists('deiCode', $flightNotes)) {
+                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
                     
                     }
-
                 }
 
             } else {
