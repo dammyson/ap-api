@@ -67,16 +67,8 @@ class BookingRequestController extends Controller
             }
 
             $bookOriginDestinationOptionLists = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
-            // $helperArray = [];
 
             if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
-                // foreach ($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
-                //     if (array_key_exists('bookFlightSegmentList', $bookOriginDestinationOptionList)) {
-                //         $helperArray[] = $bookOriginDestinationOptionList;
-                //     }
-                    
-                // }
-
                 $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
                     return array_key_exists('bookFlightSegmentList', $option);
                 });
