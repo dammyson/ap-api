@@ -2,53 +2,109 @@
 
 namespace App\Services\Point;
 
-use App\Models\TierPoint;
-use App\Models\TierPointTransaction;
+use App\Models\Tier;
+use App\Models\User;
 use Carbon\Carbon;
 
 class TierPointService
 {
-    public function addPoints($userId, $points, $validForDays = 365)
+    public function assignDefaultTier($userId)
     {
-        $expiresAt = Carbon::now()->addDays($validForDays);
+        $user = User::find($userId);
 
-        // Update total points in the TierPoint model
-        $tierPoint = TierPoint::firstOrCreate(
-            ['user_id' => $userId],
-            ['total_points' => 0] // Ensure total_points has a default value on creation
-        );
-        $tierPoint->total_points += $points;
-        $tierPoint->save();
+        if (!$user) {
+            return;
+        }
 
-        // Create a new transaction for this addition
-        TierPointTransaction::create([
-            'user_id' => $userId,
-            'points' => $points,
+        $defaultTier = Tier::where('is_default', true)->first();
+
+        if ($defaultTier) {
+            $user->tiers()->updateExistingPivot($user->currentTier()?->id, ['is_current' => false]);
+            $user->tiers()->attach($defaultTier->id, ['is_current' => true, 'expires_at' => null]);
+        }
+    }
+    public function assignTierWithDefaultFallback($userId)
+    {
+        $user = User::find($userId);
+
+        if (!$user) {
+            return;
+        }
+
+        $currentTier = $user->currentTier();
+
+        // Determine the highest tier the user qualifies for based on points
+        $highestTier = Tier::where('minimum_points', '<=', $user->points)
+            ->orderBy('rank', 'desc') // Higher tiers have lower rank values
+            ->orderBy('minimum_points', 'desc') // Break ties with points
+            ->first();
+
+        // If user qualifies for a higher tier, promote them immediately
+        if ($highestTier && (!$currentTier || $highestTier->rank > $currentTier->rank)) {
+            // Clear the previous current tier
+            $user->tiers()->updateExistingPivot($currentTier?->id, ['is_current' => false]);
+
+            // Assign the higher tier
+            $user->tiers()->attach($highestTier->id, [
+                'is_current' => true,
+                'expires_at' => null, // Reset expiration for calculated tiers
+                'source' => 'calculated',
+            ]);
+
+            return;
+        }
+
+        // Handle expired tier: move to a lower or default tier
+        if ($currentTier && $currentTier->pivot->expires_at && Carbon::now()->gt($currentTier->pivot->expires_at)) {
+            // Find the best tier they now qualify for (or fallback to the default tier)
+            $lowerTier = $highestTier ?: Tier::where('is_default', true)->first();
+            // Update the user's tier only if it's different
+            if ($lowerTier && (!$currentTier || $lowerTier->id !== $currentTier->id)) {
+                // Clear the expired current tier
+                $user->tiers()->updateExistingPivot($currentTier->id, ['is_current' => false]);
+
+                // Assign the lower or default tier
+                $user->tiers()->attach($lowerTier->id, [
+                    'is_current' => true,
+                    'expires_at' => null, // Reset expiration for calculated tiers
+                    'source' => 'calculated',
+                ]);
+            }
+        }
+    }
+
+    public function purchaseTier($userId, $tierId, $durationInDays)
+    {
+        $user = User::find($userId);
+        $tier = Tier::find($tierId);
+
+        if (!$user || !$tier) {
+            throw new \Exception('User or Tier not found.');
+        }
+
+        $expiresAt = Carbon::now()->addDays($durationInDays);
+
+        $user->tiers()->updateExistingPivot($user->currentTier()?->id, ['is_current' => false]);
+
+        $user->tiers()->attach($tierId, [
+            'is_current' => true,
             'expires_at' => $expiresAt,
+            'source' => 'purchased',
         ]);
     }
 
-    public function clearExpiredTransactions($userId)
+    public function handleExpiredPurchasedTier($userId)
     {
-        // Find expired transactions and deduct from total points
-        $expiredTransactions = TierPointTransaction::where('user_id', $userId)
-            ->whereDate('expires_at', '<', Carbon::now())
-            ->get();
+        $user = User::find($userId);
 
-        $expiredPoints = $expiredTransactions->sum('points');
-
-        // Update the user's total points
-        if ($expiredPoints > 0) {
-            $tierPoint = TierPoint::where('user_id', $userId)->first();
-            if ($tierPoint) {
-                $tierPoint->total_points = max(0, $tierPoint->total_points - $expiredPoints);
-                $tierPoint->save();
-            }
+        if (!$user) {
+            return;
         }
 
-        // Delete expired transactions
-        TierPointTransaction::where('user_id', $userId)
-            ->whereDate('expires_at', '<', Carbon::now())
-            ->delete();
+        $currentTier = $user->currentTier();
+        if ($currentTier && $currentTier->pivot->expires_at && Carbon::now()->gt($currentTier->pivot->expires_at)) {
+            $user->tiers()->updateExistingPivot($currentTier->id, ['is_current' => false]);
+            $this->assignTierWithDefaultFallback($userId);
+        }
     }
 }

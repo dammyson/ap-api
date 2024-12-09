@@ -24,7 +24,6 @@ return new class extends Migration
             $table->text('mobile_token')->nullable();
             $table->boolean('can_change_password')->default(false);
             $table->string('peace_id')->nullable();
-            $table->unsignedBigInteger('tier_id')->index()->default(1);
             $table->rememberToken();
             $table->timestamps();
         });

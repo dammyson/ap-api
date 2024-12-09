@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Services\Utility\CheckDevice;
 use App\Http\Requests\Auth\UserLoginRequest;
 use App\Models\ScreenResolution;
+use App\Models\User;
+use App\Services\Point\TierPointService;
 
 class LoginController extends Controller
 {
@@ -19,6 +21,13 @@ class LoginController extends Controller
     //     $this->$checkDevice = $checkDevice;
     // }
 
+    protected $tierService;
+
+    public function __construct(TierPointService $tierService)
+    {
+        $this->tierService = $tierService;
+    }
+    //
     public function login(UserLoginRequest $request)
     {
         try{
@@ -33,6 +42,12 @@ class LoginController extends Controller
             if (is_null($user)) {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
             }
+            $currentTier = $user->currentTier();
+            
+            if(!$currentTier) {
+                $this->tierService->assignTierWithDefaultFallback($user->id);
+            }
+           
             // $newpassword = $validated['password'];
             // dd($newpassword);
             if (Hash::check($request["password"], $user->password)) {

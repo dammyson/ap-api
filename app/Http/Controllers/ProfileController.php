@@ -133,13 +133,17 @@ class ProfileController extends Controller
 
             $result =(new GetPointService())->domesticPoints('LOS-ABV', 'C', false);
 
+            $user = User::find($user->id);
+            $user->addPoints(1);
+
+            dd( $user );
+
+           // dd( $result);
               // Act: Add points to the user
             $point = 100;
             $validForDays = 365;
 
-            $tierPointService = new TierPointService();
-
-            $tierPointService->addPoints($user->id, $point, $validForDays);
+           
 
             $points = $user->tierPoint->total_points;
 

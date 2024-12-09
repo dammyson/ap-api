@@ -114,7 +114,7 @@ class GetPointService
             'M,T,V' => 36
         ];
     }
-
+ 
     public function domesticPoints($route, $class, $includeTierPoints = false)
     {
         return $this->calculatePoints(
