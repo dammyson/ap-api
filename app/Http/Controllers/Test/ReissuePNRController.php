@@ -800,7 +800,7 @@ class ReissuePNRController extends Controller
                         'day_of_week' => $dayOfWeek
                     ]);
                 }
-            } else if (!$this->checkArray->isAssociativeArray($ticketItemList) && count($ticketItemList) > 1) {
+            } else if ($this->checkArray->isAssociativeArray($ticketItemList)) {
                 foreach($ticketItemList as $ticketItem) {
                     $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
                     $data["amount"][] = $soap_expected_amount; 
