@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
     {
 
 
-        Tier::create(['name' => 'Bronze', 'description' => 'Basic tier']);
-        Tier::create(['name' => 'Silver', 'description' => 'Intermediate tier']);
-        Tier::create(['name' => 'Gold', 'description' => 'Advanced tier']);
+        $this->call([
+            TierSeeder::class,
+        ]);
 
 
         // User::factory(10)->create();
