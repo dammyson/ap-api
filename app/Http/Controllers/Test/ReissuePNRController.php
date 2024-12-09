@@ -438,7 +438,7 @@ class ReissuePNRController extends Controller
                 "error" => true,
                 "message" => $th->getMessage(),
                 "response" => $response
-            ]);
+            ], 500);
         }
     }
 
@@ -800,6 +800,32 @@ class ReissuePNRController extends Controller
                         'day_of_week' => $dayOfWeek
                     ]);
                 }
+            } else if (!$this->checkArray->isAssociativeArray($ticketItemList) && count($ticketItemList) > 1) {
+                foreach($ticketItemList as $ticketItem) {
+                    $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
+                    $data["amount"][] = $soap_expected_amount; 
+
+                    $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
+                    $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                    $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                    
+                    $data = [];
+            
+                    TransactionRecord::firstOrCreate([
+                        "invoice_number" => $invoice_number,                        
+                        'amount' => $amount,
+                    ], [
+                        'transaction_type' => $transactionType,
+                        'peace_id' => $user->peace_id,
+                        'ticket_type' => 'ticket',
+                        'user_id' => $user->id,
+                        'invoice_id' => $invoice->id,
+                        // 'device_type' => $userDevice->device_type,
+                        'device_type' => $deviceType,
+                        'day_of_week' => $dayOfWeek
+                    ]);
+                }
+
             } else {
                 $soap_expected_amount = $ticketItemList["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
                 $data["amount"][] = $soap_expected_amount; 
@@ -837,7 +863,7 @@ class ReissuePNRController extends Controller
                 "error" => true,
                 "message" => $th->getMessage(),
                 "response" => $response
-            ]);
+            ], 500);
         }
     }
 
