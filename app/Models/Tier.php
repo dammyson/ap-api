@@ -9,10 +9,17 @@ class Tier extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'discount'];
+    protected $fillable = ['name', 'description', 'discount', 'minimum_points'];
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'tier_users')
+                    ->withPivot('is_current', 'expires_at')
+                    ->withTimestamps();
+    }
+
+        public function isEligible($points)
+    {
+        return $points >= $this->minimum_points;
     }
 }

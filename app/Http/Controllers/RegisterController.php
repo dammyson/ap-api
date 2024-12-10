@@ -18,6 +18,8 @@ use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Services\Point\TierPointService;
+
 
 class RegisterController extends Controller
 {
@@ -25,10 +27,13 @@ class RegisterController extends Controller
     public $createPeaceId;
     // public $checkDevice;
 
-    public function __construct(CreatePeaceId $createPeaceId)
+    protected $tierService;
+
+    public function __construct(CreatePeaceId $createPeaceId, TierPointService $tierService)
     {
         $this->createPeaceId = $createPeaceId;
         // $this->checkDevice = $checkDevice;
+        $this->tierService = $tierService;
     }
     
     public function userRegister(CreateUserRequest $request)
@@ -68,6 +73,11 @@ class RegisterController extends Controller
                 ]);
             }
 
+            $currentTier = $create->currentTier();
+            if(!$currentTier) {
+                $this->tierService->assignTierWithDefaultFallback($create->id);
+            }
+            
             $referrer_peace_id = $request->input('referrer_peace_id');
             
             if ($referrer_peace_id) {

@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\User\EditProfileRequest;
 use App\Http\Requests\ChangeProfileImageRequest;
+use App\Services\Utility\GetPointService;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
+use App\Services\Point\TierPointService;
 
 class ProfileController extends Controller
 {
@@ -122,5 +125,37 @@ class ProfileController extends Controller
         ]);
     }
 
+
+    public function getPoint(Request $request) {
+        try {
+            
+            $user = Auth::user(); 
+
+            $result =(new GetPointService())->domesticPoints('LOS-ABV', 'C', false);
+
+            $user = User::find($user->id);
+            $user->addPoints(1);
+
+            dd( $user );
+
+           // dd( $result);
+              // Act: Add points to the user
+            $point = 100;
+            $validForDays = 365;
+
+           
+
+            $points = $user->tierPoint->total_points;
+
+            dd($points);
+            
+        } catch (\Throwable $th) {
+            return response()->json([
+                "error" => "true",
+                "message" => $th->getMessage()
+            ]);
+        }
+       
+    }
     
 }
