@@ -20,6 +20,7 @@ use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Services\Point\TierPointService;
 
+
 class RegisterController extends Controller
 {
     //
