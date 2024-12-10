@@ -103,7 +103,7 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::get('active-users-table', [DashboardAdminController::class, 'activeUserTable']);
             
         });
-
+        
         Route::group(['prefix' => 'customer'], function() {
             Route::get('customer-information', [CustomerAdminController::class, 'customerInformation']);
             Route::group(['prefix' => '{user}'], function() {

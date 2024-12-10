@@ -41,8 +41,8 @@ class CustomerAdminController extends Controller
 
         $dateOfRegistration = $user->created_at;
 
-        $lastFlight = FlightRecord::where('departure_date', '<=', Carbon::now()->toIso8601String())->orderBy('desc')->first();
-        $upcomingFlight = FlightRecord::where('departure_date', '>=', Carbon::now()->toIso8601String())->orderBy('asc')->first();
+        $lastFlight = FlightRecord::where('departure_time', '<=', Carbon::now()->toIso8601String())->orderBy('desc')->first();
+        $upcomingFlight = FlightRecord::where('departure_time', '>=', Carbon::now()->toIso8601String())->orderBy('asc')->first();
 
         $userActivityLog = UserActivityLog::where('user_id', $user->id);
         
