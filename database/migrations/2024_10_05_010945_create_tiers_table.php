@@ -16,8 +16,11 @@ return new class extends Migration
         Schema::create('tiers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->integer('rank')->default(0);
             $table->text('description')->nullable();
             $table->integer('discount')->default(0); // if applicable
+            $table->integer('minimum_points')->default(0);
+            $table->boolean('is_default')->default(false);
             $table->timestamps();
         });
     }
