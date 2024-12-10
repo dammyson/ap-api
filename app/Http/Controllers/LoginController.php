@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Services\Utility\CheckDevice;
 use App\Http\Requests\Auth\UserLoginRequest;
 use App\Models\ScreenResolution;
-use App\Models\User;
 use App\Services\Point\TierPointService;
 
 class LoginController extends Controller
