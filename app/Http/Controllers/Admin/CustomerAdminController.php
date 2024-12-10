@@ -44,7 +44,7 @@ class CustomerAdminController extends Controller
         $lastFlight = FlightRecord::where('departure_time', '<=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'desc')->first();
         $upcomingFlight = FlightRecord::where('departure_time', '>=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'asc')->first();
 
-        $userActivityLog = UserActivityLog::where('user_id', $user->id);
+        $userActivityLog = UserActivityLog::where('user_id', $user->id)->get();
         
         return response()->json([
             "user_image_url_link" => Storage::url($user->image_url),
