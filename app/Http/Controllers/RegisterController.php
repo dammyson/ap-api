@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Device;
+use App\Mail\ForgotPassword;
 use Illuminate\Http\Request;
 use App\Models\ReferralActivity;
+use App\Models\ScreenResolution;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Services\Utility\CheckDevice;
@@ -15,7 +18,6 @@ use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
-use App\Models\ScreenResolution;
 
 class RegisterController extends Controller
 {
@@ -272,5 +274,113 @@ class RegisterController extends Controller
         }
     }
 
+
+    //// new forget password implementation
+    public function forgotPasswordNew(ForgotPasswordRequest $request) {
+
+        $user = User::where('email', $request->email)->first();
+ 
+        if (!$user) {
+            return response()->json([
+                "error" => true,
+                "message" => "pls enter correct email"
+            ], 404);
+        }
+ 
+        // generateOtp
+        $otp = random_int(1000, 9999);
+        
+         try {
+             Mail::to($user->email)->send(new ForgotPassword($user->first_name, $otp));
+         
+         } catch (\Exception $e) {
+             return response()->json([
+                 "error" => true,
+                 "message" => "Failed to send OTP email. Please try again."
+             ], 500);
+         }
+ 
+         $user->otp_expires_at = Carbon::now()->addMinutes(10); 
+ 
+         $user->otp = $otp;
+ 
+         $user->save();
+ 
+         return response()->json([
+             "error" => false,
+             "message" => "otp sent to email successfully",
+            
+         ], 200);
+    }
+ 
+    public function verifyOtpNew(Request $request) {
+ 
+        try {
+            
+            $user = User::where('email', $request->input('email'))->firstOrFail();
+ 
+            // convert the string into a carbon type so you can validate it with isPast method
+            $otp_expiration = Carbon::parse($user->otp_expires_at);
+            
+            // Check if OTP is correct and hasn't expired
+             if ($user->otp !== $request->otp || $otp_expiration->isPast()) {
+                 return response()->json([
+                     'error' => true,
+                     "message" => "OTP verification failed."
+                 ], 400);
+             }
+ 
+         
+            
+            return response()->json([
+                'error' => false,
+                "message" => "You've been verified",
+                "user" => $user
+            ], 200);
+        
+        } catch (\Throwable $throwable) {
+            return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
+        
+        }   
+ 
+    }
+ 
+    public function resetPasswordNew(Request $request) {
+        try {
+             
+            $user = User::where('email', $request->email)->first();
+ 
+            
+            if (!$user) {
+                 return response()->json([
+                     "error" => true,
+                     "message" => "admin not found"
+                 ], 404);
+             }
+ 
+             $otp_expiration = Carbon::parse($user->otp_expires_at);
+ 
+             if ($user->otp !== $request->otp || $otp_expiration->isPast()) {
+                 return response()->json([
+                     'error' => true,
+                     "message" => "otp does not match or has expired"
+                 ]);
+             }
+     
+            $user->password =  Hash::make($request->input("new_password"));
+            
+            // make otp field and otp_expires_at null, so it cannot be reused
+            $user->otp = null;
+            $user->otp_expires_at = null;
+            $user->save(); 
+    
+            return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
+           
+ 
+         } catch (\Throwable $throwable) {
+             return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
+         }
+ 
+    }
 
 }

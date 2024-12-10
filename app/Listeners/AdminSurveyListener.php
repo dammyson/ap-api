@@ -29,19 +29,17 @@ class AdminSurveyListener
        if ($admin instanceOf \App\Models\Admin) {
             if ($survey instanceOf \App\Models\Admin\Survey) {
                 $description = "Admin {$admin->user_name} {$action} {$survey->title}";
-                $acitivity_type = 'survey';
+                $activity_type = 'survey';
 
-            } else {
-                
-            }
+                ActivityLog::create([
+                    'admin_id' => $admin->id,
+                    'role' => $admin->role,
+                    'activity_type' => $activity_type,
+                    'description' => $description,
+                    'ip_address' => request()->ip()
+                ]);
+            } 
     
-            ActivityLog::create([
-                'admin_id' => $admin->id,
-                'role' => $admin->role,
-                'activity_type' => "survey",
-                'description' => $description,
-                'ip_address' => request()->ip()
-            ]);
 
        }
 

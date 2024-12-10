@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\InvoiceRecord;
 use App\Models\TransactionType;
 use App\Models\TransactionRecord;
+use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
 use App\Services\Soap\TicketReservationRequestBuilder;
@@ -238,8 +239,8 @@ class TicketReservationController extends Controller
                      
                     TransactionRecord::firstOrCreate([
                         "invoice_number" => $invoice_number,                        
-                        'amount' => $amount,
                     ], [
+                        'amount' => $paidAmount,
                         'transaction_type' => $transactionType,
                         'peace_id' => $peaceId,
                         'ticket_type' => 'ticket',
@@ -256,9 +257,9 @@ class TicketReservationController extends Controller
                                            
                     TransactionRecord::firstOrCreate([
                         "invoice_number" => $invoice_number,                        
-                        'amount' => $amount,
                     ],
-                        [
+                    [
+                            'amount' => $paidAmount,
                             'transaction_type' => $transactionType,
                             'peace_id' => $peaceId,
                             'ticket_type' => 'Ancillary',
@@ -273,6 +274,7 @@ class TicketReservationController extends Controller
             
             
             } else {
+
                 foreach($ticketItemList as $ticketItem) {
                     // if ($ticketItem["status"] == "OK") {
                         // dump($user->first_name);
@@ -282,7 +284,6 @@ class TicketReservationController extends Controller
                     $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                     $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
                     $ticketId = $ticketItem['ticketDocumentNbr'];
-
                     if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
                         // dump('non asvcSsr ran');
                        
@@ -290,8 +291,8 @@ class TicketReservationController extends Controller
                            
                         TransactionRecord::firstOrCreate([
                             "invoice_number" => $invoice_number,                            
-                            'amount' => $amount,
                         ], [
+                            'amount' => $paidAmount,
                             'transaction_type' => $transactionType,
                             'peace_id' => $peaceId,
                             'ticket_type' => 'ticket',
@@ -299,9 +300,7 @@ class TicketReservationController extends Controller
                             'invoice_id' => $invoice->id,
                             'device_type' => $userDevice->device_type ?? "ANDROID",
                             'day_of_week' => $dayOfWeek
-                        ]);  
-
-                        
+                        ]);                          
                     
                     }
                     else {      
@@ -309,8 +308,8 @@ class TicketReservationController extends Controller
                                                     
                         TransactionRecord::firstOrCreate([
                             "invoice_number" => $invoice_number,                            
-                            'amount' => $amount,
                         ], [
+                            'amount' => $paidAmount,
                             'transaction_type' => $transactionType,
                             'peace_id' => $peaceId,
                             'ticket_type' => 'Ancillary',
@@ -322,6 +321,10 @@ class TicketReservationController extends Controller
                     }                
                 }
             }
+
+            $description = "made for a payment of {$paidAmount} for flight with booking id {$bookingId}";
+            
+            event(new UserActivityLogEvent($user, "ticket payment", $description));
 
             // dump($response);            
 
