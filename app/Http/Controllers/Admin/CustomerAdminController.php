@@ -7,60 +7,53 @@ use App\Models\User;
 use App\Models\FlightRecord;
 use Illuminate\Http\Request;
 use App\Events\AdminSurveyEvent;
+use App\Models\ReferralActivity;
+use App\Models\TransactionRecord;
 use App\Events\AdminCustomerEvent;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\CustomerCollection;
-use App\Models\TransactionRecord;
+use App\Models\UserActivityLog;
 
 class CustomerAdminController extends Controller
 {
-    public function customerInformation(Request $request) {
-        try {
+    public function userInformation(Request $request) {
+        $user = $request->user();
 
-            $users = User::all();
+        $flightCount = TransactionRecord::where('peace_id', $user->peace_id)->
+            where('ticket_type', 'ticket')
+            ->count();
+        //or
 
-            $customerCollection = new CustomerCollection($users);
+        // $flightCount = FlightRecord::where('peace_id', $user->peace_id)->with('invoices', function($query) {
+        //         $query->where('is_paid', false);
+        //  })
+        //  ->distinct('booking_id')->count();
 
-        }  catch (\Throwable $th) {
-            return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ], 500);
-        }
+        $refferalCount = ReferralActivity::where('referrer_peace_id', $user->peace_id)->count();
 
+        $dateOfRegistration = $user->created_at;
+
+        $lastFlight = FlightRecord::where('departure_date', '<=', Carbon::now()->toIso8601String())->orderBy('desc')->first();
+        $upcomingFlight = FlightRecord::where('departure_date', '>=', Carbon::now()->toIso8601String())->orderBy('asc')->first();
+
+        $userActivityLog = UserActivityLog::where('user_id', $user->id);
+        
         return response()->json([
-            'error' => false,
-            'users_table_data' => $customerCollection
+            "user_image_url_link" => Storage::url($user->image_url),
+            "user_firstname" => $user->first_name,
+            "user_lastname" => $user->last_name,
+            "user_phonenumber" => $user->phone_number,
+            "user_total_flight_flown" => $flightCount,
+            "user_refferal_Count" => $refferalCount,
+            "user_date_of_reg" => $dateOfRegistration,
+            "last_flight" => $lastFlight,
+            "upcoming_flight" => $upcomingFlight
+
+
         ]);
-    }
-
-    public function awardPointManually(Request $request, User $user) {
-        $admin = $request->user('admin');
-        $points = $request->input('points');
-        $reason = $request->input('reason');
-
-        try {
-                $message = "reason {$reason}";
-            
-                $user->points += $points;
-                $user->save();
-            
-                event( new AdminCustomerEvent($admin,  $points, $user, $reason));
-
-                return response()->json([
-                    'error' => false,
-                    'points' => $points,
-                    'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
-                ], 200);
-
-        }  catch (\Throwable $th) {
-            return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ], 500);
-        }
-
+    
     }
 
     public function revenueCustomerChart(Request $request, User $user) {
@@ -127,6 +120,56 @@ class CustomerAdminController extends Controller
 
 
     }
+
+    public function customerInformation(Request $request) {
+        try {
+
+            $users = User::all();
+
+            $customerCollection = new CustomerCollection($users);
+
+        }  catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'error' => false,
+            'users_table_data' => $customerCollection
+        ]);
+    }
+
+    public function awardPointManually(Request $request, User $user) {
+        $admin = $request->user('admin');
+        $points = $request->input('points');
+        $reason = $request->input('reason');
+
+        try {
+                $message = "reason {$reason}";
+            
+                $user->points += $points;
+                $user->save();
+            
+                event( new AdminCustomerEvent($admin,  $points, $user, $reason));
+
+                return response()->json([
+                    'error' => false,
+                    'points' => $points,
+                    'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
+                ], 200);
+
+        }  catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+    }
+
+    
 
 
     protected function organiseChart($items) {

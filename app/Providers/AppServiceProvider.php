@@ -6,10 +6,12 @@ use App\Events\AdminCustomerEvent;
 use App\Models\Admin;
 use App\Events\AdminLoginEvent;
 use App\Events\AdminSurveyEvent;
+use App\Events\UserActivityLogEvent;
 use App\Listeners\AdminCustomerListener;
 use App\Observers\AdminObserver;
 use App\Listeners\AdminLoginListener;
 use App\Listeners\AdminSurveyListener;
+use App\Listeners\UserActivityLogListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Transaction\Transactions;
@@ -52,6 +54,11 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(
             AdminCustomerEvent::class,
             AdminCustomerListener::class
+        );
+
+        Event::listen(
+            UserActivityLogEvent::class,
+            UserActivityLogListener::class
         );
     }
 

@@ -87,7 +87,7 @@ class CancelFlightController extends Controller
         $booking = BookingRecord::where('peace_id', $peaceId)
             ->where('booking_id', $bookingId)->first();
 
-            dd('I ran');
+            // dd('I ran');
 
         $xml = $this->cancelBookingBuilder->cancelBookingCommit(
             $booking->booking_id, 
@@ -131,7 +131,7 @@ class CancelFlightController extends Controller
 
                 return response()->json([
                     "error" => false,
-                    "message" => "refund successful"
+                    "message" => "flight cancel successfully"
                 ], 200);
             } 
             }
