@@ -24,8 +24,8 @@ class CustomerAdminController extends Controller
         $this->organiseChart = $organiseChart;
     }
 
-    public function userInformation(Request $request) {
-        $user = $request->user();
+    public function userInformation(Request $request, User $user) {
+        // $user = $request->user();
 
         $flightCount = TransactionRecord::where('peace_id', $user->peace_id)->
             where('ticket_type', 'ticket')
