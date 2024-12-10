@@ -18,7 +18,6 @@ use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
-use App\Models\ScreenResolution;
 use App\Services\Point\TierPointService;
 
 
