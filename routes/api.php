@@ -108,6 +108,7 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::get('customer-information', [CustomerAdminController::class, 'customerInformation']);
             Route::group(['prefix' => '{user}'], function() {
                 Route::put('award-point-manually', [CustomerAdminController::class, 'awardPointManually']);
+                Route::get('user-revenue/charts/{filter}', [CustomerAdminController::class, 'userRevenueChart']);
                 Route::get('revenue-sources/charts', [CustomerAdminController::class, 'revenueCustomerChart']);
                 Route::get('active-loyal-points', [CustomerAdminController::class, 'activeLoyalPoints']);
                 Route::get('users-information', [CustomerAdminController::class, 'userInformation']);
@@ -116,8 +117,7 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::get('referrals', [CustomerAdminController::class, 'frequentFlyerMiles']);
                 Route::get('revenue-sources', [CustomerAdminController::class, 'revenueSource']);
                 Route::get('activity-log', [CustomerAdminController::class, 'activityLog']);
-            });
-            
+            });            
 
         });
 
