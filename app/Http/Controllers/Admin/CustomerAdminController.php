@@ -107,7 +107,7 @@ class CustomerAdminController extends Controller
 
                 $ticketRecord = $this->organiseYear($ticketRecord);
                 $ancillaryRecord = $this->organiseYear($ancillaryRecord);
-                $ticketRecord = $this->organiseYear($revenueRecord);
+                $revenueRecord = $this->organiseYear($revenueRecord);
 
                 // $ticketRecord = $this->organiseChart->organiseYear($ticketRecord);
                 // $ancillaryRecord = $this->organiseChart->organiseYear($ancillaryRecord);
