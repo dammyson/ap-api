@@ -281,6 +281,8 @@ Route::group(["middleware" => ["auth:api"]], function() {
         
         Route::post('/add-seat-ssr', [AddSeatController::class, 'addSeat']);
         Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}', [AddWeightControllerTest::class, 'addWeightTest']);
+        Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
+        Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}', [AddWeightControllerTest::class, 'addWeightTest']);
         Route::post('/add-weight-bag-ow/invoice/{invoiceId}', [AddWeightController::class, 'addWeight']);
         Route::post('/select-seat', [AddWeightController::class, 'selectSeat']);
         
