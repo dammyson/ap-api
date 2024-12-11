@@ -82,23 +82,27 @@ class CustomerAdminController extends Controller
                         ->whereYear('created_at', $year)
                         ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
-                $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
+                $ancillaryRecord = TransactionRecord::where('peace_id', $user->peace_id)
+                    ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
                 
 
-                $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
-                        ->whereYear('created_at', $year)                    
-                        ->sum(DB::raw('CAST(amount AS SIGNED)'));
+                $ancillaryAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                    ->where('ticket_type', 'Ancillary')
+                    ->whereYear('created_at', $year)                    
+                    ->sum(DB::raw('CAST(amount AS SIGNED)'));
                 
-                $revenueRecord =  TransactionRecord::whereYear('created_at', $year)
+                $revenueRecord =  TransactionRecord::where('peace_id', $user->peace_id)
+                    ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
 
-                $revenueAmount = TransactionRecord::whereYear('created_at', $year)                    
+                $revenueAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                    ->whereYear('created_at', $year)                    
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
                 $ticketRecord = $this->organiseYear($ticketRecord);
@@ -120,7 +124,7 @@ class CustomerAdminController extends Controller
 
 
                 $ticketRecord = TransactionRecord::where('peace_id', $user->peace_id)
-                        ->where('ticket_type', 'ticket')
+                    ->where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -137,7 +141,8 @@ class CustomerAdminController extends Controller
                 
 
 
-                $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
+                $ancillaryRecord = TransactionRecord::where('peace_id', $user->peace_id)
+                    ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -146,14 +151,16 @@ class CustomerAdminController extends Controller
                     ->get();
 
 
-                $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
+                $ancillaryAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                    ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
 
-                $revenueRecord = TransactionRecord::whereYear('created_at', $year)
+                $revenueRecord = TransactionRecord::where('peace_id', $user->peace_id)
+                    ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
@@ -168,10 +175,11 @@ class CustomerAdminController extends Controller
                 // $ancillaryRecord = $this->organiseChart->organiseWeek($ancillaryRecord);
                 // $revenueRecord = $this->organiseChart->organiseWeek($revenueRecord);
                 
-                $revenueAmount = TransactionRecord::whereYear('created_at', $year)
-                        ->whereMonth('created_at', $month)
-                        ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-                        ->sum(DB::raw('CAST(amount AS SIGNED)'));
+                $revenueAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                    ->sum(DB::raw('CAST(amount AS SIGNED)'));
             }
 
             return response()->json([
