@@ -430,7 +430,8 @@ class AddWeightControllerTest extends Controller
 
             return response()->json([
                 "error" => false,
-                "message" => "seat select successfully"                
+                "message" => "seat select successfully",
+                "data" => $response                
             ], 200);
 
         } catch (\Exception $e) {
