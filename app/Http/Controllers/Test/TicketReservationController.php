@@ -237,6 +237,7 @@ class TicketReservationController extends Controller
                 return response()->json([
                     'error' => true,
                     'message' => "no new addition to ticket",
+                    'paidAmount' => $paidAmount,
                     "response" => $response
                 ], 500);
             }        
