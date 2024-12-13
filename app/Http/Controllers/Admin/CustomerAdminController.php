@@ -26,7 +26,7 @@ class CustomerAdminController extends Controller
 
     public function userInformation(Request $request, User $user) {
         // $user = $request->user();
-
+        $tierInfo = $user->currentTier();
         $flightCount = TransactionRecord::where('peace_id', $user->peace_id)->
             where('ticket_type', 'ticket')
             ->count();
@@ -56,7 +56,13 @@ class CustomerAdminController extends Controller
             "user_date_of_reg" => $dateOfRegistration,
             "last_flight" => $lastFlight,
             "upcoming_flight" => $upcomingFlight,
-            "user_activity" => $userActivityLog
+            "user_activity" => $userActivityLog,
+            "tier_information" => [
+                "user_point" => $user->points,
+                "tier_name" => $tierInfo->name,
+                "tier_description" => $tierInfo->description,
+                "tier_rank" => $tierInfo->rank
+            ]
 
 
         ]);
