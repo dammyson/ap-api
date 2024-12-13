@@ -767,7 +767,7 @@ class ReissuePNRController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrCommit';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
-            // dump($response);
+            dd($response);
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
 
 
@@ -859,11 +859,11 @@ class ReissuePNRController extends Controller
                 "data" => $data,
                 // "response" => $response
             ]);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $th)  {
             return response()->json([
                 "error" => true,
                 "message" => $th->getMessage(),
-                "response" => $response
+                // "response" => $response
             ], 500);
         }
     }
