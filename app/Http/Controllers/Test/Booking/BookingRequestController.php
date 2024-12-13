@@ -13,6 +13,7 @@ use App\Http\Requests\Test\Booking\RetrievePNRHistoryRequest;
 use App\Http\Requests\Test\Booking\RetrieveTicketHistoryRequest;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Services\Utility\CheckArray;
+use stdClass;
 
 class BookingRequestController extends Controller
 {
@@ -150,16 +151,8 @@ class BookingRequestController extends Controller
     }
 
     public function readBookingTK(ReadBookingTkRequest $request) {
-        $companyCityCode  = $request->input('companyCityCode'); 
-        $companyCode = $request->input('companyCode'); 
-        $companyNameCodeContext = $request->input('companyNameCodeContext');
-        $companyFullName = $request->input('companyFullName'); 
-        $companyShortName = $request->input('companyShortName'); 
-        $countryCode = $request->input('countryCode'); 
         $ID = $request->input('ID'); 
-        $referenceID = $request->input('referenceID'); 
-
-
+        $referenceID = $request->input('referenceID');
         try {
 
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
@@ -171,14 +164,52 @@ class BookingRequestController extends Controller
 
             
             $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
+
+
+            $routes = [];
+            $bookOriginDestinationOptionLists = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["airItinerary"]["adviceCodeSegmentExist"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
             
-            $airTravelerLists = $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'];
-            
-            return response()->json([
-                "error" => false,
-                "passengersInfo" => $airTravelerLists
-            ], 200);
+
+            if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+                
+                $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
+                    return array_key_exists('bookFlightSegmentList', $option);
+                }); 
+    
+                $response["AirBookingResponse"]["airBookingList"]["airReservation"]["airItinerary"]["adviceCodeSegmentExist"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"] = $filteredOptions;
+                $bookOriginDestinationOptionLists = $filteredOptions;
+                
+                foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                    $fromCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["departureAirport"]["locationCode"];
+                    $toCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["arrivalAirport"]["locationCode"];
+    
+                    $routes[] = [
+                        "fromCity" => $fromCity,
+                        "toCity" => $toCity
+                    ];
+    
+                //    $cities = new stdClass();
+                //    $cities->fromCity = $fromCity;
+                //    $cities->toCity = $toCity;
+    
+                //    $route[] = $cities
+                }
+
+            } else {
+                $fromCity = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["flightSegment"]["departureAirport"]["locationCode"];
+                $toCity = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["flightSegment"]["arrivalAirport"]["locationCode"];
+                
+                $routes[] = [
+                    "fromCity" => $fromCity,
+                    "toCity" => $toCity
+                ];
+
+                //    $cities = new stdClass();
+                //    $cities->fromCity = $fromCity;
+                //    $cities->toCity = $toCity;
+
+                //    $route[] = $cities
+            }
 
 
         } catch (\Throwable $th) {
@@ -188,10 +219,7 @@ class BookingRequestController extends Controller
             ], 500);
         }
        
-        return response()->json([
-            "error" => false,
-            "passengerInfo" => ""
-        ], 200);
+       return $routes;
     }
 
     public function readBooking(ReadBookingRequest $request) {

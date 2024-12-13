@@ -291,7 +291,6 @@ Route::group(["middleware" => ["auth:api"]], function() {
         Route::post('/penalty-rules', [PenaltyRulesController::class, 'penaltyRules']);
         Route::post('/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
         Route::post('/divide-pnr', [DividePNRController::class, 'dividePnR']);
-    
     });
 });
 

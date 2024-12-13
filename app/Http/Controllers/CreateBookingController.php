@@ -15,6 +15,7 @@ use App\Http\Requests\Test\Booking\CreateBookingRTRequest;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
 use App\Services\Soap\CreateBookingTestBuilder;
 use App\Services\Utility\CheckArray;
+use App\Services\Utility\GetPointService;
 
 class CreateBookingController extends Controller
 {
@@ -23,14 +24,16 @@ class CreateBookingController extends Controller
     protected $craneAncillaryOTASoapService;
     protected $checkArray;
     protected $createBookingTestBuilder;
+    protected $getPointService;
 
-    public function __construct(CreateBookingBuilder $createBookingBuilder, CreateBookingTestBuilder $createBookingTestBuilder, CheckArray $checkArray) {
+    public function __construct(CreateBookingBuilder $createBookingBuilder, CreateBookingTestBuilder $createBookingTestBuilder, CheckArray $checkArray, GetPointService $getPointService) {
         $this->createBookingBuilder = $createBookingBuilder;
 
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->checkArray = $checkArray;
         $this->createBookingTestBuilder = $createBookingTestBuilder;
+        $this->getPointService = $getPointService;
     }
 
     public function createBookingRT(CreateBookingRTRequest $request) {
