@@ -96,7 +96,7 @@ class FlightController extends Controller
                 if(!array_key_exists('originDestinationOptionList', $availabilityByDateList)) {
                     return response()->json([
                         'error' => true,
-                        'message' => "this flight is short of neccessary data"
+                        'message' => "flight is short of neccessary data"
                     ], 500);
                 }
 
@@ -104,7 +104,7 @@ class FlightController extends Controller
                 if(!$originDestinationOptionList0) {
                     return response()->json([
                         'error' => true,
-                        'message' => "this flight is short of neccessary data"
+                        'message' => "flight is short of neccessary data"
                     ], 500);
                 }
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity, $travelerInformation_count);

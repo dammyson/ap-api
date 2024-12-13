@@ -14,6 +14,7 @@ use App\Models\TransactionType;
 use App\Models\TransactionRecord;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Services\Utility\CheckArray;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Requests\Test\Ticket\TicketReservationCommitRequest;
@@ -22,6 +23,7 @@ use App\Http\Requests\Test\Ticket\TicketReservationCommitRTRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
 use App\Http\Requests\Test\Ticket\TicketReservationCommitTwoARequest;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRTRequest;
+use App\Services\Utility\GetPointService;
 
 class TicketReservationController extends Controller
 {
@@ -29,12 +31,16 @@ class TicketReservationController extends Controller
     protected $ticketReservationRequestBuilder;    
     protected $craneOTASoapService;
     protected $checkArray;
+    protected $bookingRequestController;
+    protected $getPointService;
 
-    public function __construct(TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray)
+    public function __construct(TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray, BookingRequestController $bookingRequestController, GetPointService $getPointService)
     {
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->checkArray = $checkArray;
+        $this->bookingRequestController = $bookingRequestController;
+        $this->getPointService = $getPointService;
     }
 
     public function ticketReservationViewOnlyRT(TicketReservationViewOnlyRTRequest $request) {
@@ -143,9 +149,28 @@ class TicketReservationController extends Controller
     }
 
     public function testTicketReservationCommit(Request $request) {
+        
+       
         $bookingId = $request->input('ID');
         $bookingReferenceId = $request->input('reference_id');
         $paidAmount = $request->input('value');
+        
+        $routes = $this->bookingRequestController->readBooking($bookingId, $bookingReferenceId);
+
+        // dump($response);     
+        
+        $totalPoint = 0;
+        foreach($routes as $route) {
+            ['points' => $points, 'tierPoints' => $tierPoints]= $this->getPointService->domesticPoints($route["route"], $route["class"]);
+
+            $totalPoint += $points;
+        }
+        $user = auth()->user();
+
+        $user->addPoints($totalPoint, "point add for ticketing flight");
+        
+        dd($user);
+        
         $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
             $bookingId,
             $bookingReferenceId,           
@@ -160,7 +185,7 @@ class TicketReservationController extends Controller
 
     }
 
-    public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId) {
+    public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId) { 
         $invoice = InvoiceRecord::find($invoiceId);
         $invoiceAmount = $invoice->amount;
 
@@ -323,13 +348,24 @@ class TicketReservationController extends Controller
             }
 
             $description = "made for a payment of {$paidAmount} for flight with booking id {$bookingId}";
-            
             event(new UserActivityLogEvent($user, "ticket payment", $description));
 
-            // dump($response);            
+
+            $routes = $this->bookingRequestController->readBooking($bookingId, $bookingReferenceId);
+            // dump($response);     
+            
+            $totalPoint = 0;
+            foreach($routes as $route) {
+                ['points' => $points, 'tierPoints' => $tierPoints]= $this->getPointService->domesticPoints($route["route"], $route["class"]);
+
+               $totalPoint += $points;
+            }
+
+            $user->addPoints($totalPoint, "point add for ticketing flight");
 
             return response()->json([
                 "error" => false,
+                "points" => $totalPoint,
                 "message" => "transaction successfully recorded"
             ], 200);           
             // }   

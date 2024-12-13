@@ -857,7 +857,7 @@ class ReissuePNRController extends Controller
                 "booking_id" => $id,
                 "booking_reference" => $referenceId,
                 "data" => $data,
-                "response" => $response
+                // "response" => $response
             ]);
         } catch (\Throwable $th) {
             return response()->json([
