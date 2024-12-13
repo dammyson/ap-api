@@ -13,6 +13,7 @@ use App\Http\Requests\Test\Booking\RetrievePNRHistoryRequest;
 use App\Http\Requests\Test\Booking\RetrieveTicketHistoryRequest;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Services\Utility\CheckArray;
+use App\Services\Utility\GetPointService;
 use stdClass;
 
 class BookingRequestController extends Controller
@@ -21,13 +22,15 @@ class BookingRequestController extends Controller
     protected $ticketReservationRequestBuilder;
     protected $craneOTASoapService;
     protected $checkArray;
+    protected $getPointService;
     
-    public function __construct(BookingBuilder $bookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray)
+    public function __construct(BookingBuilder $bookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray, GetPointService $getPointService)
     {
       $this->bookingBuilder = $bookingBuilder; 
       $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
       $this->craneOTASoapService = app("CraneOTASoapService");
       $this->checkArray = $checkArray;
+      $this->getPointService;
       
     }
 
@@ -151,8 +154,16 @@ class BookingRequestController extends Controller
     }
 
     public function readBookingTK(ReadBookingTkRequest $request) {
+        $companyCityCode  = $request->input('companyCityCode'); 
+        $companyCode = $request->input('companyCode'); 
+        $companyNameCodeContext = $request->input('companyNameCodeContext');
+        $companyFullName = $request->input('companyFullName'); 
+        $companyShortName = $request->input('companyShortName'); 
+        $countryCode = $request->input('countryCode'); 
         $ID = $request->input('ID'); 
-        $referenceID = $request->input('referenceID');
+        $referenceID = $request->input('referenceID'); 
+
+
         try {
 
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
@@ -164,52 +175,14 @@ class BookingRequestController extends Controller
 
             
             $response = $this->craneOTASoapService->run($function, $xml);
-
-
-            $routes = [];
-            $bookOriginDestinationOptionLists = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["airItinerary"]["adviceCodeSegmentExist"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
+            dd($response);
             
-
-            if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
-                
-                $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
-                    return array_key_exists('bookFlightSegmentList', $option);
-                }); 
-    
-                $response["AirBookingResponse"]["airBookingList"]["airReservation"]["airItinerary"]["adviceCodeSegmentExist"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"] = $filteredOptions;
-                $bookOriginDestinationOptionLists = $filteredOptions;
-                
-                foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
-                    $fromCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["departureAirport"]["locationCode"];
-                    $toCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["arrivalAirport"]["locationCode"];
-    
-                    $routes[] = [
-                        "fromCity" => $fromCity,
-                        "toCity" => $toCity
-                    ];
-    
-                //    $cities = new stdClass();
-                //    $cities->fromCity = $fromCity;
-                //    $cities->toCity = $toCity;
-    
-                //    $route[] = $cities
-                }
-
-            } else {
-                $fromCity = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["flightSegment"]["departureAirport"]["locationCode"];
-                $toCity = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["flightSegment"]["arrivalAirport"]["locationCode"];
-                
-                $routes[] = [
-                    "fromCity" => $fromCity,
-                    "toCity" => $toCity
-                ];
-
-                //    $cities = new stdClass();
-                //    $cities->fromCity = $fromCity;
-                //    $cities->toCity = $toCity;
-
-                //    $route[] = $cities
-            }
+            $airTravelerLists = $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'];
+            
+            return response()->json([
+                "error" => false,
+                "passengersInfo" => $airTravelerLists
+            ], 200);
 
 
         } catch (\Throwable $th) {
@@ -219,19 +192,85 @@ class BookingRequestController extends Controller
             ], 500);
         }
        
-       return $routes;
+        return response()->json([
+            "error" => false,
+            "passengerInfo" => ""
+        ], 200);
     }
 
-    public function readBooking(ReadBookingRequest $request) {
-        $ID = $request->input('ID');
-        $passengerSurname = $request->input('passengerSurname');
+    public function readBooking($ID, $referenceID) {
+        try {
+            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+            
+            $xml = $this->bookingBuilder->readBookingTK(
+                $ID, 
+                $referenceID
+            );
+            
+            
+            $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
+            
+            $routes = [];
+            $bookOriginDestinationOptionLists = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
+            // dd($bookOriginDestinationOptionLists);
+            
 
-        $xml = $this->bookingBuilder->readBooking(
-            $ID, 
-            $passengerSurname
-        );
+            if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+                
+                $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
+                    return array_key_exists('bookFlightSegmentList', $option);
+                }); 
+    
+                $response["AirBookingResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"] = $filteredOptions;
+                $bookOriginDestinationOptionLists = $filteredOptions;
+                
+                foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                    $class = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["resBookDesigCode"];
+                    $fromCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["departureAirport"]["locationCode"];
+                    $toCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["arrivalAirport"]["locationCode"];
+    
+                    $routes[] = [
+                        "route" => "{$fromCity}-{$toCity}",
+                        "class" => $class,
+                        "fromCity" => $fromCity,
+                        "toCity" => $toCity
+                    ];
+    
+                //    $cities = new \stdClass();
+                //    $cities->fromCity = $fromCity;
+                //    $cities->toCity = $toCity;
+                //    $routes[] = $cities;
+                }
 
-        dd($xml);
+            } else {
+                $fromCity = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["flightSegment"]["departureAirport"]["locationCode"];
+                $toCity = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["flightSegment"]["arrivalAirport"]["locationCode"];
+                $class = $bookOriginDestinationOptionLists["bookFlightSegmentList"]["bookingClass"]["resBookDesigCode"];
+
+                $routes[] = [
+                    "route" => "{$fromCity}-{$toCity}",
+                    "class" => $class,
+                    "fromCity" => $fromCity,
+                    "toCity" => $toCity
+                ];
+
+                //    $cities = new \stdClass();
+                //    $cities->fromCity = $fromCity;
+                //    $cities->toCity = $toCity;
+                //    $routes[] = $cities;
+            }
+
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                "error" => true,
+                "message" => $th->getMessage()
+            ], 500);
+        }
+
+       
+       return $routes;
     }
        
 }

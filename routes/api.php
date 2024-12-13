@@ -221,7 +221,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
             Route::group(["prefix" => "read-booking"], function() {
                 Route::post('read-booking-tk', [BookingRequestController::class, 'readBookingTK']);
-                Route::post('read-booking', [BookingRequestController::class, 'readBooking']);
+                Route::get('read-booking/{ID}/{referenceID}', [BookingRequestController::class, 'readBooking']);
             });
 
             Route::group(["prefix" => "read-user-booking"], function() {

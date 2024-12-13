@@ -1,24 +1,22 @@
 <?php
-
-bookOriginDestinationOptionList
-array:1 [ // app/Http/Controllers/Test/Booking/BookingRequestController.php:174
-    "AirBookingResponse" => array:1 [
+array:1 [ // app\Http\Controllers\Test\Booking\BookingRequestController.php:209
+    "AirBookingResponse" => array:1 [ 
       "airBookingList" => array:1 [
         "airReservation" => array:18 [
           "airItinerary" => array:2 [
             "adviceCodeSegmentExist" => "false"
             "bookOriginDestinationOptions" => array:1 [
               "bookOriginDestinationOptionList" => array:2 [
-                0 => array:1 [  
-                    "bookFlightSegmentList" => array:11 [
+                0 => array:1 [
+                  "bookFlightSegmentList" => array:11 [ 
                     "actionCode" => "HK"
                     "addOnSegment" => "false"
                     "bookingClass" => array:3 [
                       "cabin" => "ECONOMY"
                       "resBookDesigCode" => "V"
                       "resBookDesigQuantity" => "0"
-                    ]
-                    "fareInfo" => array:9 [
+                    ] 
+                    "fareInfo" => array:9 [ ["bookFlightSegmentList"]["fareInfo"]["cabinClassCode"]
                       "cabin" => "ECONOMY"
                       "cabinClassCode" => "Y"
                       "fareBaggageAllowance" => array:3 [
@@ -31,12 +29,12 @@ array:1 [ // app/Http/Controllers/Test/Booking/BookingRequestController.php:174
                       ]
                       "fareGroupName" => "Eco Non Flexi Dom"
                       "fareReferenceCode" => "VRTN"
-                      "fareReferenceID" => "0fe3789a81d712c1be1d8b3d18fd7120e1ac9b4adc1fd71acd8dbb51f25cfd570d7f224a47d3a18a9506e80ec51814e72b7f2ff44370a3fb850469e1c6811a4c1a3e672c1008b53f8a3f6bf60b436910bf396c03d8862fc9ff6dbf"
+                      "fareReferenceID" => "0fe3789a81d712c1be1d8b3d18fd7120e1ac9b4adc1fd71ac28abc50f650f2570d7f224a47d3a18a9506e80ec51814e72b7f2ff44370a3fb850469e1c6811a4c1a3e672c1008b53f8a3f6b9337468d0eadad8cbc750b034bade4c1"
                       "fareReferenceName" => "VRTNIG"
                       "flightSegmentSequence" => "0"
                       "resBookDesigCode" => "V"
                     ]
-                    "flightSegment" => array:25 [  
+                    "flightSegment" => array:25 [
                       "airline" => array:2 [
                         "code" => "P4"
                         "codeContext" => "IATA"
@@ -65,7 +63,7 @@ array:1 [ // app/Http/Controllers/Test/Booking/BookingRequestController.php:174
                       ]
                       "arrivalDateTime" => "2024-12-18T13:00:00+01:00"
                       "arrivalDateTimeUTC" => "2024-12-18T12:00:00+01:00"
-                      "departureAirport" => array:6 [ 
+                      "departureAirport" => array:6 [
                         "cityInfo" => array:2 [
                           "city" => array:3 [
                             "locationCode" => "ENU"
@@ -148,7 +146,7 @@ array:1 [ // app/Http/Controllers/Test/Booking/BookingRequestController.php:174
                       ]
                       "fareGroupName" => "Eco Non Flexi Dom"
                       "fareReferenceCode" => "VRTN"
-                      "fareReferenceID" => "0fe3789a8fde12c1be1d8b3d18fd7120e1ac9b4adc1fd71acd8dbb51f155f4500d7f221441d8ab8bc401e909c64f10e2227d28a0172ba4a08b5467e0c6d31b4e403a637b4c59b36ed83868dfee62031df8b57275bbb379a9675730"
+                      "fareReferenceID" => "0fe3789a8fde12c1be1d8b3d18fd7120e1ac9b4adc1fd71ac28abc50f650f3550d7f221441d8ab8bc401e909c64f10e2227d28a0172ba4a08b5467e0c6d31b4e403a637b4c59b36ed838689207ab7f8cbf73e805a24dc1c439b63d"
                       "fareReferenceName" => "VRTNIG"
                       "flightSegmentSequence" => "0"
                       "resBookDesigCode" => "V"
