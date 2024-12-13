@@ -236,7 +236,8 @@ class TicketReservationController extends Controller
             if (!array_key_exists('AirTicketReservationResponse', $response)) {
                 return response()->json([
                     'error' => true,
-                    'message' => "no new addition to ticket"
+                    'message' => "no new addition to ticket",
+                    "response" => $response
                 ], 500);
             }        
 
