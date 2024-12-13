@@ -19,7 +19,7 @@ class ProfileController extends Controller
         try {
             
             $user = $request->user();
-
+           
             // get the image_url  path
             $pathToImage = $user->image_url;
             $pathToTravelDoc = $user->travel_document;
@@ -27,12 +27,14 @@ class ProfileController extends Controller
             // image url link
             $imageUrlLink = Storage::url($pathToImage);
             $travelDocumentLink = Storage::url($pathToTravelDoc);
+            $tierDetails = $user->currentTier();
             
             return response()->json([
                 "error" => "false",
                 "user" => $user,
                 "image_url_link" => $imageUrlLink,
-                'travel_document_link' => $travelDocumentLink
+                'travel_document_link' => $travelDocumentLink,
+                "tier_details" => $tierDetails
             
             ], 200);
             
