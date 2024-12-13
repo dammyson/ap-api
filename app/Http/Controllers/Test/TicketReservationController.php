@@ -169,8 +169,6 @@ class TicketReservationController extends Controller
 
         $user->addPoints($totalPoint, "point add for ticketing flight");
         
-        dd($user);
-        
         $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
             $bookingId,
             $bookingReferenceId,           
