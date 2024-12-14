@@ -155,20 +155,6 @@ class TicketReservationController extends Controller
         $bookingReferenceId = $request->input('reference_id');
         $paidAmount = $request->input('value');
         
-        $routes = $this->bookingRequestController->readBooking($bookingId, $bookingReferenceId);
-
-        // dump($response);     
-        
-        $totalPoint = 0;
-        foreach($routes as $route) {
-            ['points' => $points, 'tierPoints' => $tierPoints]= $this->getPointService->domesticPoints($route["route"], $route["class"]);
-
-            $totalPoint += $points;
-        }
-        $user = auth()->user();
-
-        $user->addPoints($totalPoint, "point add for ticketing flight");
-        
         $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
             $bookingId,
             $bookingReferenceId,           
