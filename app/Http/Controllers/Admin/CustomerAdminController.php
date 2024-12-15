@@ -54,6 +54,8 @@ class CustomerAdminController extends Controller
             "user_total_flight_flown" => $flightCount,
             "user_refferal_Count" => $refferalCount,
             "user_date_of_reg" => $dateOfRegistration,
+            "user_point" => $user->points,
+            "user_all_time_point" => $user->all_time_point,
             "last_flight" => $lastFlight,
             "upcoming_flight" => $upcomingFlight,
             "user_activity" => $userActivityLog,
