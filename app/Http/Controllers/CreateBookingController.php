@@ -384,9 +384,21 @@ class CreateBookingController extends Controller
                 'booking_reference_id' => $bookingReferenceID
             ]);
 
+             //// read expected amount from ticketReservation (this is the accurate amount)
+            $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
+
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                    $bookingId,
+                    $bookingReferenceID
+            );    
+             
+            $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
+            $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            
+
             $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
             $bookOriginDestinationOptionList = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
-            $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            // $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         
             $ticketCount = 0;
 
@@ -431,7 +443,7 @@ class CreateBookingController extends Controller
                         'flight_number' => $flightNumber,
                         'flight_distance' => $flightDistance,
                         'flight_duration' => $totalHours,
-                        'amount' => $amount
+                        'amount' => $expectedAmount
                     ]);  
                     $ticketCount += 1;
 
@@ -459,7 +471,7 @@ class CreateBookingController extends Controller
                             'flight_number' => $flightNumber,
                             'flight_distance' => $flightDistance,
                             'flight_duration' => $totalHours,
-                            'amount' => $amount
+                            'amount' => $expectedAmount
                         ]); 
 
                         $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
@@ -505,7 +517,7 @@ class CreateBookingController extends Controller
                             'flight_distance' => $flightDistance,
                             'flight_number' => $flightNumber,
                             'flight_duration' => $totalHours,
-                            'amount' => $amount
+                            'amount' => $expectedAmount
                         ]);  
                         
                         $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
@@ -552,7 +564,7 @@ class CreateBookingController extends Controller
                                 'flight_distance' => $flightDistance,
                                 'flight_number' => $flightNumber,
                                 'flight_duration' => $totalHours,
-                                'amount' => $amount
+                                'amount' => $expectedAmount
                             ]); 
                             
                             $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
@@ -565,16 +577,8 @@ class CreateBookingController extends Controller
 
             }    
 
-            //// read amount from ticketReservation
-            $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
-    
-            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                    $bookingId,
-                    $bookingReferenceID
-            );    
+           
             
-            $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
-            $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             // create invoice table   // add booking_id
             $invoice = InvoiceRecord::create([
                 'amount' => $expectedAmount,
@@ -606,7 +610,7 @@ class CreateBookingController extends Controller
                 "message" => "Flight booked successfully",
                 "amount" => $expectedAmount,
                 "bookingDetails" => $bookingDetails,
-                "response" => $response
+                // "response" => $response
             ], 200);
 
         } catch (\Exception $e) {
