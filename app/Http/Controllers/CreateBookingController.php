@@ -14,6 +14,7 @@ use App\Http\Requests\Test\Booking\CreateBookingOWRequest;
 use App\Http\Requests\Test\Booking\CreateBookingRTRequest;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
 use App\Services\Soap\CreateBookingTestBuilder;
+use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Services\Utility\CheckArray;
 
 class CreateBookingController extends Controller
@@ -23,14 +24,16 @@ class CreateBookingController extends Controller
     protected $craneAncillaryOTASoapService;
     protected $checkArray;
     protected $createBookingTestBuilder;
+    protected $ticketReservationRequestBuilder;
 
-    public function __construct(CreateBookingBuilder $createBookingBuilder, CreateBookingTestBuilder $createBookingTestBuilder, CheckArray $checkArray) {
+    public function __construct(CreateBookingBuilder $createBookingBuilder, CreateBookingTestBuilder $createBookingTestBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray) {
         $this->createBookingBuilder = $createBookingBuilder;
 
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->checkArray = $checkArray;
         $this->createBookingTestBuilder = $createBookingTestBuilder;
+        $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
     }
 
     public function createBookingRT(CreateBookingRTRequest $request) {
@@ -562,9 +565,19 @@ class CreateBookingController extends Controller
 
             }    
 
+            //// read amount from ticketReservation
+            $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
+    
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                    $bookingId,
+                    $bookingReferenceID
+            );    
+            
+            $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
+            $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             // create invoice table   // add booking_id
             $invoice = InvoiceRecord::create([
-                'amount' => $amount,
+                'amount' => $expectedAmount,
                 'booking_id' => $bookingReferenceIDList['ID'],
                 'is_paid' => false
             ]);            
@@ -574,14 +587,14 @@ class CreateBookingController extends Controller
                 'invoice_id' => $invoice->id,
                 'product' => 'Ticket', 
                 'quantity' => $ticketCount,
-                'price' => $amount
+                'price' => $expectedAmount
             ]);
             
             $bookingDetails = [
                 "booking_id" => $bookingReferenceIDList['ID'],
                 "reference_id" => $bookingReferenceIDList['referenceID'],
                 "invoice_id" => $invoice->id,
-                "amount" => $amount,
+                "amount" => $expectedAmount,
                 "timeLimit" => $timeLimit,
                 "timeLimitUTC" => $timeLimitUTC
             ];
@@ -591,8 +604,9 @@ class CreateBookingController extends Controller
             return response()->json([
                 "error" => false,
                 "message" => "Flight booked successfully",
-                "amount" => $amount,
-                "bookingDetails" => $bookingDetails
+                "amount" => $expectedAmount,
+                "bookingDetails" => $bookingDetails,
+                "response" => $response
             ], 200);
 
         } catch (\Exception $e) {
