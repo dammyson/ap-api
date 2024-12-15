@@ -352,6 +352,7 @@ class TicketReservationController extends Controller
             return response()->json([
                 "error" => false,
                 "points" => $totalPoint,
+                "amount" => $paidAmount,
                 "message" => "transaction successfully recorded"
             ], 200);           
             // }   
