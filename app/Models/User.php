@@ -39,6 +39,7 @@ class User extends Authenticatable
         'travel_document',
         'tier_id',
         'points',
+        'all_time_point'
     ];
 
     /**
@@ -110,6 +111,7 @@ class User extends Authenticatable
     {
         // Update the user's points
         $this->points += $points;
+        $this->all_time_point += $points;
         $this->save();
 
         // Log the transaction
