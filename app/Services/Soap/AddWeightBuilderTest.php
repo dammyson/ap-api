@@ -301,7 +301,7 @@ class AddWeightBuilderTest {
 
    public function airItinerary($airItineraryList) {
       $xml = '';
-      dd($airItineraryList);
+      // dd($airItineraryList);
       foreach($airItineraryList as $airItinerary) {
          $xml .= '<adviceCodeSegmentExist>' . htmlspecialchars($airItinerary["adviceCodeSegmentExist"], ENT_XML1, 'UTF-8') . '</adviceCodeSegmentExist>
          <bookOriginDestinationOptions>
