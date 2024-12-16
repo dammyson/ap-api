@@ -255,13 +255,12 @@ class AddWeightBuilderTest {
       $airItinerary,
       $airTravelerList,
       $ancillaryRequestList,
-
-
       $bookingReferenceIDID,
       $bookingReferenceID
 
 
    ) {
+      // dd($airItinerary);
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
          <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
             <soapenv:Header/>
@@ -302,7 +301,7 @@ class AddWeightBuilderTest {
 
    public function airItinerary($airItineraryList) {
       $xml = '';
-
+      dd($airItineraryList);
       foreach($airItineraryList as $airItinerary) {
          $xml .= '<adviceCodeSegmentExist>' . htmlspecialchars($airItinerary["adviceCodeSegmentExist"], ENT_XML1, 'UTF-8') . '</adviceCodeSegmentExist>
          <bookOriginDestinationOptions>
