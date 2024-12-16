@@ -22,8 +22,8 @@ class AddSsrRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "adviceCodeSegmentExist" => "required|boolean",
             "airItinerary" => "required|array",
-            "airItinerary.*.adviceCodeSegmentExist" => "required|boolean",
             "airItinerary.*.bookFlightSegmentListActionCode" => "required|string",
             "airItinerary.*.bookFlightAddOnSegment" => "required|boolean",
             "airItinerary.*.bookingClassCabin" => "required|string",

@@ -256,6 +256,7 @@ class AddWeightControllerTest extends Controller
     }
 
     public function addWeightArrayTest(AddSsrRequest $request, $invoiceId) {
+        $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
         $airItinerary = $request->input('airItinerary');
         $ancillaryRequestList = $request->input('ancillaryRequestList');   
         $airTravelerList = $request->input('airTravelerList');
@@ -263,6 +264,7 @@ class AddWeightControllerTest extends Controller
         $bookingReferenceID = $request->input('bookingReferenceID');
 
         $xml = $this->addWeightBuilderTest->addWeightArrayTest(
+            $adviceCodeSegmentExist,
             $airItinerary,
             $airTravelerList,
             $ancillaryRequestList,
