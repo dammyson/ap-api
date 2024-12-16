@@ -259,7 +259,6 @@ class AddWeightControllerTest extends Controller
         $airItinerary = $request->input('airItinerary');
         $ancillaryRequestList = $request->input('ancillaryRequestList');   
         $airTravelerList = $request->input('airTravelerList');
-        
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
 
