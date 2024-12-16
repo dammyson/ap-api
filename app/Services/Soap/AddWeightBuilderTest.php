@@ -300,8 +300,11 @@ class AddWeightBuilderTest {
       return $xml;  
    }
 
-   public function airItinerary($airItinerary) {
-      '<adviceCodeSegmentExist>' . htmlspecialchars($airItinerary["adviceCodeSegmentExist"], ENT_XML1, 'UTF-8') . '</adviceCodeSegmentExist>
+   public function airItinerary($airItineraryList) {
+      $xml = '';
+
+      foreach($airItineraryList as $airItinerary) {
+         $xml .= '<adviceCodeSegmentExist>' . htmlspecialchars($airItinerary["adviceCodeSegmentExist"], ENT_XML1, 'UTF-8') . '</adviceCodeSegmentExist>
          <bookOriginDestinationOptions>
             <bookOriginDestinationOptionList>
                <bookFlightSegmentList>
@@ -421,6 +424,10 @@ class AddWeightBuilderTest {
             </bookFlightSegmentList>
          </bookOriginDestinationOptionList>
       </bookOriginDestinationOptions>';
+      }
+
+      return $xml;
+      
    }
 
 
