@@ -254,6 +254,89 @@ class AddWeightControllerTest extends Controller
         }
     }
 
+    public function addWeightArrayTest(AddWeightRequestTest $request, $invoiceId) {
+        $airItinerary = $request->input('airItinerary');
+        $ancillaryRequestList = $request->input('ancillaryRequestList');   
+        $airTravelerList = $request->input('airTravelerList');
+        
+        $bookingReferenceIDID = $request->input('bookingReferenceIDID');
+        $bookingReferenceID = $request->input('bookingReferenceID');
+
+        $xml = $this->addWeightBuilderTest->addWeightArrayTest(
+            $airItinerary,
+            $airTravelerList,
+            $ancillaryRequestList,
+            $bookingReferenceIDID,
+            $bookingReferenceID
+        );
+        // dd($xml);
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
+
+        try {
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            dump($response);
+            $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
+            $invoice = InvoiceRecord::find($invoiceId);
+
+            // if user has not paid set the new invoice balance else generate a new invoice
+            
+            $baggagePrice = 0;
+           
+            if (!$invoice->is_paid) {
+                $baggagePrice = $invoice->amount - $amount;
+                $baggagePrice = abs($baggagePrice);
+                $invoice->amount = $amount;
+                
+            }
+
+            else { 
+                $invoice = InvoiceRecord::create([
+                    'amount' => $amount,
+                    'booking_id' => $bookingId
+                ]);
+                $baggagePrice = $amount;
+            }
+            
+            $invoice->is_paid = false;
+            $invoice->save();
+
+            // Use preg_match to extract the number
+            
+            foreach ($ancillaryRequestList as $ancillaryRequest) {
+                $ssrExplanation = $ancillaryRequest['ssrExplanation'];
+                preg_match('/\d+/', $ssrExplanation, $matches);
+    
+                // $matches[0] will contain the number
+                $quantity = $matches[0];
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'product' => 'Baggages', // baggages or ticket shopping
+                    'quantity' => $quantity,
+                    // total_passengers => $totalPassengers  // this field would be removed
+                    'price' => $baggagePrice
+                ]);
+
+            }
+
+            return response()->json([
+                "error" => false,
+                "message" => "Baggages added successfully",
+                'invoice_id' => $invoice->id,
+                "amount" => $amount
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'response' => $response
+        
+            ], 500);
+        }
+    }
+
 
     public function selectSeatTest(AddWeightRequestTest $request) {
         $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
