@@ -1,7 +1,7 @@
 <?php
 {
     "error": false,
-    "invoice_id": "9db9182c-2831-410b-acbd-83f315335ac8",
+    "invoice_id": "9dbcd434-298e-4ae4-952b-305342d90300",
     "booking_data": {
         "AirTicketReservationResponse": {
             "airBookingList": {
@@ -15,27 +15,27 @@
                                         "actionCode": "HK",
                                         "addOnSegment": "false",
                                         "bookingClass": {
-                                            "cabin": "BUSINESS",
-                                            "resBookDesigCode": "C",
+                                            "cabin": "ECONOMY",
+                                            "resBookDesigCode": "V",
                                             "resBookDesigQuantity": "0"
                                         },
                                         "fareInfo": {
-                                            "cabin": "BUSINESS",
-                                            "cabinClassCode": "C",
+                                            "cabin": "ECONOMY",
+                                            "cabinClassCode": "Y",
                                             "fareBaggageAllowance": {
                                                 "allowanceType": "WEIGHT",
                                                 "maxAllowedPieces": "0",
                                                 "maxAllowedWeight": {
                                                     "unitOfMeasureCode": "KG",
-                                                    "weight": "30"
+                                                    "weight": "15"
                                                 }
                                             },
-                                            "fareGroupName": "Biz Corporate Dom",
-                                            "fareReferenceCode": "COW1",
-                                            "fareReferenceID": "0fe4769e86d712c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f153f3540d7f224544d2f8ddc107ec5ac01f41bf227e7afa167bf4a18b5461ba90d44b4e163c30294b55b2388d6869d1bc3a01f576ae6366554fadec4f357a",
-                                            "fareReferenceName": "COWCORPORATE",
+                                            "fareGroupName": "Eco Non Flexi Dom",
+                                            "fareReferenceCode": "VRTN",
+                                            "fareReferenceID": "0fe3789a8fde12c1be1d8b3d18fd7120e1ac9b4adc1fd719ce88b855fb5cfc570d7f224241d4addac655e909974d44e42d7d2ba1457ca1a1830368e991871c4c133d30781909b3338e6964a37f2fd2f3587b7bffcda699b62f7634",
+                                            "fareReferenceName": "VRTNIG",
                                             "flightSegmentSequence": "0",
-                                            "resBookDesigCode": "C"
+                                            "resBookDesigCode": "V"
                                         },
                                         "flightSegment": {
                                             "airline": {
@@ -43,30 +43,6 @@
                                                 "codeContext": "IATA"
                                             },
                                             "arrivalAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "arrivalDateTime": "2024-12-18T13:00:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-18T12:00:00+01:00",
-                                            "departureAirport": {
                                                 "cityInfo": {
                                                     "city": {
                                                         "locationCode": "ENU",
@@ -88,10 +64,34 @@
                                                 "locationName": "Enugu",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "departureDateTime": "2024-12-18T11:50:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-18T10:50:00+01:00",
-                                            "flightNumber": "7103",
-                                            "flightSegmentID": "1148777",
+                                            "arrivalDateTime": "2024-12-27T08:00:00+01:00",
+                                            "arrivalDateTimeUTC": "2024-12-27T07:00:00+01:00",
+                                            "departureAirport": {
+                                                "cityInfo": {
+                                                    "city": {
+                                                        "locationCode": "LOS",
+                                                        "locationName": "Lagos",
+                                                        "locationNameLanguage": "EN"
+                                                    },
+                                                    "country": {
+                                                        "locationCode": "NG",
+                                                        "locationName": "Nigeria",
+                                                        "locationNameLanguage": "EN",
+                                                        "currency": {
+                                                            "code": "NGN"
+                                                        }
+                                                    }
+                                                },
+                                                "codeContext": "IATA",
+                                                "language": "EN",
+                                                "locationCode": "LOS",
+                                                "locationName": "Lagos",
+                                                "timeZoneInfo": "Africa/Lagos"
+                                            },
+                                            "departureDateTime": "2024-12-27T06:50:00+01:00",
+                                            "departureDateTimeUTC": "2024-12-27T05:50:00+01:00",
+                                            "flightNumber": "7100",
+                                            "flightSegmentID": "1146830",
                                             "ondControlled": "false",
                                             "sector": "DOMESTIC",
                                             "accumulatedDuration": "",
@@ -113,6 +113,7 @@
                                             "iatciFlight": "false",
                                             "journeyDuration": "PT1H10M",
                                             "onTimeRate": "0",
+                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
                                             "secureFlightDataRequired": "true",
                                             "segmentStatusByFirstLeg": "RZ",
                                             "stopQuantity": "0",
@@ -123,7 +124,7 @@
                                         },
                                         "involuntaryPermissionGiven": "false",
                                         "legStatus": "RZ",
-                                        "referenceID": "15864893",
+                                        "referenceID": "15864955",
                                         "responseCode": "HK",
                                         "sequenceNumber": "0",
                                         "status": "HK"
@@ -151,7 +152,7 @@
                                             },
                                             "fareGroupName": "Eco Non Flexi Dom",
                                             "fareReferenceCode": "VRTN",
-                                            "fareReferenceID": "0fe3789a8ed812c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f153f3510d7f22444185a98dc003ba5bc14f15b0222f2ca11328a7f4d60760bac1851b4c156836291959e23bd86d3fdd6f9c61a702c885a4782364c864cc64",
+                                            "fareReferenceID": "0fe3789a81d812c1be1d8b3d18fd7120e1ac9b4adc1fd719ce88b855fb5cfd550d7f22401481aede9206bc58c71f17b6297e79a2417ff2a7d05430bdc080491f1b6d6a7f4c54ef69dd3b6c4284f5fa3f3f4460a9a3972a59683adc",
                                             "fareReferenceName": "VRTNIG",
                                             "flightSegmentSequence": "0",
                                             "resBookDesigCode": "V"
@@ -183,13 +184,13 @@
                                                 "locationName": "Abuja",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "arrivalDateTime": "2024-12-22T07:50:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-22T06:50:00+01:00",
+                                            "arrivalDateTime": "2024-12-30T09:35:00+01:00",
+                                            "arrivalDateTimeUTC": "2024-12-30T08:35:00+01:00",
                                             "departureAirport": {
                                                 "cityInfo": {
                                                     "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
+                                                        "locationCode": "ENU",
+                                                        "locationName": "Enugu",
                                                         "locationNameLanguage": "EN"
                                                     },
                                                     "country": {
@@ -203,19 +204,19 @@
                                                 },
                                                 "codeContext": "IATA",
                                                 "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
+                                                "locationCode": "ENU",
+                                                "locationName": "Enugu",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "departureDateTime": "2024-12-22T06:30:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-22T05:30:00+01:00",
-                                            "flightNumber": "7120",
-                                            "flightSegmentID": "1144217",
+                                            "departureDateTime": "2024-12-30T08:40:00+01:00",
+                                            "departureDateTimeUTC": "2024-12-30T07:40:00+01:00",
+                                            "flightNumber": "7101",
+                                            "flightSegmentID": "1147485",
                                             "ondControlled": "false",
                                             "sector": "DOMESTIC",
                                             "accumulatedDuration": "",
                                             "codeshare": "false",
-                                            "distance": "511",
+                                            "distance": "282",
                                             "equipment": {
                                                 "airEquipType": "ERJ195-12C/112Y",
                                                 "changeofGauge": "false"
@@ -225,19 +226,13 @@
                                                     "deiCode": "504",
                                                     "explanation": "Secure Flight Info",
                                                     "note": "T"
-                                                },
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
                                                 }
                                             ],
                                             "flownMileageQty": "0",
                                             "groundDuration": "",
                                             "iatciFlight": "false",
-                                            "journeyDuration": "PT1H20M",
+                                            "journeyDuration": "PT55M",
                                             "onTimeRate": "0",
-                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
                                             "secureFlightDataRequired": "true",
                                             "segmentStatusByFirstLeg": "RZ",
                                             "stopQuantity": "0",
@@ -248,7 +243,7 @@
                                         },
                                         "involuntaryPermissionGiven": "false",
                                         "legStatus": "RZ",
-                                        "referenceID": "15864894",
+                                        "referenceID": "15864956",
                                         "responseCode": "HK",
                                         "sequenceNumber": "1",
                                         "status": "HK"
@@ -259,7 +254,7 @@
                     },
                     "airTravelerList": [
                         {
-                            "accompaniedByInfant": "true",
+                            "accompaniedByInfant": "false",
                             "birthDate": "1991-08-08T00:00:00+01:00",
                             "companyInfo": "",
                             "contactPerson": {
@@ -325,7 +320,7 @@
                             },
                             "requestedSeatCount": "1",
                             "shareMarketInd": "false",
-                            "travelerReferenceID": "16006896",
+                            "travelerReferenceID": "16007006",
                             "unaccompaniedMinor": "false"
                         },
                         {
@@ -395,7 +390,7 @@
                             },
                             "requestedSeatCount": "1",
                             "shareMarketInd": "false",
-                            "travelerReferenceID": "16006897",
+                            "travelerReferenceID": "16007007",
                             "unaccompaniedMinor": "false"
                         },
                         {
@@ -446,7 +441,7 @@
                             },
                             "requestedSeatCount": "1",
                             "shareMarketInd": "false",
-                            "travelerReferenceID": "16006898",
+                            "travelerReferenceID": "16007008",
                             "unaccompaniedMinor": "false"
                         }
                     ],
@@ -485,11 +480,11 @@
                             "companyShortName": "SCINTILLA",
                             "countryCode": "NG"
                         },
-                        "ID": "12CT5F",
-                        "referenceID": "13441384"
+                        "ID": "12CT7E",
+                        "referenceID": "13441445"
                     },
                     "bookingType": "R",
-                    "dateCreated": "2024-12-14T14:29:56+01:00",
+                    "dateCreated": "2024-12-16T11:03:10+01:00",
                     "emergencyContactRequired": "false",
                     "FFPReservation": "false",
                     "groupBooking": "false",
@@ -507,7 +502,7 @@
                                     "allowedQuantityPerPassenger": "1",
                                     "bundleRelatedSsr": "false",
                                     "code": "CTCM",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:10+01:00",
                                     "exchangeable": "false",
                                     "explanation": "90 532 1111111",
                                     "extraBaggage": "false",
@@ -521,7 +516,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454171",
+                                "specialServiceReferenceId": "30454626",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -533,7 +528,7 @@
                                     "allowedQuantityPerPassenger": "1",
                                     "bundleRelatedSsr": "false",
                                     "code": "CTCE",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:10+01:00",
                                     "exchangeable": "false",
                                     "explanation": "AAA.TEST@HITITCS.COM",
                                     "extraBaggage": "false",
@@ -547,7 +542,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454172",
+                                "specialServiceReferenceId": "30454627",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -559,7 +554,7 @@
                                     "allowedQuantityPerPassenger": "1",
                                     "bundleRelatedSsr": "false",
                                     "code": "CTCM",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:10+01:00",
                                     "exchangeable": "false",
                                     "explanation": "90 532 222222",
                                     "extraBaggage": "false",
@@ -573,7 +568,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454173",
+                                "specialServiceReferenceId": "30454628",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -585,7 +580,7 @@
                                     "allowedQuantityPerPassenger": "1",
                                     "bundleRelatedSsr": "false",
                                     "code": "CTCE",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:10+01:00",
                                     "exchangeable": "false",
                                     "explanation": "BBB.TEST@HITITCS.COM",
                                     "extraBaggage": "false",
@@ -599,7 +594,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454174",
+                                "specialServiceReferenceId": "30454629",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -611,7 +606,7 @@
                                     "allowedQuantityPerPassenger": "1",
                                     "bundleRelatedSsr": "false",
                                     "code": "CTCR",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:10+01:00",
                                     "exchangeable": "false",
                                     "explanation": "REFUSED",
                                     "extraBaggage": "false",
@@ -625,7 +620,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454175",
+                                "specialServiceReferenceId": "30454630",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -637,7 +632,7 @@
                                     "allowedQuantityPerPassenger": "1",
                                     "bundleRelatedSsr": "false",
                                     "code": "CHLD",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "25DEC10",
                                     "extraBaggage": "false",
@@ -651,33 +646,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454176",
-                                "status": "HK",
-                                "ticketed": "false"
-                            },
-                            {
-                                "airTravelerSequence": "1",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "FR",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "1",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "INFT",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "EMEKA/OKONJI 07DEC23",
-                                    "extraBaggage": "false",
-                                    "free": "true",
-                                    "groupCode": "OTH",
-                                    "groupCodeExplanation": "OTH",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "false",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454177",
+                                "specialServiceReferenceId": "30454631",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -689,7 +658,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "DOCS",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "/////08AUG91/M//TEST/AAA",
                                     "extraBaggage": "false",
@@ -703,33 +672,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454178",
-                                "status": "HK",
-                                "ticketed": "false"
-                            },
-                            {
-                                "airTravelerSequence": "1",
-                                "flightSegmentSequence": "0",
-                                "paymentStatus": "FR",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "0",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "DOCS",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "/////07DEC23/MI//EMEKA/OKONJI",
-                                    "extraBaggage": "false",
-                                    "free": "true",
-                                    "groupCode": "OTH",
-                                    "groupCodeExplanation": "OTH",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "false",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454179",
+                                "specialServiceReferenceId": "30454632",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -741,7 +684,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "DOCS",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "/////08AUG91/F//TEST/BBB",
                                     "extraBaggage": "false",
@@ -755,7 +698,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454180",
+                                "specialServiceReferenceId": "30454633",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -767,7 +710,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "DOCS",
-                                    "entryDate": "2024-12-14T14:29:56+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "/////25DEC17/U//TEST/CCC",
                                     "extraBaggage": "false",
@@ -781,7 +724,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454181",
+                                "specialServiceReferenceId": "30454634",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -793,7 +736,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "CCSF",
-                                    "entryDate": "2024-12-14T14:29:58+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "CALL CENTER - SERVICE CHARGE",
                                     "extraBaggage": "false",
@@ -807,7 +750,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454182",
+                                "specialServiceReferenceId": "30454635",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -819,7 +762,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "CCSF",
-                                    "entryDate": "2024-12-14T14:29:58+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "CALL CENTER - SERVICE CHARGE",
                                     "extraBaggage": "false",
@@ -833,7 +776,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454183",
+                                "specialServiceReferenceId": "30454636",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -845,7 +788,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "CCSF",
-                                    "entryDate": "2024-12-14T14:29:58+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "CALL CENTER - SERVICE CHARGE",
                                     "extraBaggage": "false",
@@ -859,7 +802,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454184",
+                                "specialServiceReferenceId": "30454637",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -871,7 +814,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "CCSF",
-                                    "entryDate": "2024-12-14T14:29:58+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "CALL CENTER - SERVICE CHARGE",
                                     "extraBaggage": "false",
@@ -885,7 +828,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454185",
+                                "specialServiceReferenceId": "30454638",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -897,7 +840,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "CCSF",
-                                    "entryDate": "2024-12-14T14:29:58+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "CALL CENTER - SERVICE CHARGE",
                                     "extraBaggage": "false",
@@ -911,7 +854,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454186",
+                                "specialServiceReferenceId": "30454639",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -923,7 +866,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "CCSF",
-                                    "entryDate": "2024-12-14T14:29:58+01:00",
+                                    "entryDate": "2024-12-16T11:03:11+01:00",
                                     "exchangeable": "false",
                                     "explanation": "CALL CENTER - SERVICE CHARGE",
                                     "extraBaggage": "false",
@@ -937,1369 +880,20 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454187",
+                                "specialServiceReferenceId": "30454640",
                                 "status": "HK",
                                 "ticketed": "false"
-                            },
-                            {
-                                "airTravelerSequence": "3",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "KK",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "0",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "XBAG",
-                                    "entryDate": "2024-12-14T14:53:08+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "2KG",
-                                    "extraBaggage": "false",
-                                    "free": "false",
-                                    "groupCode": "BAG",
-                                    "groupCodeExplanation": "BAG",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "true",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454193",
-                                "status": "HK",
-                                "ticketTimeLimit": "2024-12-14T22:32:51+01:00",
-                                "ticketTimeLimitUTC": "2024-12-14T21:32:51+01:00",
-                                "ticketed": "false",
-                                "timeZone": "Africa/Lagos"
-                            },
-                            {
-                                "airTravelerSequence": "3",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "KK",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "0",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "ASVC",
-                                    "entryDate": "2024-12-14T14:53:08+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "C/0IK/XBAG/EXCESS WEIGHT BAGGAGE/A",
-                                    "extraBaggage": "false",
-                                    "free": "false",
-                                    "groupCode": "OTH",
-                                    "groupCodeExplanation": "OTH",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "false",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454194",
-                                "status": "HD",
-                                "ticketed": "false",
-                                "amount": {
-                                    "mileAmount": "0.0",
-                                    "redeemedMiles": {
-                                        "quantity": "0.0",
-                                        "terminology": "MILE"
-                                    },
-                                    "value": "0.0"
-                                },
-                                "emdType": "A",
-                                "exchangable": "true",
-                                "reasonForIssuanceCode": "C",
-                                "reasonForIssuanceExplanation": "Baggage",
-                                "reasonForIssuanceSubCode": "0IK",
-                                "reasonForIssuanceSubExplanation": "EXCESS WEIGHT BAGGAGE",
-                                "refundable": "false",
-                                "remark": "XBAG 2KG",
-                                "ssrSequence": "17"
-                            },
-                            {
-                                "airTravelerSequence": "1",
-                                "flightSegmentSequence": "2",
-                                "paymentStatus": "FR",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "1",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "INFT",
-                                    "entryDate": "2024-12-14T14:53:08+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "EMEKA/OKONJI 07DEC23",
-                                    "extraBaggage": "false",
-                                    "free": "true",
-                                    "groupCode": "OTH",
-                                    "groupCodeExplanation": "OTH",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "false",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454195",
-                                "status": "HK",
-                                "ticketed": "false"
-                            },
-                            {
-                                "airTravelerSequence": "2",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "KK",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "0",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "XBAG",
-                                    "entryDate": "2024-12-14T15:02:27+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "3KG",
-                                    "extraBaggage": "false",
-                                    "free": "false",
-                                    "groupCode": "BAG",
-                                    "groupCodeExplanation": "BAG",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "true",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454196",
-                                "status": "HK",
-                                "ticketTimeLimit": "2024-12-14T22:32:51+01:00",
-                                "ticketTimeLimitUTC": "2024-12-14T21:32:51+01:00",
-                                "ticketed": "false",
-                                "timeZone": "Africa/Lagos"
-                            },
-                            {
-                                "airTravelerSequence": "2",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "KK",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "0",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "ASVC",
-                                    "entryDate": "2024-12-14T15:02:27+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "C/0IK/XBAG/EXCESS WEIGHT BAGGAGE/A",
-                                    "extraBaggage": "false",
-                                    "free": "false",
-                                    "groupCode": "OTH",
-                                    "groupCodeExplanation": "OTH",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "false",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454197",
-                                "status": "HD",
-                                "ticketed": "false",
-                                "amount": {
-                                    "mileAmount": "0.0",
-                                    "redeemedMiles": {
-                                        "quantity": "0.0",
-                                        "terminology": "MILE"
-                                    },
-                                    "value": "0.0"
-                                },
-                                "emdType": "A",
-                                "exchangable": "true",
-                                "reasonForIssuanceCode": "C",
-                                "reasonForIssuanceExplanation": "Baggage",
-                                "reasonForIssuanceSubCode": "0IK",
-                                "reasonForIssuanceSubExplanation": "EXCESS WEIGHT BAGGAGE",
-                                "refundable": "false",
-                                "remark": "XBAG 3KG",
-                                "ssrSequence": "20"
-                            },
-                            {
-                                "airTravelerSequence": "1",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "KK",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "0",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "XBAG",
-                                    "entryDate": "2024-12-14T22:17:51+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "6KG",
-                                    "extraBaggage": "false",
-                                    "free": "false",
-                                    "groupCode": "BAG",
-                                    "groupCodeExplanation": "BAG",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "true",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454340",
-                                "status": "HK",
-                                "ticketTimeLimit": "2024-12-14T22:32:51+01:00",
-                                "ticketTimeLimitUTC": "2024-12-14T21:32:51+01:00",
-                                "ticketed": "false",
-                                "timeZone": "Africa/Lagos"
-                            },
-                            {
-                                "airTravelerSequence": "1",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "KK",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "0",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "ASVC",
-                                    "entryDate": "2024-12-14T22:17:51+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "C/0IK/XBAG/EXCESS WEIGHT BAGGAGE/A",
-                                    "extraBaggage": "false",
-                                    "free": "false",
-                                    "groupCode": "OTH",
-                                    "groupCodeExplanation": "OTH",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "false",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30454341",
-                                "status": "HD",
-                                "ticketed": "false",
-                                "amount": {
-                                    "mileAmount": "0.0",
-                                    "redeemedMiles": {
-                                        "quantity": "0.0",
-                                        "terminology": "MILE"
-                                    },
-                                    "value": "0.0"
-                                },
-                                "emdType": "A",
-                                "exchangable": "true",
-                                "reasonForIssuanceCode": "C",
-                                "reasonForIssuanceExplanation": "Baggage",
-                                "reasonForIssuanceSubCode": "0IK",
-                                "reasonForIssuanceSubExplanation": "EXCESS WEIGHT BAGGAGE",
-                                "refundable": "false",
-                                "remark": "XBAG 6KG",
-                                "ssrSequence": "22"
                             }
                         ]
                     },
                     "ticketOnDeparture": "false",
-                    "ticketTimeLimit": "2024-12-14T14:45:46+01:00",
-                    "ticketTimeLimitUTC": "2024-12-14T13:45:46+01:00",
+                    "ticketTimeLimit": "2024-12-16T11:19:00+01:00",
+                    "ticketTimeLimitUTC": "2024-12-16T10:19:00+01:00",
                     "timeZone": "Africa/Lagos"
                 },
                 "ticketInfo": {
                     "pricingType": "SELL",
                     "ticketItemList": [
-                        {
-                            "airTraveler": {
-                                "accompaniedByInfant": "true",
-                                "birthDate": "1991-08-08T00:00:00+01:00",
-                                "companyInfo": "",
-                                "gender": "M",
-                                "hasStrecher": "false",
-                                "parentSequence": "-1",
-                                "passengerTypeCode": "ADLT",
-                                "personName": {
-                                    "givenName": "AAA",
-                                    "nameTitle": "MR",
-                                    "shareMarketInd": "false",
-                                    "surname": "TEST"
-                                },
-                                "personNameEN": {
-                                    "givenName": "AAA",
-                                    "nameTitle": "MR",
-                                    "shareMarketInd": "false",
-                                    "surname": "TEST"
-                                },
-                                "requestedSeatCount": "1",
-                                "shareMarketInd": "false",
-                                "travelerReferenceID": "16006896",
-                                "unaccompaniedMinor": "false"
-                            },
-                            "couponInfoList": [
-                                {
-                                    "airTraveler": {
-                                        "accompaniedByInfant": "true",
-                                        "birthDate": "1991-08-08T00:00:00+01:00",
-                                        "companyInfo": "",
-                                        "gender": "M",
-                                        "hasStrecher": "false",
-                                        "parentSequence": "-1",
-                                        "passengerTypeCode": "ADLT",
-                                        "personName": {
-                                            "givenName": "AAA",
-                                            "nameTitle": "MR",
-                                            "shareMarketInd": "false",
-                                            "surname": "TEST"
-                                        },
-                                        "personNameEN": {
-                                            "givenName": "AAA",
-                                            "nameTitle": "MR",
-                                            "shareMarketInd": "false",
-                                            "surname": "TEST"
-                                        },
-                                        "requestedSeatCount": "1",
-                                        "shareMarketInd": "false",
-                                        "travelerReferenceID": "16006896",
-                                        "unaccompaniedMinor": "false"
-                                    },
-                                    "consumedAtIssuence": "false",
-                                    "couponFlightSegment": {
-                                        "actionCode": "HK",
-                                        "addOnSegment": "false",
-                                        "bookingClass": {
-                                            "cabin": "BUSINESS",
-                                            "resBookDesigCode": "C",
-                                            "resBookDesigQuantity": "0"
-                                        },
-                                        "fareInfo": {
-                                            "cabin": "BUSINESS",
-                                            "cabinClassCode": "C",
-                                            "fareBaggageAllowance": {
-                                                "allowanceType": "WEIGHT",
-                                                "maxAllowedPieces": "0",
-                                                "maxAllowedWeight": {
-                                                    "unitOfMeasureCode": "KG",
-                                                    "weight": "30"
-                                                }
-                                            },
-                                            "fareGroupName": "Biz Corporate Dom",
-                                            "fareReferenceCode": "COW1",
-                                            "fareReferenceID": "0fe4769e86d712c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f151f7510d7f224544d2f8ddc107ec5ac01f41bf227e7afa167bf4a18b5461ba90d44b4e163c30294b55b2388d68693b84544be5048b181d36e3d36e76cad6",
-                                            "fareReferenceName": "COWCORPORATE",
-                                            "flightSegmentSequence": "0",
-                                            "resBookDesigCode": "C"
-                                        },
-                                        "flightSegment": {
-                                            "airline": {
-                                                "code": "P4",
-                                                "codeContext": "IATA"
-                                            },
-                                            "arrivalAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "arrivalDateTime": "2024-12-18T13:00:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-18T12:00:00+01:00",
-                                            "departureAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "ENU",
-                                                        "locationName": "Enugu",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "ENU",
-                                                "locationName": "Enugu",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "departureDateTime": "2024-12-18T11:50:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-18T10:50:00+01:00",
-                                            "flightNumber": "7103",
-                                            "flightSegmentID": "1148777",
-                                            "ondControlled": "false",
-                                            "sector": "DOMESTIC",
-                                            "accumulatedDuration": "",
-                                            "codeshare": "false",
-                                            "distance": "469",
-                                            "equipment": {
-                                                "airEquipType": "ERJ195-12C/112Y",
-                                                "changeofGauge": "false"
-                                            },
-                                            "flightNotes": {
-                                                "deiCode": "504",
-                                                "explanation": "Secure Flight Info",
-                                                "note": "T"
-                                            },
-                                            "flownMileageQty": "0",
-                                            "groundDuration": "",
-                                            "iatciFlight": "false",
-                                            "journeyDuration": "PT1H10M",
-                                            "onTimeRate": "0",
-                                            "secureFlightDataRequired": "true",
-                                            "segmentStatusByFirstLeg": "RZ",
-                                            "stopQuantity": "0",
-                                            "trafficRestriction": {
-                                                "code": "",
-                                                "explanation": ""
-                                            }
-                                        },
-                                        "involuntaryPermissionGiven": "false",
-                                        "legStatus": "RZ",
-                                        "referenceID": "15864893",
-                                        "responseCode": "HK",
-                                        "sequenceNumber": "0",
-                                        "status": "HK"
-                                    },
-                                    "cpnIsn": "0",
-                                    "noShow": "false"
-                                },
-                                {
-                                    "airTraveler": {
-                                        "accompaniedByInfant": "true",
-                                        "birthDate": "1991-08-08T00:00:00+01:00",
-                                        "companyInfo": "",
-                                        "gender": "M",
-                                        "hasStrecher": "false",
-                                        "parentSequence": "-1",
-                                        "passengerTypeCode": "ADLT",
-                                        "personName": {
-                                            "givenName": "AAA",
-                                            "nameTitle": "MR",
-                                            "shareMarketInd": "false",
-                                            "surname": "TEST"
-                                        },
-                                        "personNameEN": {
-                                            "givenName": "AAA",
-                                            "nameTitle": "MR",
-                                            "shareMarketInd": "false",
-                                            "surname": "TEST"
-                                        },
-                                        "requestedSeatCount": "1",
-                                        "shareMarketInd": "false",
-                                        "travelerReferenceID": "16006896",
-                                        "unaccompaniedMinor": "false"
-                                    },
-                                    "consumedAtIssuence": "false",
-                                    "couponFlightSegment": {
-                                        "actionCode": "HK",
-                                        "addOnSegment": "false",
-                                        "bookingClass": {
-                                            "cabin": "ECONOMY",
-                                            "resBookDesigCode": "V",
-                                            "resBookDesigQuantity": "0"
-                                        },
-                                        "fareInfo": {
-                                            "cabin": "ECONOMY",
-                                            "cabinClassCode": "Y",
-                                            "fareBaggageAllowance": {
-                                                "allowanceType": "WEIGHT",
-                                                "maxAllowedPieces": "0",
-                                                "maxAllowedWeight": {
-                                                    "unitOfMeasureCode": "KG",
-                                                    "weight": "15"
-                                                }
-                                            },
-                                            "fareGroupName": "Eco Non Flexi Dom",
-                                            "fareReferenceCode": "VRTN",
-                                            "fareReferenceID": "0fe3789a8ed812c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f151f6570d7f22444185a98dc003ba5bc14f15b0222f2ca11328a7f4d60760bac1851b4c156836291959e23bd86d3fe75adc78a6bbf1ecc77d09edae016e3f",
-                                            "fareReferenceName": "VRTNIG",
-                                            "flightSegmentSequence": "0",
-                                            "resBookDesigCode": "V"
-                                        },
-                                        "flightSegment": {
-                                            "airline": {
-                                                "code": "P4",
-                                                "codeContext": "IATA"
-                                            },
-                                            "arrivalAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "ABV",
-                                                        "locationName": "Abuja",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "ABV",
-                                                "locationName": "Abuja",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "arrivalDateTime": "2024-12-22T07:50:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-22T06:50:00+01:00",
-                                            "departureAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "departureDateTime": "2024-12-22T06:30:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-22T05:30:00+01:00",
-                                            "flightNumber": "7120",
-                                            "flightSegmentID": "1144217",
-                                            "ondControlled": "false",
-                                            "sector": "DOMESTIC",
-                                            "accumulatedDuration": "",
-                                            "codeshare": "false",
-                                            "distance": "511",
-                                            "equipment": {
-                                                "airEquipType": "ERJ195-12C/112Y",
-                                                "changeofGauge": "false"
-                                            },
-                                            "flightNotes": [
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
-                                                },
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
-                                                }
-                                            ],
-                                            "flownMileageQty": "0",
-                                            "groundDuration": "",
-                                            "iatciFlight": "false",
-                                            "journeyDuration": "PT1H20M",
-                                            "onTimeRate": "0",
-                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
-                                            "secureFlightDataRequired": "true",
-                                            "segmentStatusByFirstLeg": "RZ",
-                                            "stopQuantity": "0",
-                                            "trafficRestriction": {
-                                                "code": "",
-                                                "explanation": ""
-                                            }
-                                        },
-                                        "involuntaryPermissionGiven": "false",
-                                        "legStatus": "RZ",
-                                        "referenceID": "15864894",
-                                        "responseCode": "HK",
-                                        "sequenceNumber": "0",
-                                        "status": "HK"
-                                    },
-                                    "cpnIsn": "0",
-                                    "noShow": "false"
-                                }
-                            ],
-                            "fareConstruction": "ENU P4 LOS40.04 P4 ABV16.30NUC56.34END ROE1546.000000",
-                            "inclusiveTour": "false",
-                            "pricingInfo": {
-                                "baseFare": {
-                                    "amount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "87104.0"
-                                    }
-                                },
-                                "commissionVat": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "commissions": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "equivBaseFare": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "87104.0"
-                                },
-                                "fareBaggageAllowance": "0",
-                                "fees": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "surcharges": {
-                                    "surchargeList": [
-                                        {
-                                            "paid": "false",
-                                            "surchargeAmount": {
-                                                "accountingSign": "ADC",
-                                                "currency": {
-                                                    "code": "NGN"
-                                                },
-                                                "mileAmount": "0.0",
-                                                "value": "60000.0"
-                                            },
-                                            "surchargeCode": "YQ",
-                                            "surchargeName": "Carrier Imposed Surcharge",
-                                            "surchargeType": ""
-                                        },
-                                        {
-                                            "paid": "false",
-                                            "surchargeAmount": {
-                                                "accountingSign": "ADC",
-                                                "currency": {
-                                                    "code": "NGN"
-                                                },
-                                                "mileAmount": "0.0",
-                                                "value": "36000.0"
-                                            },
-                                            "surchargeCode": "YQ",
-                                            "surchargeName": "Carrier Imposed Surcharge",
-                                            "surchargeType": ""
-                                        }
-                                    ],
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "96000.0"
-                                    }
-                                },
-                                "taxes": {
-                                    "taxList": {
-                                        "paid": "false",
-                                        "taxAmount": {
-                                            "accountingSign": "ADC",
-                                            "currency": {
-                                                "code": "NGN"
-                                            },
-                                            "mileAmount": "0.0",
-                                            "value": "4800.0"
-                                        },
-                                        "taxCode": "NG"
-                                    },
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "4800.0"
-                                    }
-                                },
-                                "totalFare": {
-                                    "amount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "187904.0"
-                                    }
-                                },
-                                "discountApplied": "false"
-                            },
-                            "pricingOverview": {
-                                "equivTotalAmountList": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "87104.0"
-                                },
-                                "totalAmount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "187904.0"
-                                },
-                                "totalBaseFare": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "87104.0"
-                                },
-                                "totalCommission": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalCommissionVat": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalDiscount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalOtherFee": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalPenalty": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalServiceCharge": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalSurcharge": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "96000.0"
-                                },
-                                "totalTax": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "4800.0"
-                                },
-                                "totalTransactionFee": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                }
-                            },
-                            "serviceFee": "0.0",
-                            "totalAmountText": "NGN 187,904.00",
-                            "type": "E_TICKET"
-                        },
-                        {
-                            "airTraveler": {
-                                "accompaniedByInfant": "false",
-                                "birthDate": "1991-08-08T00:00:00+01:00",
-                                "companyInfo": "",
-                                "gender": "F",
-                                "hasStrecher": "false",
-                                "parentSequence": "-1",
-                                "passengerTypeCode": "ADLT",
-                                "personName": {
-                                    "givenName": "BBB",
-                                    "nameTitle": "MRS",
-                                    "shareMarketInd": "false",
-                                    "surname": "TEST"
-                                },
-                                "personNameEN": {
-                                    "givenName": "BBB",
-                                    "nameTitle": "MRS",
-                                    "shareMarketInd": "false",
-                                    "surname": "TEST"
-                                },
-                                "requestedSeatCount": "1",
-                                "shareMarketInd": "false",
-                                "travelerReferenceID": "16006897",
-                                "unaccompaniedMinor": "false"
-                            },
-                            "couponInfoList": [
-                                {
-                                    "airTraveler": {
-                                        "accompaniedByInfant": "false",
-                                        "birthDate": "1991-08-08T00:00:00+01:00",
-                                        "companyInfo": "",
-                                        "gender": "F",
-                                        "hasStrecher": "false",
-                                        "parentSequence": "-1",
-                                        "passengerTypeCode": "ADLT",
-                                        "personName": {
-                                            "givenName": "BBB",
-                                            "nameTitle": "MRS",
-                                            "shareMarketInd": "false",
-                                            "surname": "TEST"
-                                        },
-                                        "personNameEN": {
-                                            "givenName": "BBB",
-                                            "nameTitle": "MRS",
-                                            "shareMarketInd": "false",
-                                            "surname": "TEST"
-                                        },
-                                        "requestedSeatCount": "1",
-                                        "shareMarketInd": "false",
-                                        "travelerReferenceID": "16006897",
-                                        "unaccompaniedMinor": "false"
-                                    },
-                                    "consumedAtIssuence": "false",
-                                    "couponFlightSegment": {
-                                        "actionCode": "HK",
-                                        "addOnSegment": "false",
-                                        "bookingClass": {
-                                            "cabin": "BUSINESS",
-                                            "resBookDesigCode": "C",
-                                            "resBookDesigQuantity": "0"
-                                        },
-                                        "fareInfo": {
-                                            "cabin": "BUSINESS",
-                                            "cabinClassCode": "C",
-                                            "fareBaggageAllowance": {
-                                                "allowanceType": "WEIGHT",
-                                                "maxAllowedPieces": "0",
-                                                "maxAllowedWeight": {
-                                                    "unitOfMeasureCode": "KG",
-                                                    "weight": "30"
-                                                }
-                                            },
-                                            "fareGroupName": "Biz Corporate Dom",
-                                            "fareReferenceCode": "COW1",
-                                            "fareReferenceID": "0fe4769e86d712c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f151f2510d7f224544d2f8ddc107ec5ac01f41bf227e7afa167bf4a18b5461ba90d44b4e163c30294b55b2388d6869843904a5814f3b93f8e409c5218be788",
-                                            "fareReferenceName": "COWCORPORATE",
-                                            "flightSegmentSequence": "0",
-                                            "resBookDesigCode": "C"
-                                        },
-                                        "flightSegment": {
-                                            "airline": {
-                                                "code": "P4",
-                                                "codeContext": "IATA"
-                                            },
-                                            "arrivalAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "arrivalDateTime": "2024-12-18T13:00:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-18T12:00:00+01:00",
-                                            "departureAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "ENU",
-                                                        "locationName": "Enugu",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "ENU",
-                                                "locationName": "Enugu",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "departureDateTime": "2024-12-18T11:50:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-18T10:50:00+01:00",
-                                            "flightNumber": "7103",
-                                            "flightSegmentID": "1148777",
-                                            "ondControlled": "false",
-                                            "sector": "DOMESTIC",
-                                            "accumulatedDuration": "",
-                                            "codeshare": "false",
-                                            "distance": "469",
-                                            "equipment": {
-                                                "airEquipType": "ERJ195-12C/112Y",
-                                                "changeofGauge": "false"
-                                            },
-                                            "flightNotes": {
-                                                "deiCode": "504",
-                                                "explanation": "Secure Flight Info",
-                                                "note": "T"
-                                            },
-                                            "flownMileageQty": "0",
-                                            "groundDuration": "",
-                                            "iatciFlight": "false",
-                                            "journeyDuration": "PT1H10M",
-                                            "onTimeRate": "0",
-                                            "secureFlightDataRequired": "true",
-                                            "segmentStatusByFirstLeg": "RZ",
-                                            "stopQuantity": "0",
-                                            "trafficRestriction": {
-                                                "code": "",
-                                                "explanation": ""
-                                            }
-                                        },
-                                        "involuntaryPermissionGiven": "false",
-                                        "legStatus": "RZ",
-                                        "referenceID": "15864893",
-                                        "responseCode": "HK",
-                                        "sequenceNumber": "0",
-                                        "status": "HK"
-                                    },
-                                    "cpnIsn": "0",
-                                    "noShow": "false"
-                                },
-                                {
-                                    "airTraveler": {
-                                        "accompaniedByInfant": "false",
-                                        "birthDate": "1991-08-08T00:00:00+01:00",
-                                        "companyInfo": "",
-                                        "gender": "F",
-                                        "hasStrecher": "false",
-                                        "parentSequence": "-1",
-                                        "passengerTypeCode": "ADLT",
-                                        "personName": {
-                                            "givenName": "BBB",
-                                            "nameTitle": "MRS",
-                                            "shareMarketInd": "false",
-                                            "surname": "TEST"
-                                        },
-                                        "personNameEN": {
-                                            "givenName": "BBB",
-                                            "nameTitle": "MRS",
-                                            "shareMarketInd": "false",
-                                            "surname": "TEST"
-                                        },
-                                        "requestedSeatCount": "1",
-                                        "shareMarketInd": "false",
-                                        "travelerReferenceID": "16006897",
-                                        "unaccompaniedMinor": "false"
-                                    },
-                                    "consumedAtIssuence": "false",
-                                    "couponFlightSegment": {
-                                        "actionCode": "HK",
-                                        "addOnSegment": "false",
-                                        "bookingClass": {
-                                            "cabin": "ECONOMY",
-                                            "resBookDesigCode": "V",
-                                            "resBookDesigQuantity": "0"
-                                        },
-                                        "fareInfo": {
-                                            "cabin": "ECONOMY",
-                                            "cabinClassCode": "Y",
-                                            "fareBaggageAllowance": {
-                                                "allowanceType": "WEIGHT",
-                                                "maxAllowedPieces": "0",
-                                                "maxAllowedWeight": {
-                                                    "unitOfMeasureCode": "KG",
-                                                    "weight": "15"
-                                                }
-                                            },
-                                            "fareGroupName": "Eco Non Flexi Dom",
-                                            "fareReferenceCode": "VRTN",
-                                            "fareReferenceID": "0fe3789a8ed812c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f151f1560d7f22444185a98dc003ba5bc14f15b0222f2ca11328a7f4d60760bac1851b4c156836291959e23bd86d3fde2a8a15366a1cb962bab76f6327c84e",
-                                            "fareReferenceName": "VRTNIG",
-                                            "flightSegmentSequence": "0",
-                                            "resBookDesigCode": "V"
-                                        },
-                                        "flightSegment": {
-                                            "airline": {
-                                                "code": "P4",
-                                                "codeContext": "IATA"
-                                            },
-                                            "arrivalAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "ABV",
-                                                        "locationName": "Abuja",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "ABV",
-                                                "locationName": "Abuja",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "arrivalDateTime": "2024-12-22T07:50:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-22T06:50:00+01:00",
-                                            "departureAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "departureDateTime": "2024-12-22T06:30:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-22T05:30:00+01:00",
-                                            "flightNumber": "7120",
-                                            "flightSegmentID": "1144217",
-                                            "ondControlled": "false",
-                                            "sector": "DOMESTIC",
-                                            "accumulatedDuration": "",
-                                            "codeshare": "false",
-                                            "distance": "511",
-                                            "equipment": {
-                                                "airEquipType": "ERJ195-12C/112Y",
-                                                "changeofGauge": "false"
-                                            },
-                                            "flightNotes": [
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
-                                                },
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
-                                                }
-                                            ],
-                                            "flownMileageQty": "0",
-                                            "groundDuration": "",
-                                            "iatciFlight": "false",
-                                            "journeyDuration": "PT1H20M",
-                                            "onTimeRate": "0",
-                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
-                                            "secureFlightDataRequired": "true",
-                                            "segmentStatusByFirstLeg": "RZ",
-                                            "stopQuantity": "0",
-                                            "trafficRestriction": {
-                                                "code": "",
-                                                "explanation": ""
-                                            }
-                                        },
-                                        "involuntaryPermissionGiven": "false",
-                                        "legStatus": "RZ",
-                                        "referenceID": "15864894",
-                                        "responseCode": "HK",
-                                        "sequenceNumber": "0",
-                                        "status": "HK"
-                                    },
-                                    "cpnIsn": "0",
-                                    "noShow": "false"
-                                }
-                            ],
-                            "fareConstruction": "ENU P4 LOS40.04 P4 ABV16.30NUC56.34END ROE1546.000000",
-                            "inclusiveTour": "false",
-                            "pricingInfo": {
-                                "baseFare": {
-                                    "amount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "87104.0"
-                                    }
-                                },
-                                "commissionVat": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "commissions": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "equivBaseFare": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "87104.0"
-                                },
-                                "fareBaggageAllowance": "0",
-                                "fees": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "surcharges": {
-                                    "surchargeList": [
-                                        {
-                                            "paid": "false",
-                                            "surchargeAmount": {
-                                                "accountingSign": "ADC",
-                                                "currency": {
-                                                    "code": "NGN"
-                                                },
-                                                "mileAmount": "0.0",
-                                                "value": "60000.0"
-                                            },
-                                            "surchargeCode": "YQ",
-                                            "surchargeName": "Carrier Imposed Surcharge",
-                                            "surchargeType": ""
-                                        },
-                                        {
-                                            "paid": "false",
-                                            "surchargeAmount": {
-                                                "accountingSign": "ADC",
-                                                "currency": {
-                                                    "code": "NGN"
-                                                },
-                                                "mileAmount": "0.0",
-                                                "value": "36000.0"
-                                            },
-                                            "surchargeCode": "YQ",
-                                            "surchargeName": "Carrier Imposed Surcharge",
-                                            "surchargeType": ""
-                                        }
-                                    ],
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "96000.0"
-                                    }
-                                },
-                                "taxes": {
-                                    "taxList": {
-                                        "paid": "false",
-                                        "taxAmount": {
-                                            "accountingSign": "ADC",
-                                            "currency": {
-                                                "code": "NGN"
-                                            },
-                                            "mileAmount": "0.0",
-                                            "value": "4800.0"
-                                        },
-                                        "taxCode": "NG"
-                                    },
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "4800.0"
-                                    }
-                                },
-                                "totalFare": {
-                                    "amount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "187904.0"
-                                    }
-                                },
-                                "discountApplied": "false"
-                            },
-                            "pricingOverview": {
-                                "equivTotalAmountList": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "87104.0"
-                                },
-                                "totalAmount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "187904.0"
-                                },
-                                "totalBaseFare": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "87104.0"
-                                },
-                                "totalCommission": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalCommissionVat": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalDiscount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalOtherFee": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalPenalty": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalServiceCharge": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalSurcharge": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "96000.0"
-                                },
-                                "totalTax": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "4800.0"
-                                },
-                                "totalTransactionFee": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                }
-                            },
-                            "serviceFee": "0.0",
-                            "totalAmountText": "NGN 187,904.00",
-                            "type": "E_TICKET"
-                        },
                         {
                             "airTraveler": {
                                 "accompaniedByInfant": "false",
@@ -2323,7 +917,7 @@
                                 },
                                 "requestedSeatCount": "1",
                                 "shareMarketInd": "false",
-                                "travelerReferenceID": "16006898",
+                                "travelerReferenceID": "16007008",
                                 "unaccompaniedMinor": "false"
                             },
                             "couponInfoList": [
@@ -2350,7 +944,7 @@
                                         },
                                         "requestedSeatCount": "1",
                                         "shareMarketInd": "false",
-                                        "travelerReferenceID": "16006898",
+                                        "travelerReferenceID": "16007008",
                                         "unaccompaniedMinor": "false"
                                     },
                                     "consumedAtIssuence": "false",
@@ -2358,27 +952,27 @@
                                         "actionCode": "HK",
                                         "addOnSegment": "false",
                                         "bookingClass": {
-                                            "cabin": "BUSINESS",
-                                            "resBookDesigCode": "C",
+                                            "cabin": "ECONOMY",
+                                            "resBookDesigCode": "V",
                                             "resBookDesigQuantity": "0"
                                         },
                                         "fareInfo": {
-                                            "cabin": "BUSINESS",
-                                            "cabinClassCode": "C",
+                                            "cabin": "ECONOMY",
+                                            "cabinClassCode": "Y",
                                             "fareBaggageAllowance": {
                                                 "allowanceType": "WEIGHT",
                                                 "maxAllowedPieces": "0",
                                                 "maxAllowedWeight": {
                                                     "unitOfMeasureCode": "KG",
-                                                    "weight": "30"
+                                                    "weight": "15"
                                                 }
                                             },
-                                            "fareGroupName": "Biz Corporate Dom",
-                                            "fareReferenceCode": "COW1",
-                                            "fareReferenceID": "0fe4769e86d712c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f151fd520d7f224544d2f8ddc107ec5ac01f41bf227e7afa167bf4a18b5461ba90d44b4e163c30294b55b2388d6869a4806158884fd360503079a603b63b70",
-                                            "fareReferenceName": "COWCORPORATE/CH",
+                                            "fareGroupName": "Eco Non Flexi Dom",
+                                            "fareReferenceCode": "VRTN",
+                                            "fareReferenceID": "0fe3789a8fde12c1be1d8b3d18fd7120e1ac9b4adc1fd719ce88b855fb5df35d0d7f224241d4addac655e909974d44e42d7d2ba1457ca1a1830368e991871c4c133d30781909b3338e6964ed0538f59469401803b993612c411714",
+                                            "fareReferenceName": "VRTNIG/CH",
                                             "flightSegmentSequence": "0",
-                                            "resBookDesigCode": "C"
+                                            "resBookDesigCode": "V"
                                         },
                                         "flightSegment": {
                                             "airline": {
@@ -2386,30 +980,6 @@
                                                 "codeContext": "IATA"
                                             },
                                             "arrivalAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "arrivalDateTime": "2024-12-18T13:00:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-18T12:00:00+01:00",
-                                            "departureAirport": {
                                                 "cityInfo": {
                                                     "city": {
                                                         "locationCode": "ENU",
@@ -2431,10 +1001,34 @@
                                                 "locationName": "Enugu",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "departureDateTime": "2024-12-18T11:50:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-18T10:50:00+01:00",
-                                            "flightNumber": "7103",
-                                            "flightSegmentID": "1148777",
+                                            "arrivalDateTime": "2024-12-27T08:00:00+01:00",
+                                            "arrivalDateTimeUTC": "2024-12-27T07:00:00+01:00",
+                                            "departureAirport": {
+                                                "cityInfo": {
+                                                    "city": {
+                                                        "locationCode": "LOS",
+                                                        "locationName": "Lagos",
+                                                        "locationNameLanguage": "EN"
+                                                    },
+                                                    "country": {
+                                                        "locationCode": "NG",
+                                                        "locationName": "Nigeria",
+                                                        "locationNameLanguage": "EN",
+                                                        "currency": {
+                                                            "code": "NGN"
+                                                        }
+                                                    }
+                                                },
+                                                "codeContext": "IATA",
+                                                "language": "EN",
+                                                "locationCode": "LOS",
+                                                "locationName": "Lagos",
+                                                "timeZoneInfo": "Africa/Lagos"
+                                            },
+                                            "departureDateTime": "2024-12-27T06:50:00+01:00",
+                                            "departureDateTimeUTC": "2024-12-27T05:50:00+01:00",
+                                            "flightNumber": "7100",
+                                            "flightSegmentID": "1146830",
                                             "ondControlled": "false",
                                             "sector": "DOMESTIC",
                                             "accumulatedDuration": "",
@@ -2454,6 +1048,7 @@
                                             "iatciFlight": "false",
                                             "journeyDuration": "PT1H10M",
                                             "onTimeRate": "0",
+                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
                                             "secureFlightDataRequired": "true",
                                             "segmentStatusByFirstLeg": "RZ",
                                             "stopQuantity": "0",
@@ -2464,7 +1059,7 @@
                                         },
                                         "involuntaryPermissionGiven": "false",
                                         "legStatus": "RZ",
-                                        "referenceID": "15864893",
+                                        "referenceID": "15864955",
                                         "responseCode": "HK",
                                         "sequenceNumber": "0",
                                         "status": "HK"
@@ -2495,7 +1090,7 @@
                                         },
                                         "requestedSeatCount": "1",
                                         "shareMarketInd": "false",
-                                        "travelerReferenceID": "16006898",
+                                        "travelerReferenceID": "16007008",
                                         "unaccompaniedMinor": "false"
                                     },
                                     "consumedAtIssuence": "false",
@@ -2520,7 +1115,7 @@
                                             },
                                             "fareGroupName": "Eco Non Flexi Dom",
                                             "fareReferenceCode": "VRTN",
-                                            "fareReferenceID": "0fe3789a8ed812c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f151fc500d7f22444185a98dc003ba5bc14f15b0222f2ca11328a7f4d60760bac1851b4c156836291959e23bd86d3fbef72781b920f5017c0084ba7b980442",
+                                            "fareReferenceID": "0fe3789a81d812c1be1d8b3d18fd7120e1ac9b4adc1fd719ce88b855fb5dfc520d7f22401481aede9206bc58c71f17b6297e79a2417ff2a7d05430bdc080491f1b6d6a7f4c54ef69dd3b6cd59a89f74b0179798276a8e9639b1069",
                                             "fareReferenceName": "VRTNIG/CH",
                                             "flightSegmentSequence": "0",
                                             "resBookDesigCode": "V"
@@ -2552,13 +1147,13 @@
                                                 "locationName": "Abuja",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "arrivalDateTime": "2024-12-22T07:50:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-22T06:50:00+01:00",
+                                            "arrivalDateTime": "2024-12-30T09:35:00+01:00",
+                                            "arrivalDateTimeUTC": "2024-12-30T08:35:00+01:00",
                                             "departureAirport": {
                                                 "cityInfo": {
                                                     "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
+                                                        "locationCode": "ENU",
+                                                        "locationName": "Enugu",
                                                         "locationNameLanguage": "EN"
                                                     },
                                                     "country": {
@@ -2572,41 +1167,33 @@
                                                 },
                                                 "codeContext": "IATA",
                                                 "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
+                                                "locationCode": "ENU",
+                                                "locationName": "Enugu",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "departureDateTime": "2024-12-22T06:30:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-22T05:30:00+01:00",
-                                            "flightNumber": "7120",
-                                            "flightSegmentID": "1144217",
+                                            "departureDateTime": "2024-12-30T08:40:00+01:00",
+                                            "departureDateTimeUTC": "2024-12-30T07:40:00+01:00",
+                                            "flightNumber": "7101",
+                                            "flightSegmentID": "1147485",
                                             "ondControlled": "false",
                                             "sector": "DOMESTIC",
                                             "accumulatedDuration": "",
                                             "codeshare": "false",
-                                            "distance": "511",
+                                            "distance": "282",
                                             "equipment": {
                                                 "airEquipType": "ERJ195-12C/112Y",
                                                 "changeofGauge": "false"
                                             },
-                                            "flightNotes": [
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
-                                                },
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
-                                                }
-                                            ],
+                                            "flightNotes": {
+                                                "deiCode": "504",
+                                                "explanation": "Secure Flight Info",
+                                                "note": "T"
+                                            },
                                             "flownMileageQty": "0",
                                             "groundDuration": "",
                                             "iatciFlight": "false",
-                                            "journeyDuration": "PT1H20M",
+                                            "journeyDuration": "PT55M",
                                             "onTimeRate": "0",
-                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
                                             "secureFlightDataRequired": "true",
                                             "segmentStatusByFirstLeg": "RZ",
                                             "stopQuantity": "0",
@@ -2617,7 +1204,7 @@
                                         },
                                         "involuntaryPermissionGiven": "false",
                                         "legStatus": "RZ",
-                                        "referenceID": "15864894",
+                                        "referenceID": "15864956",
                                         "responseCode": "HK",
                                         "sequenceNumber": "0",
                                         "status": "HK"
@@ -2626,7 +1213,7 @@
                                     "noShow": "false"
                                 }
                             ],
-                            "fareConstruction": "ENU P4 LOS40.04 P4 ABV12.22NUC52.26END ROE1546.000000",
+                            "fareConstruction": "LOS P4 ENU12.22 P4 ABV12.22NUC24.44END ROE1546.000000",
                             "inclusiveTour": "false",
                             "pricingInfo": {
                                 "baseFare": {
@@ -2636,7 +1223,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "80804.0"
+                                        "value": "37800.0"
                                     }
                                 },
                                 "commissionVat": {
@@ -2665,7 +1252,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "80804.0"
+                                    "value": "37800.0"
                                 },
                                 "fareBaggageAllowance": "0",
                                 "fees": {
@@ -2688,7 +1275,7 @@
                                                     "code": "NGN"
                                                 },
                                                 "mileAmount": "0.0",
-                                                "value": "60000.0"
+                                                "value": "36000.0"
                                             },
                                             "surchargeCode": "YQ",
                                             "surchargeName": "Carrier Imposed Surcharge",
@@ -2715,7 +1302,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "96000.0"
+                                        "value": "72000.0"
                                     }
                                 },
                                 "taxes": {
@@ -2727,7 +1314,7 @@
                                                 "code": "NGN"
                                             },
                                             "mileAmount": "0.0",
-                                            "value": "4800.0"
+                                            "value": "3600.0"
                                         },
                                         "taxCode": "NG"
                                     },
@@ -2737,7 +1324,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "4800.0"
+                                        "value": "3600.0"
                                     }
                                 },
                                 "totalFare": {
@@ -2747,7 +1334,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "181604.0"
+                                        "value": "113400.0"
                                     }
                                 },
                                 "discountApplied": "false"
@@ -2759,7 +1346,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "80804.0"
+                                    "value": "37800.0"
                                 },
                                 "totalAmount": {
                                     "accountingSign": "ADC",
@@ -2767,7 +1354,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "181604.0"
+                                    "value": "113400.0"
                                 },
                                 "totalBaseFare": {
                                     "accountingSign": "ADC",
@@ -2775,7 +1362,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "80804.0"
+                                    "value": "37800.0"
                                 },
                                 "totalCommission": {
                                     "accountingSign": "ADC",
@@ -2831,7 +1418,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "96000.0"
+                                    "value": "72000.0"
                                 },
                                 "totalTax": {
                                     "accountingSign": "ADC",
@@ -2839,7 +1426,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "4800.0"
+                                    "value": "3600.0"
                                 },
                                 "totalTransactionFee": {
                                     "accountingSign": "ADC",
@@ -2851,56 +1438,60 @@
                                 }
                             },
                             "serviceFee": "0.0",
-                            "totalAmountText": "NGN 181,604.00",
+                            "totalAmountText": "NGN 113,400.00",
                             "type": "E_TICKET"
                         },
                         {
                             "airTraveler": {
                                 "accompaniedByInfant": "false",
-                                "birthDate": "2023-12-07T00:00:00+01:00",
+                                "birthDate": "1991-08-08T00:00:00+01:00",
                                 "companyInfo": "",
-                                "gender": "I",
+                                "gender": "M",
                                 "hasStrecher": "false",
                                 "parentSequence": "-1",
-                                "passengerTypeCode": "INFT",
+                                "passengerTypeCode": "ADLT",
                                 "personName": {
-                                    "givenName": "OKONJI",
+                                    "givenName": "AAA",
+                                    "nameTitle": "MR",
                                     "shareMarketInd": "false",
-                                    "surname": "EMEKA"
+                                    "surname": "TEST"
                                 },
                                 "personNameEN": {
-                                    "givenName": "OKONJI",
+                                    "givenName": "AAA",
+                                    "nameTitle": "MR",
                                     "shareMarketInd": "false",
-                                    "surname": "EMEKA"
+                                    "surname": "TEST"
                                 },
                                 "requestedSeatCount": "1",
                                 "shareMarketInd": "false",
-                                "travelerReferenceID": "16006899",
+                                "travelerReferenceID": "16007006",
                                 "unaccompaniedMinor": "false"
                             },
                             "couponInfoList": [
                                 {
                                     "airTraveler": {
                                         "accompaniedByInfant": "false",
-                                        "birthDate": "2023-12-07T00:00:00+01:00",
+                                        "birthDate": "1991-08-08T00:00:00+01:00",
                                         "companyInfo": "",
-                                        "gender": "I",
+                                        "gender": "M",
                                         "hasStrecher": "false",
                                         "parentSequence": "-1",
-                                        "passengerTypeCode": "INFT",
+                                        "passengerTypeCode": "ADLT",
                                         "personName": {
-                                            "givenName": "OKONJI",
+                                            "givenName": "AAA",
+                                            "nameTitle": "MR",
                                             "shareMarketInd": "false",
-                                            "surname": "EMEKA"
+                                            "surname": "TEST"
                                         },
                                         "personNameEN": {
-                                            "givenName": "OKONJI",
+                                            "givenName": "AAA",
+                                            "nameTitle": "MR",
                                             "shareMarketInd": "false",
-                                            "surname": "EMEKA"
+                                            "surname": "TEST"
                                         },
                                         "requestedSeatCount": "1",
                                         "shareMarketInd": "false",
-                                        "travelerReferenceID": "16006899",
+                                        "travelerReferenceID": "16007006",
                                         "unaccompaniedMinor": "false"
                                     },
                                     "consumedAtIssuence": "false",
@@ -2908,27 +1499,27 @@
                                         "actionCode": "HK",
                                         "addOnSegment": "false",
                                         "bookingClass": {
-                                            "cabin": "BUSINESS",
-                                            "resBookDesigCode": "C",
+                                            "cabin": "ECONOMY",
+                                            "resBookDesigCode": "V",
                                             "resBookDesigQuantity": "0"
                                         },
                                         "fareInfo": {
-                                            "cabin": "BUSINESS",
-                                            "cabinClassCode": "C",
+                                            "cabin": "ECONOMY",
+                                            "cabinClassCode": "Y",
                                             "fareBaggageAllowance": {
                                                 "allowanceType": "WEIGHT",
                                                 "maxAllowedPieces": "0",
                                                 "maxAllowedWeight": {
                                                     "unitOfMeasureCode": "KG",
-                                                    "weight": "10"
+                                                    "weight": "15"
                                                 }
                                             },
-                                            "fareGroupName": "Biz Corporate Dom",
-                                            "fareReferenceCode": "COW1",
-                                            "fareReferenceID": "0fe4769e86d712c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f150f6500d7f224544d2f8ddc107ec5ac01f41bf227e7afa167bf4a18b5461ba90d44b4e163c30294b55b2388d6869e86701d9da82c4de3ba540a3b0f0b655",
-                                            "fareReferenceName": "COWCORPORATE/IN",
+                                            "fareGroupName": "Eco Non Flexi Dom",
+                                            "fareReferenceCode": "VRTN",
+                                            "fareReferenceID": "0fe3789a8fde12c1be1d8b3d18fd7120e1ac9b4adc1fd719ce88b855fb5dfd5c0d7f224241d4addac655e909974d44e42d7d2ba1457ca1a1830368e991871c4c133d30781909b3338e6964bd9b00e11016a3dcce95a03d4436f0ed",
+                                            "fareReferenceName": "VRTNIG",
                                             "flightSegmentSequence": "0",
-                                            "resBookDesigCode": "C"
+                                            "resBookDesigCode": "V"
                                         },
                                         "flightSegment": {
                                             "airline": {
@@ -2936,30 +1527,6 @@
                                                 "codeContext": "IATA"
                                             },
                                             "arrivalAirport": {
-                                                "cityInfo": {
-                                                    "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
-                                                        "locationNameLanguage": "EN"
-                                                    },
-                                                    "country": {
-                                                        "locationCode": "NG",
-                                                        "locationName": "Nigeria",
-                                                        "locationNameLanguage": "EN",
-                                                        "currency": {
-                                                            "code": "NGN"
-                                                        }
-                                                    }
-                                                },
-                                                "codeContext": "IATA",
-                                                "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
-                                                "timeZoneInfo": "Africa/Lagos"
-                                            },
-                                            "arrivalDateTime": "2024-12-18T13:00:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-18T12:00:00+01:00",
-                                            "departureAirport": {
                                                 "cityInfo": {
                                                     "city": {
                                                         "locationCode": "ENU",
@@ -2981,10 +1548,34 @@
                                                 "locationName": "Enugu",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "departureDateTime": "2024-12-18T11:50:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-18T10:50:00+01:00",
-                                            "flightNumber": "7103",
-                                            "flightSegmentID": "1148777",
+                                            "arrivalDateTime": "2024-12-27T08:00:00+01:00",
+                                            "arrivalDateTimeUTC": "2024-12-27T07:00:00+01:00",
+                                            "departureAirport": {
+                                                "cityInfo": {
+                                                    "city": {
+                                                        "locationCode": "LOS",
+                                                        "locationName": "Lagos",
+                                                        "locationNameLanguage": "EN"
+                                                    },
+                                                    "country": {
+                                                        "locationCode": "NG",
+                                                        "locationName": "Nigeria",
+                                                        "locationNameLanguage": "EN",
+                                                        "currency": {
+                                                            "code": "NGN"
+                                                        }
+                                                    }
+                                                },
+                                                "codeContext": "IATA",
+                                                "language": "EN",
+                                                "locationCode": "LOS",
+                                                "locationName": "Lagos",
+                                                "timeZoneInfo": "Africa/Lagos"
+                                            },
+                                            "departureDateTime": "2024-12-27T06:50:00+01:00",
+                                            "departureDateTimeUTC": "2024-12-27T05:50:00+01:00",
+                                            "flightNumber": "7100",
+                                            "flightSegmentID": "1146830",
                                             "ondControlled": "false",
                                             "sector": "DOMESTIC",
                                             "accumulatedDuration": "",
@@ -3004,6 +1595,7 @@
                                             "iatciFlight": "false",
                                             "journeyDuration": "PT1H10M",
                                             "onTimeRate": "0",
+                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
                                             "secureFlightDataRequired": "true",
                                             "segmentStatusByFirstLeg": "RZ",
                                             "stopQuantity": "0",
@@ -3014,7 +1606,7 @@
                                         },
                                         "involuntaryPermissionGiven": "false",
                                         "legStatus": "RZ",
-                                        "referenceID": "15864893",
+                                        "referenceID": "15864955",
                                         "responseCode": "HK",
                                         "sequenceNumber": "0",
                                         "status": "HK"
@@ -3025,25 +1617,27 @@
                                 {
                                     "airTraveler": {
                                         "accompaniedByInfant": "false",
-                                        "birthDate": "2023-12-07T00:00:00+01:00",
+                                        "birthDate": "1991-08-08T00:00:00+01:00",
                                         "companyInfo": "",
-                                        "gender": "I",
+                                        "gender": "M",
                                         "hasStrecher": "false",
                                         "parentSequence": "-1",
-                                        "passengerTypeCode": "INFT",
+                                        "passengerTypeCode": "ADLT",
                                         "personName": {
-                                            "givenName": "OKONJI",
+                                            "givenName": "AAA",
+                                            "nameTitle": "MR",
                                             "shareMarketInd": "false",
-                                            "surname": "EMEKA"
+                                            "surname": "TEST"
                                         },
                                         "personNameEN": {
-                                            "givenName": "OKONJI",
+                                            "givenName": "AAA",
+                                            "nameTitle": "MR",
                                             "shareMarketInd": "false",
-                                            "surname": "EMEKA"
+                                            "surname": "TEST"
                                         },
                                         "requestedSeatCount": "1",
                                         "shareMarketInd": "false",
-                                        "travelerReferenceID": "16006899",
+                                        "travelerReferenceID": "16007006",
                                         "unaccompaniedMinor": "false"
                                     },
                                     "consumedAtIssuence": "false",
@@ -3063,13 +1657,13 @@
                                                 "maxAllowedPieces": "0",
                                                 "maxAllowedWeight": {
                                                     "unitOfMeasureCode": "KG",
-                                                    "weight": "10"
+                                                    "weight": "15"
                                                 }
                                             },
                                             "fareGroupName": "Eco Non Flexi Dom",
                                             "fareReferenceCode": "VRTN",
-                                            "fareReferenceID": "0fe3789a8ed812c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f150f5500d7f22444185a98dc003ba5bc14f15b0222f2ca11328a7f4d60760bac1851b4c156836291959e23bd86d3f56a3d54cbaab860ed123a772b83fa953",
-                                            "fareReferenceName": "VRTNIG/IN",
+                                            "fareReferenceID": "0fe3789a81d812c1be1d8b3d18fd7120e1ac9b4adc1fd719ce88b855fb5cf4510d7f22401481aede9206bc58c71f17b6297e79a2417ff2a7d05430bdc080491f1b6d6a7f4c54ef69dd3b6cedc355695941166437330dd64460e08f",
+                                            "fareReferenceName": "VRTNIG",
                                             "flightSegmentSequence": "0",
                                             "resBookDesigCode": "V"
                                         },
@@ -3100,13 +1694,13 @@
                                                 "locationName": "Abuja",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "arrivalDateTime": "2024-12-22T07:50:00+01:00",
-                                            "arrivalDateTimeUTC": "2024-12-22T06:50:00+01:00",
+                                            "arrivalDateTime": "2024-12-30T09:35:00+01:00",
+                                            "arrivalDateTimeUTC": "2024-12-30T08:35:00+01:00",
                                             "departureAirport": {
                                                 "cityInfo": {
                                                     "city": {
-                                                        "locationCode": "LOS",
-                                                        "locationName": "Lagos",
+                                                        "locationCode": "ENU",
+                                                        "locationName": "Enugu",
                                                         "locationNameLanguage": "EN"
                                                     },
                                                     "country": {
@@ -3120,41 +1714,33 @@
                                                 },
                                                 "codeContext": "IATA",
                                                 "language": "EN",
-                                                "locationCode": "LOS",
-                                                "locationName": "Lagos",
+                                                "locationCode": "ENU",
+                                                "locationName": "Enugu",
                                                 "timeZoneInfo": "Africa/Lagos"
                                             },
-                                            "departureDateTime": "2024-12-22T06:30:00+01:00",
-                                            "departureDateTimeUTC": "2024-12-22T05:30:00+01:00",
-                                            "flightNumber": "7120",
-                                            "flightSegmentID": "1144217",
+                                            "departureDateTime": "2024-12-30T08:40:00+01:00",
+                                            "departureDateTimeUTC": "2024-12-30T07:40:00+01:00",
+                                            "flightNumber": "7101",
+                                            "flightSegmentID": "1147485",
                                             "ondControlled": "false",
                                             "sector": "DOMESTIC",
                                             "accumulatedDuration": "",
                                             "codeshare": "false",
-                                            "distance": "511",
+                                            "distance": "282",
                                             "equipment": {
                                                 "airEquipType": "ERJ195-12C/112Y",
                                                 "changeofGauge": "false"
                                             },
-                                            "flightNotes": [
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
-                                                },
-                                                {
-                                                    "deiCode": "504",
-                                                    "explanation": "Secure Flight Info",
-                                                    "note": "T"
-                                                }
-                                            ],
+                                            "flightNotes": {
+                                                "deiCode": "504",
+                                                "explanation": "Secure Flight Info",
+                                                "note": "T"
+                                            },
                                             "flownMileageQty": "0",
                                             "groundDuration": "",
                                             "iatciFlight": "false",
-                                            "journeyDuration": "PT1H20M",
+                                            "journeyDuration": "PT55M",
                                             "onTimeRate": "0",
-                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
                                             "secureFlightDataRequired": "true",
                                             "segmentStatusByFirstLeg": "RZ",
                                             "stopQuantity": "0",
@@ -3165,7 +1751,7 @@
                                         },
                                         "involuntaryPermissionGiven": "false",
                                         "legStatus": "RZ",
-                                        "referenceID": "15864894",
+                                        "referenceID": "15864956",
                                         "responseCode": "HK",
                                         "sequenceNumber": "0",
                                         "status": "HK"
@@ -3174,7 +1760,7 @@
                                     "noShow": "false"
                                 }
                             ],
-                            "fareConstruction": "ENU P4 LOS4.00 P4 ABV1.63NUC5.63END ROE1546.000000",
+                            "fareConstruction": "LOS P4 ENU16.30 P4 ABV16.30NUC32.60END ROE1546.000000",
                             "inclusiveTour": "false",
                             "pricingInfo": {
                                 "baseFare": {
@@ -3184,7 +1770,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "8710.0"
+                                        "value": "50400.0"
                                     }
                                 },
                                 "commissionVat": {
@@ -3213,7 +1799,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "8710.0"
+                                    "value": "50400.0"
                                 },
                                 "fareBaggageAllowance": "0",
                                 "fees": {
@@ -3236,7 +1822,7 @@
                                                     "code": "NGN"
                                                 },
                                                 "mileAmount": "0.0",
-                                                "value": "6000.0"
+                                                "value": "36000.0"
                                             },
                                             "surchargeCode": "YQ",
                                             "surchargeName": "Carrier Imposed Surcharge",
@@ -3250,7 +1836,7 @@
                                                     "code": "NGN"
                                                 },
                                                 "mileAmount": "0.0",
-                                                "value": "3600.0"
+                                                "value": "36000.0"
                                             },
                                             "surchargeCode": "YQ",
                                             "surchargeName": "Carrier Imposed Surcharge",
@@ -3263,7 +1849,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "9600.0"
+                                        "value": "72000.0"
                                     }
                                 },
                                 "taxes": {
@@ -3275,7 +1861,7 @@
                                                 "code": "NGN"
                                             },
                                             "mileAmount": "0.0",
-                                            "value": "480.0"
+                                            "value": "3600.0"
                                         },
                                         "taxCode": "NG"
                                     },
@@ -3285,7 +1871,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "480.0"
+                                        "value": "3600.0"
                                     }
                                 },
                                 "totalFare": {
@@ -3295,7 +1881,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "18790.0"
+                                        "value": "126000.0"
                                     }
                                 },
                                 "discountApplied": "false"
@@ -3307,7 +1893,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "8710.0"
+                                    "value": "50400.0"
                                 },
                                 "totalAmount": {
                                     "accountingSign": "ADC",
@@ -3315,7 +1901,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "18790.0"
+                                    "value": "126000.0"
                                 },
                                 "totalBaseFare": {
                                     "accountingSign": "ADC",
@@ -3323,7 +1909,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "8710.0"
+                                    "value": "50400.0"
                                 },
                                 "totalCommission": {
                                     "accountingSign": "ADC",
@@ -3379,7 +1965,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "9600.0"
+                                    "value": "72000.0"
                                 },
                                 "totalTax": {
                                     "accountingSign": "ADC",
@@ -3387,7 +1973,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "480.0"
+                                    "value": "3600.0"
                                 },
                                 "totalTransactionFee": {
                                     "accountingSign": "ADC",
@@ -3399,762 +1985,8 @@
                                 }
                             },
                             "serviceFee": "0.0",
-                            "totalAmountText": "NGN 18,790.00",
+                            "totalAmountText": "NGN 126,000.00",
                             "type": "E_TICKET"
-                        },
-                        {
-                            "airTraveler": {
-                                "accompaniedByInfant": "false",
-                                "birthDate": "2017-12-25T00:00:00+01:00",
-                                "companyInfo": "",
-                                "gender": "C",
-                                "hasStrecher": "false",
-                                "parentSequence": "-1",
-                                "passengerTypeCode": "CHLD",
-                                "personName": {
-                                    "givenName": "CCC",
-                                    "nameTitle": "MSTR",
-                                    "shareMarketInd": "false",
-                                    "surname": "TEST"
-                                },
-                                "personNameEN": {
-                                    "givenName": "CCC",
-                                    "nameTitle": "MSTR",
-                                    "shareMarketInd": "false",
-                                    "surname": "TEST"
-                                },
-                                "requestedSeatCount": "1",
-                                "shareMarketInd": "false",
-                                "travelerReferenceID": "16006898",
-                                "unaccompaniedMinor": "false"
-                            },
-                            "couponInfoList": {
-                                "airTraveler": {
-                                    "accompaniedByInfant": "false",
-                                    "birthDate": "2017-12-25T00:00:00+01:00",
-                                    "companyInfo": "",
-                                    "gender": "C",
-                                    "hasStrecher": "false",
-                                    "parentSequence": "-1",
-                                    "passengerTypeCode": "CHLD",
-                                    "personName": {
-                                        "givenName": "CCC",
-                                        "nameTitle": "MSTR",
-                                        "shareMarketInd": "false",
-                                        "surname": "TEST"
-                                    },
-                                    "personNameEN": {
-                                        "givenName": "CCC",
-                                        "nameTitle": "MSTR",
-                                        "shareMarketInd": "false",
-                                        "surname": "TEST"
-                                    },
-                                    "requestedSeatCount": "1",
-                                    "shareMarketInd": "false",
-                                    "travelerReferenceID": "16006898",
-                                    "unaccompaniedMinor": "false"
-                                },
-                                "consumedAtIssuence": "false",
-                                "couponFlightSegment": {
-                                    "actionCode": "HK",
-                                    "addOnSegment": "false",
-                                    "bookingClass": {
-                                        "cabin": "BUSINESS",
-                                        "resBookDesigCode": "C",
-                                        "resBookDesigQuantity": "0"
-                                    },
-                                    "fareInfo": {
-                                        "cabin": "BUSINESS",
-                                        "cabinClassCode": "C",
-                                        "fareBaggageAllowance": {
-                                            "allowanceType": "WEIGHT",
-                                            "maxAllowedPieces": "0",
-                                            "maxAllowedWeight": {
-                                                "unitOfMeasureCode": "KG",
-                                                "weight": "30"
-                                            }
-                                        },
-                                        "fareGroupName": "Biz Corporate Dom",
-                                        "fareReferenceCode": "COW1",
-                                        "fareReferenceID": "0fe4769e86d712c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f150f0540d7f224544d2f8ddc107ec5ac01f41bf227e7afa167bf4a18b5461ba90d44b4e163c30294b55b2388d686945e75078102047468b42e4657dff1be5",
-                                        "fareReferenceName": "COWCORPORATE",
-                                        "flightSegmentSequence": "0",
-                                        "resBookDesigCode": "C"
-                                    },
-                                    "flightSegment": {
-                                        "airline": {
-                                            "code": "P4",
-                                            "codeContext": "IATA"
-                                        },
-                                        "arrivalAirport": {
-                                            "cityInfo": {
-                                                "city": {
-                                                    "locationCode": "LOS",
-                                                    "locationName": "Lagos",
-                                                    "locationNameLanguage": "EN"
-                                                },
-                                                "country": {
-                                                    "locationCode": "NG",
-                                                    "locationName": "Nigeria",
-                                                    "locationNameLanguage": "EN",
-                                                    "currency": {
-                                                        "code": "NGN"
-                                                    }
-                                                }
-                                            },
-                                            "codeContext": "IATA",
-                                            "language": "EN",
-                                            "locationCode": "LOS",
-                                            "locationName": "Lagos",
-                                            "timeZoneInfo": "Africa/Lagos"
-                                        },
-                                        "arrivalDateTime": "2024-12-18T13:00:00+01:00",
-                                        "arrivalDateTimeUTC": "2024-12-18T12:00:00+01:00",
-                                        "departureAirport": {
-                                            "cityInfo": {
-                                                "city": {
-                                                    "locationCode": "ENU",
-                                                    "locationName": "Enugu",
-                                                    "locationNameLanguage": "EN"
-                                                },
-                                                "country": {
-                                                    "locationCode": "NG",
-                                                    "locationName": "Nigeria",
-                                                    "locationNameLanguage": "EN",
-                                                    "currency": {
-                                                        "code": "NGN"
-                                                    }
-                                                }
-                                            },
-                                            "codeContext": "IATA",
-                                            "language": "EN",
-                                            "locationCode": "ENU",
-                                            "locationName": "Enugu",
-                                            "timeZoneInfo": "Africa/Lagos"
-                                        },
-                                        "departureDateTime": "2024-12-18T11:50:00+01:00",
-                                        "departureDateTimeUTC": "2024-12-18T10:50:00+01:00",
-                                        "flightNumber": "7103",
-                                        "flightSegmentID": "1148777",
-                                        "ondControlled": "false",
-                                        "sector": "DOMESTIC",
-                                        "accumulatedDuration": "",
-                                        "codeshare": "false",
-                                        "distance": "469",
-                                        "equipment": {
-                                            "airEquipType": "ERJ195-12C/112Y",
-                                            "changeofGauge": "false"
-                                        },
-                                        "flightNotes": {
-                                            "deiCode": "504",
-                                            "explanation": "Secure Flight Info",
-                                            "note": "T"
-                                        },
-                                        "flownMileageQty": "0",
-                                        "groundDuration": "",
-                                        "iatciFlight": "false",
-                                        "journeyDuration": "PT1H10M",
-                                        "onTimeRate": "0",
-                                        "secureFlightDataRequired": "true",
-                                        "segmentStatusByFirstLeg": "RZ",
-                                        "stopQuantity": "0",
-                                        "trafficRestriction": {
-                                            "code": "",
-                                            "explanation": ""
-                                        }
-                                    },
-                                    "involuntaryPermissionGiven": "false",
-                                    "legStatus": "RZ",
-                                    "referenceID": "15864893",
-                                    "responseCode": "HK",
-                                    "sequenceNumber": "0",
-                                    "status": "HK"
-                                },
-                                "cpnIsn": "0",
-                                "noShow": "false"
-                            },
-                            "fareConstruction": "ENU P4 LOS500.00NGN500.00END",
-                            "inclusiveTour": "false",
-                            "pricingInfo": {
-                                "baseFare": {
-                                    "amount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "500.0"
-                                    }
-                                },
-                                "commissionVat": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "commissions": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "equivBaseFare": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "500.0"
-                                },
-                                "fareBaggageAllowance": "0",
-                                "fees": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "surcharges": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "taxes": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "totalFare": {
-                                    "amount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "500.0"
-                                    }
-                                },
-                                "discountApplied": "false"
-                            },
-                            "pricingOverview": {
-                                "equivTotalAmountList": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "500.0"
-                                },
-                                "totalAmount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "500.0"
-                                },
-                                "totalBaseFare": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "500.0"
-                                },
-                                "totalCommission": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalCommissionVat": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalDiscount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalOtherFee": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalPenalty": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalServiceCharge": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalSurcharge": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalTax": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalTransactionFee": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                }
-                            },
-                            "reasonForIssuance": {
-                                "explanation": "EXCESS WEIGHT BAGGAGE",
-                                "reasonForIssuanceCode": "C",
-                                "reasonForIssuanceSubCode": "0IK"
-                            },
-                            "serviceFee": "0.0",
-                            "specialServiceRequest": {
-                                "allowedQuantityPerPassenger": "0",
-                                "bundleRelatedSsr": "false",
-                                "code": "XBAG",
-                                "exchangeable": "false",
-                                "explanation": "2KG",
-                                "extraBaggage": "false",
-                                "free": "false",
-                                "groupCode": "BAG",
-                                "groupCodeExplanation": "BAG",
-                                "iciAllowed": "false",
-                                "refundable": "false",
-                                "showOnItinerary": "false",
-                                "specialServiceReferenceId": "30454193",
-                                "unitOfMeasureExist": "false"
-                            },
-                            "type": "MCO"
-                        },
-                        {
-                            "airTraveler": {
-                                "accompaniedByInfant": "true",
-                                "birthDate": "1991-08-08T00:00:00+01:00",
-                                "companyInfo": "",
-                                "gender": "M",
-                                "hasStrecher": "false",
-                                "parentSequence": "-1",
-                                "passengerTypeCode": "ADLT",
-                                "personName": {
-                                    "givenName": "AAA",
-                                    "nameTitle": "MR",
-                                    "shareMarketInd": "false",
-                                    "surname": "TEST"
-                                },
-                                "personNameEN": {
-                                    "givenName": "AAA",
-                                    "nameTitle": "MR",
-                                    "shareMarketInd": "false",
-                                    "surname": "TEST"
-                                },
-                                "requestedSeatCount": "1",
-                                "shareMarketInd": "false",
-                                "travelerReferenceID": "16006896",
-                                "unaccompaniedMinor": "false"
-                            },
-                            "couponInfoList": {
-                                "airTraveler": {
-                                    "accompaniedByInfant": "true",
-                                    "birthDate": "1991-08-08T00:00:00+01:00",
-                                    "companyInfo": "",
-                                    "gender": "M",
-                                    "hasStrecher": "false",
-                                    "parentSequence": "-1",
-                                    "passengerTypeCode": "ADLT",
-                                    "personName": {
-                                        "givenName": "AAA",
-                                        "nameTitle": "MR",
-                                        "shareMarketInd": "false",
-                                        "surname": "TEST"
-                                    },
-                                    "personNameEN": {
-                                        "givenName": "AAA",
-                                        "nameTitle": "MR",
-                                        "shareMarketInd": "false",
-                                        "surname": "TEST"
-                                    },
-                                    "requestedSeatCount": "1",
-                                    "shareMarketInd": "false",
-                                    "travelerReferenceID": "16006896",
-                                    "unaccompaniedMinor": "false"
-                                },
-                                "consumedAtIssuence": "false",
-                                "couponFlightSegment": {
-                                    "actionCode": "HK",
-                                    "addOnSegment": "false",
-                                    "bookingClass": {
-                                        "cabin": "BUSINESS",
-                                        "resBookDesigCode": "C",
-                                        "resBookDesigQuantity": "0"
-                                    },
-                                    "fareInfo": {
-                                        "cabin": "BUSINESS",
-                                        "cabinClassCode": "C",
-                                        "fareBaggageAllowance": {
-                                            "allowanceType": "WEIGHT",
-                                            "maxAllowedPieces": "0",
-                                            "maxAllowedWeight": {
-                                                "unitOfMeasureCode": "KG",
-                                                "weight": "30"
-                                            }
-                                        },
-                                        "fareGroupName": "Biz Corporate Dom",
-                                        "fareReferenceCode": "COW1",
-                                        "fareReferenceID": "0fe4769e86d712c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f150f1570d7f224544d2f8ddc107ec5ac01f41bf227e7afa167bf4a18b5461ba90d44b4e163c30294b55b2388d686995ea7e2b01eb5b549324629299a34612",
-                                        "fareReferenceName": "COWCORPORATE",
-                                        "flightSegmentSequence": "0",
-                                        "resBookDesigCode": "C"
-                                    },
-                                    "flightSegment": {
-                                        "airline": {
-                                            "code": "P4",
-                                            "codeContext": "IATA"
-                                        },
-                                        "arrivalAirport": {
-                                            "cityInfo": {
-                                                "city": {
-                                                    "locationCode": "LOS",
-                                                    "locationName": "Lagos",
-                                                    "locationNameLanguage": "EN"
-                                                },
-                                                "country": {
-                                                    "locationCode": "NG",
-                                                    "locationName": "Nigeria",
-                                                    "locationNameLanguage": "EN",
-                                                    "currency": {
-                                                        "code": "NGN"
-                                                    }
-                                                }
-                                            },
-                                            "codeContext": "IATA",
-                                            "language": "EN",
-                                            "locationCode": "LOS",
-                                            "locationName": "Lagos",
-                                            "timeZoneInfo": "Africa/Lagos"
-                                        },
-                                        "arrivalDateTime": "2024-12-18T13:00:00+01:00",
-                                        "arrivalDateTimeUTC": "2024-12-18T12:00:00+01:00",
-                                        "departureAirport": {
-                                            "cityInfo": {
-                                                "city": {
-                                                    "locationCode": "ENU",
-                                                    "locationName": "Enugu",
-                                                    "locationNameLanguage": "EN"
-                                                },
-                                                "country": {
-                                                    "locationCode": "NG",
-                                                    "locationName": "Nigeria",
-                                                    "locationNameLanguage": "EN",
-                                                    "currency": {
-                                                        "code": "NGN"
-                                                    }
-                                                }
-                                            },
-                                            "codeContext": "IATA",
-                                            "language": "EN",
-                                            "locationCode": "ENU",
-                                            "locationName": "Enugu",
-                                            "timeZoneInfo": "Africa/Lagos"
-                                        },
-                                        "departureDateTime": "2024-12-18T11:50:00+01:00",
-                                        "departureDateTimeUTC": "2024-12-18T10:50:00+01:00",
-                                        "flightNumber": "7103",
-                                        "flightSegmentID": "1148777",
-                                        "ondControlled": "false",
-                                        "sector": "DOMESTIC",
-                                        "accumulatedDuration": "",
-                                        "codeshare": "false",
-                                        "distance": "469",
-                                        "equipment": {
-                                            "airEquipType": "ERJ195-12C/112Y",
-                                            "changeofGauge": "false"
-                                        },
-                                        "flightNotes": {
-                                            "deiCode": "504",
-                                            "explanation": "Secure Flight Info",
-                                            "note": "T"
-                                        },
-                                        "flownMileageQty": "0",
-                                        "groundDuration": "",
-                                        "iatciFlight": "false",
-                                        "journeyDuration": "PT1H10M",
-                                        "onTimeRate": "0",
-                                        "secureFlightDataRequired": "true",
-                                        "segmentStatusByFirstLeg": "RZ",
-                                        "stopQuantity": "0",
-                                        "trafficRestriction": {
-                                            "code": "",
-                                            "explanation": ""
-                                        }
-                                    },
-                                    "involuntaryPermissionGiven": "false",
-                                    "legStatus": "RZ",
-                                    "referenceID": "15864893",
-                                    "responseCode": "HK",
-                                    "sequenceNumber": "0",
-                                    "status": "HK"
-                                },
-                                "cpnIsn": "0",
-                                "noShow": "false"
-                            },
-                            "fareConstruction": "ENU P4 LOS1500.00NGN1500.00END",
-                            "inclusiveTour": "false",
-                            "pricingInfo": {
-                                "baseFare": {
-                                    "amount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "1500.0"
-                                    }
-                                },
-                                "commissionVat": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "commissions": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "equivBaseFare": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "1500.0"
-                                },
-                                "fareBaggageAllowance": "0",
-                                "fees": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "surcharges": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "taxes": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "totalFare": {
-                                    "amount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "1500.0"
-                                    }
-                                },
-                                "discountApplied": "false"
-                            },
-                            "pricingOverview": {
-                                "equivTotalAmountList": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "1500.0"
-                                },
-                                "totalAmount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "1500.0"
-                                },
-                                "totalBaseFare": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "1500.0"
-                                },
-                                "totalCommission": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalCommissionVat": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalDiscount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalOtherFee": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalPenalty": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalServiceCharge": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalSurcharge": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalTax": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                },
-                                "totalTransactionFee": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": ""
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                }
-                            },
-                            "reasonForIssuance": {
-                                "explanation": "EXCESS WEIGHT BAGGAGE",
-                                "reasonForIssuanceCode": "C",
-                                "reasonForIssuanceSubCode": "0IK"
-                            },
-                            "serviceFee": "0.0",
-                            "specialServiceRequest": {
-                                "allowedQuantityPerPassenger": "0",
-                                "bundleRelatedSsr": "false",
-                                "code": "XBAG",
-                                "exchangeable": "false",
-                                "explanation": "6KG",
-                                "extraBaggage": "false",
-                                "free": "false",
-                                "groupCode": "BAG",
-                                "groupCodeExplanation": "BAG",
-                                "iciAllowed": "false",
-                                "refundable": "false",
-                                "showOnItinerary": "false",
-                                "specialServiceReferenceId": "30454340",
-                                "unitOfMeasureExist": "false"
-                            },
-                            "type": "MCO"
                         },
                         {
                             "airTraveler": {
@@ -4179,155 +2011,303 @@
                                 },
                                 "requestedSeatCount": "1",
                                 "shareMarketInd": "false",
-                                "travelerReferenceID": "16006897",
+                                "travelerReferenceID": "16007007",
                                 "unaccompaniedMinor": "false"
                             },
-                            "couponInfoList": {
-                                "airTraveler": {
-                                    "accompaniedByInfant": "false",
-                                    "birthDate": "1991-08-08T00:00:00+01:00",
-                                    "companyInfo": "",
-                                    "gender": "F",
-                                    "hasStrecher": "false",
-                                    "parentSequence": "-1",
-                                    "passengerTypeCode": "ADLT",
-                                    "personName": {
-                                        "givenName": "BBB",
-                                        "nameTitle": "MRS",
+                            "couponInfoList": [
+                                {
+                                    "airTraveler": {
+                                        "accompaniedByInfant": "false",
+                                        "birthDate": "1991-08-08T00:00:00+01:00",
+                                        "companyInfo": "",
+                                        "gender": "F",
+                                        "hasStrecher": "false",
+                                        "parentSequence": "-1",
+                                        "passengerTypeCode": "ADLT",
+                                        "personName": {
+                                            "givenName": "BBB",
+                                            "nameTitle": "MRS",
+                                            "shareMarketInd": "false",
+                                            "surname": "TEST"
+                                        },
+                                        "personNameEN": {
+                                            "givenName": "BBB",
+                                            "nameTitle": "MRS",
+                                            "shareMarketInd": "false",
+                                            "surname": "TEST"
+                                        },
+                                        "requestedSeatCount": "1",
                                         "shareMarketInd": "false",
-                                        "surname": "TEST"
+                                        "travelerReferenceID": "16007007",
+                                        "unaccompaniedMinor": "false"
                                     },
-                                    "personNameEN": {
-                                        "givenName": "BBB",
-                                        "nameTitle": "MRS",
-                                        "shareMarketInd": "false",
-                                        "surname": "TEST"
-                                    },
-                                    "requestedSeatCount": "1",
-                                    "shareMarketInd": "false",
-                                    "travelerReferenceID": "16006897",
-                                    "unaccompaniedMinor": "false"
-                                },
-                                "consumedAtIssuence": "false",
-                                "couponFlightSegment": {
-                                    "actionCode": "HK",
-                                    "addOnSegment": "false",
-                                    "bookingClass": {
-                                        "cabin": "BUSINESS",
-                                        "resBookDesigCode": "C",
-                                        "resBookDesigQuantity": "0"
-                                    },
-                                    "fareInfo": {
-                                        "cabin": "BUSINESS",
-                                        "cabinClassCode": "C",
-                                        "fareBaggageAllowance": {
-                                            "allowanceType": "WEIGHT",
-                                            "maxAllowedPieces": "0",
-                                            "maxAllowedWeight": {
-                                                "unitOfMeasureCode": "KG",
-                                                "weight": "30"
+                                    "consumedAtIssuence": "false",
+                                    "couponFlightSegment": {
+                                        "actionCode": "HK",
+                                        "addOnSegment": "false",
+                                        "bookingClass": {
+                                            "cabin": "ECONOMY",
+                                            "resBookDesigCode": "V",
+                                            "resBookDesigQuantity": "0"
+                                        },
+                                        "fareInfo": {
+                                            "cabin": "ECONOMY",
+                                            "cabinClassCode": "Y",
+                                            "fareBaggageAllowance": {
+                                                "allowanceType": "WEIGHT",
+                                                "maxAllowedPieces": "0",
+                                                "maxAllowedWeight": {
+                                                    "unitOfMeasureCode": "KG",
+                                                    "weight": "15"
+                                                }
+                                            },
+                                            "fareGroupName": "Eco Non Flexi Dom",
+                                            "fareReferenceCode": "VRTN",
+                                            "fareReferenceID": "0fe3789a8fde12c1be1d8b3d18fd7120e1ac9b4adc1fd719ce88b855fb5cf5520d7f224241d4addac655e909974d44e42d7d2ba1457ca1a1830368e991871c4c133d30781909b3338e6964ac12fcfb09923e5a1cc3f9ad0531ca91",
+                                            "fareReferenceName": "VRTNIG",
+                                            "flightSegmentSequence": "0",
+                                            "resBookDesigCode": "V"
+                                        },
+                                        "flightSegment": {
+                                            "airline": {
+                                                "code": "P4",
+                                                "codeContext": "IATA"
+                                            },
+                                            "arrivalAirport": {
+                                                "cityInfo": {
+                                                    "city": {
+                                                        "locationCode": "ENU",
+                                                        "locationName": "Enugu",
+                                                        "locationNameLanguage": "EN"
+                                                    },
+                                                    "country": {
+                                                        "locationCode": "NG",
+                                                        "locationName": "Nigeria",
+                                                        "locationNameLanguage": "EN",
+                                                        "currency": {
+                                                            "code": "NGN"
+                                                        }
+                                                    }
+                                                },
+                                                "codeContext": "IATA",
+                                                "language": "EN",
+                                                "locationCode": "ENU",
+                                                "locationName": "Enugu",
+                                                "timeZoneInfo": "Africa/Lagos"
+                                            },
+                                            "arrivalDateTime": "2024-12-27T08:00:00+01:00",
+                                            "arrivalDateTimeUTC": "2024-12-27T07:00:00+01:00",
+                                            "departureAirport": {
+                                                "cityInfo": {
+                                                    "city": {
+                                                        "locationCode": "LOS",
+                                                        "locationName": "Lagos",
+                                                        "locationNameLanguage": "EN"
+                                                    },
+                                                    "country": {
+                                                        "locationCode": "NG",
+                                                        "locationName": "Nigeria",
+                                                        "locationNameLanguage": "EN",
+                                                        "currency": {
+                                                            "code": "NGN"
+                                                        }
+                                                    }
+                                                },
+                                                "codeContext": "IATA",
+                                                "language": "EN",
+                                                "locationCode": "LOS",
+                                                "locationName": "Lagos",
+                                                "timeZoneInfo": "Africa/Lagos"
+                                            },
+                                            "departureDateTime": "2024-12-27T06:50:00+01:00",
+                                            "departureDateTimeUTC": "2024-12-27T05:50:00+01:00",
+                                            "flightNumber": "7100",
+                                            "flightSegmentID": "1146830",
+                                            "ondControlled": "false",
+                                            "sector": "DOMESTIC",
+                                            "accumulatedDuration": "",
+                                            "codeshare": "false",
+                                            "distance": "469",
+                                            "equipment": {
+                                                "airEquipType": "ERJ195-12C/112Y",
+                                                "changeofGauge": "false"
+                                            },
+                                            "flightNotes": {
+                                                "deiCode": "504",
+                                                "explanation": "Secure Flight Info",
+                                                "note": "T"
+                                            },
+                                            "flownMileageQty": "0",
+                                            "groundDuration": "",
+                                            "iatciFlight": "false",
+                                            "journeyDuration": "PT1H10M",
+                                            "onTimeRate": "0",
+                                            "remark": "Departs From MM1 Zulu Terminal, GAT (Old Domestic)",
+                                            "secureFlightDataRequired": "true",
+                                            "segmentStatusByFirstLeg": "RZ",
+                                            "stopQuantity": "0",
+                                            "trafficRestriction": {
+                                                "code": "",
+                                                "explanation": ""
                                             }
                                         },
-                                        "fareGroupName": "Biz Corporate Dom",
-                                        "fareReferenceCode": "COW1",
-                                        "fareReferenceID": "0fe4769e86d712c1be1d8b3d18fd7120e1ac9b4adc1fd718cc88bb59f150f25c0d7f224544d2f8ddc107ec5ac01f41bf227e7afa167bf4a18b5461ba90d44b4e163c30294b55b2388d68692c53b8959daeb4965a3f5b7c2181c18b",
-                                        "fareReferenceName": "COWCORPORATE",
-                                        "flightSegmentSequence": "0",
-                                        "resBookDesigCode": "C"
+                                        "involuntaryPermissionGiven": "false",
+                                        "legStatus": "RZ",
+                                        "referenceID": "15864955",
+                                        "responseCode": "HK",
+                                        "sequenceNumber": "0",
+                                        "status": "HK"
                                     },
-                                    "flightSegment": {
-                                        "airline": {
-                                            "code": "P4",
-                                            "codeContext": "IATA"
-                                        },
-                                        "arrivalAirport": {
-                                            "cityInfo": {
-                                                "city": {
-                                                    "locationCode": "LOS",
-                                                    "locationName": "Lagos",
-                                                    "locationNameLanguage": "EN"
-                                                },
-                                                "country": {
-                                                    "locationCode": "NG",
-                                                    "locationName": "Nigeria",
-                                                    "locationNameLanguage": "EN",
-                                                    "currency": {
-                                                        "code": "NGN"
-                                                    }
-                                                }
-                                            },
-                                            "codeContext": "IATA",
-                                            "language": "EN",
-                                            "locationCode": "LOS",
-                                            "locationName": "Lagos",
-                                            "timeZoneInfo": "Africa/Lagos"
-                                        },
-                                        "arrivalDateTime": "2024-12-18T13:00:00+01:00",
-                                        "arrivalDateTimeUTC": "2024-12-18T12:00:00+01:00",
-                                        "departureAirport": {
-                                            "cityInfo": {
-                                                "city": {
-                                                    "locationCode": "ENU",
-                                                    "locationName": "Enugu",
-                                                    "locationNameLanguage": "EN"
-                                                },
-                                                "country": {
-                                                    "locationCode": "NG",
-                                                    "locationName": "Nigeria",
-                                                    "locationNameLanguage": "EN",
-                                                    "currency": {
-                                                        "code": "NGN"
-                                                    }
-                                                }
-                                            },
-                                            "codeContext": "IATA",
-                                            "language": "EN",
-                                            "locationCode": "ENU",
-                                            "locationName": "Enugu",
-                                            "timeZoneInfo": "Africa/Lagos"
-                                        },
-                                        "departureDateTime": "2024-12-18T11:50:00+01:00",
-                                        "departureDateTimeUTC": "2024-12-18T10:50:00+01:00",
-                                        "flightNumber": "7103",
-                                        "flightSegmentID": "1148777",
-                                        "ondControlled": "false",
-                                        "sector": "DOMESTIC",
-                                        "accumulatedDuration": "",
-                                        "codeshare": "false",
-                                        "distance": "469",
-                                        "equipment": {
-                                            "airEquipType": "ERJ195-12C/112Y",
-                                            "changeofGauge": "false"
-                                        },
-                                        "flightNotes": {
-                                            "deiCode": "504",
-                                            "explanation": "Secure Flight Info",
-                                            "note": "T"
-                                        },
-                                        "flownMileageQty": "0",
-                                        "groundDuration": "",
-                                        "iatciFlight": "false",
-                                        "journeyDuration": "PT1H10M",
-                                        "onTimeRate": "0",
-                                        "secureFlightDataRequired": "true",
-                                        "segmentStatusByFirstLeg": "RZ",
-                                        "stopQuantity": "0",
-                                        "trafficRestriction": {
-                                            "code": "",
-                                            "explanation": ""
-                                        }
-                                    },
-                                    "involuntaryPermissionGiven": "false",
-                                    "legStatus": "RZ",
-                                    "referenceID": "15864893",
-                                    "responseCode": "HK",
-                                    "sequenceNumber": "0",
-                                    "status": "HK"
+                                    "cpnIsn": "0",
+                                    "noShow": "false"
                                 },
-                                "cpnIsn": "0",
-                                "noShow": "false"
-                            },
-                            "fareConstruction": "ENU P4 LOS750.00NGN750.00END",
+                                {
+                                    "airTraveler": {
+                                        "accompaniedByInfant": "false",
+                                        "birthDate": "1991-08-08T00:00:00+01:00",
+                                        "companyInfo": "",
+                                        "gender": "F",
+                                        "hasStrecher": "false",
+                                        "parentSequence": "-1",
+                                        "passengerTypeCode": "ADLT",
+                                        "personName": {
+                                            "givenName": "BBB",
+                                            "nameTitle": "MRS",
+                                            "shareMarketInd": "false",
+                                            "surname": "TEST"
+                                        },
+                                        "personNameEN": {
+                                            "givenName": "BBB",
+                                            "nameTitle": "MRS",
+                                            "shareMarketInd": "false",
+                                            "surname": "TEST"
+                                        },
+                                        "requestedSeatCount": "1",
+                                        "shareMarketInd": "false",
+                                        "travelerReferenceID": "16007007",
+                                        "unaccompaniedMinor": "false"
+                                    },
+                                    "consumedAtIssuence": "false",
+                                    "couponFlightSegment": {
+                                        "actionCode": "HK",
+                                        "addOnSegment": "false",
+                                        "bookingClass": {
+                                            "cabin": "ECONOMY",
+                                            "resBookDesigCode": "V",
+                                            "resBookDesigQuantity": "0"
+                                        },
+                                        "fareInfo": {
+                                            "cabin": "ECONOMY",
+                                            "cabinClassCode": "Y",
+                                            "fareBaggageAllowance": {
+                                                "allowanceType": "WEIGHT",
+                                                "maxAllowedPieces": "0",
+                                                "maxAllowedWeight": {
+                                                    "unitOfMeasureCode": "KG",
+                                                    "weight": "15"
+                                                }
+                                            },
+                                            "fareGroupName": "Eco Non Flexi Dom",
+                                            "fareReferenceCode": "VRTN",
+                                            "fareReferenceID": "0fe3789a81d812c1be1d8b3d18fd7120e1ac9b4adc1fd719ce88b855fb5cf6500d7f22401481aede9206bc58c71f17b6297e79a2417ff2a7d05430bdc080491f1b6d6a7f4c54ef69dd3b6c6b0e53eaaddb4bba77265942c6bb6ba0",
+                                            "fareReferenceName": "VRTNIG",
+                                            "flightSegmentSequence": "0",
+                                            "resBookDesigCode": "V"
+                                        },
+                                        "flightSegment": {
+                                            "airline": {
+                                                "code": "P4",
+                                                "codeContext": "IATA"
+                                            },
+                                            "arrivalAirport": {
+                                                "cityInfo": {
+                                                    "city": {
+                                                        "locationCode": "ABV",
+                                                        "locationName": "Abuja",
+                                                        "locationNameLanguage": "EN"
+                                                    },
+                                                    "country": {
+                                                        "locationCode": "NG",
+                                                        "locationName": "Nigeria",
+                                                        "locationNameLanguage": "EN",
+                                                        "currency": {
+                                                            "code": "NGN"
+                                                        }
+                                                    }
+                                                },
+                                                "codeContext": "IATA",
+                                                "language": "EN",
+                                                "locationCode": "ABV",
+                                                "locationName": "Abuja",
+                                                "timeZoneInfo": "Africa/Lagos"
+                                            },
+                                            "arrivalDateTime": "2024-12-30T09:35:00+01:00",
+                                            "arrivalDateTimeUTC": "2024-12-30T08:35:00+01:00",
+                                            "departureAirport": {
+                                                "cityInfo": {
+                                                    "city": {
+                                                        "locationCode": "ENU",
+                                                        "locationName": "Enugu",
+                                                        "locationNameLanguage": "EN"
+                                                    },
+                                                    "country": {
+                                                        "locationCode": "NG",
+                                                        "locationName": "Nigeria",
+                                                        "locationNameLanguage": "EN",
+                                                        "currency": {
+                                                            "code": "NGN"
+                                                        }
+                                                    }
+                                                },
+                                                "codeContext": "IATA",
+                                                "language": "EN",
+                                                "locationCode": "ENU",
+                                                "locationName": "Enugu",
+                                                "timeZoneInfo": "Africa/Lagos"
+                                            },
+                                            "departureDateTime": "2024-12-30T08:40:00+01:00",
+                                            "departureDateTimeUTC": "2024-12-30T07:40:00+01:00",
+                                            "flightNumber": "7101",
+                                            "flightSegmentID": "1147485",
+                                            "ondControlled": "false",
+                                            "sector": "DOMESTIC",
+                                            "accumulatedDuration": "",
+                                            "codeshare": "false",
+                                            "distance": "282",
+                                            "equipment": {
+                                                "airEquipType": "ERJ195-12C/112Y",
+                                                "changeofGauge": "false"
+                                            },
+                                            "flightNotes": {
+                                                "deiCode": "504",
+                                                "explanation": "Secure Flight Info",
+                                                "note": "T"
+                                            },
+                                            "flownMileageQty": "0",
+                                            "groundDuration": "",
+                                            "iatciFlight": "false",
+                                            "journeyDuration": "PT55M",
+                                            "onTimeRate": "0",
+                                            "secureFlightDataRequired": "true",
+                                            "segmentStatusByFirstLeg": "RZ",
+                                            "stopQuantity": "0",
+                                            "trafficRestriction": {
+                                                "code": "",
+                                                "explanation": ""
+                                            }
+                                        },
+                                        "involuntaryPermissionGiven": "false",
+                                        "legStatus": "RZ",
+                                        "referenceID": "15864956",
+                                        "responseCode": "HK",
+                                        "sequenceNumber": "0",
+                                        "status": "HK"
+                                    },
+                                    "cpnIsn": "0",
+                                    "noShow": "false"
+                                }
+                            ],
+                            "fareConstruction": "LOS P4 ENU16.30 P4 ABV16.30NUC32.60END ROE1546.000000",
                             "inclusiveTour": "false",
                             "pricingInfo": {
                                 "baseFare": {
@@ -4337,7 +2317,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "750.0"
+                                        "value": "50400.0"
                                     }
                                 },
                                 "commissionVat": {
@@ -4366,7 +2346,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "750.0"
+                                    "value": "50400.0"
                                 },
                                 "fareBaggageAllowance": "0",
                                 "fees": {
@@ -4380,23 +2360,65 @@
                                     }
                                 },
                                 "surcharges": {
-                                    "totalAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": ""
+                                    "surchargeList": [
+                                        {
+                                            "paid": "false",
+                                            "surchargeAmount": {
+                                                "accountingSign": "ADC",
+                                                "currency": {
+                                                    "code": "NGN"
+                                                },
+                                                "mileAmount": "0.0",
+                                                "value": "36000.0"
+                                            },
+                                            "surchargeCode": "YQ",
+                                            "surchargeName": "Carrier Imposed Surcharge",
+                                            "surchargeType": ""
                                         },
-                                        "mileAmount": "0.0",
-                                        "value": "0.0"
-                                    }
-                                },
-                                "taxes": {
+                                        {
+                                            "paid": "false",
+                                            "surchargeAmount": {
+                                                "accountingSign": "ADC",
+                                                "currency": {
+                                                    "code": "NGN"
+                                                },
+                                                "mileAmount": "0.0",
+                                                "value": "36000.0"
+                                            },
+                                            "surchargeCode": "YQ",
+                                            "surchargeName": "Carrier Imposed Surcharge",
+                                            "surchargeType": ""
+                                        }
+                                    ],
                                     "totalAmount": {
                                         "accountingSign": "ADC",
                                         "currency": {
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "0.0"
+                                        "value": "72000.0"
+                                    }
+                                },
+                                "taxes": {
+                                    "taxList": {
+                                        "paid": "false",
+                                        "taxAmount": {
+                                            "accountingSign": "ADC",
+                                            "currency": {
+                                                "code": "NGN"
+                                            },
+                                            "mileAmount": "0.0",
+                                            "value": "3600.0"
+                                        },
+                                        "taxCode": "NG"
+                                    },
+                                    "totalAmount": {
+                                        "accountingSign": "ADC",
+                                        "currency": {
+                                            "code": "NGN"
+                                        },
+                                        "mileAmount": "0.0",
+                                        "value": "3600.0"
                                     }
                                 },
                                 "totalFare": {
@@ -4406,7 +2428,7 @@
                                             "code": "NGN"
                                         },
                                         "mileAmount": "0.0",
-                                        "value": "750.0"
+                                        "value": "126000.0"
                                     }
                                 },
                                 "discountApplied": "false"
@@ -4418,7 +2440,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "750.0"
+                                    "value": "50400.0"
                                 },
                                 "totalAmount": {
                                     "accountingSign": "ADC",
@@ -4426,7 +2448,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "750.0"
+                                    "value": "126000.0"
                                 },
                                 "totalBaseFare": {
                                     "accountingSign": "ADC",
@@ -4434,7 +2456,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "750.0"
+                                    "value": "50400.0"
                                 },
                                 "totalCommission": {
                                     "accountingSign": "ADC",
@@ -4487,10 +2509,10 @@
                                 "totalSurcharge": {
                                     "accountingSign": "ADC",
                                     "currency": {
-                                        "code": ""
+                                        "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "0.0"
+                                    "value": "72000.0"
                                 },
                                 "totalTax": {
                                     "accountingSign": "ADC",
@@ -4498,7 +2520,7 @@
                                         "code": "NGN"
                                     },
                                     "mileAmount": "0.0",
-                                    "value": "0.0"
+                                    "value": "3600.0"
                                 },
                                 "totalTransactionFee": {
                                     "accountingSign": "ADC",
@@ -4509,29 +2531,9 @@
                                     "value": "0.0"
                                 }
                             },
-                            "reasonForIssuance": {
-                                "explanation": "EXCESS WEIGHT BAGGAGE",
-                                "reasonForIssuanceCode": "C",
-                                "reasonForIssuanceSubCode": "0IK"
-                            },
                             "serviceFee": "0.0",
-                            "specialServiceRequest": {
-                                "allowedQuantityPerPassenger": "0",
-                                "bundleRelatedSsr": "false",
-                                "code": "XBAG",
-                                "exchangeable": "false",
-                                "explanation": "3KG",
-                                "extraBaggage": "false",
-                                "free": "false",
-                                "groupCode": "BAG",
-                                "groupCodeExplanation": "BAG",
-                                "iciAllowed": "false",
-                                "refundable": "false",
-                                "showOnItinerary": "false",
-                                "specialServiceReferenceId": "30454196",
-                                "unitOfMeasureExist": "false"
-                            },
-                            "type": "MCO"
+                            "totalAmountText": "NGN 126,000.00",
+                            "type": "E_TICKET"
                         }
                     ],
                     "totalAmount": {
@@ -4540,7 +2542,7 @@
                             "code": "NGN"
                         },
                         "mileAmount": "0.0",
-                        "value": "578952.0"
+                        "value": "365400.0"
                     }
                 }
             }

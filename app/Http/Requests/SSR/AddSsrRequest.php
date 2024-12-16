@@ -96,7 +96,7 @@ class AddSsrRequest extends FormRequest
             "airItinerary.*.referenceID" => "required|string",
             "airItinerary.*.responseCode" => "required|string",
             "airItinerary.*.sequenceNumber" => "required|string",
-            "status" => "required|string",
+            "airItinerary.*.status" => "required|string",
             "airTravelerList" => "required|array",
             "airTravelerList.*.accompaniedByInfant" => "required|boolean",
             "airTravelerList.*.airTravelerbirthDate" => "required|string",
