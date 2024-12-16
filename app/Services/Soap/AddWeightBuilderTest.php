@@ -252,6 +252,7 @@ class AddWeightBuilderTest {
    } 
 
    public function addWeightArrayTest(
+      $adviceCodeSegmentExist,
       $airItinerary,
       $airTravelerList,
       $ancillaryRequestList,
@@ -274,8 +275,10 @@ class AddWeightBuilderTest {
                <userName>SCINTILLA</userName>
                <preferredCurrency>NGN</preferredCurrency>
                </clientInformation>
-                  <airItinerary>'.
+                  <airItinerary>
+                  <adviceCodeSegmentExist>' . htmlspecialchars($adviceCodeSegmentExist, ENT_XML1, 'UTF-8') . '</adviceCodeSegmentExist>'.
                      $this->airItinerary($airItinerary)
+
                   .'</airItinerary>'.
                     $this->airTravelerList($airTravelerList) .' '.
                     $this->ancillaryRequestList($ancillaryRequestList)
@@ -303,8 +306,7 @@ class AddWeightBuilderTest {
       $xml = '';
       // dd($airItineraryList);
       foreach($airItineraryList as $airItinerary) {
-         $xml .= '<adviceCodeSegmentExist>' . htmlspecialchars($airItinerary["adviceCodeSegmentExist"], ENT_XML1, 'UTF-8') . '</adviceCodeSegmentExist>
-         <bookOriginDestinationOptions>
+         $xml .= '<bookOriginDestinationOptions>
             <bookOriginDestinationOptionList>
                <bookFlightSegmentList>
                   <actionCode>' . htmlspecialchars($airItinerary["bookFlightSegmentListActionCode"], ENT_XML1, 'UTF-8') . '</actionCode>
