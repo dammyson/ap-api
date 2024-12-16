@@ -6,6 +6,7 @@ use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
 use App\Models\InvoiceRecord;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SSR\AddSsrRequest;
 use App\Services\Soap\AddWeightBuilderTest;
 use App\Http\Requests\Test\addWeightRequest;
 use App\Http\Requests\Test\AddWeightRequestTest;
@@ -254,7 +255,7 @@ class AddWeightControllerTest extends Controller
         }
     }
 
-    public function addWeightArrayTest(AddWeightRequestTest $request, $invoiceId) {
+    public function addWeightArrayTest(AddSsrRequest $request, $invoiceId) {
         $airItinerary = $request->input('airItinerary');
         $ancillaryRequestList = $request->input('ancillaryRequestList');   
         $airTravelerList = $request->input('airTravelerList');
