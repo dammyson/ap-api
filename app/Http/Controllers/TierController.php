@@ -46,6 +46,17 @@ class TierController extends Controller
             $currentTier = $user->currentTier(); 
             $user->tiers()->updateExistingPivot($currentTier?->id, ['is_current' => false]);
 
+            if ($currentTier->rank > $tier->rank) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "user already in a higher tier"
+                ], 400);
+            } else if ($currentTier->rank == $tier->rank) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "cannot upgrade same tier"
+                ], 500);
+            }
               // Assign the higher tier
             $user->tiers()->attach($tier->id, [
                 'is_current' => true,
