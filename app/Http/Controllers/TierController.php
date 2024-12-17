@@ -32,7 +32,7 @@ class TierController extends Controller
 
         if ($tier) {
             // Associate the new tier with the user
-            $user->tiers()->sync([$tier]);;
+            $user->tiers()->sync([$tier->id]);;
             $user->save();
 
             // Optionally, you can notify the user or perform additional actions
