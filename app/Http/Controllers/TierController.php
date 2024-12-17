@@ -25,12 +25,14 @@ class TierController extends Controller
         // Get the authenticated user
         $user = Auth::user();
         
+        // $user = $request->user();
+        
         // Find the new tier
         $tier = Tier::find($request->input('tier_id'));
 
         if ($tier) {
             // Associate the new tier with the user
-            $user->tier()->associate($tier);
+            $user->tiers()->associate($tier);
             $user->save();
 
             // Optionally, you can notify the user or perform additional actions
