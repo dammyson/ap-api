@@ -23,9 +23,9 @@ class TierController extends Controller
         ]);
 
         // Get the authenticated user
-        $user = Auth::user();
-        
-        // $user = $request->user();
+        // $user = Auth::user();
+
+        $user = $request->user();
         
         // Find the new tier
         $tier = Tier::find($request->input('tier_id'));
