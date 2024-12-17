@@ -25,6 +25,7 @@ class FlightRecord extends Model
         'flight_number',
         'flight_distance',
         'flight_duration',
+        'payment_expires_at',
         'amount'
     ];
 }

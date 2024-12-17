@@ -443,6 +443,7 @@ class CreateBookingController extends Controller
                         'flight_number' => $flightNumber,
                         'flight_distance' => $flightDistance,
                         'flight_duration' => $totalHours,
+                        'payment_expires_at' => $timeLimit,
                         'amount' => $expectedAmount
                     ]);  
                     $ticketCount += 1;
@@ -471,6 +472,7 @@ class CreateBookingController extends Controller
                             'flight_number' => $flightNumber,
                             'flight_distance' => $flightDistance,
                             'flight_duration' => $totalHours,
+                            'payment_expires_at' => $timeLimit,
                             'amount' => $expectedAmount
                         ]); 
 
@@ -517,6 +519,7 @@ class CreateBookingController extends Controller
                             'flight_distance' => $flightDistance,
                             'flight_number' => $flightNumber,
                             'flight_duration' => $totalHours,
+                            'payment_expires_at' => $timeLimit,
                             'amount' => $expectedAmount
                         ]);  
                         
@@ -564,6 +567,7 @@ class CreateBookingController extends Controller
                                 'flight_distance' => $flightDistance,
                                 'flight_number' => $flightNumber,
                                 'flight_duration' => $totalHours,
+                                'payment_expires_at' => $timeLimit,
                                 'amount' => $expectedAmount
                             ]); 
                             
