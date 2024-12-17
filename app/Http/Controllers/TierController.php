@@ -30,13 +30,37 @@ class TierController extends Controller
         // Find the new tier
         $tier = Tier::find($request->input('tier_id'));
 
-        if ($tier) {
-            // Associate the new tier with the user
-            $user->tiers()->sync([$tier->id]);;
-            $user->save();
+        // if ($tier) {
+        //     // Associate the new tier with the user
+        //     $user->tiers()->attach($tier);
+        //     $user->save();
 
-            // Optionally, you can notify the user or perform additional actions
-            return response()->json(['message' => 'Tier upgraded successfully!']);
+        //     // Optionally, you can notify the user or perform additional actions
+        //     return response()->json([
+        //         'message' => 'Tier upgraded successfully!',
+        //         "user" => $user
+        //     ]);
+        // }
+
+        if ($tier) {
+            $currentTier = $user->currentTier(); 
+            $user->tiers()->updateExistingPivot($currentTier?->id, ['is_current' => false]);
+
+              // Assign the higher tier
+            $user->tiers()->attach($tier->id, [
+                'is_current' => true,
+                'expires_at' => null, // Reset expiration for calculated tiers
+                'source' => 'calculated',
+            ]);
+            $user->tier_id = $tier->id;
+            $user->save();
+            // $user->load('tiers');
+
+            return response()->json([
+                'message' => 'Tier upgraded successfully!',
+                "user" => $user
+            ]);
+
         }
 
         return response()->json(['message' => 'Tier upgrade failed.'], 500);
