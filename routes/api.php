@@ -82,9 +82,6 @@ Route::group(['prefix' => 'user'], function ()  {
     Route::post('login', [LoginController::class, 'login']);
 });
 
-
-Route::post('/upgrade-tier', [TierController::class, 'upgradeTier'])->middleware('auth');
-
 Route::group(['prefix' => 'admin/'], function () {
     Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
     Route::post('admin-login', [LoginAdminController::class, 'loginAdmin']);
@@ -318,6 +315,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     });
 
     Route::post('redeem-ticket-with-peace-point', [RedeemTicketPeacePointController::class, 'payWithPeacePoint']);
+    Route::post('/upgrade-tier', [TierController::class, 'upgradeTier'])->middleware('auth');
 
 
     Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);
