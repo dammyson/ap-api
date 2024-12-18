@@ -311,7 +311,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
 
     
     Route::prefix('verify-payment')->group(function () {
-        Route::post('/ref', [TestPaymentController::class, 'verify'])->name('wallet.top_up');
+        Route::post('/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
+        Route::post('/tier-ref', [TestPaymentController::class, 'verfiyTierRef']);
     });
 
     Route::post('redeem-ticket-with-peace-point', [RedeemTicketPeacePointController::class, 'payWithPeacePoint']);
