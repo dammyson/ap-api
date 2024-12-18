@@ -35,6 +35,7 @@ class TestPaymentController extends Controller
             
             //validate verifiedRequest;
             $new_top_request = new VerificationService($ref);
+            // dd($new_top_request);
             $verified_request = $new_top_request->run();
             
             $amount = $verified_request["data"]["amount"];
@@ -57,13 +58,18 @@ class TestPaymentController extends Controller
             $request->validate([
                 'ref_id' => 'required|string'
             ]);
+            $ref = $request->input('ref_id');
             $userId = $request->user()->id;
     
             //validate verifiedRequest;
-            $new_top_request = new VerificationService($request->ref_id);
+
+            $new_top_request = new VerificationService($ref);
             $verified_request = $new_top_request->run();
+           
             
             $paidAmount = $verified_request["data"]["amount"];
+            $paidAmount = $paidAmount / 100;
+          
             // create invoice table   // add booking_id
             $invoice = InvoiceRecord::create([
                 'amount' => $paidAmount,
@@ -72,8 +78,8 @@ class TestPaymentController extends Controller
             ]);            
             
             // convert to naira (from kobo)
-            $paidAmount = $paidAmount / 100;
-
+            
+            // dd("i ran");
             // create invoice_items table
             InvoiceItem::create([
                 'invoice_id' => $invoice->id,
@@ -98,7 +104,7 @@ class TestPaymentController extends Controller
             if(!$tier) {
                 return response()->json([
                     "error" => true,
-                    "message" => "amount paid doesnot match a specific tier"
+                    "message" => "amount paid does not match a specific tier"
                 ]);
             } else {
                return $this->tierController->upgradeTier($userId, $tier->id);
