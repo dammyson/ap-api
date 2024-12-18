@@ -260,8 +260,7 @@ class AddWeightControllerTest extends Controller
 
             return response()->json([
                 'error' => $e->getMessage(),
-                "message" => $message,
-                'response' => $response
+                "message" => $message
         
             ], 500);
         }
