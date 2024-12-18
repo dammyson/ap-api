@@ -55,7 +55,6 @@ class TestPaymentController extends Controller
     public function verfiyTierRef(Request $request) {
         try {
             $request->validate([
-                'amount' => 'required|string',
                 'ref_id' => 'required|string'
             ]);
             $userId = $request->user()->id;
@@ -102,7 +101,7 @@ class TestPaymentController extends Controller
                     "message" => "amount paid doesnot match a specific tier"
                 ]);
             } else {
-                $this->tierController->upgradeTier($userId, $tier->id);
+               return $this->tierController->upgradeTier($userId, $tier->id);
             }
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
