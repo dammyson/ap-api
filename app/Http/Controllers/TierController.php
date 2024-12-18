@@ -3,9 +3,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Tier;
+use App\Models\InvoiceItem;
+use Illuminate\Http\Request;
+use App\Models\InvoiceRecord;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Wallet\VerificationService;
 
 class TierController extends Controller
 {
@@ -15,12 +18,49 @@ class TierController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function upgradeTier(Request $request)
+    public function upgradeTier(Request $request )
     {
         // Validate the request to ensure a valid tier_id is provided
         $request->validate([
+            'amount' => 'required|string',
             'tier_id' => 'required|exists:tiers,id',
+            'ref_id' => 'required|string'
         ]);
+
+        //validate verifiedRequest;
+        $new_top_request = new VerificationService($request->ref_id);
+        $verified_request = $new_top_request->run();
+        
+        $paidAmount = $verified_request["data"]["amount"];
+        // create invoice table   // add booking_id
+        $invoice = InvoiceRecord::create([
+            'amount' => $paidAmount,
+            'booking_id' => "not applicable",
+            'is_paid' => true
+        ]);            
+
+        // create invoice_items table
+        InvoiceItem::create([
+            'invoice_id' => $invoice->id,
+            'product' => 'tier', 
+            'quantity' => '1',
+            'price' => $paidAmount
+        ]);
+
+        if ($paidAmount == 3000) {
+            $tier = Tier::where('name', 'Bronze')->first();
+        } else if($paidAmount == 5000) {
+            $tier = Tier::where('name', 'Silver')->first();
+
+        } else if ($paidAmount == 7000) {
+            $tier = Tier::where('name', 'Gold')->first();
+
+        } else if($paidAmount == 9000) {
+            $tier = Tier::where('name', 'Platinum')->first();
+
+        }
+
+        
 
         // Get the authenticated user
         // $user = Auth::user();

@@ -247,8 +247,20 @@ class AddWeightControllerTest extends Controller
             ], 200);
 
         } catch (\Exception $e) {
+            $message = "Something went wrong";
+            if (array_key_exists("detail", $response)) {
+                if (array_key_exists("CraneFault", $response["detail"])){
+                    if (array_key_exists("code", $response["detail"]["CraneFault"])){
+                        if ($response["detail"]["CraneFault"]["code"] == "BAGGAGE_LIMIT_ERROR") {
+                            $message = "Requested baggage weight {$response["detail"]["CraneFault"]["args"][0]} exceeds baggage limit {$response["detail"]["CraneFault"]["args"][1]}. Current baggage weight {$response["detail"]["CraneFault"]["args"][2]}";
+                        }
+                    }
+                }
+            }
+
             return response()->json([
                 'error' => $e->getMessage(),
+                "message" => $message,
                 'response' => $response
         
             ], 500);
