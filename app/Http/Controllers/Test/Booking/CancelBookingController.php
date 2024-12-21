@@ -39,7 +39,7 @@ class CancelBookingController extends Controller
             $response = $this->craneOTASoapService->run($function, $xml);
             // dd($response);
             return response()->json([
-                "error" => true,
+                "error" => false,
                 "message" => "booking cancelled"
             ], 200);
             
