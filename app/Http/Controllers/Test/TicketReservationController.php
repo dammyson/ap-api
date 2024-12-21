@@ -161,6 +161,7 @@ class TicketReservationController extends Controller
             $paidAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
           
         );
+        dd($xml);
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 

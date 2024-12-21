@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Tier;
 use App\Models\Wallet;
 use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
 use App\Models\InvoiceRecord;
+use App\Models\TransactionRecord;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Wallet\TopUpService;
@@ -59,7 +61,8 @@ class TestPaymentController extends Controller
                 'ref_id' => 'required|string'
             ]);
             $ref = $request->input('ref_id');
-            $userId = $request->user()->id;
+            $user = $request->user();
+            $userId = $user->id;
     
             //validate verifiedRequest;
 
@@ -87,6 +90,8 @@ class TestPaymentController extends Controller
                 'quantity' => '1',
                 'price' => $paidAmount
             ]);
+
+                 
     
             if ($paidAmount == 3000) {
                 $tier = Tier::where('name', 'Bronze')->first();
@@ -106,7 +111,22 @@ class TestPaymentController extends Controller
                     "error" => true,
                     "message" => "amount paid does not match a specific tier"
                 ]);
+
             } else {
+                $dayOfWeek = Carbon::now()->format('1');
+            
+                TransactionRecord::create([
+                    "invoice_number" => "not applicable",                        
+                    'amount' => $paidAmount,
+                    'transaction_type' => "tier purchase",
+                    'peace_id' => $user->peace_id,
+                    'ticket_type' => "Ancillary",
+                    'user_id' => $user->id,
+                    'invoice_id' => $invoice->id,
+                    'device_type' => $userDevice->device_type ?? "ANDROID",
+                    'day_of_week' => $dayOfWeek
+                ]);   
+
                return $this->tierController->upgradeTier($userId, $tier->id);
             }
         } catch (\Exception $exception) {
