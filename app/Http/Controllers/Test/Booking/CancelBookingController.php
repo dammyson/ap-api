@@ -40,10 +40,7 @@ class CancelBookingController extends Controller
     
             $response = $this->craneOTASoapService->run($function, $xml);
             // dd($response);
-            return response()->json([
-                "error" => true,
-                "message" => "booking cancelled"
-            ], 200);
+           
             
             if (array_key_exists('ticketInfo', $response['AirCancelBookingResponse']['airBookingList'])){
                 return response()->json([
@@ -54,7 +51,7 @@ class CancelBookingController extends Controller
                
             } else {
                 return response()->json([
-                    "error" => true,
+                    "error" => false,
                     "message" => "booking cancelled successfully"
                 ], 400);   
             } 
