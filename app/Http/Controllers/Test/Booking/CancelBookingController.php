@@ -24,20 +24,34 @@ class CancelBookingController extends Controller
     }
 
     public function cancelBookingCommit(CancelBookingCommitRequest $request) {
-        $ID = $request->input('ID'); 
-        $referenceID = $request->input('referenceID');       
-        // dd('I ran');
-        $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
-            $ID, 
-            $referenceID,
-        );
+        try {
 
-        $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
+            $ID = $request->input('ID'); 
+            $referenceID = $request->input('referenceID');    
 
-        $response = $this->craneOTASoapService->run($function, $xml);
-        dd($response);
-        $amount = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['refundPaymentAmountList']['amount']['value'];
-        dd($amount);
+            $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
+                $ID, 
+                $referenceID,
+            );
+    
+            $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
+    
+            $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
+            return response()->json([
+                "error" => true,
+                "message" => "booking cancelled"
+            ], 200);
+            
+        } catch (\Throwable $th) {
+            response()->json([
+                "error" => true,
+                "message" => "something went wrong",
+                // "response" => $response
+            ], 500);
+        }
+       
+        
     }
 
 

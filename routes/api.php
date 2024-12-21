@@ -226,10 +226,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
             });
 
             Route::group(["prefix" => "create-booking"], function() {
-                Route::post('rt', [CreateBookingController::class, 'createBookingRT']);
-                Route::post('ow', [CreateBookingController::class, 'createBookingOW']);
-                Route::post('two-a', [CreateBookingController::class, 'createBookingTwoA']);
-                Route::post('test-two-a', [CreateBookingController::class, 'createBookingTwo']);
+                Route::post('two-a', [CreateBookingController::class, 'createBooking']);
             });
 
         });
