@@ -24,11 +24,13 @@ class CancelBookingController extends Controller
     }
 
     public function cancelBookingCommit(CancelBookingCommitRequest $request) {
+        // $response = '';
         try {
+            // dd('i ran');
 
             $ID = $request->input('ID'); 
-            $referenceID = $request->input('referenceID');    
-
+            $referenceID = $request->input('referenceID');       
+            // dd('I ran');
             $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
                 $ID, 
                 $referenceID,
@@ -39,10 +41,23 @@ class CancelBookingController extends Controller
             $response = $this->craneOTASoapService->run($function, $xml);
             // dd($response);
             return response()->json([
-                "error" => false,
+                "error" => true,
                 "message" => "booking cancelled"
             ], 200);
             
+            if (array_key_exists('ticketInfo', $response['AirCancelBookingResponse']['airBookingList'])){
+                return response()->json([
+                    "error" => false,
+                    "message" => "booking cancelled successfully, a refund amount will be decided when you visit the airline"
+                ], 200);
+                
+               
+            } else {
+                return response()->json([
+                    "error" => true,
+                    "message" => "booking cancelled successfully"
+                ], 400);   
+            } 
         } catch (\Throwable $th) {
             response()->json([
                 "error" => true,
