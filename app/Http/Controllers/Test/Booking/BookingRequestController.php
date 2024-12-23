@@ -38,10 +38,11 @@ class BookingRequestController extends Controller
         $bookingId = $request->input('booking_id');
         $peaceId = $request->input('peace_id');
 
+
         try {
 
             $booking = BookingRecord::where('booking_id', $bookingId)
-                        ->where('peace_id', $peaceId)->first();
+                        ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
 
             $invoice = InvoiceRecord::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
     
@@ -51,12 +52,13 @@ class BookingRequestController extends Controller
                     'message' => 'no booking found'
                 ], 500);
             }
+
     
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
     
             $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                    $booking->booking_id,
-                    $booking->booking_reference_id
+                $booking->booking_id,
+                $booking->booking_reference_id
             );    
             
             $response = $this->craneOTASoapService->run($function, $xml);

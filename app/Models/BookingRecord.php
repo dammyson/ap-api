@@ -9,5 +9,5 @@ class BookingRecord extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['peace_id', 'booking_id', 'booking_reference_id'];
+    protected $fillable = ['peace_id', 'booking_id', 'booking_reference_id', 'is_cancelled'];
 }
