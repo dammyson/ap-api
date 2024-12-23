@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Test\Booking;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Test\Booking\CancelBooking\CancelBookingCommitRequest;
 use App\Http\Requests\Test\Booking\CancelBooking\CancelBookingViewOnlyRequest;
+use App\Models\Booking;
+use App\Models\BookingRecord;
 use App\Services\Soap\CancelBookingBuilder;
 use App\Services\Utility\CheckArray;
 use Illuminate\Http\Request;
@@ -27,6 +29,7 @@ class CancelBookingController extends Controller
         // $response = '';
         try {
             // dd('i ran');
+            $user =  $request->user();
 
             $ID = $request->input('ID'); 
             $referenceID = $request->input('referenceID');       
@@ -40,8 +43,18 @@ class CancelBookingController extends Controller
     
             $response = $this->craneOTASoapService->run($function, $xml);
             // dd($response);
-           
+            $userBooking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->where('is_cancelled', false)->first();
             
+            if (!$userBooking) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "booking does not exist for this user"
+                ]);
+            }
+            BookingRecord::where('booking_id', $ID)->update([
+                'is_cancelled' => true
+            ]);
+
             if (array_key_exists('ticketInfo', $response['AirCancelBookingResponse']['airBookingList'])){
                 return response()->json([
                     "error" => false,
@@ -55,6 +68,8 @@ class CancelBookingController extends Controller
                     "message" => "booking cancelled successfully"
                 ], 400);   
             } 
+
+
         } catch (\Throwable $th) {
             response()->json([
                 "error" => true,
