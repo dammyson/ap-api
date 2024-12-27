@@ -67,7 +67,7 @@ class FlightController extends Controller
 
             $xml = $this->soapRequestBuilder->GetFlightMultiCity( $multiDirectionalFlights, $travelerInformation, $tripType);
         }
-
+        // dd($xml);
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
