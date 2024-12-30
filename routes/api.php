@@ -274,7 +274,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
         });
         
         Route::post('/add-seat-ssr', [AddSeatController::class, 'addSeat']);
-        Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}', [AddWeightControllerTest::class, 'addWeightTest']);
+        Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
         Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
         Route::post('/add-weight-bag-array/invoice-test/{invoiceId}', [AddWeightControllerTest::class, 'addWeightArrayTest']);
         Route::post('/add-weight-bag-ow/invoice/{invoiceId}', [AddWeightController::class, 'addWeight']);
@@ -321,7 +321,6 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::post('change-flight', [ChangeFlightController::class, 'changeFlight']);
     Route::post('change-flight-view-only', [ChangeFlightController::class, 'changeFlightViewOnly']);
     
-    Route::post('/search-flight-two', [FlightController::class, 'searchFlightsTwo']);
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
     Route::get('/country', [CountryController::class, 'indexCountry']);
     Route::get('/city', [CityController::class, 'indexCity']);
