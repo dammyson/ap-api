@@ -223,6 +223,8 @@ class AddWeightControllerTest extends Controller
             // Use preg_match to extract the number
             $ssrType = 'insurance';
 
+            $message = "";
+
             if ($ssrType == "insurance") {
                 $numberOfInsurance = count($ancillaryRequestList);
                 InvoiceItem::create([
@@ -232,7 +234,7 @@ class AddWeightControllerTest extends Controller
                     // total_passengers => $totalPassengers  // this field would be removed
                     'price' => $addedPrice
                 ]);
-
+                $message = "Insurance added successfully";
             } else {
                 foreach ($ancillaryRequestList as $ancillaryRequest) {
                     $ssrExplanation = $ancillaryRequest['ssrExplanation'];
@@ -250,13 +252,15 @@ class AddWeightControllerTest extends Controller
                     ]);
     
                 }
+                $message = "Baggages added successfully";
+
             }
             
             
 
             return response()->json([
                 "error" => false,
-                "message" => "Baggages added successfully",
+                "message" => $message,
                 'invoice_id' => $invoice->id,
                 "amount" => $amount
             ], 200);
