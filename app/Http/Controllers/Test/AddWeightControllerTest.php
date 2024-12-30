@@ -22,7 +22,7 @@ class AddWeightControllerTest extends Controller
         
     }
 
-    public function addWeightTest(AddWeightRequestTest $request, $invoiceId) {
+    public function addWeightTest(AddWeightRequestTest $request, $invoiceId, $ssrType) {
         $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
         $bookFlightSegmentListActionCode = $request->input('bookFlightSegmentListActionCode');
         $bookFlightAddOnSegment = $request->input('bookFlightAddOnSegment');
@@ -200,11 +200,11 @@ class AddWeightControllerTest extends Controller
 
             // if user has not paid set the new invoice balance else generate a new invoice
             
-            $baggagePrice = 0;
+            $addedPrice = 0;
            
             if (!$invoice->is_paid) {
-                $baggagePrice = $invoice->amount - $amount;
-                $baggagePrice = abs($baggagePrice);
+                $addedPrice = $invoice->amount - $amount;
+                $addedPrice = abs($addedPrice);
                 $invoice->amount = $amount;
                 
             }
@@ -214,30 +214,45 @@ class AddWeightControllerTest extends Controller
                     'amount' => $amount,
                     'booking_id' => $bookingId
                 ]);
-                $baggagePrice = $amount;
+                $addedPrice = $amount;
             }
             
             $invoice->is_paid = false;
             $invoice->save();
 
             // Use preg_match to extract the number
-            
-            foreach ($ancillaryRequestList as $ancillaryRequest) {
-                $ssrExplanation = $ancillaryRequest['ssrExplanation'];
-                preg_match('/\d+/', $ssrExplanation, $matches);
-    
-                // $matches[0] will contain the number
-                $quantity = $matches[0];
+            $ssrType = 'insurance';
 
+            if ($ssrType == "insurance") {
+                $numberOfInsurance = count($ancillaryRequestList);
                 InvoiceItem::create([
                     'invoice_id' => $invoice->id,
-                    'product' => 'Baggages', // baggages or ticket shopping
-                    'quantity' => $quantity,
+                    'product' => 'Insurance', // baggages or ticket shopping
+                    'quantity' => $numberOfInsurance,
                     // total_passengers => $totalPassengers  // this field would be removed
-                    'price' => $baggagePrice
+                    'price' => $addedPrice
                 ]);
 
+            } else {
+                foreach ($ancillaryRequestList as $ancillaryRequest) {
+                    $ssrExplanation = $ancillaryRequest['ssrExplanation'];
+                    preg_match('/\d+/', $ssrExplanation, $matches);
+        
+                    // $matches[0] will contain the number
+                    $quantity = $matches[0];
+    
+                    InvoiceItem::create([
+                        'invoice_id' => $invoice->id,
+                        'product' => 'Baggages', // baggages or ticket shopping
+                        'quantity' => $quantity,
+                        // total_passengers => $totalPassengers  // this field would be removed
+                        'price' => $addedPrice
+                    ]);
+    
+                }
             }
+            
+            
 
             return response()->json([
                 "error" => false,
