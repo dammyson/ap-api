@@ -6,7 +6,7 @@ use App\Models\Admin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ActivityLog extends Model
+class AdminActivityLog extends Model
 {
     use HasFactory;
 

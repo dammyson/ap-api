@@ -11,11 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('booking_records', function (Blueprint $table) {
-            $table->id();
-            $table->string('peace_id');
+        Schema::create('bookings', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('booking_id');
             $table->string('booking_reference_id');
+            $table->string('peace_id')->nullable();
+            $table->string('last_name');
+            $table->foreignUuid('invoice_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->string('guest_session_token')->nullable();
+            $table->boolean('is_cancelled')->default(false);
             $table->timestamps();
         });
     }
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('booking_records');
+        Schema::dropIfExists('my_bookings');
     }
 };

@@ -85,10 +85,10 @@ class User extends Authenticatable
         return $this->hasMany(ReferralActivity::class, 'referrer_peace_id', 'peace_id');
     }
 
-    // Define the relationship with FlightRecord
-    public function flightRecords()
+    // Define the relationship with Flight
+    public function flights()
     {
-        return $this->hasMany(FlightRecord::class, 'peace_id', 'peace_id');
+        return $this->hasMany(Flight::class, 'peace_id', 'peace_id');
     }
     public function currentTier()
     {

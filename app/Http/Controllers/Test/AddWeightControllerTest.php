@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Test;
 
+use App\Models\Booking;
+use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
-use App\Models\InvoiceRecord;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SSR\AddSsrRequest;
 use App\Services\Soap\AddWeightBuilderTest;
@@ -109,6 +110,18 @@ class AddWeightControllerTest extends Controller
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
 
+        $user = $request->user();
+
+        $booking = $user ? Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first()
+        : Booking::where('booking_id', $bookingReferenceIDID)->where('last_name', $request->input('lastName'))->first();
+
+        if (!$booking) {
+            return response()->json([
+                "error" => true,
+                "message" => "you are not authorized to carry out this action"
+            ], 401);
+        }
+
         $xml = $this->addWeightBuilderTest->addWeightTest(
             $adviceCodeSegmentExist,
             $bookFlightSegmentListActionCode,
@@ -196,7 +209,7 @@ class AddWeightControllerTest extends Controller
             // dd($response);
             $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
-            $invoice = InvoiceRecord::find($invoiceId);
+            $invoice = Invoice::find($invoiceId);
 
             // if user has not paid set the new invoice balance else generate a new invoice
             
@@ -207,10 +220,8 @@ class AddWeightControllerTest extends Controller
                 $addedPrice = abs($addedPrice);
                 $invoice->amount = $amount;
                 
-            }
-
-            else { 
-                $invoice = InvoiceRecord::create([
+            } else { 
+                $invoice = Invoice::create([
                     'amount' => $amount,
                     'booking_id' => $bookingId
                 ]);
@@ -280,90 +291,6 @@ class AddWeightControllerTest extends Controller
             return response()->json([
                 'error' => $e->getMessage(),
                 "message" => $message
-        
-            ], 500);
-        }
-    }
-
-    public function addWeightArrayTest(AddSsrRequest $request, $invoiceId) {
-        $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
-        $airItinerary = $request->input('airItinerary');
-        $ancillaryRequestList = $request->input('ancillaryRequestList');   
-        $airTravelerList = $request->input('airTravelerList');
-        $bookingReferenceIDID = $request->input('bookingReferenceIDID');
-        $bookingReferenceID = $request->input('bookingReferenceID');
-
-        $xml = $this->addWeightBuilderTest->addWeightArrayTest(
-            $adviceCodeSegmentExist,
-            $airItinerary,
-            $airTravelerList,
-            $ancillaryRequestList,
-            $bookingReferenceIDID,
-            $bookingReferenceID
-        );
-        // dd($xml);
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
-
-        try {
-            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dump($response);
-            $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-            $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
-            $invoice = InvoiceRecord::find($invoiceId);
-
-            // if user has not paid set the new invoice balance else generate a new invoice
-            
-            $baggagePrice = 0;
-           
-            if (!$invoice->is_paid) {
-                $baggagePrice = $invoice->amount - $amount;
-                $baggagePrice = abs($baggagePrice);
-                $invoice->amount = $amount;
-                
-            }
-
-            else { 
-                $invoice = InvoiceRecord::create([
-                    'amount' => $amount,
-                    'booking_id' => $bookingId
-                ]);
-                $baggagePrice = $amount;
-            }
-            
-            $invoice->is_paid = false;
-            $invoice->save();
-
-            // Use preg_match to extract the number
-            
-            foreach ($ancillaryRequestList as $ancillaryRequest) {
-                $ssrExplanation = $ancillaryRequest['ssrExplanation'];
-                preg_match('/\d+/', $ssrExplanation, $matches);
-    
-                // $matches[0] will contain the number
-                $quantity = $matches[0];
-
-                InvoiceItem::create([
-                    'invoice_id' => $invoice->id,
-                    'product' => 'Baggages', // baggages or ticket shopping
-                    'quantity' => $quantity,
-                    // total_passengers => $totalPassengers  // this field would be removed
-                    'price' => $baggagePrice
-                ]);
-
-            }
-
-            return response()->json([
-                "error" => false,
-                "message" => "Baggages added successfully",
-                'invoice_id' => $invoice->id,
-                "amount" => $amount
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'response' => $response
         
             ], 500);
         }
@@ -456,6 +383,20 @@ class AddWeightControllerTest extends Controller
         
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
+
+        $user = $request->user();
+
+
+        $booking = $user ? Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first()
+        : Booking::where('booking_id', $bookingReferenceIDID)->where('last_name', $request->input('lastName'))->first();
+
+        if (!$booking) {
+            return response()->json([
+                "error" => true,
+                "message" => "you are not authorized to carry out this action"
+            ], 401);
+        }
+
 
         $xml = $this->addWeightBuilderTest->addWeightTest(
             $adviceCodeSegmentExist,

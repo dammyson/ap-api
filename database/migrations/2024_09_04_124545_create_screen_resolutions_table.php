@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('screen_resolutions', function (Blueprint $table) {
             $table->id();
-            $table->integer('number_of_users');
+            $table->unsignedBigInteger('user_id')->index();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('screen_resolution');
             $table->timestamps();
         });

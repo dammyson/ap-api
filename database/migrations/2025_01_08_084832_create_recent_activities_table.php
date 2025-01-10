@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('admins', function (Blueprint $table) {
-            $table->string('otp')->nullable();
-            $table->timestamp('otp_expires_at')->nullable();
+        Schema::create('recent_activities', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('description');
+            $table->timestamps();
         });
     }
 
@@ -22,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('admins', function (Blueprint $table) {
-            $table->dropColumn('otp');
-            $table->dropColumn('otp_expires_at');
-        });
+        Schema::dropIfExists('recent_activities');
     }
 };

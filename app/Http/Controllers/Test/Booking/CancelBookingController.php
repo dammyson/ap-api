@@ -51,7 +51,7 @@ class CancelBookingController extends Controller
                     "message" => "booking does not exist for this user"
                 ]);
             }
-            BookingRecord::where('booking_id', $ID)->update([
+            Booking::where('booking_id', $ID)->update([
                 'is_cancelled' => true
             ]);
 
@@ -66,7 +66,7 @@ class CancelBookingController extends Controller
                 return response()->json([
                     "error" => false,
                     "message" => "booking cancelled successfully"
-                ], 400);   
+                ], 200);   
             } 
 
 

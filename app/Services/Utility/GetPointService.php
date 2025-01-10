@@ -7,9 +7,10 @@ class GetPointService
 {
     protected $DomesticRoutes;
     protected $RegionRoutes;
+    protected $InternationalRoutes; // newly added
 
     public function __construct()
-    {
+    {       
 
         $this->DomesticRoutes = [
             'LOS-ABV-LOS', 'LOS-KAN-LOS', 'ABV-KAN-ABV', 'ABV-YOL-ABV',
@@ -35,6 +36,14 @@ class GetPointService
             'LOS-JED-LOS',
             'KAN-JED-KAN',
         ];
+
+        ////////
+        $this->InternationalRoutes = [
+            'LOS-LGW-LOS',
+            'LOS-JED-LOS',
+            'KAN-JED-KAN'
+        ];
+      
     }
 
     private function calculatePoints($route, $class, $routeList, $pointsList, $tierPointsList = null)
@@ -135,5 +144,68 @@ class GetPointService
             $this->getRegionalPoints(), 
             $includeTierPoints ? $this->getRegionalTierPoints() : null
         );
+    }
+
+    /////////////////////////////////////////
+    /////////////////////////////////////////
+    /////////////////////////////////////////
+    private function redeemDomesticFlight() {
+        return [
+            "Business" => 27000,
+            "Premium" => 18000,
+            "Economy" => 14000
+
+        ];        
+    }
+
+    private function redeemRegionalFlight() {
+        return [
+            "Business" => 70000,
+            "Premium" => 50000,
+            "Economy" => 35000
+        ];
+    }
+
+    private function redeemInternationalFlight() {
+        return [
+            "Business" => 130000,
+            "Premium" => 110000,
+            "Economy" => 90000
+        ];
+    }
+
+    private function calculateRedemptionFlightPoints($route, $class, $routeList, $pointsList) {
+        // get the string as reveresed
+        $routeReverse =  implode('-', array_reverse(explode('-', $route)));
+
+        $routeOptions = [$route, $routeReverse];
+        foreach ($routeOptions as $routeOption) {
+            foreach ($routeList as $defineRoute) {
+                if (strpos($routeOption, $defineRoute) !== false) {
+                    foreach ($pointsList as $flightClass => $points) {
+                        if ($class == $flightClass) {
+                            return [
+                                "class" => $class,
+                                "points" => $points
+                            ];
+                        }
+                    }
+                }            
+            }
+        }
+    }
+
+    public function getFlightRedemptionPoints($route, $class, $type) {
+        if ($type == "Domestic") {
+            return $this->calculateRedemptionFlightPoints($route, $class, $this->DomesticRoutes, $this->redeemDomesticFlight());
+            
+        } else if ($type == "Regional") {
+            return $this->calculateRedemptionFlightPoints($route, $class, $this->RegionRoutes, $this->redeemRegionalFlight());
+            
+        } else if ($type == "International") {
+            return $this->calculateRedemptionFlightPoints($route, $class, $this->InternationalRoutes, $this->redeemInternationalFlight());
+
+        }
+
     }
 }

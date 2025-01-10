@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\FlightRecord;
+use App\Models\Flight;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -26,8 +26,8 @@ class UserCollection extends ResourceCollection
                 "tier" => "null",
                 "status" => "null",
                 "last_login" => "null",
-                // "total_booked_flight" => $user->total_booked_flight ?? 0,
-                "total_booked_flight" => $this->getTotalBookedFlight($user->peace_id),
+                "total_booked_flight" => $user->total_booked_flight ?? 0,
+                // "total_booked_flight" => $this->getTotalBookedFlight($user->peace_id),
                 "date_registered" => $user->created_at,
                 "miles_accumulated" => "null",
                 "image_url" => $user->image_url,
@@ -36,10 +36,10 @@ class UserCollection extends ResourceCollection
         })->toArray();
     }
 
-    public function getTotalBookedFlight($peaceId) {
+    // public function getTotalBookedFlight($peaceId) {
 
-        $totalBookedFlight = FlightRecord::where("peace_id", $peaceId)->count();
-        // $totalBookedFlight = count($totalBookedFlight);
-        return $totalBookedFlight;
-    }
+    //     $totalBookedFlight = Flight::where("peace_id", $peaceId)->count();
+    //     // $totalBookedFlight = count($totalBookedFlight);
+    //     return $totalBookedFlight;
+    // }
 }

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\TeamMembersCollection;
 
 class TeamMembersAdminController extends Controller
@@ -31,16 +32,19 @@ class TeamMembersAdminController extends Controller
     public function deleteTeamMembers(Request $request, $teamMemberId) {
         
         try {
-            
-            $admin = $request->user('admin');
 
-            if ($admin->role  != 'Admin') {
-                return response()->json([
-                    "error" => true,
-                    "message" => "You do not have permission to view team members.
-                        Please contact your system administrator if you believe this is an error"
-                ], 403);
-            }
+            Gate::authorize('is-admin');
+
+            
+            // $admin = $request->user('admin');
+
+            // if ($admin->role  != 'Admin') {
+            //     return response()->json([
+            //         "error" => true,
+            //         "message" => "You do not have permission to view team members.
+            //             Please contact your system administrator if you believe this is an error"
+            //     ], 403);
+            // }
             
             $admin = Admin::find($teamMemberId);
             

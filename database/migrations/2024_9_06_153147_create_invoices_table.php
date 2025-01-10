@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('airports', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId("city_id")->nullable()->constrained()->nullOnDelete();
-            $table->string("name");
+        Schema::create('invoices', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('booking_id')->nullable();
+            $table->decimal('amount');
+            $table->boolean('is_paid')->default(false);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('airports');
+        Schema::dropIfExists('invoice_records');
     }
 };

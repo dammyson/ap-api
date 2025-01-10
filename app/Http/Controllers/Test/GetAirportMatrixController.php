@@ -24,6 +24,7 @@ class GetAirportMatrixController extends Controller
 
         try {
             $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
             if(!array_key_exists('AirPortMatrixResponse', $response)) {
                 return response()->json([
                     'error' => true,
@@ -38,34 +39,48 @@ class GetAirportMatrixController extends Controller
                 $originLocationCityName = $airportMatrix['origin']['city']['locationName'];
                 $originLocationCountryCode = $airportMatrix['origin']['country']['locationCode'];
                 $originLocationCountryName = $airportMatrix['origin']['country']['locationName'];
-            
-                $departureFlights = $airportMatrix['destinationList'];
-                $departureFlightArray = [];
 
-                if (array_key_exists('city', $departureFlights)) {
-                    $departureCityLocationCode = $departureFlights['city']['locationCode'];
-                    $departureCityLocationName = $departureFlights['city']['locationName'];
-                    $departureCountryLocationCode = $departureFlights['country']['locationCode'];
-                    $departureCountryLocationName = $departureFlights['country']['locationName'];
+                $originPortLocationCode = $airportMatrix['origin']['port']['locationCode'];
+                $originPortLocationNameLanguage= $airportMatrix['origin']['port']['locationName'];
+             
+                $destinationFlights = $airportMatrix['destinationList'];
+                $destinationFlightArray = [];
+                // $count = 0;
+
+                if (array_key_exists('city', $destinationFlights)) {
+                    $destinationCityLocationCode = $destinationFlights['city']['locationCode'];
+                    $destinationCityLocationName = $destinationFlights['city']['locationName'];
+                    $destinationCountryLocationCode = $destinationFlights['country']['locationCode'];
+                    $destinationCountryLocationName = $destinationFlights['country']['locationName'];
+                    $destinationPortLocationCode = $destinationFlights['port']['locationCode'];
+                    $destinationPortLocationName = $destinationFlights['port']['locationName'];
                     
-                    $departureFlightArray[] = [
-                        "departureCityLocationCode" => $departureCityLocationCode,
-                        "departureCityLocationName" => $departureCityLocationName,
-                        "departureCountryLocationCode" => $departureCountryLocationCode,
-                        "departureCountryLocationName" => $departureCountryLocationName
+                    // dd("I ran");
+                    $destinationFlightArray[] = [
+                        "destinationCityLocationCode" => $destinationCityLocationCode,
+                        "destinationCityLocationName" => $destinationCityLocationName,
+                        "destinationCountryLocationCode" => $destinationCountryLocationCode,
+                        "destinationCountryLocationName" => $destinationCountryLocationName,
+                        "destinationPortLocationCode" => $destinationPortLocationCode,
+                        "destinationPortLocationName" => $destinationPortLocationName
                     ];
                 } else  {
-                    foreach($departureFlights as $departureFlight) {
-                        $departureCityLocationCode = $departureFlight['city']['locationCode'];
-                        $departureCityLocationName = $departureFlight['city']['locationName'];
-                        $departureCountryLocationCode = $departureFlight['country']['locationCode'];
-                        $departureCountryLocationName = $departureFlight['country']['locationName'];
-                        
-                        $departureFlightArray[] = [
-                            "departureCityLocationCode" => $departureCityLocationCode,
-                            "departureCityLocationName" => $departureCityLocationName,
-                            "departureCountryLocationCode" => $departureCountryLocationCode,
-                            "departureCountryLocationName" => $departureCountryLocationName
+                    foreach($destinationFlights as $destinationFlight) {
+                        // dump("i ran");
+                        $destinationCityLocationCode = $destinationFlight['city']['locationCode'];
+                        $destinationCityLocationName = $destinationFlight['city']['locationName'];
+                        $destinationCountryLocationCode = $destinationFlight['country']['locationCode'];
+                        $destinationCountryLocationName = $destinationFlight['country']['locationName'];
+                        $destinationPortLocationCode = $destinationFlight['port']['locationCode'];
+                        $destinationPortLocationName = $destinationFlight['port']['locationName'];
+
+                        $destinationFlightArray[] = [
+                            "destinationCityLocationCode" => $destinationCityLocationCode,
+                            "destinationCityLocationName" => $destinationCityLocationName,
+                            "destinationCountryLocationCode" => $destinationCountryLocationCode,
+                            "destinationCountryLocationName" => $destinationCountryLocationName,
+                            "destinationPortLocationCode" => $destinationPortLocationCode,
+                            "destinationPortLocationName" => $destinationPortLocationName
                         ];
                     } 
                 }
@@ -76,7 +91,9 @@ class GetAirportMatrixController extends Controller
                         "originLocationCityName" => $originLocationCityName,
                         "originLocationCountryCode" => $originLocationCountryCode,
                         "originLocationCountryName" => $originLocationCountryName,
-                        "destinations" => $departureFlightArray
+                        "originPortLocationCode" => $originPortLocationCode,
+                        "originPortLocationNameLanguage" => $originPortLocationNameLanguage,
+                        "destinations" => $destinationFlightArray
                     ]                    
                 ];
 

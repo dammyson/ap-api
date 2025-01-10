@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Test;
 
 use Carbon\Carbon;
+use App\Models\Flight;
+use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
-use App\Models\FlightRecord;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Models\InvoiceRecord;
-use App\Models\TransactionRecord;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
 use App\Services\Soap\ReissuePnrTestBuilder;
@@ -192,7 +192,25 @@ class ReissuePNRController extends Controller
             $responseCodeTwo = $request->input('responseCodeTwo');
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
             $statusTwo = $request->input('statusTwo');
+            $lastName = $request->input('lastName');
 
+            $user = $request->user();
+
+            $booking = $user ? Booking::where('booking_id', $ID)->Where('peace_id', $user->peace_id)->first() 
+                : Booking::where('booking_id', $ID)->Where('last_name', $lastName)->first();
+            
+            // dd($booking);
+
+                
+            if (!$booking) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorised to carry out this action"
+                ], 401);
+            }
+                
+
+            // dd("stopped here");
 
             $xml = $this->reissusePNRBuilder->reissuePnr(
                 $ID, 
@@ -341,11 +359,14 @@ class ReissuePNRController extends Controller
             // dd($response);
             // check if response is true
             // check if invoice has been previously paid for
-            $invoice = new InvoiceRecord();
-            $invoice->booking_id = $ID;
-            $invoice->is_paid = false;
+            $invoice = Invoice::find($invoiceId);
+            if ($invoice->isPaid) {
+                // generate a new invoice if previous invoice has been paid for
+                $invoice = new Invoice();
+                $invoice->booking_id = $ID;
+                $invoice->is_paid = false;
 
-            $user = $request->user();
+            }
 
             $amount = $response["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
 
@@ -372,7 +393,7 @@ class ReissuePNRController extends Controller
 
                     $newTotalHours = $this->getFlightHours($newFlightDuration);
 
-                    FlightRecord::where('booking_id', $ID)->update([
+                    Flight::where('booking_id', $ID)->update([
                         "origin" => $newOrigin,
                         "destination" => $newDestination,
                         'arrival_time' => $arrival_time, 
@@ -403,7 +424,7 @@ class ReissuePNRController extends Controller
 
                 $newTotalHours = $this->getFlightHours($newFlightDuration);
 
-                FlightRecord::where('booking_id', $ID)->update([
+                Flight::where('booking_id', $ID)->update([
                     "origin" => $newOrigin,
                     "destination" => $newDestination,
                     'arrival_time' => $arrival_time, 
@@ -417,7 +438,7 @@ class ReissuePNRController extends Controller
                 ]);
             }           
 
-            $ticketCount = FlightRecord::where('booking_id', $ID)->count();
+            $ticketCount = Flight::where('booking_id', $ID)->count();
             // create invoice_items table
             InvoiceItem::create([
                 'invoice_id' => $invoice->id,
@@ -444,39 +465,6 @@ class ReissuePNRController extends Controller
 
     public function reissueTicketCommit (Request $request) {
         try {
-
-        
-            $paymentRef = $request->input('payment_ref');
-            $invoiceId = $request->input('invoiceId');
-
-            $invoice = InvoiceRecord::find($invoiceId);   
-            // dd($invoiceId);     
-            
-            //validate verifiedRequest;
-            $new_top_request = new VerificationService($paymentRef);
-            $verified_request = $new_top_request->run();
-            
-            $paidAmount = $verified_request["data"]["amount"] / 100;
-            if (!$paidAmount) {
-                return response()->json([
-                    "error" => "true",
-                    "message" => "payment verification failed"
-                ], 400);
-            }
-
-        
-            $invoiceAmount = $invoice->amount + 0;
-
-            if ($paidAmount < $invoiceAmount) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "paid amount {$paidAmount} is less than expected amount {$invoiceAmount}"
-
-                ], 400);
-            }
-
-            // dd($invoice->amount);
-            
             $ID = $request->input('ID');
             $referenceID = $request->input('referenceID');
             $bookingClassCabinOne = $request->input('bookingClassCabinOne');
@@ -615,7 +603,55 @@ class ReissuePNRController extends Controller
             $responseCodeTwo = $request->input('responseCodeTwo');
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
             $statusTwo = $request->input('statusTwo');
+            
+            
+            // dd(" I ran ");
 
+            $user = $request->user();
+
+            // $booking = $user ? Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->first()
+            // : Booking::where('booking_id', $ID)->where('last_name', $request->input('last_name'))->first();
+
+            // if (!$booking) {
+            //     return response()->json([
+            //         "error" => true,
+            //         "message" => "you are not authorized to carry out this action"
+            //     ], 401);
+            // }
+
+            $paymentRef = $request->input('payment_ref');
+            $invoiceId = $request->input('invoiceId');
+
+            $invoice = Invoice::find($invoiceId);   
+            // dd($invoiceId);     
+            
+            //validate verifiedRequest;
+            $new_top_request = new VerificationService($paymentRef);
+            $verified_request = $new_top_request->run();
+            $paidAmount = $verified_request["data"]["amount"] / 100;
+            // dd($paidAmount);
+            if (!$paidAmount) {
+                return response()->json([
+                    "error" => "true",
+                    "message" => "payment verification failed"
+                ], 400);
+            }
+
+        
+            $invoiceAmount = $invoice->amount + 0;
+
+            // dd($invoiceAmount);
+
+            if ($paidAmount < $invoiceAmount) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "paid amount {$paidAmount} is less than expected amount {$invoiceAmount}"
+
+                ], 400);
+            }
+
+            // dd($invoice->amount);
+            
 
             $xml = $this->reissusePNRBuilder->reissuePnrCommit(
                 $invoiceAmount,
@@ -759,14 +795,14 @@ class ReissuePNRController extends Controller
             );        
             $user = $request->user();
 
-            $deviceType = $user->device_type ?? "ANDROID";
+            // if there is no authenticated user, get the guest device_type
+            $deviceType = $user ? $user->device_type : $request->input('device_type');
         
-
-            $dayOfWeek = Carbon::now()->format('1');
             // dd($xml);
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrCommit';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
+            // dump($response);
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
 
 
@@ -785,46 +821,19 @@ class ReissuePNRController extends Controller
                     $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
                     $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
             
-                    TransactionRecord::firstOrCreate([
+                    Transaction::firstOrCreate([
                         "invoice_number" => $invoice_number,                        
                         'amount' => $amount,
                     ], [
                         'transaction_type' => $transactionType,
-                        'peace_id' => $user->peace_id,
                         'ticket_type' => 'ticket',
-                        'user_id' => $user->id,
+                        'user_id' => $user ? $user->id : null,
                         'invoice_id' => $invoice->id,
                         // 'device_type' => $userDevice->device_type,
                         'device_type' => $deviceType,
-                        'day_of_week' => $dayOfWeek
+                        'is_flight' => true
                     ]);
                 }
-            } else if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-                foreach($ticketItemList as $ticketItem) {
-                    $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
-                    $data["amount"][] = $soap_expected_amount; 
-
-                    $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
-                    $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                    $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                    
-                    $data = [];
-            
-                    TransactionRecord::firstOrCreate([
-                        "invoice_number" => $invoice_number,                        
-                        'amount' => $amount,
-                    ], [
-                        'transaction_type' => $transactionType,
-                        'peace_id' => $user->peace_id,
-                        'ticket_type' => 'ticket',
-                        'user_id' => $user->id,
-                        'invoice_id' => $invoice->id,
-                        // 'device_type' => $userDevice->device_type,
-                        'device_type' => $deviceType,
-                        'day_of_week' => $dayOfWeek
-                    ]);
-                }
-
             } else {
                 $soap_expected_amount = $ticketItemList["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
                 $data["amount"][] = $soap_expected_amount; 
@@ -835,20 +844,47 @@ class ReissuePNRController extends Controller
                 
                 $data = [];
         
-                TransactionRecord::firstOrCreate([
+                Transaction::firstOrCreate([
                     "invoice_number" => $invoice_number,                        
                     'amount' => $amount,
                 ], [
                     'transaction_type' => $transactionType,
-                    'peace_id' => $user->peace_id,
                     'ticket_type' => 'ticket',
-                    'user_id' => $user->id,
+                    'user_id' => $user ? $user->id : null,
                     'invoice_id' => $invoice->id,
-                    // 'device_type' => $userDevice->device_type,
                     'device_type' => $deviceType,
-                    'day_of_week' => $dayOfWeek
+                    'is_flight' => true
+                    
                 ]);
             }
+            
+            // else if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+            //     foreach($ticketItemList as $ticketItem) {
+            //         $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
+            //         $data["amount"][] = $soap_expected_amount; 
+
+            //         $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
+            //         $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+            //         $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                    
+            //         $data = [];
+            
+            //         Transaction::firstOrCreate([
+            //             "invoice_number" => $invoice_number,                        
+            //             'amount' => $amount,
+            //         ], [
+            //             'transaction_type' => $transactionType,
+            //             'ticket_type' => 'ticket',
+            //             'user_id' =>  $user ? $user->id : null,
+            //             'invoice_id' => $invoice->id,
+            //             // 'device_type' => $userDevice->device_type,
+            //             'device_type' => $deviceType,
+            //             'is_flight' => true
+                        
+            //         ]);
+            //     }
+
+            // }
             // $soap_amount = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"][0]["pricingOverview"]["totalAmount"]["value"];
             
             return response()->json([

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Transaction\Transactions;
 use App\Services\Ticket\PassengerTicketService;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        Gate::define('is-admin', function(Admin $admin) {
+            return $admin->role == 'admin';
+        });
+
+        
+        
         Admin::observe(AdminObserver::class);
 
         

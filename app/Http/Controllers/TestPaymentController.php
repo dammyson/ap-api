@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Tier;
 use App\Models\Wallet;
+use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Models\InvoiceRecord;
-use App\Models\TransactionRecord;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Wallet\TopUpService;
@@ -45,9 +45,9 @@ class TestPaymentController extends Controller
             // convert to naira (from kobo)
             $amount = $amount / 100;
 
-            return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
-            // dd()
-            // return response()->json(['status' => true, 'data' =>  $top_up_result, 'message' => 'Wallet top up successfully'], 200);
+            // return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
+            return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId, 'Android');
+        
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
         
@@ -55,7 +55,7 @@ class TestPaymentController extends Controller
         }
     }
 
-    public function verfiyTierRef(Request $request) {
+    public function verifyTierRef(Request $request) {
         try {
             $request->validate([
                 'ref_id' => 'required|string'
@@ -74,7 +74,7 @@ class TestPaymentController extends Controller
             $paidAmount = $paidAmount / 100;
           
             // create invoice table   // add booking_id
-            $invoice = InvoiceRecord::create([
+            $invoice = Invoice::create([
                 'amount' => $paidAmount,
                 'booking_id' => "not applicable",
                 'is_paid' => true
@@ -115,7 +115,7 @@ class TestPaymentController extends Controller
             } else {
                 $dayOfWeek = Carbon::now()->format('1');
             
-                TransactionRecord::create([
+                Transaction::create([
                     "invoice_number" => "not applicable",                        
                     'amount' => $paidAmount,
                     'transaction_type' => "tier purchase",

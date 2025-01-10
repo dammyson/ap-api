@@ -6,7 +6,6 @@ use App\Models\Flight;
 use App\Models\SpecialDeal;
 use App\Models\ExcitingCity;
 use App\Models\FeaturedTrip;
-use App\Models\FlightRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\FavoriteCityEvent;
@@ -75,7 +74,7 @@ class TripController extends Controller
         $user = $request->user();
 
         try {
-            $flightCities = FlightRecord::where('user_id', $user->id)
+            $flightCities = Flight::where('user_id', $user->id)
                 ->groupBy('destination')->take(5)->get();
     
             $favoriteCitiesEvents = [];
@@ -102,14 +101,14 @@ class TripController extends Controller
         try {
             $user = $request->user();
             
-            $totalFlightCount = FlightRecord::where('peace_id', $user->peace_id)->count();
+            $totalFlightCount = Flight::where('peace_id', $user->peace_id)->count();
 
-            // $flightRecord = FlightRecord::where('peace_id', $user->peace_id)
+            // $flight = Flight::where('peace_id', $user->peace_id)
             //     ->groupBy('destination')->sortBy('desc')->select('destination')->take(7)->get();
     
-            // $totalFlightCount = $totalFlightRecord->count();
+            // $totalFlightCount = $totalFlight->count();
 
-            $destinations = FlightRecord::where('peace_id', $user->peace_id)
+            $destinations = Flight::where('peace_id', $user->peace_id)
                 ->select('destination', DB::raw('count(*) as count'))                
                 ->groupBy('destination')->get()
                 ->map(function($destination) use($totalFlightCount) {
@@ -120,7 +119,7 @@ class TripController extends Controller
                        
             return response()->json([
                 'error' => false,
-                // 'flightRecord' => $flightRecord,
+                // 'flight' => $flight,
                 // 'total_flight_count' => $totalFlightCount,
                 'destinations' => $destinations
             ], 200);
@@ -139,7 +138,7 @@ class TripController extends Controller
         try {
             $user = $request->user();
 
-            $flightRecords = FlightRecord::where('peace_id', $user->peace_id)                                
+            $flights = Flight::where('peace_id', $user->peace_id)                                
                 ->select(
                     DB::raw('YEAR(departure_time) as year'), 
                     DB::raw('MONTH(departure_time) as month'),
@@ -151,9 +150,9 @@ class TripController extends Controller
                 ->get();
             
             $data = [];
-            foreach($flightRecords as $flightRecord) {
-                $year = $flightRecord->year;
-                $month = Carbon::create($flightRecord->month)->format('F');
+            foreach($flights as $flight) {
+                $year = $flight->year;
+                $month = Carbon::create($flight->month)->format('F');
 
                 if (!isset($data[$year])) {
                     $data[$year]['months'] = [];
@@ -161,15 +160,15 @@ class TripController extends Controller
                 }
 
                 // $data[$year]['labels'][] = $month;
-                $data[$year]['months'][$month]['count'] = $flightRecord->count;
-                // $data[$month]['counts'][] = $flightRecord->count;
+                $data[$year]['months'][$month]['count'] = $flight->count;
+                // $data[$month]['counts'][] = $flight->count;
 
             }
                 
     
             return response()->json([
                 'error' => false,
-                'flight_record' => $data
+                'flight' => $data
                 // 'busy_month_chart_data' => $busyMonthChartData
             ], 200);
 
@@ -195,7 +194,7 @@ class TripController extends Controller
 
         $data = [];
         foreach($ranges as $range => [$min, $max]) {
-            $numOfFlights = FlightRecord::where('peace_id', $user->peace_id)
+            $numOfFlights = Flight::where('peace_id', $user->peace_id)
                 ->whereBetween(DB::raw('CAST(flight_duration AS DECIMAL(5,2))'), [$min, $max])->count();
             
             $data[$range] = $numOfFlights;
@@ -211,7 +210,7 @@ class TripController extends Controller
         $user = $request->user();
 
         try {
-            $listOfCountries = FlightRecord::where('peace_id', $user->peace_id)->select('origin', 'destination')->get();
+            $listOfCountries = Flight::where('peace_id', $user->peace_id)->select('origin', 'destination')->get();
             
             return response()->json([
                 'error' => false,

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\FlightRecord;
+use App\Models\Flight;
 use App\Models\ReferralActivity;
-use App\Models\TransactionRecord;
+use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +18,7 @@ class AnalyticsUserController extends Controller
             
             $user = $request->user();
 
-            $flightsCount = FlightRecord::where('peace_id', $user->peace_id)
+            $flightsCount = Flight::where('peace_id', $user->peace_id)
                 ->where('passenger_name', $user->user_name)->count();
 
             return response()->json([
@@ -71,7 +71,7 @@ class AnalyticsUserController extends Controller
 
             $user = $request->user();
 
-            $numberOfCountriesVisited = FlightRecord::where('peace_id', $user->peace_id)->distinct('destination')->count();
+            $numberOfCountriesVisited = Flight::where('peace_id', $user->peace_id)->distinct('destination')->count();
 
             return response()->json([
                 "error" => false,
@@ -91,7 +91,7 @@ class AnalyticsUserController extends Controller
         try {
             $user = $request->user();
 
-            $totalFlightDistance = FlightRecord::where('peace_id', $user->peace_id)
+            $totalFlightDistance = Flight::where('peace_id', $user->peace_id)
                 ->sum('flight_distance');
 
             return response()->json([
@@ -113,7 +113,7 @@ class AnalyticsUserController extends Controller
 
         try {
 
-            $userTickets = TransactionRecord::where('peace_id', $user->peace_id)
+            $userTickets = Transaction::where('peace_id', $user->peace_id)
                 ->whereYear('created_at', $year)
                 ->where('ticket_type', 'ticket')
                 ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('COUNT(*) as total_count'))
@@ -167,10 +167,42 @@ class AnalyticsUserController extends Controller
         $user = $request->user();
 
         try {
-            $tripHistory = FlightRecord::where('departure_time', '<=', Carbon::now()->toIso8601String())
+            $tripHistory = Flight::where('departure_time', '<=', Carbon::now()->toIso8601String())
                 ->where('peace_id', $user->peace_id)
                 // ->where('is_paid', true)
                 ->get();
+    
+            return response()->json([
+                "error" => false,
+                "trip_history" => $tripHistory
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                "error" => true,
+                "message" => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function guestTripHistory(Request $request) {
+        $user = $request->user();
+
+        try {
+
+            if ($user) {
+                $tripHistory = Flight::where('departure_time', '<=', Carbon::now()->toIso8601String())
+                    ->where('peace_id', $user->peace_id)
+                    // ->where('is_paid', true)
+                    ->get();
+            } else {
+                $guestToken = $request->session()->get('guest_session_token');
+
+               $tripHistory = Flight::where('departure_time', '<=', Carbon::now()->toIso8601String())
+                ->where('guest_session_token', $guestToken)
+                // ->where('is_paid', true)
+                ->get();
+            }
     
             return response()->json([
                 "error" => false,
@@ -191,13 +223,13 @@ class AnalyticsUserController extends Controller
         try {
 
             // get the unpaid upcoming trip where the payment time has not expired
-            $unPaidUpcomingTrip = FlightRecord::where('peace_id', $user->peace_id)
+            $unPaidUpcomingTrip = Flight::where('peace_id', $user->peace_id)
                 // ->where('is_paid', false)
                 ->where('payment_expires_at', '<', Carbon::now()->toIso8601String())
                 ->get();
 
             //get the paid upcoming trip using departure time    
-            $paidUpcomingTrip = FlightRecord::where('peace_id', $user->peace_id)
+            $paidUpcomingTrip = Flight::where('peace_id', $user->peace_id)
                 // ->where('is_paid', true)
                 ->where('departure_time', '>', Carbon::now()->toIso8601String())
                 ->get();
@@ -219,9 +251,63 @@ class AnalyticsUserController extends Controller
         }
     }
 
+    public function guestUpcomingTrips(Request $request) {
+        $user = $request->user();
+
+        try {
+
+            // get the unpaid upcoming trip where the payment time has not expired
+            if ($user) {
+                $unPaidUpcomingTrip = Flight::where('peace_id', $user->peace_id)
+                    // ->where('is_paid', false)
+                    ->where('payment_expires_at', '<', Carbon::now()->toIso8601String())
+                    ->get();
+    
+                //get the paid upcoming trip using departure time    
+                $paidUpcomingTrip = Flight::where('peace_id', $user->peace_id)
+                    // ->where('is_paid', true)
+                    ->where('departure_time', '>', Carbon::now()->toIso8601String())
+                    ->get();
+                
+                $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
+
+            } else {
+                $guestToken = $request->session()->get('guest_session_token');
+                $guestToken = $request->input('guest_session_token');
+                // dd($guestToken);
+
+                $unPaidUpcomingTrip = Flight::where('guest_session_token', $guestToken)
+                    // ->where('is_paid', false)
+                    ->where('payment_expires_at', '<', Carbon::now()->toIso8601String())
+                    ->get();
+    
+                //get the paid upcoming trip using departure time    
+                $paidUpcomingTrip = Flight::where('guest_session_token', $guestToken)
+                    // ->where('is_paid', true)
+                    ->where('departure_time', '>', Carbon::now()->toIso8601String())
+                    ->get();
+                
+                $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
+            }
+
+            
+    
+            return response()->json([
+                "error" => false,
+                "upcoming_trip" => $upComingTrip
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                "error" => true,
+                "message" => $th->getMessage()
+            ]);
+        }
+    }
+
     // public function deleteFlight() {
-    //     $flightRecord = FlightRecord::find(135);
-    //     $flightRecord->delete();
+    //     $Flight = Flight::find(135);
+    //     $Flight->delete();
 
     //     response()->json([
     //         'error' => false,
