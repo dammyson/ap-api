@@ -212,8 +212,6 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-            Route::post('/view-only-rt', [TicketReservationController::class, 'ticketReservationViewOnlyRT']);
-            Route::post('/view-only-two-a', [TicketReservationController::class, 'ticketReservationViewOnlyTwoA']);
             Route::post('/commit-two-a', [TicketReservationController::class, 'ticktReservationCommitTwoA']);
             Route::post('/commit/invoice/{invoiceId}', [TicketReservationController::class, 'ticketReservationCommit']);
             Route::post('/commit-test', [TicketReservationController::class, 'testTicketReservationCommit']);

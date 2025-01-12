@@ -354,7 +354,7 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            //    dd($response);
+               dump($response);
 
             if (!array_key_exists('AirBookingResponse', $response)) {
                 return response()->json([
@@ -642,7 +642,7 @@ class CreateBookingController extends Controller
         $route = $request->input('route');
         $class = $request->input('class');
         $type  = $request->input('type'); // domestic, regional, international
-
+        $noOfPassengers = $request->input('passenger_length');
         // we should be able to retrieve the booking id and reference using the Booking model
         $bookingId = $request->input('booking_id');
         $bookingReferenceID = $request->input('booking_reference_id');
@@ -651,9 +651,10 @@ class CreateBookingController extends Controller
 
         [$flightClass, $redemptionPoint] = $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
         
+        $totalRedemptionPoint = $redemptionPoint * $noOfPassengers; 
         $peacePoint = $user->peace_point;
 
-        if ($peacePoint < $redemptionPoint) {
+        if ($peacePoint < $totalRedemptionPoint) {
             return response()->json([
                 "error" => true,
                 "message" => "insufficient point"
@@ -669,11 +670,45 @@ class CreateBookingController extends Controller
         
         $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
         
+
         //substract base fare from expected amount to know how much the user is felt to pay
         $baseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-        $amountRemaining = $expectedAmount - $baseFare;
         $peacePointBalance = $peacePoint - $redemptionPoint;
+
+       
+       $ticketItemList = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'];
+        
+       $baseFare = 0;
+      
+       if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+            if ($this->checkArray->isAssociativeArray($ticketItemList['couponInfoList'])) {
+                $baseFare = $ticketItemList['couponInfoList']['pricingInfo']['baseFare']['amount']['value'];
+
+            } else {
+                foreach($ticketItemList['couponInfoList'] as $couponInfoList) {
+                    $baseFare += $couponInfoList['pricingInfo']['baseFare']['amount']['value'];
+
+                }
+            }
+
+       } else {
+           foreach($ticketItemList as $ticketItem) {
+                if ($this->checkArray->isAssociativeArray($ticketItem['couponInfoList'])) {
+                    $baseFare += $ticketItem['couponInfoList']['pricingInfo']['baseFare']['amount']['value'];
+                } else {
+                    foreach($ticketItem['couponInfoList'] as $couponInfoList) {
+                        $baseFare += $couponInfoList['pricingInfo']['baseFare']['amount']['value'];
+                    }
+                }
+            }
+
+       }
+
+       $amountRemaining = $expectedAmount - $baseFare;
+
+    //    $totatBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingInfo']['equivBaseFare']['value'];
+    //    $totalBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingOverview']['totalBaseFare']['value'];
 
         $invoice = new Invoice();
 
