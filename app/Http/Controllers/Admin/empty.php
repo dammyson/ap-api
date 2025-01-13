@@ -1,10 +1,8 @@
 <?php
-['pricingInfo']['baseFare']['amount']['value'];
 
-
-array:1 [ // app\Http\Controllers\CreateBookingController.php:357
+array:1 [ // app/Http/Controllers/Test/Booking/BookingRequestController.php:180
   "AirBookingResponse" => array:1 [
-    "airBookingList" => array:2 [
+    "airBookingList" => array:1 [
       "airReservation" => array:18 [
         "airItinerary" => array:2 [
           "adviceCodeSegmentExist" => "false"
@@ -15,28 +13,28 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "addOnSegment" => "false"
                 "bookingClass" => array:3 [
                   "cabin" => "ECONOMY"
-                  "resBookDesigCode" => "K"
+                  "resBookDesigCode" => "V"
                   "resBookDesigQuantity" => "0"
                 ]
                 "fareInfo" => array:9 [
                   "cabin" => "ECONOMY"
                   "cabinClassCode" => "Y"
                   "fareBaggageAllowance" => array:3 [
-                    "allowanceType" => "PIECE"
-                    "maxAllowedPieces" => "2"
+                    "allowanceType" => "WEIGHT"
+                    "maxAllowedPieces" => "0"
                     "maxAllowedWeight" => array:2 [
                       "unitOfMeasureCode" => "KG"
-                      "weight" => "23"
+                      "weight" => "15"
                     ]
                   ]
-                  "fareGroupName" => "Eco Non Flexi LGW"
-                  "fareReferenceCode" => "KOW7"
-                  "fareReferenceID" => "0fe4769c86de12c1be1d8b3d18fd7120e1ac9b4adc1fd51ccd82bc50f45df2500d7f221040d9fb8ec006bd5ec31f17b02a2479a5457baffad50267bf9c811d4c126c302a1a5ab469df383828202f1fe576c5fbbec36ed3dcee0683"
-                  "fareReferenceName" => "KOW7LGW"
+                  "fareGroupName" => "Eco Non Flexi Dom"
+                  "fareReferenceCode" => "VRTN"
+                  "fareReferenceID" => "0fe3789a8fde12c1be1d8b3d18fd7120e1ac9b4adc1fd51dcc88b755f654fd510d7f224241d5f8dfc65cec56c24c40b27b7d2ca7142cf4f5d15060ee97854a4f103960271e55e2328f393e21ffea9610575a1b047e256a2ec32f11"
+                  "fareReferenceName" => "VRTNIG"
                   "flightSegmentSequence" => "0"
-                  "resBookDesigCode" => "K"
+                  "resBookDesigCode" => "V"
                 ]
-                "flightSegment" => array:25 [
+                "flightSegment" => array:26 [
                   "airline" => array:2 [
                     "code" => "P4"
                     "codeContext" => "IATA"
@@ -44,27 +42,27 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                   "arrivalAirport" => array:6 [
                     "cityInfo" => array:2 [
                       "city" => array:3 [
-                        "locationCode" => "LON"
-                        "locationName" => "London"
+                        "locationCode" => "ENU"
+                        "locationName" => "Enugu"
                         "locationNameLanguage" => "EN"
                       ]
                       "country" => array:4 [
-                        "locationCode" => "GB"
-                        "locationName" => "United Kingdom"
+                        "locationCode" => "NG"
+                        "locationName" => "Nigeria"
                         "locationNameLanguage" => "EN"
                         "currency" => array:1 [
-                          "code" => "GBP"
+                          "code" => "NGN"
                         ]
                       ]
                     ]
                     "codeContext" => "IATA"
                     "language" => "EN"
-                    "locationCode" => "LGW"
-                    "locationName" => "GATWICK"
-                    "timeZoneInfo" => "Europe/London"
+                    "locationCode" => "ENU"
+                    "locationName" => "Enugu"
+                    "timeZoneInfo" => "Africa/Lagos"
                   ]
-                  "arrivalDateTime" => "2025-01-15T15:30:00+01:00"
-                  "arrivalDateTimeUTC" => "2025-01-15T15:30:00+01:00"
+                  "arrivalDateTime" => "2025-01-30T08:00:00+01:00"
+                  "arrivalDateTimeUTC" => "2025-01-30T07:00:00+01:00"
                   "departureAirport" => array:6 [
                     "cityInfo" => array:2 [
                       "city" => array:3 [
@@ -87,17 +85,17 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                     "locationName" => "Lagos"
                     "timeZoneInfo" => "Africa/Lagos"
                   ]
-                  "departureDateTime" => "2025-01-15T13:30:00+01:00"
-                  "departureDateTimeUTC" => "2025-01-15T12:30:00+01:00"
-                  "flightNumber" => "7983"
-                  "flightSegmentID" => "1152774"
+                  "departureDateTime" => "2025-01-30T06:50:00+01:00"
+                  "departureDateTimeUTC" => "2025-01-30T05:50:00+01:00"
+                  "flightNumber" => "7100"
+                  "flightSegmentID" => "1146864"
                   "ondControlled" => "false"
-                  "sector" => "INTERNATIONAL"
+                  "sector" => "DOMESTIC"
                   "accumulatedDuration" => ""
                   "codeshare" => "false"
-                  "distance" => "0"
+                  "distance" => "469"
                   "equipment" => array:2 [
-                    "airEquipType" => "B777BUU-12C/42P/310Y"
+                    "airEquipType" => "ERJ195-12C/112Y"
                     "changeofGauge" => "false"
                   ]
                   "flightNotes" => array:3 [
@@ -108,8 +106,9 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                   "flownMileageQty" => "0"
                   "groundDuration" => ""
                   "iatciFlight" => "false"
-                  "journeyDuration" => "PT3H"
+                  "journeyDuration" => "PT1H10M"
                   "onTimeRate" => "0"
+                  "remark" => "Departs From MM1 Zulu Terminal, GAT (Old Domestic)"
                   "secureFlightDataRequired" => "true"
                   "segmentStatusByFirstLeg" => "RZ"
                   "stopQuantity" => "0"
@@ -120,7 +119,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 ]
                 "involuntaryPermissionGiven" => "false"
                 "legStatus" => "RZ"
-                "referenceID" => "15865831"
+                "referenceID" => "15865841"
                 "responseCode" => "HK"
                 "sequenceNumber" => "0"
                 "status" => "HK"
@@ -195,7 +194,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
           ]
           "requestedSeatCount" => "1"
           "shareMarketInd" => "false"
-          "travelerReferenceID" => "16007903"
+          "travelerReferenceID" => "16007918"
           "unaccompaniedMinor" => "false"
         ]
         "arrangerInfo" => array:8 [
@@ -233,11 +232,11 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
             "companyShortName" => "SCINTILLA"
             "countryCode" => "NG"
           ]
-          "ID" => "12CU2U"
-          "referenceID" => "13442267"
+          "ID" => "12CU38"
+          "referenceID" => "13442276"
         ]
         "bookingType" => "R"
-        "dateCreated" => "2025-01-12T11:53:27+01:00"
+        "dateCreated" => "2025-01-13T11:20:34+01:00"
         "emergencyContactRequired" => "false"
         "FFPReservation" => "false"
         "groupBooking" => "false"
@@ -255,7 +254,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "allowedQuantityPerPassenger" => "1"
                 "bundleRelatedSsr" => "false"
                 "code" => "CTCM"
-                "entryDate" => "2025-01-12T11:53:27+01:00"
+                "entryDate" => "2025-01-13T11:20:34+01:00"
                 "exchangeable" => "false"
                 "explanation" => "90 532 1111111"
                 "extraBaggage" => "false"
@@ -269,7 +268,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "unitOfMeasureExist" => "false"
               ]
               "serviceQuantity" => "1"
-              "specialServiceReferenceId" => "30456837"
+              "specialServiceReferenceId" => "30456898"
               "status" => "HK"
               "ticketed" => "false"
             ]
@@ -281,7 +280,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "allowedQuantityPerPassenger" => "1"
                 "bundleRelatedSsr" => "false"
                 "code" => "CTCE"
-                "entryDate" => "2025-01-12T11:53:27+01:00"
+                "entryDate" => "2025-01-13T11:20:34+01:00"
                 "exchangeable" => "false"
                 "explanation" => "AAA.TEST@HITITCS.COM"
                 "extraBaggage" => "false"
@@ -295,7 +294,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "unitOfMeasureExist" => "false"
               ]
               "serviceQuantity" => "1"
-              "specialServiceReferenceId" => "30456838"
+              "specialServiceReferenceId" => "30456899"
               "status" => "HK"
               "ticketed" => "false"
             ]
@@ -307,7 +306,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "allowedQuantityPerPassenger" => "0"
                 "bundleRelatedSsr" => "false"
                 "code" => "DOCS"
-                "entryDate" => "2025-01-12T11:53:27+01:00"
+                "entryDate" => "2025-01-13T11:20:35+01:00"
                 "exchangeable" => "false"
                 "explanation" => "/////08AUG91/M//TEST/AAA"
                 "extraBaggage" => "false"
@@ -321,7 +320,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "unitOfMeasureExist" => "false"
               ]
               "serviceQuantity" => "1"
-              "specialServiceReferenceId" => "30456839"
+              "specialServiceReferenceId" => "30456900"
               "status" => "HK"
               "ticketed" => "false"
             ]
@@ -333,7 +332,7 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "allowedQuantityPerPassenger" => "0"
                 "bundleRelatedSsr" => "false"
                 "code" => "CCSF"
-                "entryDate" => "2025-01-12T11:53:27+01:00"
+                "entryDate" => "2025-01-13T11:20:35+01:00"
                 "exchangeable" => "false"
                 "explanation" => "CALL CENTER - SERVICE CHARGE"
                 "extraBaggage" => "false"
@@ -347,410 +346,16 @@ array:1 [ // app\Http\Controllers\CreateBookingController.php:357
                 "unitOfMeasureExist" => "false"
               ]
               "serviceQuantity" => "1"
-              "specialServiceReferenceId" => "30456840"
+              "specialServiceReferenceId" => "30456901"
               "status" => "HK"
               "ticketed" => "false"
             ]
           ]
         ]
         "ticketOnDeparture" => "false"
-        "ticketTimeLimit" => "2025-01-12T12:03:27+01:00"
-        "ticketTimeLimitUTC" => "2025-01-12T11:03:27+01:00"
+        "ticketTimeLimit" => "2025-01-13T11:36:24+01:00"
+        "ticketTimeLimitUTC" => "2025-01-13T10:36:24+01:00"
         "timeZone" => "Africa/Lagos"
-      ]
-      "ticketInfo" => array:3 [
-        "pricingType" => "SELL"
-        "ticketItemList" => array:9 [
-          "airTraveler" => array:13 [
-            "accompaniedByInfant" => "false"
-            "birthDate" => "1991-08-08T00:00:00+01:00"
-            "companyInfo" => ""
-            "gender" => "M"
-            "hasStrecher" => "false"
-            "parentSequence" => "-1"
-            "passengerTypeCode" => "ADLT"
-            "personName" => array:4 [
-              "givenName" => "AAA"
-              "nameTitle" => "MR"
-              "shareMarketInd" => "false"
-              "surname" => "TEST"
-            ]
-            "personNameEN" => array:4 [
-              "givenName" => "AAA"
-              "nameTitle" => "MR"
-              "shareMarketInd" => "false"
-              "surname" => "TEST"
-            ]
-            "requestedSeatCount" => "1"
-            "shareMarketInd" => "false"
-            "travelerReferenceID" => "16007903"
-            "unaccompaniedMinor" => "false"
-          ]
-          "couponInfoList" => array:5 [
-            "airTraveler" => array:13 [
-              "accompaniedByInfant" => "false"
-              "birthDate" => "1991-08-08T00:00:00+01:00"
-              "companyInfo" => ""
-              "gender" => "M"
-              "hasStrecher" => "false"
-              "parentSequence" => "-1"
-              "passengerTypeCode" => "ADLT"
-              "personName" => array:4 [
-                "givenName" => "AAA"
-                "nameTitle" => "MR"
-                "shareMarketInd" => "false"
-                "surname" => "TEST"
-              ]
-              "personNameEN" => array:4 [
-                "givenName" => "AAA"
-                "nameTitle" => "MR"
-                "shareMarketInd" => "false"
-                "surname" => "TEST"
-              ]
-              "requestedSeatCount" => "1"
-              "shareMarketInd" => "false"
-              "travelerReferenceID" => "16007903"
-              "unaccompaniedMinor" => "false"
-            ]
-            "consumedAtIssuence" => "false"
-            "couponFlightSegment" => array:11 [
-              "actionCode" => "HK"
-              "addOnSegment" => "false"
-              "bookingClass" => array:3 [
-                "cabin" => "ECONOMY"
-                "resBookDesigCode" => "K"
-                "resBookDesigQuantity" => "0"
-              ]
-              "fareInfo" => array:9 [
-                "cabin" => "ECONOMY"
-                "cabinClassCode" => "Y"
-                "fareBaggageAllowance" => array:3 [
-                  "allowanceType" => "PIECE"
-                  "maxAllowedPieces" => "2"
-                  "maxAllowedWeight" => array:2 [
-                    "unitOfMeasureCode" => "KG"
-                    "weight" => "23"
-                  ]
-                ]
-                "fareGroupName" => "Eco Non Flexi LGW"
-                "fareReferenceCode" => "KOW7"
-                "fareReferenceID" => "0fe4769c86de12c1be1d8b3d18fd7120e1ac9b4adc1fd51ccd82bc50f45df65d0d7f221040d9fb8ec006bd5ec31f17b02a2479a5457baffad50267bf9c811d4c126c302a1a5ab469df38384c3ee5e93eeea296a2c7b0c4e38917ab"
-                "fareReferenceName" => "KOW7LGW"
-                "flightSegmentSequence" => "0"
-                "resBookDesigCode" => "K"
-              ]
-              "flightSegment" => array:25 [
-                "airline" => array:2 [
-                  "code" => "P4"
-                  "codeContext" => "IATA"
-                ]
-                "arrivalAirport" => array:6 [
-                  "cityInfo" => array:2 [
-                    "city" => array:3 [
-                      "locationCode" => "LON"
-                      "locationName" => "London"
-                      "locationNameLanguage" => "EN"
-                    ]
-                    "country" => array:4 [
-                      "locationCode" => "GB"
-                      "locationName" => "United Kingdom"
-                      "locationNameLanguage" => "EN"
-                      "currency" => array:1 [
-                        "code" => "GBP"
-                      ]
-                    ]
-                  ]
-                  "codeContext" => "IATA"
-                  "language" => "EN"
-                  "locationCode" => "LGW"
-                  "locationName" => "GATWICK"
-                  "timeZoneInfo" => "Europe/London"
-                ]
-                "arrivalDateTime" => "2025-01-15T15:30:00+01:00"
-                "arrivalDateTimeUTC" => "2025-01-15T15:30:00+01:00"
-                "departureAirport" => array:6 [
-                  "cityInfo" => array:2 [
-                    "city" => array:3 [
-                      "locationCode" => "LOS"
-                      "locationName" => "Lagos"
-                      "locationNameLanguage" => "EN"
-                    ]
-                    "country" => array:4 [
-                      "locationCode" => "NG"
-                      "locationName" => "Nigeria"
-                      "locationNameLanguage" => "EN"
-                      "currency" => array:1 [
-                        "code" => "NGN"
-                      ]
-                    ]
-                  ]
-                  "codeContext" => "IATA"
-                  "language" => "EN"
-                  "locationCode" => "LOS"
-                  "locationName" => "Lagos"
-                  "timeZoneInfo" => "Africa/Lagos"
-                ]
-                "departureDateTime" => "2025-01-15T13:30:00+01:00"
-                "departureDateTimeUTC" => "2025-01-15T12:30:00+01:00"
-                "flightNumber" => "7983"
-                "flightSegmentID" => "1152774"
-                "ondControlled" => "false"
-                "sector" => "INTERNATIONAL"
-                "accumulatedDuration" => ""
-                "codeshare" => "false"
-                "distance" => "0"
-                "equipment" => array:2 [
-                  "airEquipType" => "B777BUU-12C/42P/310Y"
-                  "changeofGauge" => "false"
-                ]
-                "flightNotes" => array:3 [
-                  "deiCode" => "504"
-                  "explanation" => "Secure Flight Info"
-                  "note" => "T"
-                ]
-                "flownMileageQty" => "0"
-                "groundDuration" => ""
-                "iatciFlight" => "false"
-                "journeyDuration" => "PT3H"
-                "onTimeRate" => "0"
-                "secureFlightDataRequired" => "true"
-                "segmentStatusByFirstLeg" => "RZ"
-                "stopQuantity" => "0"
-                "trafficRestriction" => array:2 [
-                  "code" => ""
-                  "explanation" => ""
-                ]
-              ]
-              "involuntaryPermissionGiven" => "false"
-              "legStatus" => "RZ"
-              "referenceID" => "15865831"
-              "responseCode" => "HK"
-              "sequenceNumber" => "0"
-              "status" => "HK"
-            ]
-            "cpnIsn" => "0"
-            "noShow" => "false"
-          ]
-          "fareConstruction" => "LOS P4 LON1500.00NUC1500.00END ROE1547.500000"
-          "inclusiveTour" => "false"
-          "pricingInfo" => array:10 [
-            "baseFare" => array:1 [
-              "amount" => array:4 [
-                "accountingSign" => "ADC"
-                "currency" => array:1 [
-                  "code" => "NGN"
-                ]
-                "mileAmount" => "0.0"
-                "value" => "1500.0"
-              ]
-            ]
-            "commissionVat" => array:1 [
-              "totalAmount" => array:4 [
-                "accountingSign" => "ADC"
-                "currency" => array:1 [
-                  "code" => ""
-                ]
-                "mileAmount" => "0.0"
-                "value" => "0.0"
-              ]
-            ]
-            "commissions" => array:1 [
-              "totalAmount" => array:4 [
-                "accountingSign" => "ADC"
-                "currency" => array:1 [
-                  "code" => ""
-                ]
-                "mileAmount" => "0.0"
-                "value" => "0.0"
-              ]
-            ]
-            "equivBaseFare" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => "NGN"
-              ]
-              "mileAmount" => "0.0"
-              "value" => "1500.0"
-            ]
-            "fareBaggageAllowance" => "0"
-            "fees" => array:1 [
-              "totalAmount" => array:4 [
-                "accountingSign" => "ADC"
-                "currency" => array:1 [
-                  "code" => ""
-                ]
-                "mileAmount" => "0.0"
-                "value" => "0.0"
-              ]
-            ]
-            "surcharges" => array:2 [
-              "surchargeList" => array:5 [
-                "paid" => "false"
-                "surchargeAmount" => array:4 [
-                  "accountingSign" => "ADC"
-                  "currency" => array:1 [
-                    "code" => "NGN"
-                  ]
-                  "mileAmount" => "0.0"
-                  "value" => "541625.0"
-                ]
-                "surchargeCode" => "YQ"
-                "surchargeName" => "Carrier Imposed Surcharge"
-                "surchargeType" => ""
-              ]
-              "totalAmount" => array:4 [
-                "accountingSign" => "ADC"
-                "currency" => array:1 [
-                  "code" => "NGN"
-                ]
-                "mileAmount" => "0.0"
-                "value" => "541625.0"
-              ]
-            ]
-            "taxes" => array:2 [
-              "taxList" => array:3 [
-                "paid" => "false"
-                "taxAmount" => array:4 [
-                  "accountingSign" => "ADC"
-                  "currency" => array:1 [
-                    "code" => "NGN"
-                  ]
-                  "mileAmount" => "0.0"
-                  "value" => "27081.0"
-                ]
-                "taxCode" => "NG"
-              ]
-              "totalAmount" => array:4 [
-                "accountingSign" => "ADC"
-                "currency" => array:1 [
-                  "code" => "NGN"
-                ]
-                "mileAmount" => "0.0"
-                "value" => "27081.0"
-              ]
-            ]
-            "totalFare" => array:1 [
-              "amount" => array:4 [
-                "accountingSign" => "ADC"
-                "currency" => array:1 [
-                  "code" => "NGN"
-                ]
-                "mileAmount" => "0.0"
-                "value" => "570206.0"
-              ]
-            ]
-            "discountApplied" => "false"
-          ]
-          "pricingOverview" => array:12 [
-            "equivTotalAmountList" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => "NGN"
-              ]
-              "mileAmount" => "0.0"
-              "value" => "1500.0"
-            ]
-            "totalAmount" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => "NGN"
-              ]
-              "mileAmount" => "0.0"
-              "value" => "570206.0"
-            ]
-            "totalBaseFare" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => "NGN"
-              ]
-              "mileAmount" => "0.0"
-              "value" => "1500.0"
-            ]
-            "totalCommission" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => ""
-              ]
-              "mileAmount" => "0.0"
-              "value" => "0.0"
-            ]
-            "totalCommissionVat" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => ""
-              ]
-              "mileAmount" => "0.0"
-              "value" => "0.0"
-            ]
-            "totalDiscount" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => ""
-              ]
-              "mileAmount" => "0.0"
-              "value" => "0.0"
-            ]
-            "totalOtherFee" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => ""
-              ]
-              "mileAmount" => "0.0"
-              "value" => "0.0"
-            ]
-            "totalPenalty" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => ""
-              ]
-              "mileAmount" => "0.0"
-              "value" => "0.0"
-            ]
-            "totalServiceCharge" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => ""
-              ]
-              "mileAmount" => "0.0"
-              "value" => "0.0"
-            ]
-            "totalSurcharge" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => "NGN"
-              ]
-              "mileAmount" => "0.0"
-              "value" => "541625.0"
-            ]
-            "totalTax" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => "NGN"
-              ]
-              "mileAmount" => "0.0"
-              "value" => "27081.0"
-            ]
-            "totalTransactionFee" => array:4 [
-              "accountingSign" => "ADC"
-              "currency" => array:1 [
-                "code" => ""
-              ]
-              "mileAmount" => "0.0"
-              "value" => "0.0"
-            ]
-          ]
-          "serviceFee" => "0.0"
-          "totalAmountText" => "NGN 570,206.00"
-          "type" => "E_TICKET"
-        ]
-        "totalAmount" => array:4 [
-          "accountingSign" => "ADC"
-          "currency" => array:1 [
-            "code" => "NGN"
-          ]
-          "mileAmount" => "0.0"
-          "value" => "570206.0"
-        ]
       ]
     ]
   ]

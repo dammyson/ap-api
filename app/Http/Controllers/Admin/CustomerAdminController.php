@@ -340,7 +340,6 @@ class CustomerAdminController extends Controller
 
     public function awardPointManually(Request $request, User $user) {
         try {
-
             Gate::authorize('is-admin');
 
             if (!Gate::allows('is-admin')) {
@@ -375,7 +374,46 @@ class CustomerAdminController extends Controller
         }
 
     }
+    public function testAwardPointManually(Request $request) {
+        try {
 
+            dd("i ran");
+            // Gate::authorize('is-admin');
+
+            // if (!Gate::allows('is-admin')) {
+            //    return response()->json([
+            //         "error" => true,
+            //         "message" => "not authorized to carry out this action"
+            //    ], 403);
+            // }
+
+            // $admin = $request->user('admin');
+            $points = $request->input('points');
+            // $reason = $request->input('reason');
+
+            // $message = "reason {$reason}";
+            dd($user->first_name);
+        
+            $user->points += $points;
+            $user->save();
+            dd("i got here");
+        
+            // event( new AdminCustomerEvent($admin,  $points, $user, $reason));
+
+            return response()->json([
+                'error' => false,
+                'points' => $points,
+                'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
+            ], 200);
+
+        }  catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+    }
     
 
 

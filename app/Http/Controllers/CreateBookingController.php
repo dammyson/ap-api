@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Device;
 use App\Models\Flight;
 use App\Models\Booking;
 use App\Models\Invoice;
@@ -354,7 +355,7 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-               dump($response);
+            //    dump($response);
 
             if (!array_key_exists('AirBookingResponse', $response)) {
                 return response()->json([
@@ -639,7 +640,7 @@ class CreateBookingController extends Controller
     }
 
     public function redeemTicketWithPeacePoint(Request $request) {
-        $route = $request->input('route');
+        $routes = $request->input('routes');
         $class = $request->input('class');
         $type  = $request->input('type'); // domestic, regional, international
         $noOfPassengers = $request->input('passenger_length');
@@ -649,10 +650,22 @@ class CreateBookingController extends Controller
 
         $user = $request->user();
 
-        [$flightClass, $redemptionPoint] = $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
+        // dd($routes);
+        
+        // return $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
+
+        // [$class, $points] = $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
+        // add a forloop here incase of multiple route
+        $redemptionPoint = 0;
+        foreach($routes as $route) {
+            $redemptionPoint += $this->getPointService->getFlightRedemptionPoints($route['route'], $route['class'], $route['type']);
+
+        }
         
         $totalRedemptionPoint = $redemptionPoint * $noOfPassengers; 
-        $peacePoint = $user->peace_point;
+        $peacePoint = $user->points;
+        // dd($totalRedemptionPoint, $peacePoint);
+        
 
         if ($peacePoint < $totalRedemptionPoint) {
             return response()->json([
@@ -670,37 +683,22 @@ class CreateBookingController extends Controller
         
         $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
         
-
         //substract base fare from expected amount to know how much the user is felt to pay
         $baseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         $peacePointBalance = $peacePoint - $redemptionPoint;
 
-       
-       $ticketItemList = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'];
+        //dd($peacePointBalance);
+        $ticketItemList = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'];
         
        $baseFare = 0;
       
-       if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-            if ($this->checkArray->isAssociativeArray($ticketItemList['couponInfoList'])) {
-                $baseFare = $ticketItemList['couponInfoList']['pricingInfo']['baseFare']['amount']['value'];
+        if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+            $baseFare = $ticketItemList['pricingInfo']['baseFare']['amount']['value'];
 
-            } else {
-                foreach($ticketItemList['couponInfoList'] as $couponInfoList) {
-                    $baseFare += $couponInfoList['pricingInfo']['baseFare']['amount']['value'];
-
-                }
-            }
-
-       } else {
+        } else {
            foreach($ticketItemList as $ticketItem) {
-                if ($this->checkArray->isAssociativeArray($ticketItem['couponInfoList'])) {
-                    $baseFare += $ticketItem['couponInfoList']['pricingInfo']['baseFare']['amount']['value'];
-                } else {
-                    foreach($ticketItem['couponInfoList'] as $couponInfoList) {
-                        $baseFare += $couponInfoList['pricingInfo']['baseFare']['amount']['value'];
-                    }
-                }
+                $baseFare += $ticketItem['pricingInfo']['baseFare']['amount']['value'];
             }
 
        }
@@ -710,13 +708,19 @@ class CreateBookingController extends Controller
     //    $totatBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingInfo']['equivBaseFare']['value'];
     //    $totalBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingOverview']['totalBaseFare']['value'];
 
-        $invoice = new Invoice();
+        $invoice = Invoice::create([
+            "booking_id" => $bookingId,
+            "amount" => $amountRemaining,
+            "is_paid" => false       
+        ]);
+        // $invoice->save();
 
 
         return [
             "amount_remaining" => $amountRemaining,
             "expected_amount" => $expectedAmount,
-            "peace_point_balance" => $peacePointBalance,
+            "redemption_point" => $redemptionPoint,
+            "base_fare" => $baseFare,
             "booking_id" => $bookingId,
             "booking_reference_id" => $bookingReferenceID,
             "invoice_id" => $invoice->id
@@ -726,21 +730,22 @@ class CreateBookingController extends Controller
     }
 
 
-    public function verifyTierRef(Request $request) {
+    public function verifyRedemptionPayment(Request $request) {
         try {
-            $request->validate([
-                'ref_id' => 'required|string'
-            ]);
+          
             $ref = $request->input('ref_id');
-            $user = $request->user();
-            $userId = $user->id;
-            $peacePoint = $request->input('peace_point');
-            $expectedAmount = $request->input('expected_amount');
+            $invoiceId = $request->input('invoice_id');
+            // $expectedAmount = $request->input('expected_amount');
             $bookingId = $request->input('booking_id');
             $bookingReferenceID = $request->input('booking_reference_id');
-            $deviceType = $request->input('device_type');
-            $invoiceId = $request->input('invoice_id');
-            //validate verifiedRequest;
+            $expectedAmount = $request->input('expected_amount');
+            $userDevice = $request->input('device_type');
+            $redemptionPoint = $request->input('redemption_point');
+            
+            $user = $request->user();
+
+            // dd($redemptionPoint);
+           
 
             $new_top_request = new VerificationService($ref);
             $verified_request = $new_top_request->run();
@@ -748,45 +753,181 @@ class CreateBookingController extends Controller
             
             $paidAmount = $verified_request["data"]["amount"];
             $paidAmount = $paidAmount / 100;
+
+            $invoice = Invoice::find($invoiceId);
+
+            $invoiceAmount = $invoice->amount + 0;
+
+           
+
+            if ( $paidAmount < $invoiceAmount ) {
+                return response()->json([
+                    "error" => false,
+                    "message" => "fund payment for ticket is less than calculated"
+                ], 500);
+            }
+    
+            
+            // dd("went well");
           
 
-            return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $expectedAmount, $invoiceId, $deviceType);
 
-            // create invoice table   // add booking_id
-            $invoice = Invoice::create([
-                'amount' => $paidAmount,
-                'booking_id' => "not applicable",
-                'is_paid' => true
-            ]);            
+            /////////////////////
             
-            // convert to naira (from kobo)
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
+                $bookingId,
+                $bookingReferenceID,           
+                $expectedAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
+              
+            );
+                
+            $peaceId = $user->peace_id;          
+
             
-            // dd("i ran");
-            // create invoice_items table
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+
+            // dump($response);
+
+            if (!array_key_exists('AirTicketReservationResponse', $response)) {
+                return response()->json([
+                    'error' => true,
+                    'message' => "no new addition to ticket",
+                    'paidAmount' => $paidAmount,
+                    "response" => $response
+                ], 500);
+            }           
+            
+            $user->points -= $redemptionPoint;
+            $user->save();
+
+
+            
+            $invoice->is_paid = true;
+            $invoice->save();
+
+
+            ///////////////////////
+            
+            // get the list of all the tickets 
+            $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
+            $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+           
+            // $userDevice = Device::where('user_id', $user->id)->first();
+
+           
+            // if (array_key_exists('couponInfoList', $ticketItemList)) {
+            if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+                $paymentReferenceID = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
+                $invoice_number = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                $paymentType = $ticketItemList['paymentDetails']['paymentDetailList']['paymentType'];
+                $amount = $ticketItemList['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                $orderID = $ticketItemList['paymentDetails']['paymentDetailList']['orderID'];
+                $ticketId = $ticketItemList['ticketDocumentNbr'];
+                
+                if (!array_key_exists('asvcSsr', $ticketItemList['couponInfoList'])) {                    
+                    $reasonForIssuance = $ticketItemList['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
+                     
+                    Transaction::firstOrCreate([
+                        "invoice_number" => $invoice_number,                        
+                    ], [
+                        'amount' => $paidAmount,
+                        'transaction_type' => $transactionType,
+                        'ticket_type' => 'ticket',
+                        'user_id' => $user->id,
+                        'invoice_id' => $invoice->id,
+                        'device_type' => $userDevice,
+                        'is_flight' => true
+                    ]);                    
+                
+                } else { 
+                    $reasonForIssuance = $ticketItemList['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
+                                           
+                    Transaction::firstOrCreate([
+                        "invoice_number" => $invoice_number,                        
+                    ],
+                    [
+                            'amount' => $paidAmount,
+                            'transaction_type' => $transactionType,
+                            'ticket_type' => 'Ancillary',
+                            'user_id' => $user->id,
+                            'invoice_id' => $invoice->id,
+                            'device_type' => $userDevice,
+                            'is_flight' => true
+                        ]
+                    ); 
+                    
+                } 
+            
+            } else {
+
+                foreach($ticketItemList as $ticketItem) {
+                    // if ($ticketItem["status"] == "OK") {
+                        // dump($user->first_name);
+                    $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
+                    $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                    $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
+                    $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                    $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
+                    $ticketId = $ticketItem['ticketDocumentNbr'];
+                    if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
+                        // dump('non asvcSsr ran');
+                       
+                        $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
+                           
+                        Transaction::firstOrCreate([
+                            "invoice_number" => $invoice_number,                            
+                        ], [
+                            'amount' => $paidAmount,
+                            'transaction_type' => $transactionType,
+                            'ticket_type' => 'ticket',
+                            'user_id' => $user->id,
+                            'invoice_id' => $invoice->id,
+                            'device_type' => $userDevice,
+                            'is_flight' => true
+                        ]);                          
+                    
+                    }
+                    else {      
+                        $reasonForIssuance = $ticketItem['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
+                                                    
+                        Transaction::firstOrCreate([
+                            "invoice_number" => $invoice_number,                            
+                        ], [
+                            'amount' => $paidAmount,
+                            'transaction_type' => $transactionType,
+                            'ticket_type' => 'Ancillary',
+                            'user_id' => $user->id,
+                            'invoice_id' => $invoice->id,
+                            'device_type' => $userDevice,
+                            'is_flight' => true
+                        ]); 
+                    }                
+                }
+            }
+
+            $description = "made for a payment of {$paidAmount} for flight with booking id {$bookingId}";
+            event(new UserActivityLogEvent($user, "ticket payment", $description));
+
+            
+            ///////////////////////////
             InvoiceItem::create([
                 'invoice_id' => $invoice->id,
-                'product' => 'tier', 
+                'product' => 'ticket', 
                 'quantity' => '1',
                 'price' => $paidAmount
             ]);
 
-    
-            Transaction::create([
-                "invoice_number" => "not applicable",                        
-                'amount' => $paidAmount,
-                'transaction_type' => "tier purchase",
-                'peace_id' => $user->peace_id,
-                'ticket_type' => "Ancillary",
-                'user_id' => $user->id,
-                'invoice_id' => $invoice->id,
-                'device_type' => $user->device_type
-            ]);   
+            return response()->json([
+                "error" => false,
+                "message" => "payment for flight successful"
+            ]);
 
-            
-        } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
+        } catch (\Throwable $throwable) {
+            // Log::error($exception->getMessage());
         
-            return response()->json(['status' => false,  'message' => 'Error processing request'], 500);
+            return response()->json(['status' => false, 'message' => $throwable->getMessage()], 500);
         }
     }
 

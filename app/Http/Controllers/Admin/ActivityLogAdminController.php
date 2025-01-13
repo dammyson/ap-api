@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Admin\ActivityLog;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateFilterActivityRequest;
 use App\Models\Admin\AdminActivityLog;

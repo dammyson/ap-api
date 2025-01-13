@@ -107,10 +107,10 @@ class RegisterController extends Controller
                 }            
             }
 
-            RecentActivity::create([
-                "title" => "New user registration",
-                "description" => "{$create->first_name} {$create->last_name} ({$create->email})"
-            ]);
+            // RecentActivity::create([
+            //     "title" => "New user registration",
+            //     "description" => "{$create->first_name} {$create->last_name} ({$create->email})"
+            // ]);
 
             // $userAgent = $request->header('User-Agent');
                 

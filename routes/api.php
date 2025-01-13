@@ -85,7 +85,6 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
     Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
 
-
 });
 
 Route::group(['prefix' => 'user'], function ()  {
@@ -237,6 +236,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
             Route::group(["prefix" => "create-booking"], function() {
                 Route::post('two-a', [CreateBookingController::class, 'guestCreateBooking']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
+                Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
 
         });
@@ -303,6 +303,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
+        Route::get('allocate-points', [ProfileController::class, 'allocatePoint']);
         Route::post('profile/edit', [ProfileController::class, 'editProfile']);
         Route::post('profile/change-profile-image', [ProfileController::class, 'changeProfileImage']);
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
@@ -311,6 +312,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('create-wallet', [WalletController::class, 'createWallet']);
         Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
         Route::get('upcoming-trips', [AnalyticsUserController::class, 'upcomingTrips']);
+        Route::put('award-point-manually', [CustomerAdminController::class, 'testAwardPointManually']);
+
 
         Route::get('getpoint', [ProfileController::class, 'getPoint']);
     });

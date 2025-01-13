@@ -127,6 +127,16 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function allocatePoint(Request $request) {
+        $user = $request->user();  
+
+        $user->points += 100000;
+        $user->save();
+        return response()->json([
+            "error" => false,
+            "points" => $user->points
+        ]);
+    }  
 
     public function getPoint(Request $request) {
         try {
