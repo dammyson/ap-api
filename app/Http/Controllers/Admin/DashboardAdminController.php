@@ -5,17 +5,18 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Device;
+use App\Models\Flight;
 use App\Models\Ticket;
+use App\Models\Booking;
 use App\Models\Revenue;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\RecentActivity;
 use App\Models\FlightTicketType;
 use App\Models\ScreenResolution;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
-use App\Models\Flight;
-use App\Models\RecentActivity;
-use App\Models\Transaction;
 
 class DashboardAdminController extends Controller
 {
@@ -439,6 +440,21 @@ class DashboardAdminController extends Controller
             'revenue_purchased' => $revenuePurchased
         ], 200);
 
+    }
+
+
+    public function recentActivitiesTable(Request $request) {
+        $sixHoursAgo = now()->subHours(6);
+        $users = User::where('created_at', "<=", $sixHoursAgo)->get();
+        $transactions = Transaction::where('created_at', "<=", $sixHoursAgo)->get();
+        $bookings = Booking::where('created_at', "<=", $sixHoursAgo)->get();
+
+        return response()->json([
+            "error" => false,
+            "user" => $users,
+            "transactions" => $transactions,
+            "bookings" => $bookings
+        ]);
     }
 
     public function activeUserTable(Request $request) {

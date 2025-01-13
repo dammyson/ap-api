@@ -112,6 +112,7 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::get('total-purchased-tickets-table', [DashboardAdminController::class, 'totalPurchasedTicketTable']);
             Route::get('total-revenue-tickets-table', [DashboardAdminController::class, 'totalRevenueTicketTable']);
             Route::get('active-users-table', [DashboardAdminController::class, 'activeUserTable']);
+            Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
             
         });
         

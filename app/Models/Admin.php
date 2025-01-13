@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Observers\AdminObserver;
-use App\Models\Admin\ActivityLog;
 use App\Models\Admin\AdminActivityLog;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
