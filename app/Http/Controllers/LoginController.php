@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Services\Utility\CheckDevice;
 use App\Http\Requests\Auth\UserLoginRequest;
 use App\Models\ScreenResolution;
+use App\Notifications\PasswordChanged;
 use App\Services\Point\TierPointService;
 
 class LoginController extends Controller
@@ -37,6 +38,17 @@ class LoginController extends Controller
                 $query->where('email', $request->credential)
                     ->orWhere('peace_id', $request->peace_id);
             })->first();
+
+
+            $details = [
+                'title' => 'New Message',
+                'body' => 'You have received a new message.',
+                'url' => '/messages/1'
+            ];
+
+            $user->notify(new PasswordChanged($details));
+
+            dd('');
 
             if (is_null($user)) {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);

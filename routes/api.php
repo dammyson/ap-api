@@ -57,6 +57,7 @@ use App\Http\Controllers\Test\TicketReservationController;
 use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
 use App\Http\Controllers\AnalyticsUserController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RedeemTicketPeacePointController;
 use App\Http\Controllers\Test\AddWeightControllerTest;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
@@ -392,4 +393,10 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::get('redeemed-rewards/{redeemedReward}', [RedeemedRewardController::class, 'show']);
     Route::put('redeemed-rewards/{redeemedReward}', [RedeemedRewardController::class, 'update']);
     Route::delete('redeemed-rewards/{redeemedReward}', [RedeemedRewardController::class, 'destroy']);
+});
+
+Route::prefix('notifications')->middleware('auth:api')->group(function () {
+    Route::get('/', [NotificationController::class, 'listUserNotifications'])->name('notifications.list');
+    Route::get('/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::get('/read-all', [NotificationController::class, 'markAllAsRead']) ->name('notifications.markAllAsRead');
 });
