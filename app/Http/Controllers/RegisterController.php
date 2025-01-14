@@ -7,18 +7,19 @@ use App\Models\User;
 use App\Models\Device;
 use App\Mail\ForgotPassword;
 use Illuminate\Http\Request;
+use App\Models\RecentActivity;
 use App\Models\ReferralActivity;
 use App\Models\ScreenResolution;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Services\Utility\CheckDevice;
+use App\Services\Point\TierPointService;
 use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Services\AutoGenerate\CreatePeaceId;
 use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
-use App\Services\Point\TierPointService;
 
 
 class RegisterController extends Controller
@@ -105,6 +106,11 @@ class RegisterController extends Controller
 
                 }            
             }
+
+            // RecentActivity::create([
+            //     "title" => "New user registration",
+            //     "description" => "{$create->first_name} {$create->last_name} ({$create->email})"
+            // ]);
 
             // $userAgent = $request->header('User-Agent');
                 

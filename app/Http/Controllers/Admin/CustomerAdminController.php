@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\FlightRecord;
+use App\Models\Flight;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\UserActivityLog;
 use App\Events\AdminSurveyEvent;
 use App\Models\ReferralActivity;
-use App\Models\TransactionRecord;
 use App\Events\AdminCustomerEvent;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
+use App\Services\Utility\OrganiseChart;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\CustomerCollection;
-use App\Models\UserActivityLog;
-use App\Services\Utility\OrganiseChart;
 
 class CustomerAdminController extends Controller
 {
@@ -27,12 +28,12 @@ class CustomerAdminController extends Controller
     public function userInformation(Request $request, User $user) {
         // $user = $request->user();
         $tierInfo = $user->currentTier();
-        $flightCount = TransactionRecord::where('peace_id', $user->peace_id)->
+        $flightCount = Transaction::where('peace_id', $user->peace_id)->
             where('ticket_type', 'ticket')
             ->count();
         //or
 
-        // $flightCount = FlightRecord::where('peace_id', $user->peace_id)->with('invoices', function($query) {
+        // $flightCount = Flight::where('peace_id', $user->peace_id)->with('invoices', function($query) {
         //         $query->where('is_paid', false);
         //  })
         //  ->distinct('booking_id')->count();
@@ -41,8 +42,8 @@ class CustomerAdminController extends Controller
 
         $dateOfRegistration = $user->created_at;
 
-        $lastFlight = FlightRecord::where('departure_time', '<=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'desc')->first();
-        $upcomingFlight = FlightRecord::where('departure_time', '>=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'asc')->first();
+        $lastFlight = Flight::where('departure_time', '<=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'desc')->first();
+        $upcomingFlight = Flight::where('departure_time', '>=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'asc')->first();
 
         $userActivityLog = UserActivityLog::where('user_id', $user->id)->get();
         
@@ -77,7 +78,7 @@ class CustomerAdminController extends Controller
             $month = $request->input('month') ?? Carbon::now()->month;
             if ($filter == "yearly") {
 
-                $ticketRecord = TransactionRecord::where('peace_id', $user->peace_id)
+                $ticketRecord = Transaction::where('peace_id', $user->peace_id)
                         ->where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
@@ -85,12 +86,12 @@ class CustomerAdminController extends Controller
                     ->get();
                 
 
-                $ticketAmount =  TransactionRecord::where('peace_id', $user->peace_id)
+                $ticketAmount =  Transaction::where('peace_id', $user->peace_id)
                         ->where('ticket_type', 'ticket')
                         ->whereYear('created_at', $year)
                         ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
-                $ancillaryRecord = TransactionRecord::where('peace_id', $user->peace_id)
+                $ancillaryRecord = Transaction::where('peace_id', $user->peace_id)
                     ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
@@ -98,18 +99,18 @@ class CustomerAdminController extends Controller
                     ->get();
                 
 
-                $ancillaryAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                $ancillaryAmount = Transaction::where('peace_id', $user->peace_id)
                     ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)                    
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
                 
-                $revenueRecord =  TransactionRecord::where('peace_id', $user->peace_id)
+                $revenueRecord =  Transaction::where('peace_id', $user->peace_id)
                     ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
 
-                $revenueAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                $revenueAmount = Transaction::where('peace_id', $user->peace_id)
                     ->whereYear('created_at', $year)                    
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
@@ -131,7 +132,7 @@ class CustomerAdminController extends Controller
                 $endOfWeek = Carbon::now()->endOfWeek();     // Typically Sunday
 
 
-                $ticketRecord = TransactionRecord::where('peace_id', $user->peace_id)
+                $ticketRecord = Transaction::where('peace_id', $user->peace_id)
                     ->where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -140,7 +141,7 @@ class CustomerAdminController extends Controller
                     ->groupBy('day_name')
                     ->get();
                 
-                $ticketAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                $ticketAmount = Transaction::where('peace_id', $user->peace_id)
                         ->where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -149,7 +150,7 @@ class CustomerAdminController extends Controller
                 
 
 
-                $ancillaryRecord = TransactionRecord::where('peace_id', $user->peace_id)
+                $ancillaryRecord = Transaction::where('peace_id', $user->peace_id)
                     ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -159,7 +160,7 @@ class CustomerAdminController extends Controller
                     ->get();
 
 
-                $ancillaryAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                $ancillaryAmount = Transaction::where('peace_id', $user->peace_id)
                     ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -167,7 +168,7 @@ class CustomerAdminController extends Controller
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
 
-                $revenueRecord = TransactionRecord::where('peace_id', $user->peace_id)
+                $revenueRecord = Transaction::where('peace_id', $user->peace_id)
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -183,7 +184,7 @@ class CustomerAdminController extends Controller
                 // $ancillaryRecord = $this->organiseChart->organiseWeek($ancillaryRecord);
                 // $revenueRecord = $this->organiseChart->organiseWeek($revenueRecord);
                 
-                $revenueAmount = TransactionRecord::where('peace_id', $user->peace_id)
+                $revenueAmount = Transaction::where('peace_id', $user->peace_id)
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -221,19 +222,19 @@ class CustomerAdminController extends Controller
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
         
-        $totalRevenue = TransactionRecord::where('peace_id', $user->peace_id)
+        $totalRevenue = Transaction::where('peace_id', $user->peace_id)
             ->whereYear('created_at', $year)
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
             ->groupBy('day_name')
             ->get();
 
-        $totalRevenueAmount = TransactionRecord::where('peace_id', $user->peace_id)
+        $totalRevenueAmount = Transaction::where('peace_id', $user->peace_id)
             ->whereYear('created_at', $year)
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->sum('amount');
         
-        $flightBooking = TransactionRecord::where('peace_id', $user->peace_id)
+        $flightBooking = Transaction::where('peace_id', $user->peace_id)
             ->whereYear('created_at', $year)
             ->where('ticket_type', 'ticket')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -241,13 +242,13 @@ class CustomerAdminController extends Controller
             ->groupBy('day_name')
             ->get();
         
-        $flightBookingAmount = TransactionRecord::where('peace_id', $user->peace_id)
+        $flightBookingAmount = Transaction::where('peace_id', $user->peace_id)
             ->whereYear('created_at', $year)
             ->where('ticket_type', 'ticket')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
             ->sum('amount');    
             
-        $appPurchase = TransactionRecord::where('peace_id', $user->peace_id)
+        $appPurchase = Transaction::where('peace_id', $user->peace_id)
             ->whereYear('created_at', $year)
             ->where('ticket_type', 'Ancillary')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -255,7 +256,7 @@ class CustomerAdminController extends Controller
             ->groupBy('day_name')
             ->get();
         
-        $appPurchaseAmount = TransactionRecord::where('peace_id', $user->peace_id)
+        $appPurchaseAmount = Transaction::where('peace_id', $user->peace_id)
             ->whereYear('created_at', $year)
             ->where('ticket_type', 'Ancillary')
             ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -264,7 +265,7 @@ class CustomerAdminController extends Controller
 
 
         //////////////////////////////////////
-        $ticketRecord = TransactionRecord::where('peace_id', $user->peace_id)
+        $ticketRecord = Transaction::where('peace_id', $user->peace_id)
                 ->where('ticket_type', 'ticket')
             ->whereYear('created_at', $year)
             ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
@@ -272,28 +273,28 @@ class CustomerAdminController extends Controller
             ->get();
     
 
-        $ticketAmount =  TransactionRecord::where('peace_id', $user->peace_id)
+        $ticketAmount =  Transaction::where('peace_id', $user->peace_id)
                 ->where('ticket_type', 'ticket')
             ->whereYear('created_at', $year)
             ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
-        $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
+        $ancillaryRecord = Transaction::where('ticket_type', 'Ancillary')
             ->whereYear('created_at', $year)
             ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
             ->groupBy(DB::raw('month_name'))
             ->get();
         
 
-        $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
+        $ancillaryAmount = Transaction::where('ticket_type', 'Ancillary')
                 ->whereYear('created_at', $year)                    
                 ->sum(DB::raw('CAST(amount AS SIGNED)'));
         
-        $revenueRecord =  TransactionRecord::whereYear('created_at', $year)
+        $revenueRecord =  Transaction::whereYear('created_at', $year)
             ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
             ->groupBy(DB::raw('month_name'))
             ->get();
 
-        $revenueAmount = TransactionRecord::whereYear('created_at', $year)                    
+        $revenueAmount = Transaction::whereYear('created_at', $year)                    
             ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
         ///////////////////////////////////
@@ -338,23 +339,32 @@ class CustomerAdminController extends Controller
     }
 
     public function awardPointManually(Request $request, User $user) {
-        $admin = $request->user('admin');
-        $points = $request->input('points');
-        $reason = $request->input('reason');
-
         try {
-                $message = "reason {$reason}";
-            
-                $user->points += $points;
-                $user->save();
-            
-                event( new AdminCustomerEvent($admin,  $points, $user, $reason));
+            Gate::authorize('is-admin');
 
-                return response()->json([
-                    'error' => false,
-                    'points' => $points,
-                    'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
-                ], 200);
+            if (!Gate::allows('is-admin')) {
+               return response()->json([
+                    "error" => true,
+                    "message" => "not authorized to carry out this action"
+               ], 403);
+            }
+
+            $admin = $request->user('admin');
+            $points = $request->input('points');
+            $reason = $request->input('reason');
+
+            $message = "reason {$reason}";
+        
+            $user->points += $points;
+            $user->save();
+        
+            event( new AdminCustomerEvent($admin,  $points, $user, $reason));
+
+            return response()->json([
+                'error' => false,
+                'points' => $points,
+                'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
+            ], 200);
 
         }  catch (\Throwable $th) {
             return response()->json([
@@ -364,7 +374,46 @@ class CustomerAdminController extends Controller
         }
 
     }
+    public function testAwardPointManually(Request $request) {
+        try {
 
+            dd("i ran");
+            // Gate::authorize('is-admin');
+
+            // if (!Gate::allows('is-admin')) {
+            //    return response()->json([
+            //         "error" => true,
+            //         "message" => "not authorized to carry out this action"
+            //    ], 403);
+            // }
+
+            // $admin = $request->user('admin');
+            $points = $request->input('points');
+            // $reason = $request->input('reason');
+
+            // $message = "reason {$reason}";
+            dd($user->first_name);
+        
+            $user->points += $points;
+            $user->save();
+            dd("i got here");
+        
+            // event( new AdminCustomerEvent($admin,  $points, $user, $reason));
+
+            return response()->json([
+                'error' => false,
+                'points' => $points,
+                'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
+            ], 200);
+
+        }  catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+    }
     
 
 

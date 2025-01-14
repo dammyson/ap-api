@@ -21,9 +21,16 @@ return new class extends Migration
             $table->string('phone_number');
             $table->integer('otp')->nullable();
             $table->string('status')->nullable();
+            $table->string('title')->nullable();
+            $table->string('image_url')->nullable();
+            $table->string('nationality')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->string('travel_document')->nullable();
+            $table->string('peace_id')->unique();
             $table->text('mobile_token')->nullable();
-            $table->boolean('can_change_password')->default(false);
-            $table->string('peace_id')->nullable();
+            $table->integer('points')->default(0);
+            $table->integer('all_time_point')->default(0);
+            $table->enum('gender', ['Male', 'Female']);
             $table->rememberToken();
             $table->timestamps();
         });

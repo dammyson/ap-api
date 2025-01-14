@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Test\Booking;
 
+use stdClass;
+use App\Models\Booking;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Models\BookingRecord;
 use App\Models\InvoiceRecord;
 use App\Http\Controllers\Controller;
+use App\Services\Utility\CheckArray;
 use App\Services\Soap\BookingBuilder;
+use App\Services\Utility\GetPointService;
 use App\Http\Requests\Test\Booking\ReadBookingRequest;
+use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Requests\Test\Booking\ReadBookingTkRequest;
 use App\Http\Requests\Test\Booking\RetrievePNRHistoryRequest;
 use App\Http\Requests\Test\Booking\RetrieveTicketHistoryRequest;
-use App\Services\Soap\TicketReservationRequestBuilder;
-use App\Services\Utility\CheckArray;
-use App\Services\Utility\GetPointService;
-use stdClass;
 
 class BookingRequestController extends Controller
 {
@@ -41,17 +43,19 @@ class BookingRequestController extends Controller
 
         try {
 
-            $booking = BookingRecord::where('booking_id', $bookingId)
+            $booking = Booking::where('booking_id', $bookingId)
                         ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
-
-            $invoice = InvoiceRecord::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-    
+            
             if (!$booking) {
                 return response()->json([
                     'error' => true,
                     'message' => 'no booking found'
                 ], 500);
             }
+
+            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
+    
+           
 
     
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            

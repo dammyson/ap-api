@@ -8,30 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Flight extends Model
 {
     use HasFactory;
-    protected $guarded = [];
 
-    protected $with = ["plane:id,code", 'origin:id,name', 'destination:id,name'];
-
-    public function plane()
-    {
-        return $this->belongsTo(Plane::class, 'plane_id')->withDefault([
-            'code' => 'N/A',
-            "name" => "N/A"
-        ]);
-    }
-
-    public function origin()
-    {
-        return $this->belongsTo(Airport::class, "origin_id");
-    }
-
-    public function destination()
-    {
-        return $this->belongsTo(Airport::class, "destination_id");
-    }
-
-    public function ticketTypes()
-    {
-        return $this->hasMany(FlightTicketType::class);
-    }
+    protected $fillable = [
+        'origin', 
+        'destination', 
+        'arrival_time', 
+        'departure_time',
+        'peace_id', 
+        'guest_session_token',
+        'passenger_name',
+        'passenger_type',
+        'trip_type',
+        'booking_id',
+        'origin_city',
+        'destination_city',
+        'ticket_type',
+        'flight_number',
+        'flight_distance',
+        'flight_duration',
+        'payment_expires_at',
+        'invoice_id'
+    ];
 }

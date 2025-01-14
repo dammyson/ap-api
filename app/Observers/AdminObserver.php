@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Admin;
-use App\Models\Admin\ActivityLog;
+use App\Models\Admin\AdminActivityLog;
 
 class AdminObserver
 {
@@ -15,7 +15,7 @@ class AdminObserver
         $creatorAdmin = auth('admin')->user();
         $description = "Created new user account {$admin->user_name} with user ID: {$admin->id} and role {$admin->role}";
 
-        ActivityLog::create([
+        AdminActivityLog::create([
             'admin_id' => $creatorAdmin->id,
             'role' => $creatorAdmin->role,
             'activity_type' => "User management",
@@ -38,7 +38,7 @@ class AdminObserver
     
             $description = "Edited user role {$admin->user_name} for {$previousRole} to {$newRole}";
             
-            ActivityLog::create([
+            AdminActivityLog::create([
                 'admin_id' => $creatorAdmin->id,
                 'role' => $creatorAdmin->role,
                 'activity_type' => "User management",
@@ -56,7 +56,7 @@ class AdminObserver
         $creatorAdmin = auth('admin')->user();
         $description = "Deleted user account {$admin->user_name} with ID {$admin->id}";
         
-        ActivityLog::create([
+        AdminActivityLog::create([
             'admin_id' => $creatorAdmin->id,
             'role' => $creatorAdmin->role,
             'activity_type' => "User management",

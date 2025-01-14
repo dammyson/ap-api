@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-
 use App\Models\Wallet;
+
+use App\Models\Booking;
+use Illuminate\Http\Request;
 use App\Models\BookingRecord;
 use App\Services\Soap\CancelBookingBuilder;
 
@@ -23,7 +24,7 @@ class CancelFlightController extends Controller
          $peaceId = $request->input('peace_id');
          $bookingId = $request->input('booking_id');
  
-         $booking = BookingRecord::where('peace_id', $peaceId)
+         $booking = Booking::where('peace_id', $peaceId)
              ->where('booking_id', $bookingId)->first();
         
              dd($booking);
@@ -84,7 +85,7 @@ class CancelFlightController extends Controller
         $bookingId = $request->input('booking_id');
 
 
-        $booking = BookingRecord::where('peace_id', $peaceId)
+        $booking = Booking::where('peace_id', $peaceId)
             ->where('booking_id', $bookingId)->first();
 
             // dd('I ran');

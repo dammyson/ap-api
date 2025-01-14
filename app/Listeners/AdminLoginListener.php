@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\AdminLoginEvent;
 use App\Models\Admin\ActivityLog;
+use App\Models\Admin\AdminActivityLog;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -32,7 +33,7 @@ class AdminLoginListener
             $admin = $event->admin;
             $description = "Admin {$admin->user_name} has logged in.";
             
-            ActivityLog::create([
+            AdminActivityLog::create([
                 'admin_id' => $admin->id,
                 'role' => $admin->role,
                 'activity_type' => "Login",

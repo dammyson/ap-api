@@ -15,9 +15,12 @@ return new class extends Migration
         Schema::create('referral_activities', function (Blueprint $table) {
             $table->id();
             $table->string('referrer_peace_id');
+            $table->foreign('referrer_peace_id')->references('peace_id')->on('users')->onDelete('cascade');            
             $table->string('referrer_user_name');
             $table->string('referee_peace_id');
+            $table->foreign('referee_peace_id')->references('peace_id')->on('users')->onDelete('cascade');
             $table->string('referee_user_name');
+            $table->integer('referrer_points_earned');
             $table->timestamps();
         });
     }

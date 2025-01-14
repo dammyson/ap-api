@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Device;
+use App\Models\Flight;
 use App\Models\Ticket;
+use App\Models\Booking;
 use App\Models\Revenue;
-use App\Models\FlightRecord;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\RecentActivity;
 use App\Models\FlightTicketType;
 use App\Models\ScreenResolution;
-use App\Models\TransactionRecord;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
@@ -40,8 +42,8 @@ class DashboardAdminController extends Controller
         }
 
         // purchased-ticket
-        $ticket7DaysAgo = FlightRecord::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
-        $ticket14DaysAgo = FlightRecord::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
+        $ticket7DaysAgo = Flight::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
+        $ticket14DaysAgo = Flight::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
 
         if ($ticket14DaysAgo > 0) {
             $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
@@ -52,16 +54,21 @@ class DashboardAdminController extends Controller
 
         // total-revenue
 
-        $total7daysRevenue = TransactionRecord::whereBetween('created_at', [$date7DaysAgo, $currentDate])->sum('amount');
-        $total14daysRevenue = TransactionRecord::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->sum('amount');
+        $total7daysRevenue = Transaction::whereBetween('created_at', [$date7DaysAgo, $currentDate])->sum('amount');
+        $total14daysRevenue = Transaction::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->sum('amount');
 
 
         if ($total14daysRevenue > 0) { 
-            $percentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
+            $revenuePercentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
 
         } else {
-            $percentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
+            $revenuePercentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
         }
+
+        RecentActivity::create([
+            "title" => "Performance trend",
+            "description" => $revenuePercentageChange > 0 ? "Revenue Growth: +{$revenuePercentageChange} compared to last Seven days" : "Revenue Drop: {$revenuePercentageChange} compared to last Seven days"
+        ]);
 
         return response()->json([
             "error" => false,
@@ -89,34 +96,34 @@ class DashboardAdminController extends Controller
             $month = $request->input('month') ?? Carbon::now()->month;
             if ($filter == "yearly") {
 
-                $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
+                $ticketRecord = Transaction::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
                 
 
-                $ticketAmount =  TransactionRecord::where('ticket_type', 'ticket')
+                $ticketAmount =  Transaction::where('ticket_type', 'ticket')
                         ->whereYear('created_at', $year)
                         ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
-                $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
+                $ancillaryRecord = Transaction::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
                 
 
-                $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
+                $ancillaryAmount = Transaction::where('ticket_type', 'Ancillary')
                         ->whereYear('created_at', $year)                    
                         ->sum(DB::raw('CAST(amount AS SIGNED)'));
                 
-                $revenueRecord =  TransactionRecord::whereYear('created_at', $year)
+                $revenueRecord =  Transaction::whereYear('created_at', $year)
                     ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
                     ->groupBy(DB::raw('month_name'))
                     ->get();
 
-                $revenueAmount = TransactionRecord::whereYear('created_at', $year)                    
+                $revenueAmount = Transaction::whereYear('created_at', $year)                    
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
                 $ticketRecord = $this->organiseYear($ticketRecord);
@@ -135,7 +142,7 @@ class DashboardAdminController extends Controller
                 $endOfWeek = Carbon::now()->endOfWeek();     // Typically Sunday
 
 
-                $ticketRecord = TransactionRecord::where('ticket_type', 'ticket')
+                $ticketRecord = Transaction::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -143,7 +150,7 @@ class DashboardAdminController extends Controller
                     ->groupBy('day_name')
                     ->get();
                 
-                $ticketAmount = TransactionRecord::where('ticket_type', 'ticket')
+                $ticketAmount = Transaction::where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -152,7 +159,7 @@ class DashboardAdminController extends Controller
 
                 $ticketRecord = $this->organiseWeek($ticketRecord);               
 
-                $ancillaryRecord = TransactionRecord::where('ticket_type', 'Ancillary')
+                $ancillaryRecord = Transaction::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -161,7 +168,7 @@ class DashboardAdminController extends Controller
                     ->get();
 
 
-                $ancillaryAmount = TransactionRecord::where('ticket_type', 'Ancillary')
+                $ancillaryAmount = Transaction::where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -169,7 +176,7 @@ class DashboardAdminController extends Controller
 
                 $ancillaryRecord = $this->organiseWeek($ancillaryRecord);
 
-                $revenueRecord = TransactionRecord::whereYear('created_at', $year)
+                $revenueRecord = Transaction::whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                     ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(CAST(amount as SIGNED)) as total_amount'))
@@ -178,7 +185,7 @@ class DashboardAdminController extends Controller
 
                 $revenueRecord = $this->organiseWeek($revenueRecord);
                 
-                $revenueAmount = TransactionRecord::whereYear('created_at', $year)
+                $revenueAmount = Transaction::whereYear('created_at', $year)
                         ->whereMonth('created_at', $month)
                         ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
                         ->sum(DB::raw('CAST(amount AS SIGNED)'));
@@ -264,51 +271,51 @@ class DashboardAdminController extends Controller
         $filter = $request->input('filter');
         $data = [];
         if ($filter == "yearly") {
-            $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+            $transactions = Transaction::where('ticket_type', 'ticket')
                 ->select(DB::raw('YEAR(created_at) as year'), DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
                 ->groupBy(DB::raw('YEAR(created_at'), DB::raw('MONTH(created_at'))
                 ->get();
             
-            foreach($transactionRecords as $transactionRecord) {
-                if(!isset($data[$transactionRecord->year])) {
-                    $data[$transactionRecord->year] = [];
+            foreach($transactions as $transaction) {
+                if(!isset($data[$transaction->year])) {
+                    $data[$transaction->year] = [];
                 }
 
-                $data[$transactionRecord->year]['months'][$transactionRecord->month] = $transactionRecord->count;
+                $data[$transaction->year]['months'][$transaction->month] = $transaction->count;
             }
 
         }
 
         if ($filter == "monthly") {
-            $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+            $transactions = Transaction::where('ticket_type', 'ticket')
                 ->where(DB::raw('YEAR(created_at)'), carbon::create(now())->year)
                 ->select(DB::raw('MONTH(created_at) as month'), DB::raw('WEEK(created_at) as week'), DB::raw('COUNT(*) as count'))
                 ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('WEEK(created_at)'))
                 ->get();
 
-            foreach($transactionRecords as $transactionRecord) {
-                if(!isset($transactionRecord[$transactionRecord->month]['weekly'][$transactionRecord->week])) {
-                    $transactionRecord[$transactionRecord->month]['weekly'][$transactionRecord->week] = [];
+            foreach($transactions as $transaction) {
+                if(!isset($transaction[$transaction->month]['weekly'][$transaction->week])) {
+                    $transaction[$transaction->month]['weekly'][$transaction->week] = [];
                 }
 
-                $transactionRecord[$transactionRecord->month]['weekly'][$transactionRecord->week][] = $transactionRecord->count();
+                $transaction[$transaction->month]['weekly'][$transaction->week][] = $transaction->count();
             }
         }
 
         if ($filter == "weekly") {
-            $transactionRecords = TransactionRecord::where('ticket_type', 'ticket')
+            $transactions = Transaction::where('ticket_type', 'ticket')
                 ->where(DB::raw('YEAR(created_at)'), carbon::create(now())->year)
                 ->select(DB::raw('MONTH(created_at) as month'), DB::raw('WEEK(created_at) as week'), DB::raw('DAY(created_at) as day'))
                 ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('WEEK(created_at)', DB::raw('DAY(created_at)')))
                 ->get();
 
-            foreach($transactionRecords as $transactionRecord) {
-                if(!isset($data[$transactionRecord->month])) {
-                    $data[$transactionRecord->month] = [];
+            foreach($transactions as $transaction) {
+                if(!isset($data[$transaction->month])) {
+                    $data[$transaction->month] = [];
 
                 }
 
-                $data[$transactionRecord->month]['weeks'][$transactionRecord->week]['days'][$transactionRecord->day] = $transactionRecord->count;
+                $data[$transaction->month]['weeks'][$transaction->week]['days'][$transaction->day] = $transaction->count;
 
 
             }
@@ -328,17 +335,17 @@ class DashboardAdminController extends Controller
             // $today = Carbon::now();
             $sevenDaysAgo = Carbon::now()->subDays(7);
 
-            $androidUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'ANDROID')->count();
-            $iosUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->count();
-            $otherUsers = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'UNKNOWN')->count();
+            $androidUsers = Transaction::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'ANDROID')->count();
+            $iosUsers = Transaction::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->count();
+            $otherUsers = Transaction::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'UNKNOWN')->count();
 
             $percentageOfAndroid = $androidUsers > 0 ? ($androidUsers / ($androidUsers + $iosUsers + $otherUsers)) * 100 : 0;
             $percentageOfIos = $iosUsers > 0 ? ($iosUsers / ($androidUsers + $iosUsers + $otherUsers)) * 100 : 0;
             $percentageOfOthers = $iosUsers > 0 ? ($iosUsers / ($androidUsers + $iosUsers + $otherUsers)) * 100 : 0;
 
-            $amountAndroid = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'ANDROID')->sum('amount');
-            $amountIos = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->sum('amount');
-            $amountUnknown = TransactionRecord::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'UNKNOWN')->sum('amount');
+            $amountAndroid = Transaction::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'ANDROID')->sum('amount');
+            $amountIos = Transaction::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'IOS')->sum('amount');
+            $amountUnknown = Transaction::whereBetween('created_at', [$sevenDaysAgo, now()])->where('device_type', 'UNKNOWN')->sum('amount');
 
             return response()->json([
                 "error" => false,
@@ -381,8 +388,7 @@ class DashboardAdminController extends Controller
 
     public function totalRegisteredUsersTable(Request $request) {
         try {
-            // $users = User::withCount('flightRecords as total_booked_flight')->get();
-            $users = User::get();
+            $users = User::withCount('flights as total_booked_flight')->get();
                
             return new UserCollection($users);
 
@@ -401,12 +407,14 @@ class DashboardAdminController extends Controller
 
     public function totalPurchasedTicketTable(Request $request) {
         try {
-            $ticketPurchased = TransactionRecord::with('user')->get();
             
-            // $ticketPurchased = TransactionRecord::with(['user' => function ($query) {
-            //     $query->select('id', 'first_name', 'last_name', 'email');
-            // }])->get();
+            $ticketPurchased = Transaction::where('is_flight', true)->with(['user' => function ($query) {
+                $query->select('id', 'first_name', 'last_name', 'email');
+            }])->get();
 
+        
+
+            // $ticketPurchased = Transaction::with('user')->get();
             // $tickets = Ticket::with(['flight_ticket_types', 'users']);
 
         }  catch (\Throwable $th) {
@@ -419,6 +427,33 @@ class DashboardAdminController extends Controller
         return response()->json([
             'error' => false,
             'tickets_info' => $ticketPurchased
+        ], 200);
+    }
+
+    public function totalRevenueTicketTable(Request $request) {
+        $revenuePurchased = Transaction::with(['user' => function ($query) {
+            $query->select('id', 'first_name', 'last_name', 'email');
+        }])->get();
+
+        return response()->json([
+            'error' => false,
+            'revenue_purchased' => $revenuePurchased
+        ], 200);
+
+    }
+
+
+    public function recentActivitiesTable(Request $request) {
+        $sixHoursAgo = now()->subHours(6);
+        $users = User::where('created_at', "<=", $sixHoursAgo)->get();
+        $transactions = Transaction::where('created_at', "<=", $sixHoursAgo)->get();
+        $bookings = Booking::where('created_at', "<=", $sixHoursAgo)->get();
+
+        return response()->json([
+            "error" => false,
+            "user" => $users,
+            "transactions" => $transactions,
+            "bookings" => $bookings
         ]);
     }
 

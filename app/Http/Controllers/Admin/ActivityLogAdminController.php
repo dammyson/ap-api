@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Admin\ActivityLog;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateFilterActivityRequest;
+use App\Models\Admin\AdminActivityLog;
 
 class ActivityLogAdminController extends Controller
 {
@@ -17,7 +17,7 @@ class ActivityLogAdminController extends Controller
         $admin = $request->user('admin');
 
         try{
-            $activityLog =  ActivityLog::create([
+            $activityLog =  AdminActivityLog::create([
                 'admin_id' => $admin->id,
                 'role' => $admin->role,
                 'activity_type' => $activity_type,
@@ -42,8 +42,8 @@ class ActivityLogAdminController extends Controller
     public function indexActivityLog() {
         try {         
 
-            $activityLogs = ActivityLog::with(['admin' => function($query) {
-                $query->select('id', 'user_name', 'role');
+            $activityLogs = AdminActivityLog::with(['admin' => function($query) {
+                $query->withTrashed()->select('id', 'user_name', 'role');
             }])->get();
 
         } catch(\Throwable $th) {
@@ -65,7 +65,7 @@ class ActivityLogAdminController extends Controller
         $endDate = Carbon::parse($request->input('end_date') ?? now())->endOfDay();
 
         try {
-            $filteredActivityLog = ActivityLog::whereBetween('created_at', [$startDate, $endDate])
+            $filteredActivityLog = AdminActivityLog::whereBetween('created_at', [$startDate, $endDate])
                 ->with(['admin' => function($query) {
                     $query->select('id', 'user_name', 'role');
                 }])->get();

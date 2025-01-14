@@ -17,7 +17,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
-            $table->enum('role', ['Admin', 'Sub-admin']);
+            $table->enum('role', ['admin', 'sub-admin']);
+            $table->string('image_url')->nullable();
+            $table->string('otp')->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
+            $table->string("phone_number")->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

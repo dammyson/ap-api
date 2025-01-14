@@ -5,15 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use App\Mail\TemporaryPassword;
 use App\Http\Services\AutoGenerate;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\Admin\CreateAdminRequest;
 use App\Services\AutoGenerate\GeneratePassword;
 use App\Http\Requests\Auth\Admin\LoginAdminRequest;
-use App\Mail\TemporaryPassword;
 
 class RegisterAdminController extends Controller
 {
@@ -26,29 +27,32 @@ class RegisterAdminController extends Controller
     public function registerAdmin(CreateAdminRequest $request) {
         try {
 
-            $admin = $request->user('admin');
-
-            if ($admin->role  != 'Admin') {
-                return response()->json([
-                    "error" => true,
-                    "message" => "You do not have permission to view team members.
-                        Please contact your system administrator if you believe this is an error"
-                ], 403);
-            }
-           
-            // generate temporary password
-            $to_name = $request->input('user_name');
-            $to_email = $request->input('email');
-
-            $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
+            Gate::authorize('is-admin');
             
-            $admin = Admin::create([
-                'user_name' => $request->input('user_name'), 
-                'email' => $request->input('email'), 
-                'password' => Hash::make($temporaryPassword), 
-                'role' => $request->input('role'),
-                'image_url' => $request->input('image_url')
-            ]);
+            $admin = $request->user('admin');
+            
+            // if ($admin->role  != 'Admin') {
+                //     return response()->json([
+                    //         "error" => true,
+                    //         "message" => "You do not have permission to view team members.
+                    //             Please contact your system administrator if you believe this is an error"
+                    //     ], 403);
+                    // }
+                    
+                    // generate temporary password
+                    $to_name = $request->input('user_name');
+                    $to_email = $request->input('email');
+                    
+                    $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
+                    
+                    $admin = Admin::create([
+                        'user_name' => $request->input('user_name'), 
+                        'email' => $request->input('email'), 
+                        'password' => Hash::make($temporaryPassword), 
+                        'role' => $request->input('role'),
+                        'image_url' => $request->input('image_url')
+                    ]);
+                    // dd('iran');
 
             // sendMail that contains the email and temporary password and send a warning that the
             // new admin should change the password once logged in.

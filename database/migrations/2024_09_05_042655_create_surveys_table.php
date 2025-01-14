@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('surveys', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->dateTime('duration_of_survey');
+            $table->integer('duration_of_survey');
             $table->integer('points_awarded')->nullable();
             $table->string('image_url')->nullable();
             $table->boolean('is_published')->default(true);
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

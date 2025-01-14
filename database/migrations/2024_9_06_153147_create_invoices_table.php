@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('screen_resolutions', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('screen_resolution');
+        Schema::create('invoices', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('booking_id')->nullable();
+            $table->decimal('amount');
+            $table->boolean('is_paid')->default(false);
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('screen_resolutions');
+        Schema::dropIfExists('invoice_records');
     }
 };

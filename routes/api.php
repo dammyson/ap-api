@@ -1,49 +1,48 @@
 <?php
 
+use Psy\Sudo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\TierController;
+use App\Http\Controllers\TripController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PlaneController;
+
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\RewardController;
-
 use App\Http\Controllers\TicketController;
-use App\Services\Soap\PenaltyRulesBuilder;
-use App\Http\Controllers\AirportController;
+use App\Http\Controllers\WalletController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\CountryController;
-
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GamePlayController;
 use App\Http\Controllers\GameRuleController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\FillSurveyController;
 use App\Http\Controllers\UserSurveyController;
-use App\Http\Controllers\AddBaggagesController;
 use App\Http\Controllers\TestPaymentController;
-use App\Services\Soap\VoidTicketRequestBuilder;
+use Illuminate\Session\Middleware\StartSession;
 use App\Http\Controllers\Admin\SurveyController;
 use App\Http\Controllers\CancelFlightController;
-use App\Http\Controllers\ChangeFlightController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\Test\AddSeatController;
 use App\Http\Controllers\Test\SeatMapController;
+use App\Http\Controllers\AnalyticsUserController;
 use App\Http\Controllers\CreateBookingController;
 use App\Http\Controllers\RedeemedRewardController;
 use App\Http\Controllers\Test\AddWeightController;
 use App\Http\Controllers\Test\DividePNRController;
 use App\Http\Controllers\SharePeacePointController;
-use App\Http\Controllers\Test\TestWeightController;
+use App\Http\Controllers\Test\ReissuePNRController;
 use App\Http\Controllers\Test\VoidTicketController;
 use App\Http\Controllers\Admin\LoginAdminController;
+use App\Http\Controllers\Guest\GuestLoginController;
 use App\Http\Controllers\Test\DivideDinerController;
 use App\Http\Controllers\Test\SegmentBaseController;
 use App\Http\Controllers\Admin\ChangeAdminController;
 use App\Http\Controllers\Test\PenaltyRulesController;
 use App\Http\Controllers\Admin\ProfileAdminController;
+use App\Http\Controllers\Test\AddWeightControllerTest;
 use App\Http\Controllers\Admin\CustomerAdminController;
 use App\Http\Controllers\Admin\RegisterAdminController;
 use App\Http\Controllers\Admin\DashboardAdminController;
@@ -53,27 +52,32 @@ use App\Http\Controllers\Test\GetAirportMatrixController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\Admin\ActivityLogAdminController;
 use App\Http\Controllers\Admin\TeamMembersAdminController;
+use App\Http\Controllers\RedeemTicketPeacePointController;
 use App\Http\Controllers\Test\TicketReservationController;
 use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
-use App\Http\Controllers\AnalyticsUserController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\RedeemTicketPeacePointController;
-use App\Http\Controllers\Test\AddWeightControllerTest;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
-use App\Http\Controllers\Test\ReissuePNRController;
-use App\Http\Controllers\TripController;
-use App\Http\Controllers\WalletController;
-use Psy\Sudo;
 
 Route::get('/soap', [FlightController::class, 'callSoapApi']);
 Route::post('test/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
-Route::post('/search-flights', [FlightController::class, 'searchFlightsTwo']);
-Route::post('test-two-a', [CreateBookingController::class, 'createBookingTwo']);
 
+Route::prefix('guest')->middleware(StartSession::class)->group(function () {
+    Route::get('continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
+    Route::post('search-flights', [FlightController::class, 'searchFlightsForWeb']);
+    Route::post('upcoming-trips', [AnalyticsUserController::class, 'guestUpcomingTrips']);
+    Route::post('create-booking/two-a', [CreateBookingController::class, 'guestCreateBooking']);
+    Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
+    Route::post('/verify-payment/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
+    Route::post('reissue-ticket-pnr/preview/{invoiceId}', [ReissuePNRController::class, 'reissueTicketPNR']);
+    Route::post('reissue-ticket-pnr/commit', [ReissuePNRController::class, 'reissueTicketCommit']);
+    Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
+    Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
+
+});
 
 Route::group(['prefix' => 'user'], function ()  {
     Route::post('register', [RegisterController::class, 'userRegister']);
@@ -98,7 +102,9 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::get('screen-resolution', [DashboardAdminController::class, 'screenResolution']);
             Route::get('total-registered-users-table', [DashboardAdminController::class, 'totalRegisteredUsersTable']);
             Route::get('total-purchased-tickets-table', [DashboardAdminController::class, 'totalPurchasedTicketTable']);
+            Route::get('total-revenue-tickets-table', [DashboardAdminController::class, 'totalRevenueTicketTable']);
             Route::get('active-users-table', [DashboardAdminController::class, 'activeUserTable']);
+            Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
             
         });
         
@@ -124,7 +130,7 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::get('activity-log-table-data', [ActivityLogAdminController::class, 'indexActivityLog']);
             Route::post('filter-activity-log', [ActivityLogAdminController::class, 'filterActivityLog']);
         });
-
+       
         Route::group(['prefix' => 'surveys'], function () {
             Route::post('create-survey', [SurveyController::class, 'createSurvey']);
             Route::patch('deactivate-survey', [SurveyController::class, 'deActiveSurvey']);
@@ -169,6 +175,7 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::post('profile/change-profile-image', [ProfileAdminController::class, 'changeAdminProfileImage']);
             Route::patch('change-admin-role', [ProfileAdminController::class, 'changeAdminRole']);
             Route::delete('delete-admin-account', [ProfileAdminController::class, 'deleteAdmin']);
+            Route::patch('deactive-admin-account', [ProfileAdminController::class, 'deactivateAdminAccount']);
             Route::get('team-members', [TeamMembersAdminController::class, 'teamMembers']);
             Route::post('add-team-member', [RegisterAdminController::class, 'registerAdmin']);
             Route::delete('team-member/{teamMemberId}/delete', [TeamMembersAdminController::class , 'deleteTeamMembers']);
@@ -181,11 +188,6 @@ Route::group(['prefix' => 'admin/'], function () {
 
         Route::post('admin-logout', [RegisterAdminController::class, 'logoutAdmin']);
 
-
-        Route::post('/country', [CountryController::class, 'storeCountry']);
-        Route::post('/city', [CityController::class, 'storeCity']);
-        Route::post('/plane', [PlaneController::class, 'storePlane']);
-        Route::post('/airport', [AirportController::class, 'storeAirport']);
         Route::post('game-categories', [GameCategoryController::class, 'store']);
         Route::post('games', [GameController::class, 'store']);
 
@@ -202,8 +204,6 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-            Route::post('/view-only-rt', [TicketReservationController::class, 'ticketReservationViewOnlyRT']);
-            Route::post('/view-only-two-a', [TicketReservationController::class, 'ticketReservationViewOnlyTwoA']);
             Route::post('/commit-two-a', [TicketReservationController::class, 'ticktReservationCommitTwoA']);
             Route::post('/commit/invoice/{invoiceId}', [TicketReservationController::class, 'ticketReservationCommit']);
             Route::post('/commit-test', [TicketReservationController::class, 'testTicketReservationCommit']);
@@ -227,7 +227,9 @@ Route::group(["middleware" => ["auth:api"]], function() {
             });
 
             Route::group(["prefix" => "create-booking"], function() {
-                Route::post('two-a', [CreateBookingController::class, 'createBooking']);
+                Route::post('two-a', [CreateBookingController::class, 'guestCreateBooking']);
+                Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
+                Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
 
         });
@@ -294,6 +296,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
+        Route::get('allocate-points', [ProfileController::class, 'allocatePoint']);
         Route::post('profile/edit', [ProfileController::class, 'editProfile']);
         Route::post('profile/change-profile-image', [ProfileController::class, 'changeProfileImage']);
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
@@ -302,6 +305,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('create-wallet', [WalletController::class, 'createWallet']);
         Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
         Route::get('upcoming-trips', [AnalyticsUserController::class, 'upcomingTrips']);
+        Route::put('award-point-manually', [CustomerAdminController::class, 'testAwardPointManually']);
+
 
         Route::get('getpoint', [ProfileController::class, 'getPoint']);
     });
@@ -310,7 +315,7 @@ Route::group(["middleware" => ["auth:api"]], function () {
     
     Route::prefix('verify-payment')->group(function () {
         Route::post('/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
-        Route::post('/tier-ref', [TestPaymentController::class, 'verfiyTierRef']);
+        Route::post('/tier-ref', [TestPaymentController::class, 'verifyTierRef']);
     });
 
     Route::post('redeem-ticket-with-peace-point', [RedeemTicketPeacePointController::class, 'payWithPeacePoint']);
@@ -319,14 +324,9 @@ Route::group(["middleware" => ["auth:api"]], function () {
 
     Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);
     Route::post('cancel-flight-commit', [CancelFlightController::class, 'cancelFlightCommit']);
-    Route::post('change-flight', [ChangeFlightController::class, 'changeFlight']);
-    Route::post('change-flight-view-only', [ChangeFlightController::class, 'changeFlightViewOnly']);
+   
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']);
-    Route::get('/country', [CountryController::class, 'indexCountry']);
-    Route::get('/city', [CityController::class, 'indexCity']);
-    Route::get('/plane', [PlaneController::class, 'indexPlane']);
-    Route::get('/airport', [AirportController::class, 'indexAirport']);
     Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
     Route::post('/tickets/update-seats', [TicketController::class, 'updateSeats']);
     Route::get('/booking', [BookingController::class, 'getBooking']);

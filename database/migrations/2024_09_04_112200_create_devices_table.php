@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->enum('device_type', ['Android', 'IOS']);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('device_type');
+            
             $table->timestamps();
         });
     }

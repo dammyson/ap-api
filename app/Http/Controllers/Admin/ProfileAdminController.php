@@ -5,21 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ChangeProfileImageRequest;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\ChangeProfileImageRequest;
 
 class ProfileAdminController extends Controller
 {
     public function getAdminProfile(Request $request) {
-        $admin = $request->user('admin');
-
+        
         try {
-           // get the image url link from the stored name
-           $image_url = $admin->image_url;
-           $image_url_link = Storage::url($image_url);
+            // get the image url link from the stored name
+            $admin = $request->user('admin');
+
+            $image_url = $admin->image_url;
+            $image_url_link = Storage::url($image_url);
 
 
-           $admin_data = [
+            $admin_data = [
                 "id" => $admin->id,
                 "user_name" => $admin->user_name,
                 'email' => $admin->email,
@@ -101,19 +103,15 @@ class ProfileAdminController extends Controller
     }
 
     public function changeAdminRole(Request $request) {
-        $email = $request->input('email');
-        $newRole = $request->input('new_role');
+       
 
         try {
-            if ($request->user('admin')->role !== "Admin") {
-                return response()->json([
-                    "error" => true,
-                    "message" => "You do not have permission to view team members.
-                        Please contact your system administrator if you believe this is an error"
-                ], 403);
-    
-            }
-    
+
+            Gate::authorize('is-admin');
+
+            $email = $request->input('email');
+            $newRole = $request->input('new_role');
+
             $admin = Admin::where('email', $email)->first();
             $admin->role = $newRole;
             $admin->save();
@@ -136,17 +134,53 @@ class ProfileAdminController extends Controller
         $email = $request->input('email');
 
         try {
-            if ($request->user('admin')->role !== "Admin") {
-                return response()->json([
-                    "error" => true,
-                    "message" => "You do not have permission to view team members.
-                        Please contact your system administrator if you believe this is an error"
-                ], 403);
+
+            Gate::authorize('is-admin');
+
+            // if ($request->user('admin')->role !== "Admin") {
+            //     return response()->json([
+            //         "error" => true,
+            //         "message" => "You do not have permission to view team members.
+            //             Please contact your system administrator if you believe this is an error"
+            //     ], 403);
     
-            }
+            // }
     
             $admin = Admin::where('email', $email)->first();
             $admin->delete();
+            
+            return response()->json([
+                "error" => false,
+                "message" => "Admin account deleted successfully"
+            ], 200);
+        
+        } catch(\Throwable $th) {
+            return response()->json([
+                "error" => true,
+                "message" => $th->getMessage()
+            ], 500); 
+        }
+    }
+
+    public function deactivateAdminAccount(Request $request) {
+        $email = $request->input('email');
+
+        try {
+
+            Gate::authorize('is-admin');
+
+            // if ($request->user('admin')->role !== "Admin") {
+            //     return response()->json([
+            //         "error" => true,
+            //         "message" => "You do not have permission to view team members.
+            //             Please contact your system administrator if you believe this is an error"
+            //     ], 403);
+    
+            // }
+    
+            $admin = Admin::where('email', $email)->first();
+            $admin->is_deactivated = true;
+            $admin->save();
             
             return response()->json([
                 "error" => false,

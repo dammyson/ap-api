@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('screen_resolutions', function (Blueprint $table) {
+        Schema::create('admin_activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('screen_resolution');
+            $table->string('activity_type');
+            $table->string('description');
+            $table->string('ip_address');
+            $table->foreignId('admin_id')->constrained()->onUpdated('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('screen_resolutions');
+        Schema::dropIfExists('activity_logs');
     }
 };

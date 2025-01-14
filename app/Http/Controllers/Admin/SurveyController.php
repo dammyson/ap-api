@@ -388,7 +388,7 @@ class SurveyController extends Controller
 
     public function getSurveyResultByGender(Survey $survey) {
 
-        $totalResultCount = SurveyUserResponse::where("survey_id", $survey->id)->get();
+        $totalResultCount = SurveyUserResponse::where("survey_id", $survey->id)->count();
 
         // Return zero percentages if there are no responses
         if ($totalResultCount === 0) {

@@ -2,21 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
+    use HasFactory, HasUuids;
+    
+    protected $fillable = [ 
+        'transaction_type', 
+        'amount', 
         'user_id',
-        'ref',
-        'invoice_id',
-        'transaction_type_id',
-        'amount',
-        'description',
-        'transaction_date',
+        'peace_id', 
+        'invoice_number',
         'is_flight',
+        'invoice_id',
+        'ticket_type',
+        'device_type'
+        
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class, 'peace_id', 'peace_id');
+    }
 }
