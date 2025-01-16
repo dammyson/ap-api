@@ -120,9 +120,11 @@ class TicketReservationRequestBuilder
             return '<MCONumber>4010026732</MCONumber>';
          }
          else if ($preferredCurrency == "USD") {
-            return '<MCONumber>4010026733</MCONumber>';
+            return '<MCONumber>4010026734</MCONumber>';
          }
-
+         else if ($preferredCurrency == "GBP") {
+            return '<MCONumber>4010026734</MCONumber>';
+         }
       }
 
    public function ticketReservationCommitTwoA (
