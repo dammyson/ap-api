@@ -46,9 +46,9 @@ class LoginController extends Controller
                 'url' => '/messages/1'
             ];
 
-            $user->notify(new PasswordChanged($details));
+            // $user->notify(new PasswordChanged($details));
 
-            dd('');
+            // dd('');
 
             if (is_null($user)) {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
@@ -74,6 +74,9 @@ class LoginController extends Controller
                 
                 if ($deviceType) {
                     $userDevice = Device::where('user_id', $user->id)->first();
+                    $user->device_type = $deviceType;
+                    $user->save();
+
                     if (!$userDevice) {
                         Device::create([
                             'user_id' => $user->id,

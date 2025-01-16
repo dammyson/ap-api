@@ -41,10 +41,12 @@ class TicketReservationController extends Controller
     public function ticketReservationViewOnly(TicketReservationViewOnlyRequest $request) {
         $ID = $request->input('ID');
         $referenceID = $request->input('referenceID');
+        $preferredCurrency = $request->input('preferred_currency');
 
         // $function = 'http://impl.soap.ws.crane.hititcs.com/ticketReservationViewOnlyRT';
 
         $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+            $preferredCurrency,
             $ID,
             $referenceID
         );
@@ -67,8 +69,10 @@ class TicketReservationController extends Controller
         $bookingId = $request->input('ID');
         $bookingReferenceId = $request->input('reference_id');
         $paidAmount = $request->input('value');
+        $preferredCurrency = $request->input('preferred_currency');
         
-        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
+        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(  
+            $preferredCurrency,     
             $bookingId,
             $bookingReferenceId,           
             $paidAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
@@ -83,7 +87,7 @@ class TicketReservationController extends Controller
 
     }
 
-    public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType = null) { 
+    public function ticketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType = null) { 
         $invoice = Invoice::find($invoiceId);
         $invoiceAmount = $invoice->amount;
 
@@ -111,7 +115,8 @@ class TicketReservationController extends Controller
             ], 500);
         }
 
-        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
+        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(  
+            $preferredCurrency,         
             $bookingId,
             $bookingReferenceId,           
             $paidAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
@@ -171,7 +176,8 @@ class TicketReservationController extends Controller
                         'user_id' => $user->id,
                         'invoice_id' => $invoice->id,
                         'device_type' => $deviceType,
-                        'is_flight' => true
+                        'is_flight' => true,
+                        'currency' => $preferredCurrency
                     ]);                    
                 
                 } else { 
@@ -187,7 +193,9 @@ class TicketReservationController extends Controller
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
-                            'device_type' => $userDevice->device_type
+                            'device_type' => $userDevice->device_type,
+                            'is_flight' => true,
+                            'currency' => $preferredCurrency
                         ]
                     ); 
                     
@@ -219,7 +227,9 @@ class TicketReservationController extends Controller
                             'ticket_type' => 'ticket',
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
-                            'device_type' => $userDevice->device_type
+                            'device_type' => $userDevice->device_type,
+                            'is_flight' => true,
+                            'currency' => $preferredCurrency
                         ]);                          
                     
                     }
@@ -235,7 +245,9 @@ class TicketReservationController extends Controller
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
-                            'device_type' => $userDevice->device_type
+                            'device_type' => $userDevice->device_type,
+                            'is_flight' => true,
+                            'currency' => $preferredCurrency
                         ]); 
                     }                
                 }
@@ -269,7 +281,7 @@ class TicketReservationController extends Controller
         }  
     }
 
-    public function guestTicketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType = null) { 
+    public function guestTicketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType) { 
         $invoice = Invoice::find($invoiceId);
         $invoiceAmount = $invoice->amount;
 
@@ -297,7 +309,8 @@ class TicketReservationController extends Controller
             ], 500);
         }
 
-        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
+        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
+            $preferredCurrency,           
             $bookingId,
             $bookingReferenceId,           
             $paidAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
@@ -334,6 +347,7 @@ class TicketReservationController extends Controller
             // $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][index]['bookFlightSegmentList']['flightSegment']['flightNumber'];
             
             $user = auth()->user();
+            // Device::where('user_id', $user->id)->first();
             $deviceType = $user ? $user->device_type : $deviceType;
            
             // if (array_key_exists('couponInfoList', $ticketItemList)) {
@@ -358,7 +372,8 @@ class TicketReservationController extends Controller
                         'user_id' => $user ? $user->id : null,
                         'invoice_id' => $invoice->id,
                         'device_type' => $deviceType,
-                        'is_flight' => true
+                        'is_flight' => true,
+                        'currency' => $preferredCurrency
                     ]);                    
                 
                 } else { 
@@ -374,7 +389,8 @@ class TicketReservationController extends Controller
                             'user_id' => $user ? $user->id : null,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
-                            'is_flight' => true
+                            'is_flight' => true,                            
+                            'currency' => $preferredCurrency
                         ]
                     ); 
                     
@@ -406,7 +422,8 @@ class TicketReservationController extends Controller
                             'user_id' => $user ? $user->id : null,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
-                            'is_flight' => true
+                            'is_flight' => true,                            
+                            'currency' => $preferredCurrency
                         ]);                          
                     
                     }
@@ -422,7 +439,8 @@ class TicketReservationController extends Controller
                             'user_id' => $user ? $user->id : null,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
-                            'is_flight' => true
+                            'is_flight' => true,
+                            'currency' => $preferredCurrency
 
                         ]); 
                     }                

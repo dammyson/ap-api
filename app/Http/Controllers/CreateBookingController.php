@@ -338,9 +338,11 @@ class CreateBookingController extends Controller
         $requestPurpose = $request->input('requestPurpose');
         $specialServiceRequestList = $validated['specialServiceRequestList'];
         $tripType = $request->input('trip_type');
+        $preferredCurrency = $request->input('preferred_currency');
         
 
         $xml = $this->createBookingBuilder->createBookingTwoA(
+            $preferredCurrency,
             $CreateBookOriginDestinationOptionList,
             $airTravelerList,
             $airTravelerListChild,
@@ -385,12 +387,15 @@ class CreateBookingController extends Controller
             $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
 
             $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                    $preferredCurrency,
                     $bookingId,
                     $bookingReferenceID
             );    
              
             $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
+            // dump($ticketReservationResponse);
             $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            $currency = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]['currency']["code"];
             
 
             $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
@@ -403,7 +408,8 @@ class CreateBookingController extends Controller
             $invoice = Invoice::create([
                 'amount' => $expectedAmount,
                 'booking_id' => $bookingReferenceIDList['ID'],
-                'is_paid' => false
+                'is_paid' => false,
+                'currency' => $currency
             ]);  
 
             if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
@@ -640,6 +646,7 @@ class CreateBookingController extends Controller
     }
 
     public function redeemTicketWithPeacePoint(Request $request) {
+        $preferredCurrency = $request->input('preferred_currency');
         $routes = $request->input('routes');
         $class = $request->input('class');
         $type  = $request->input('type'); // domestic, regional, international
@@ -677,6 +684,7 @@ class CreateBookingController extends Controller
         $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
 
         $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                $preferredCurrency,
                 $bookingId,
                 $bookingReferenceID
         );    
@@ -723,7 +731,8 @@ class CreateBookingController extends Controller
             "base_fare" => $baseFare,
             "booking_id" => $bookingId,
             "booking_reference_id" => $bookingReferenceID,
-            "invoice_id" => $invoice->id
+            "invoice_id" => $invoice->id,
+            'preferred_currency' => $preferredCurrency
 
         ];
 
@@ -735,6 +744,7 @@ class CreateBookingController extends Controller
           
             $ref = $request->input('ref_id');
             $invoiceId = $request->input('invoice_id');
+            $preferredCurrency = $request->input('preferred_currency');
             // $expectedAmount = $request->input('expected_amount');
             $bookingId = $request->input('booking_id');
             $bookingReferenceID = $request->input('booking_reference_id');
@@ -774,7 +784,8 @@ class CreateBookingController extends Controller
 
             /////////////////////
             
-            $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(           
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
+                $preferredCurrency,           
                 $bookingId,
                 $bookingReferenceID,           
                 $expectedAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
@@ -838,7 +849,8 @@ class CreateBookingController extends Controller
                         'user_id' => $user->id,
                         'invoice_id' => $invoice->id,
                         'device_type' => $userDevice,
-                        'is_flight' => true
+                        'is_flight' => true,
+                        'currency' => $preferredCurrency
                     ]);                    
                 
                 } else { 
@@ -854,7 +866,8 @@ class CreateBookingController extends Controller
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $userDevice,
-                            'is_flight' => true
+                            'is_flight' => true,                            
+                            'currency' => $preferredCurrency
                         ]
                     ); 
                     
@@ -885,7 +898,8 @@ class CreateBookingController extends Controller
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $userDevice,
-                            'is_flight' => true
+                            'is_flight' => true,                            
+                            'currency' => $preferredCurrency
                         ]);                          
                     
                     }
@@ -901,7 +915,8 @@ class CreateBookingController extends Controller
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $userDevice,
-                            'is_flight' => true
+                            'is_flight' => true,                            
+                            'currency' => $preferredCurrency
                         ]); 
                     }                
                 }

@@ -4,7 +4,7 @@ namespace App\Services\Soap;
 
 class SoapRequestBuilder
 {
-   public function GetFlightOneWay($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType)
+   public function GetFlightOneWay($preferredCurrency, $departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType)
    {
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
                 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -17,7 +17,7 @@ class SoapRequestBuilder
                                 <member>false</member>
                                 <password>SCINTILLA</password>
                                 <userName>SCINTILLA</userName>
-                                <preferredCurrency>NGN</preferredCurrency>
+                                <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
                             </clientInformation>
                             <originDestinationInformationList>
                                <dateOffset>0</dateOffset>
@@ -44,7 +44,7 @@ class SoapRequestBuilder
       return $xml;
    }
 
-   public function GetFlightRoundTrip($departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType, $returnDateTime,)
+   public function GetFlightRoundTrip($preferredCurrency, $departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType, $returnDateTime,)
    {
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
               <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -57,7 +57,7 @@ class SoapRequestBuilder
                           <member>false</member>
                           <password>SCINTILLA</password>
                           <userName>SCINTILLA</userName>
-                          <preferredCurrency>NGN</preferredCurrency>
+                          <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
                        </clientInformation>
                        <originDestinationInformationList>
                           <dateOffset>0</dateOffset>
@@ -98,7 +98,7 @@ class SoapRequestBuilder
    }
 
 
-   public function GetFlightMultiCity($multiDirectionalFlights, $travelerInformation, $tripType)
+   public function GetFlightMultiCity($preferredCurrency, $multiDirectionalFlights, $travelerInformation, $tripType)
    {
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
                 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -111,7 +111,7 @@ class SoapRequestBuilder
                                 <member>false</member>
                                 <password>SCINTILLA</password>
                                 <userName>SCINTILLA</userName>
-                                <preferredCurrency>NGN</preferredCurrency>
+                                <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
                             </clientInformation>' .
                             $this->originDestinationInformationList($multiDirectionalFlights)
                            .' <travelerInformation>' .
