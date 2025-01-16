@@ -636,6 +636,7 @@ class CreateBookingController extends Controller
                 "error" => false,
                 "message" => "Flight booked successfully",
                 "amount" => $expectedAmount,
+                "trip_type" => $tripType,
                 "bookingDetails" => $bookingDetails,
                 // "response" => $response
             ], 200);
