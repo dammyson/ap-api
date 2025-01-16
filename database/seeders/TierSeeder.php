@@ -14,7 +14,7 @@ class TierSeeder extends Seeder
     {
         $tiers = [
             [
-                'name' => 'Bronze',
+                'name' => 'Blue',
                 'rank'=> 1,
                 'description' => 'Entry-level tier with basic benefits',
                 'discount' => 0,

@@ -19,7 +19,8 @@ class Transaction extends Model
         'is_flight',
         'invoice_id',
         'ticket_type',
-        'device_type'
+        'device_type',
+        'currency'
         
     ];
 

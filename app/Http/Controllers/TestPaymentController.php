@@ -30,9 +30,11 @@ class TestPaymentController extends Controller
             
         try {
             $ref = $request->input('ref');
+            $preferredCurrency = $request->input('preferred_currency');
             $bookingId = $request->input('bookingId');
             $bookingReferenceID = $request->input('bookingReferenceID');
             $invoiceId = $request->input('invoiceId');
+            $deviceType = $request->input('device_type');
             
             
             //validate verifiedRequest;
@@ -46,7 +48,7 @@ class TestPaymentController extends Controller
             $amount = $amount / 100;
 
             // return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
-            return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId, 'Android');
+            return  $this->ticketReservationController->guestTicketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
         
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
@@ -60,9 +62,12 @@ class TestPaymentController extends Controller
             $request->validate([
                 'ref_id' => 'required|string'
             ]);
+            $preferredCurrency = $request->input('preferred_currency');
             $ref = $request->input('ref_id');
+            // $deviceType = $request->input('device_type');
             $user = $request->user();
             $userId = $user->id;
+            
     
             //validate verifiedRequest;
 
@@ -94,7 +99,7 @@ class TestPaymentController extends Controller
                  
     
             if ($paidAmount == 3000) {
-                $tier = Tier::where('name', 'Bronze')->first();
+                $tier = Tier::where('name', 'Blue')->first();
             } else if($paidAmount == 5000) {
                 $tier = Tier::where('name', 'Silver')->first();
     
@@ -113,7 +118,6 @@ class TestPaymentController extends Controller
                 ]);
 
             } else {
-                $dayOfWeek = Carbon::now()->format('1');
             
                 Transaction::create([
                     "invoice_number" => "not applicable",                        
@@ -123,8 +127,8 @@ class TestPaymentController extends Controller
                     'ticket_type' => "Ancillary",
                     'user_id' => $user->id,
                     'invoice_id' => $invoice->id,
-                    'device_type' => $userDevice->device_type ?? "ANDROID",
-                    'day_of_week' => $dayOfWeek
+                    'device_type' => $user->device_type,
+                    'currency' => $preferredCurrency
                 ]);   
 
                return $this->tierController->upgradeTier($userId, $tier->id);

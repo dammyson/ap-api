@@ -55,6 +55,7 @@ class RegisterController extends Controller
                 // 'peace_id' => $peace_id,
                 'password' => Hash::make($request->input('password')),
                 'status' => $request->input('status') ?? null,
+                'device_type' => $deviceType,
                 'points' => 50, // allocate appropriate pointts once decided
             
             ]);

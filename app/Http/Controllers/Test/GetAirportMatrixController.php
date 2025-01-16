@@ -24,7 +24,7 @@ class GetAirportMatrixController extends Controller
 
         try {
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
+            dd($response);
             if(!array_key_exists('AirPortMatrixResponse', $response)) {
                 return response()->json([
                     'error' => true,

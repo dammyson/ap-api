@@ -39,7 +39,8 @@ class User extends Authenticatable
         'travel_document',
         'tier_id',
         'points',
-        'all_time_point'
+        'all_time_point',
+        'device_type'
     ];
 
     /**

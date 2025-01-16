@@ -13,6 +13,7 @@ class Invoice extends Model
     protected $fillable = [
         'booking_id',
         'amount',
+        'currency',
         'is_paid',
     ];
 }

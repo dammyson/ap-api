@@ -67,6 +67,7 @@ Route::post('test/get-airport-matrix', [GetAirportMatrixController::class, 'GetA
 
 Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     Route::get('continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
+    Route::post('/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
     Route::post('search-flights', [FlightController::class, 'searchFlightsForWeb']);
     Route::post('upcoming-trips', [AnalyticsUserController::class, 'guestUpcomingTrips']);
     Route::post('create-booking/two-a', [CreateBookingController::class, 'guestCreateBooking']);
@@ -76,6 +77,7 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     Route::post('reissue-ticket-pnr/commit', [ReissuePNRController::class, 'reissueTicketCommit']);
     Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
     Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
+
 
 });
 

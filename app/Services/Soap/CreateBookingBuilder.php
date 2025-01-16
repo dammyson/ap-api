@@ -379,6 +379,7 @@ class CreateBookingBuilder
 
 
     public function createBookingTwoA(
+        $preferredCurrency,
         $CreateBookOriginDestinationOptionList,
         $airTravelerList,
         $airTravelerChildList,
@@ -397,7 +398,7 @@ class CreateBookingBuilder
                  <member>false</member>
                  <password>SCINTILLA</password>
                  <userName>SCINTILLA</userName>
-                 <preferredCurrency>NGN</preferredCurrency>
+                 <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
               </clientInformation>
               <airItinerary>
                  <adviceCodeSegmentExist/>
