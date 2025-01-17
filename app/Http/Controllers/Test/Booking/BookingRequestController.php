@@ -217,7 +217,7 @@ class BookingRequestController extends Controller
                 "error" => false,
                 "response" => $response
             
-            ], 500);
+            ], 200);
 
         } catch (\Throwable $th) {
 
