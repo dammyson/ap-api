@@ -23,7 +23,8 @@ class TicketReservationViewOnlyRequest extends FormRequest
     {
         return [
             "ID" => "required|string",
-            "referenceID" => "required|string"
+            "referenceID" => "required|string",
+            "preferred_currency" => "required|string"
         ];
     }
 }
