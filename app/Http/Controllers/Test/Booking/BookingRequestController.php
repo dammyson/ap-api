@@ -36,16 +36,21 @@ class BookingRequestController extends Controller
       
     }
 
-    public function readUserBookingTk(Request $request) {
-        $bookingId = $request->input('booking_id');
+    public function readBookingTk(Request $request) {
+        $bookingId = $request->input('ID');
+        $bookingReferenceID = $request->input('referenceID');
         $peaceId = $request->input('peace_id');
         $lastName = $request->input('last_name');
 
         try {
 
+
             if ($peaceId) {
-                $booking = Booking::where('booking_id', $bookingId)
-                    ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
+
+                // dd("I ran");
+                $booking = Booking::where('booking_id', $bookingId)->first();
+                // dd($booking);
+                    // ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
                 
             } else if ($lastName) {
                 $booking = Booking::where('booking_id', $bookingId)
@@ -61,40 +66,55 @@ class BookingRequestController extends Controller
 
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
     
-           
+    
+            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
-    
-            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
-    
-            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                $booking->booking_id,
-                $booking->booking_reference_id
-            );    
+            $xml = $this->bookingBuilder->readBookingTK(
+                $bookingId, 
+                $bookingReferenceID
+                // $booking->booking_reference_id
+            );
+
+            
+            $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
+
+            return response()->json([
+                'error' => false,
+                'invoice_id' => $invoice->id,
+                'booking_data' => $response
+            ]);
             
             $response = $this->craneOTASoapService->run($function, $xml);
 
             // dd($response);
 
-            if (isset($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']) &&
-                $this->isAssociativeArray($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'])) {
+            // return response()->json([
+            //     "error" => false,
+            //     "response" => $response
+            // ]);
+
+       
+            if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
+                $this->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
                     // dd('I ran');
-                    $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'] = 
-                    [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']];
+                    $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'] = 
+                    [$response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']];
             }
 
-            $bookOriginDestinationOptionLists = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
+            $bookOriginDestinationOptionLists = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
 
             if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
                 $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
                     return array_key_exists('bookFlightSegmentList', $option);
                 });
 
-                $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'] = $filteredOptions;
+                $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'] = $filteredOptions;
 
                 foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
                     $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
                     if(array_key_exists('deiCode', $flightNotes)) {
-                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                        $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
                         
                     }
                     
@@ -106,7 +126,7 @@ class BookingRequestController extends Controller
                     $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
     
                     if(array_key_exists('deiCode', $flightNotes)) {
-                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                        $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
                     
                     }
                 }
@@ -115,7 +135,7 @@ class BookingRequestController extends Controller
                 $flightNotes = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
 
                 if(array_key_exists('deiCode', $flightNotes)) {
-                    $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                    $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
                 
                 }
             }
@@ -134,6 +154,8 @@ class BookingRequestController extends Controller
         ]);
 
     }
+
+   
 
 
     private function isAssociativeArray($array) {
@@ -164,44 +186,6 @@ class BookingRequestController extends Controller
 
         dd($xml);
     }
-
-    public function readBookingTK(ReadBookingTkRequest $request) {
-        $ID = $request->input('ID'); 
-        $referenceID = $request->input('referenceID'); 
-
-        try {
-
-            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
-
-            $xml = $this->bookingBuilder->readBookingTK(
-                $ID, 
-                $referenceID
-            );
-
-            
-            $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
-            
-            $airTravelerLists = $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'];
-            
-            return response()->json([
-                "error" => false,
-                "passengersInfo" => $airTravelerLists
-            ], 200);
-
-
-        } catch (\Throwable $th) {
-            return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ], 500);
-        }
-       
-        return response()->json([
-            "error" => false,
-            "passengerInfo" => ""
-        ], 200);
-    }   
 
     public function readBookingWithSurname(Request $request) {
         try {

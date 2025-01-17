@@ -72,7 +72,11 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     Route::post('upcoming-trips', [AnalyticsUserController::class, 'guestUpcomingTrips']);
     Route::post('create-booking/two-a', [CreateBookingController::class, 'guestCreateBooking']);
     Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
+    Route::post('ticket-reservation-view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
     Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
+    // Route::post('read-user-booking-tk', [BookingRequestController::class, 'readBookingTk']);
+    // Route::post('ticket-reservation-view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
+
     Route::post('/verify-payment/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
     Route::post('reissue-ticket-pnr/preview/{invoiceId}', [ReissuePNRController::class, 'reissueTicketPNR']);
     Route::post('reissue-ticket-pnr/commit', [ReissuePNRController::class, 'reissueTicketCommit']);
@@ -220,15 +224,15 @@ Route::group(["middleware" => ["auth:api"]], function() {
                 Route::post('retrieve-ticket-history', [BookingRequestController::class, 'retrieveTicketHistory']);
             });
 
-            Route::group(["prefix" => "read-booking"], function() {
-                Route::post('read-booking-tk', [BookingRequestController::class, 'readBookingTK']);
-                Route::get('read-booking/{ID}/{referenceID}', [BookingRequestController::class, 'readBooking']);
-                Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
-                Route::get('read-booking/{ID}/{referenceID}', [BookingRequestController::class, 'readBooking']);
-            });
+            // Route::group(["prefix" => "read-booking"], function() {
+            //     Route::post('read-booking-tk', [BookingRequestController::class, 'readBookingTK']);
+            //     Route::get('read-booking/{ID}/{referenceID}', [TicketReservationController::class, 'ticketReservationViewOnly']);
+            //     Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
+            //     Route::get('read-booking/{ID}/{referenceID}', [BookingRequestController::class, 'readBooking']);
+            // });
 
-            Route::group(["prefix" => "read-user-booking"], function() {
-                Route::post('read-user-booking-tk', [BookingRequestController::class, 'readUserBookingTk']);
+            Route::group(["prefix" => "read-booking"], function() {
+                Route::post('tk', [BookingRequestController::class, 'readBookingTk']);
             });
 
             Route::group(["prefix" => "create-booking"], function() {

@@ -5,19 +5,20 @@ namespace App\Http\Controllers\Test;
 use Carbon\Carbon;
 use App\Models\Device;
 use App\Models\Wallet;
+use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\Transaction;
-use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
+use App\Models\RecentActivity;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Services\Utility\CheckArray;
-use App\Services\Soap\TicketReservationRequestBuilder;
-use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
-use App\Models\RecentActivity;
+use Illuminate\Support\Facades\Session;
 use App\Services\Utility\GetPointService;
+use App\Services\Soap\TicketReservationRequestBuilder;
+use App\Http\Controllers\Test\Booking\BookingRequestController;
+use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
 
 class TicketReservationController extends Controller
 {
@@ -38,7 +39,7 @@ class TicketReservationController extends Controller
     }
 
 
-    public function ticketReservationViewOnly(TicketReservationViewOnlyRequest $request) {
+    public function ticketReservationView(TicketReservationViewOnlyRequest $request) {
         $ID = $request->input('ID');
         $referenceID = $request->input('referenceID');
         $preferredCurrency = $request->input('preferred_currency');
@@ -56,11 +57,116 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
+
+            return response()->json([
+                "error" => false,
+                "response" => $response
+            ]);
            
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }  
+    }
+
+
+    public function ticketReservationViewOnly(Request $request) {
+        $bookingId = $request->input('ID');
+        $peaceId = $request->input('peace_id');
+        $lastName = $request->input('last_name');
+        $preferredCurrency = $request->input('preferred_currency');
+
+        try {
+
+            if ($peaceId) {
+                $booking = Booking::where('booking_id', $bookingId)
+                    ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
+                
+            } else if ($lastName) {
+                $booking = Booking::where('booking_id', $bookingId)
+                    ->where('last_name', $lastName)->where('is_cancelled', false)->first();
+            }
+            
+            if (!$booking) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'no booking found'
+                ], 500);
+            }
+
+            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
+    
+
+    
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
+    
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                $preferredCurrency,
+                $booking->booking_id,
+                $booking->booking_reference_id
+            );    
+            
+            $response = $this->craneOTASoapService->run($function, $xml);
+
+            // dd($response);
+
+            if (isset($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']) &&
+                $this->checkArray->isAssociativeArray($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'])) {
+                    // dd('I ran');
+                    $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'] = 
+                    [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']];
+            }
+
+            $bookOriginDestinationOptionLists = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
+
+            if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+                $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
+                    return array_key_exists('bookFlightSegmentList', $option);
+                });
+
+                $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'] = $filteredOptions;
+
+                foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
+                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
+                    if(array_key_exists('deiCode', $flightNotes)) {
+                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                        
+                    }
+                    
+                }
+
+            } else if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists) && count($bookOriginDestinationOptionLists) > 1) {
+                
+                foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
+                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
+    
+                    if(array_key_exists('deiCode', $flightNotes)) {
+                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                    
+                    }
+                }
+
+            } else {
+                $flightNotes = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
+
+                if(array_key_exists('deiCode', $flightNotes)) {
+                    $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                
+                }
+            }
+            
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ]);
+        }
+
+        return response()->json([
+            'error' => false,
+            'invoice_id' => $invoice->id,
+            'booking_data' => $response
+        ]);
+
     }
 
     public function testTicketReservationCommit(Request $request) {
