@@ -272,7 +272,7 @@ class AnalyticsUserController extends Controller
                 $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
 
             } else {
-                $guestToken = $request->session()->get('guest_session_token');
+                // $guestToken = $request->session()->get('guest_session_token');
                 $guestToken = $request->input('guest_session_token');
                 // dd($guestToken);
 

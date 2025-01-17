@@ -72,6 +72,7 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     Route::post('upcoming-trips', [AnalyticsUserController::class, 'guestUpcomingTrips']);
     Route::post('create-booking/two-a', [CreateBookingController::class, 'guestCreateBooking']);
     Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
+    Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
     Route::post('/verify-payment/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
     Route::post('reissue-ticket-pnr/preview/{invoiceId}', [ReissuePNRController::class, 'reissueTicketPNR']);
     Route::post('reissue-ticket-pnr/commit', [ReissuePNRController::class, 'reissueTicketCommit']);
@@ -221,6 +222,8 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
             Route::group(["prefix" => "read-booking"], function() {
                 Route::post('read-booking-tk', [BookingRequestController::class, 'readBookingTK']);
+                Route::get('read-booking/{ID}/{referenceID}', [BookingRequestController::class, 'readBooking']);
+                Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
                 Route::get('read-booking/{ID}/{referenceID}', [BookingRequestController::class, 'readBooking']);
             });
 
