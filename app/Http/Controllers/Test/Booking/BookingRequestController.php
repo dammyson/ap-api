@@ -39,12 +39,18 @@ class BookingRequestController extends Controller
     public function readUserBookingTk(Request $request) {
         $bookingId = $request->input('booking_id');
         $peaceId = $request->input('peace_id');
-
+        $lastName = $request->input('last_name');
 
         try {
 
-            $booking = Booking::where('booking_id', $bookingId)
-                        ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
+            if ($peaceId) {
+                $booking = Booking::where('booking_id', $bookingId)
+                    ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
+                
+            } else if ($lastName) {
+                $booking = Booking::where('booking_id', $bookingId)
+                    ->where('last_name', $lastName)->where('is_cancelled', false)->first();
+            }
             
             if (!$booking) {
                 return response()->json([
@@ -160,15 +166,8 @@ class BookingRequestController extends Controller
     }
 
     public function readBookingTK(ReadBookingTkRequest $request) {
-        $companyCityCode  = $request->input('companyCityCode'); 
-        $companyCode = $request->input('companyCode'); 
-        $companyNameCodeContext = $request->input('companyNameCodeContext');
-        $companyFullName = $request->input('companyFullName'); 
-        $companyShortName = $request->input('companyShortName'); 
-        $countryCode = $request->input('countryCode'); 
         $ID = $request->input('ID'); 
         $referenceID = $request->input('referenceID'); 
-
 
         try {
 
@@ -202,7 +201,33 @@ class BookingRequestController extends Controller
             "error" => false,
             "passengerInfo" => ""
         ], 200);
+    }   
+
+    public function readBookingWithSurname(Request $request) {
+        try {
+            $bookingId = $request->input('booking_id');
+            $passengerName = $request->input('passenger_name');
+            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+
+            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+
+            return response()->json([
+                "error" => false,
+                "response" => $response
+            
+            ], 500);
+
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                "error" => true,
+                "message" => $th->getMessage()
+            ], 500);
+        }
     }
+
 
     public function readBooking($ID, $referenceID) {
         try {
