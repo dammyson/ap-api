@@ -32,7 +32,8 @@ class CancelBookingController extends Controller
             $user =  $request->user();
 
             $ID = $request->input('ID'); 
-            $referenceID = $request->input('referenceID');       
+            $referenceID = $request->input('referenceID');  
+            $guestSessionToken = $request->input('guest_session_token');     
             // dd('I ran');
             $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
                 $ID, 
@@ -43,19 +44,22 @@ class CancelBookingController extends Controller
     
             $response = $this->craneOTASoapService->run($function, $xml);
             // dd($response);
-            $userBooking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->where('is_cancelled', false)->first();
+            $userBooking = $user ? Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->where('is_cancelled', false)->first()
+                :  Booking::where('booking_id', $ID)->where('guest_session_token', $guestSessionToken)->where('is_cancelled', false)->first();
             
             if (!$userBooking) {
                 return response()->json([
                     "error" => true,
                     "message" => "booking does not exist for this user"
-                ]);
+                ], 500);
             }
             Booking::where('booking_id', $ID)->update([
                 'is_cancelled' => true
             ]);
 
             if (array_key_exists('ticketInfo', $response['AirCancelBookingResponse']['airBookingList'])){
+                // dd("if ran");
+               
                 return response()->json([
                     "error" => false,
                     "message" => "booking cancelled successfully, a refund amount will be decided when you visit the airline"
@@ -63,6 +67,8 @@ class CancelBookingController extends Controller
                 
                
             } else {
+
+                // dd("else ran");s
                 return response()->json([
                     "error" => false,
                     "message" => "booking cancelled successfully"
