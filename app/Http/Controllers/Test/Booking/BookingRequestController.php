@@ -78,12 +78,6 @@ class BookingRequestController extends Controller
             
             $response = $this->craneOTASoapService->run($function, $xml);
             // dd($response);
-
-            return response()->json([
-                'error' => false,
-                'invoice_id' => $invoice->id,
-                'booking_data' => $response
-            ]);
             
             $response = $this->craneOTASoapService->run($function, $xml);
 

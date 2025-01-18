@@ -72,7 +72,7 @@ class TicketReservationController extends Controller
     public function ticketReservationViewOnly(Request $request) {
         $bookingId = $request->input('ID');
         $peaceId = $request->input('peace_id');
-        $lastName = $request->input('last_name');
+        $lastName = $request->input('surname');
         $preferredCurrency = $request->input('preferred_currency');
 
         try {
