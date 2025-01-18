@@ -184,18 +184,68 @@ class BookingRequestController extends Controller
     public function readBookingWithSurname(Request $request) {
         try {
             $bookingId = $request->input('booking_id');
-            $passengerName = $request->input('passenger_name');
+            $passengerName = $request->input('surname');
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
             $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
 
+            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
+
+
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            return response()->json([
-                "error" => false,
-                "response" => $response
+            if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
+                $this->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
+                    // dd('I ran');
+                    $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'] = 
+                    [$response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']];
+            }
+
+            $bookOriginDestinationOptionLists = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
+
+            if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+                $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
+                    return array_key_exists('bookFlightSegmentList', $option);
+                });
+
+                $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'] = $filteredOptions;
+
+                foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
+                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
+                    if(array_key_exists('deiCode', $flightNotes)) {
+                        $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                        
+                    }
+                    
+                }
+
+            } else if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists) && count($bookOriginDestinationOptionLists) > 1) {
+                
+                foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
+                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
+    
+                    if(array_key_exists('deiCode', $flightNotes)) {
+                        $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                    
+                    }
+                }
+
+            } else {
+                $flightNotes = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
+
+                if(array_key_exists('deiCode', $flightNotes)) {
+                    $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                
+                }
+            }
             
-            ], 200);
+       
+
+        return response()->json([
+            'error' => false,
+            'invoice_id' => $invoice->id,
+            'booking_data' => $response
+        ]);
 
         } catch (\Throwable $th) {
 
