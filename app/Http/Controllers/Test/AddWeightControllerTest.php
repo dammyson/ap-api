@@ -113,7 +113,7 @@ class AddWeightControllerTest extends Controller
         $user = $request->user();
 
         $booking = $user ? Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first()
-        : Booking::where('booking_id', $bookingReferenceIDID)->where('last_name', $request->input('lastName'))->first();
+        : Booking::where('booking_id', $bookingReferenceIDID)->where('guest_session_token', $request->input('guest_session_token'))->first();
 
         if (!$booking) {
             return response()->json([
@@ -388,7 +388,7 @@ class AddWeightControllerTest extends Controller
 
 
         $booking = $user ? Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first()
-        : Booking::where('booking_id', $bookingReferenceIDID)->where('last_name', $request->input('lastName'))->first();
+        : Booking::where('booking_id', $bookingReferenceIDID)->where('guest_session_token', $request->input('guest_session_token'))->first();
 
         if (!$booking) {
             return response()->json([
