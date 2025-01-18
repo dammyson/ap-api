@@ -78,7 +78,7 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     Route::post('/verify-payment/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
     Route::post('reissue-ticket-pnr/preview/{invoiceId}', [ReissuePNRController::class, 'reissueTicketPNR']);
     Route::post('reissue-ticket-pnr/commit', [ReissuePNRController::class, 'reissueTicketCommit']);
-    Route::post('avialable-special-service', [AvailableSpecialController::class, 'AvailableSpecialServiceTwoA']);
+    Route::post('available-special-service', [AvailableSpecialController::class, 'AvailableSpecialServiceTwoA']);
     Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
     Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
 
