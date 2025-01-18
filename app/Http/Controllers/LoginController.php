@@ -46,7 +46,7 @@ class LoginController extends Controller
                 'url' => '/messages/1'
             ];
 
-            // $user->notify(new PasswordChanged($details));
+            $user->notify(new PasswordChanged($details));
 
             // dd('');
 
