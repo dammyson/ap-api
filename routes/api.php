@@ -81,6 +81,9 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     Route::post('available-special-service', [AvailableSpecialController::class, 'AvailableSpecialServiceTwoA']);
     Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
     Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
+    Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
+
+    // Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
 
 
 });
