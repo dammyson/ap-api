@@ -97,6 +97,7 @@ class AddWeightControllerTest extends Controller
         $sequenceNumber = $request->input('sequenceNumber');
         $status = $request->input('status');
         $airTravelerList = $request->input('airTravelerList');
+        $preferredCurrency = $request->input('preferred_currency');
 
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         
@@ -223,7 +224,8 @@ class AddWeightControllerTest extends Controller
             } else { 
                 $invoice = Invoice::create([
                     'amount' => $amount,
-                    'booking_id' => $bookingId
+                    'booking_id' => $bookingId,
+                    'currency' => $preferredCurrency
                 ]);
                 $addedPrice = $amount;
             }

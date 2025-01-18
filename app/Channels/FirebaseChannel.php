@@ -19,12 +19,16 @@ class FirebaseChannel
      * @return void
      */
     public function send($notifiable, $notification)
-    {
-        $title= $notification->title;
-        $message = $notification->body;
+    {        
+        $data = $notification->toFirebase($notifiable);
+        $title = $data['title'] ?? 'Default Title';
+        $body = $data['body'] ?? "Default Body";
+
         if (method_exists($notification, 'toFirebase')) {
-            $this->sendNotification($notifiable,$title,$message);
+            $this->sendNotification($notifiable,$title,$body);
         }
+
+        
        
     }
 
