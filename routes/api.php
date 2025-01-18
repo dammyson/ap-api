@@ -73,10 +73,8 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     Route::post('create-booking/two-a', [CreateBookingController::class, 'guestCreateBooking']);
     Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
     Route::post('ticket-reservation-view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-    Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
-    // Route::post('read-user-booking-tk', [BookingRequestController::class, 'readBookingTk']);
-    // Route::post('ticket-reservation-view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-
+    // Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
+    Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingTk']);
     Route::post('/verify-payment/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
     Route::post('reissue-ticket-pnr/preview/{invoiceId}', [ReissuePNRController::class, 'reissueTicketPNR']);
     Route::post('reissue-ticket-pnr/commit', [ReissuePNRController::class, 'reissueTicketCommit']);
