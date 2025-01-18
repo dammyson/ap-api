@@ -374,6 +374,7 @@ class AddWeightControllerTest extends Controller
         $status = $request->input('status');
         $airTravelerList = $request->input('airTravelerList');
 
+
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         
         // $airTravelerSequence = $request->input('airTravelerSequence');

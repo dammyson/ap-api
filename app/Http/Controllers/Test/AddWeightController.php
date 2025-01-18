@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Test;
 
+use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ class AddWeightController extends Controller
 
   
     public function selectSeat(addWeightRequest $request) {
+
         $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
         $bookFlightSegmentListActionCode = $request->input('bookFlightSegmentListActionCode');
         $bookFlightAddOnSegment = $request->input('bookFlightAddOnSegment');
@@ -147,6 +149,18 @@ class AddWeightController extends Controller
         $ssrExplanation = $request->input('ssrExplanation');        
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
+
+
+        $user = $request->user();
+        $booking = $user ? Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first()
+        : Booking::where('booking_id', $bookingReferenceIDID)->where('guest_session_token', $request->input('guest_session_token'))->first();
+
+        if (!$booking) {
+            return response()->json([
+                "error" => true,
+                "message" => "you are not authorized to carry out this action"
+            ], 401);
+        }
 
         $xml = $this->addWeightBuilder->addWeight(
             $adviceCodeSegmentExist,
