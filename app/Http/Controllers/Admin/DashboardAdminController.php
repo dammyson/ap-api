@@ -445,15 +445,50 @@ class DashboardAdminController extends Controller
 
     public function recentActivitiesTable(Request $request) {
         $sixHoursAgo = now()->subHours(6);
-        $users = User::where('created_at', "<=", $sixHoursAgo)->get();
-        $transactions = Transaction::where('created_at', "<=", $sixHoursAgo)->get();
-        $bookings = Booking::where('created_at', "<=", $sixHoursAgo)->get();
+        $twelveHoursAgo = now()->subHours(12);
+        // $users = User::where('created_at', "<=", $sixHoursAgo)->get();
+        $users = User::whereBetween('created_at', [$sixHoursAgo, now()])->get();
+        $bookings = Booking::whereBetween('created_at', [$sixHoursAgo, now()])->get();
+        // $bookings = Booking::where('created_at', "<=", $sixHoursAgo)->get();
+
+        $recentActivities = [];
+
+        foreach ($users as $user) {
+            $recentActivities[] = [
+                "title" => "New User Registeration",
+                "details" => $user
+            ];
+        }
+
+        foreach ($bookings as $booking) {
+            $recentActivities[] = [
+                "title" => "New booking creation",
+                "details" => $booking
+            ];   
+        }
+
+        $total6hrsRevenue = Transaction::whereBetween('created_at', [$sixHoursAgo, now()])->sum('amount');
+        $total12hrsRevenue = Transaction::whereBetween('created_at', [$twelveHoursAgo, $sixHoursAgo])->sum('amount');
+
+
+        if ($total12hrsRevenue > 0) { 
+            $revenuePercentageChange = (($total6hrsRevenue - $total12hrsRevenue) / $total12hrsRevenue) * 100;
+
+        } else {
+            $revenuePercentageChange = $total6hrsRevenue > 0 ? 100 : 0; // Handle edge cases
+        }
+
+        if ($revenuePercentageChange != 0) {
+            $recentActivities[] = [
+                "title" => $revenuePercentageChange > 0 ? "Revenue increased by {$revenuePercentageChange} in the last 6 hours" : "Revenue decreased by {$revenuePercentageChange} in the last 6 hours",
+                "details" => $revenuePercentageChange
+            ];   
+        }
+      
 
         return response()->json([
             "error" => false,
-            "user" => $users,
-            "transactions" => $transactions,
-            "bookings" => $bookings
+            "recent_activities" => $recentActivities
         ]);
     }
 
