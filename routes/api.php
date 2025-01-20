@@ -83,6 +83,8 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     // Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
     Route::post('/select-seat', [AddWeightController::class, 'selectSeat']);
     Route::post('cancel-booking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
+    // Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
+
 
 
     Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
@@ -321,7 +323,6 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
         Route::get('upcoming-trips', [AnalyticsUserController::class, 'upcomingTrips']);
         Route::put('award-point-manually', [CustomerAdminController::class, 'testAwardPointManually']);
-
 
         Route::get('getpoint', [ProfileController::class, 'getPoint']);
     });

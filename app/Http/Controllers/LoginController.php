@@ -46,13 +46,12 @@ class LoginController extends Controller
                 'url' => '/messages/1'
             ];
 
-            $user->notify(new PasswordChanged($details));
-
-            // dd('');
+            // $user->notify(new PasswordChanged($details));
 
             if (is_null($user)) {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
             }
+            
             $currentTier = $user->currentTier();
             
             if(!$currentTier) {

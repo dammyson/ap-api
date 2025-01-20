@@ -36,6 +36,7 @@ class FCMService
             );
 
             $tokenData = $credentials->fetchAuthToken();
+            // dd($tokenData);
             $accessToken = $tokenData['access_token'];
             $expiresAt = Carbon::now()->addSeconds($tokenData['expires_in']); // Set expiration
 
