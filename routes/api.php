@@ -83,6 +83,8 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     // Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
     Route::post('/select-seat', [AddWeightController::class, 'selectSeat']);
     Route::post('cancel-booking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
+    Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
+
     // Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
 
 
