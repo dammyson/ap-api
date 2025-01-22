@@ -12,16 +12,16 @@ class AdminObserver
      */
     public function created(Admin $admin): void
     {
-        // $creatorAdmin = auth('admin')->user();
-        // $description = "Created new user account {$admin->user_name} with user ID: {$admin->id} and role {$admin->role}";
+        $creatorAdmin = auth('admin')->user();
+        $description = "Created new user account {$admin->user_name} with user ID: {$admin->id} and role {$admin->role}";
 
-        // AdminActivityLog::create([
-        //     'admin_id' => $creatorAdmin->id,
-        //     'role' => $creatorAdmin->role,
-        //     'activity_type' => "User management",
-        //     'description' => $description,
-        //     'ip_address' => request()->ip()
-        // ]);
+        AdminActivityLog::create([
+            'admin_id' => $creatorAdmin->id,
+            'role' => $creatorAdmin->role,
+            'activity_type' => "User management",
+            'description' => $description,
+            'ip_address' => request()->ip()
+        ]);
     }
 
     /**
