@@ -40,7 +40,7 @@ class FlutterVerificationService implements BaseServiceInterface
         $request = curl_exec($ch);
         if(curl_error($ch)){
          echo 'error:' . curl_error($ch);
-         }
+        }
         curl_close($ch);
 
        

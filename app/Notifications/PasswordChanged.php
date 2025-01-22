@@ -21,12 +21,12 @@ class PasswordChanged extends Notification
 
     /**
      * Get the notification's delivery channels. 'mail',  return ['database'];
-     *
+     * \App\Channels\FirebaseChannel::class
      * @return array<int, string>
      */
     public function via(object $notifiable): array
     {
-        return [ \App\Channels\FirebaseChannel::class];
+        return ['database', 'mail'];
     }
 
     /**

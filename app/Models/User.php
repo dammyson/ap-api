@@ -40,7 +40,8 @@ class User extends Authenticatable
         'tier_id',
         'points',
         'all_time_point',
-        'device_type'
+        'device_type',
+        'firebase_token'
     ];
 
     /**

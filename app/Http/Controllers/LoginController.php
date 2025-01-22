@@ -30,7 +30,9 @@ class LoginController extends Controller
     //
     public function login(UserLoginRequest $request)
     {
-        try{
+        try {
+
+            // dd($request->all());
             $deviceType = $request->input('device_type');
             $screenResolution = $request->input('screen_resolution');
             // $user = User::where('email', $request->credential);
@@ -39,6 +41,11 @@ class LoginController extends Controller
                     ->orWhere('peace_id', $request->peace_id);
             })->first();
 
+            if ($request->has('firebase_token')) {
+                $user->firebase_token = $request->firebase_token;
+                $user->save();
+            }
+
 
             $details = [
                 'title' => 'New Message',
@@ -46,18 +53,18 @@ class LoginController extends Controller
                 'url' => '/messages/1'
             ];
 
-            // $user->notify(new PasswordChanged($details));
+            $user->notify(new PasswordChanged($details));
 
             if (is_null($user)) {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
             }
-            
+
             $currentTier = $user->currentTier();
-            
-            if(!$currentTier) {
+
+            if (!$currentTier) {
                 $this->tierService->assignTierWithDefaultFallback($user->id);
             }
-           
+
             // $newpassword = $validated['password'];
             // dd($newpassword);
             if (Hash::check($request["password"], $user->password)) {
@@ -65,12 +72,12 @@ class LoginController extends Controller
                 $data['token'] = $user->createToken('Nova')->accessToken;
 
                 // $userAgent = $request->header('User-Agent');
-                
+
                 // $deviceType = $this->checkDevice->checkDeviceType($userAgent, $user);
                 // $screenResolution = $this->checkDevice->saveScreenSize($user, $request->screen_resolution);
-                
 
-                
+
+
                 if ($deviceType) {
                     $userDevice = Device::where('user_id', $user->id)->first();
                     $user->device_type = $deviceType;
@@ -90,7 +97,7 @@ class LoginController extends Controller
                 if ($screenResolution) {
                     $userScreenResolution = ScreenResolution::where('user_id', $user->id)->first();
 
-                    if(!$userScreenResolution) {
+                    if (!$userScreenResolution) {
                         ScreenResolution::create([
                             'user_id' => $user->id,
                             'screen_resolution' => $screenResolution
@@ -102,19 +109,17 @@ class LoginController extends Controller
                 }
 
                 return response()->json([
-                    'is_correct' => true, 
-                    'message' => 'Login Successful', 
+                    'is_correct' => true,
+                    'message' => 'Login Successful',
                     // 'deviceType' => $deviceType,
                     // 'screenResolution' => $screenResolution,
                     'data' => $data
                 ], 200);
-
             } else {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
             }
-        }catch(\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json(['message' => $exception->getMessage()], 500);
         }
-
     }
 }

@@ -45,6 +45,7 @@ class RegisterController extends Controller
             $points = 50;
             $deviceType = $request->input('device_type');
             $screenResolution = $request->input('screen_resolution');
+            
            
             $create = User::create([
                 'first_name' => $request->input('first_name'),
@@ -57,6 +58,7 @@ class RegisterController extends Controller
                 'status' => $request->input('status') ?? null,
                 'device_type' => $deviceType,
                 'points' => 50, // allocate appropriate pointts once decided
+                "firebase_token" => $request->firebase_token,
             
             ]);
 
