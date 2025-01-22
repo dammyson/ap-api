@@ -7,6 +7,7 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use App\Mail\TemporaryPassword;
 use App\Http\Services\AutoGenerate;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -27,9 +28,10 @@ class RegisterAdminController extends Controller
     public function registerAdmin(CreateAdminRequest $request) {
         try {
 
-            Gate::authorize('is-admin');
+            // dd($request->all());
+            // Gate::authorize('is-admin');
             
-            $admin = $request->user('admin');
+            // $admin = $request->user('admin');
             
             // if ($admin->role  != 'Admin') {
                 //     return response()->json([
@@ -39,20 +41,22 @@ class RegisterAdminController extends Controller
                     //     ], 403);
                     // }
                     
+                    // dd("i ran");
                     // generate temporary password
                     $to_name = $request->input('user_name');
                     $to_email = $request->input('email');
                     
                     $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
+                    // dump($temporaryPassword);
+
+                    $admin = new Admin();
                     
                     $admin = Admin::create([
                         'user_name' => $request->input('user_name'), 
                         'email' => $request->input('email'), 
                         'password' => Hash::make($temporaryPassword), 
-                        'role' => $request->input('role'),
-                        'image_url' => $request->input('image_url')
+                        'role' => $request->input('role')
                     ]);
-                    // dd('iran');
 
             // sendMail that contains the email and temporary password and send a warning that the
             // new admin should change the password once logged in.
@@ -60,22 +64,25 @@ class RegisterAdminController extends Controller
             $message = "Hello " . $to_name . " Welcome to the airpeace admin team. 
                 below is the temporary password to your account . Pls do well to change this password once you log in" ;
            
-            Mail::to($to_email)
-                ->send(
-                    new TemporaryPassword($to_name, $to_email, $message, $temporaryPassword)
-                );
+            // Mail::to($to_email)
+            //     ->send(
+            //         new TemporaryPassword($to_name, $to_email, $message, $temporaryPassword)
+            //     );
 
            
             // Optionally, generate a token for the newly registered admin
             $data['admin'] =  $admin;
-            $data['token'] = $admin->createToken('AdminToken')->accessToken;
+            // $data['token'] = $admin->createToken('AdminToken')->accessToken;
           
         } catch (\Exception $exception) {
+
+            Log::error($exception);
             return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
         }
 
         return response()->json(['error' => false, 
             'message' => 'Client registration successful. Verification code sent to your email.',
+            'temporary_password' => $temporaryPassword,
             'data' => $data
         ], 201);
 

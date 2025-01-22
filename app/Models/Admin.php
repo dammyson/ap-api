@@ -9,11 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
 // #[ObservedBy([AdminObserver::class])]
 class Admin extends Authenticatable
 {
-    use HasApiTokens, HasFactory, SoftDeletes;
+    use HasFactory, HasApiTokens, SoftDeletes;
 
     protected $fillable = ['user_name', 'email', 'password', 'image_url', 'role', 'phone_number'];
 

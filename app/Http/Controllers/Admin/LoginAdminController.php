@@ -17,6 +17,8 @@ class LoginAdminController extends Controller
         try {
             $admin = Admin::where('email', $request->email)->first();
 
+            // dd($admin);
+
             if (is_null($admin)) {
                 return response()->json([
                     'error' => true,

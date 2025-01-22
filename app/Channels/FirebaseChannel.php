@@ -4,12 +4,13 @@ namespace App\Channels;
 
 use App\Services\Utility\FCMService; 
 use GuzzleHttp\Client as HttpClient;
+use Illuminate\Support\Facades\Log;
 
 class FirebaseChannel
 {
     protected $messaging;
 
-    private $fcmUrl = "https://fcm.googleapis.com/v1/projects/hyllamobile/messages:send"; // Replace with your Firebase project ID.
+    private $fcmUrl = "https://fcm.googleapis.com/v1/projects/flyairpeace-4bfc6/messages:send"; // Replace with your Firebase project ID.
    
     /**
      * Send the given notification.
@@ -20,6 +21,7 @@ class FirebaseChannel
      */
     public function send($notifiable, $notification)
     {        
+
         $data = $notification->toFirebase($notifiable);
         $title = $data['title'] ?? 'Default Title';
         $body = $data['body'] ?? "Default Body";
@@ -36,6 +38,7 @@ class FirebaseChannel
     {
         $fcmService = new FCMService();
         $accessToken = $fcmService->getValidAccessToken();
+        // dd($accessToken);
      
         try {
             $httpClient = new HttpClient();
@@ -59,8 +62,10 @@ class FirebaseChannel
                 ],
             ]);
 
+
             return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
+            Log::error($e);
             throw new \Exception('Failed to send notification: ' . $e->getMessage());
         }
     }
