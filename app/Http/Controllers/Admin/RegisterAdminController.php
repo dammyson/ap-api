@@ -27,36 +27,28 @@ class RegisterAdminController extends Controller
     
     public function registerAdmin(CreateAdminRequest $request) {
         try {
-
+            // dd($request->input('role'));
             // dd($request->all());
-            // Gate::authorize('is-admin');
+            Gate::authorize('is-admin');
             
-            // $admin = $request->user('admin');
+            $admin = $request->user('admin');
             
-            // if ($admin->role  != 'Admin') {
-                //     return response()->json([
-                    //         "error" => true,
-                    //         "message" => "You do not have permission to view team members.
-                    //             Please contact your system administrator if you believe this is an error"
-                    //     ], 403);
-                    // }
-                    
-                    // dd("i ran");
-                    // generate temporary password
-                    $to_name = $request->input('user_name');
-                    $to_email = $request->input('email');
-                    
-                    $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
-                    // dump($temporaryPassword);
+    
+            // generate temporary password
+            $to_name = $request->input('user_name');
+            $to_email = $request->input('email');
+            
+            $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
+            // dump($temporaryPassword);
 
-                    $admin = new Admin();
-                    
-                    $admin = Admin::create([
-                        'user_name' => $request->input('user_name'), 
-                        'email' => $request->input('email'), 
-                        'password' => Hash::make($temporaryPassword), 
-                        'role' => $request->input('role')
-                    ]);
+            $admin = new Admin();
+            
+            $admin = Admin::create([
+                'user_name' => $request->input('user_name'), 
+                'email' => $request->input('email'), 
+                'password' => Hash::make($temporaryPassword), 
+                'role' => $request->input('role')
+            ]);
 
             // sendMail that contains the email and temporary password and send a warning that the
             // new admin should change the password once logged in.
