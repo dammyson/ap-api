@@ -17,6 +17,7 @@ use App\Services\Utility\GetPointService;
 use App\Services\Soap\CreateBookingBuilder;
 use App\Services\Wallet\VerificationService;
 use App\Services\Soap\CreateBookingTestBuilder;
+use App\Services\Wallet\FlutterVerificationService;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
 
@@ -752,18 +753,22 @@ class CreateBookingController extends Controller
             $expectedAmount = $request->input('expected_amount');
             $userDevice = $request->input('device_type');
             $redemptionPoint = $request->input('redemption_point');
+            $paymentGateway = $request->input('payment_gateway');
             
             $user = $request->user();
 
             // dd($redemptionPoint);
-           
 
-            $new_top_request = new VerificationService($ref);
+            //validate verifiedRequest;
+            if ($paymentGateway == "paystack") {
+                $new_top_request = new VerificationService($ref);
+
+            } else if ($paymentGateway == "flutterwave") {
+                $new_top_request = new FlutterVerificationService($ref);
+            }
             $verified_request = $new_top_request->run();
-           
-            
-            $paidAmount = $verified_request["data"]["amount"];
-            $paidAmount = $paidAmount / 100;
+            $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+            // dd($paidAmount);
 
             $invoice = Invoice::find($invoiceId);
 

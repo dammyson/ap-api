@@ -14,6 +14,7 @@ use App\Services\Utility\CheckArray;
 use App\Services\Soap\ReissuePnrTestBuilder;
 use App\Services\Wallet\VerificationService;
 use App\Http\Requests\Reissue\ReissuePnrPreviewRequest;
+use App\Services\Wallet\FlutterVerificationService;
 
 class ReissuePNRController extends Controller
 {
@@ -603,6 +604,7 @@ class ReissuePNRController extends Controller
             $responseCodeTwo = $request->input('responseCodeTwo');
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
             $statusTwo = $request->input('statusTwo');
+            $paymentGateway = $reques->input('payment_gateway')
             
             
             // dd(" I ran ");
@@ -626,9 +628,14 @@ class ReissuePNRController extends Controller
             // dd($invoiceId);     
             
             //validate verifiedRequest;
-            $new_top_request = new VerificationService($paymentRef);
+            if ($paymentGateway == "paystack") {
+                $new_top_request = new VerificationService($paymentRef);
+
+            } else if ($paymentGateway == "flutterwave") {
+                $new_top_request = new FlutterVerificationService($paymentRef);
+            }
             $verified_request = $new_top_request->run();
-            $paidAmount = $verified_request["data"]["amount"] / 100;
+            $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
             // dd($paidAmount);
             if (!$paidAmount) {
                 return response()->json([
