@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\Wallet\TopUpService;
 use App\Services\Wallet\VerificationService;
 use App\Http\Controllers\Test\TicketReservationController;
+use App\Services\Wallet\FlutterVerificationService;
 
 class TestPaymentController extends Controller
 {   
@@ -35,17 +36,24 @@ class TestPaymentController extends Controller
             $bookingReferenceID = $request->input('bookingReferenceID');
             $invoiceId = $request->input('invoiceId');
             $deviceType = $request->input('device_type');
+            $paymentGateWay = $request->input('payment_gateway');
             
             
             //validate verifiedRequest;
-            $new_top_request = new VerificationService($ref);
-            // dd($new_top_request);
+            if ($paymentGateWay == "paystack") {
+                $new_top_request = new VerificationService($ref);
+
+            } else if ($paymentGateWay == "flutterwave") {
+                $new_top_request = new FlutterVerificationService($ref);
+
+            }
             $verified_request = $new_top_request->run();
+            // dd($new_top_request);
             
             $amount = $verified_request["data"]["amount"];
 
             // convert to naira (from kobo)
-            $amount = $amount / 100;
+            $amount = $paymentGateWay == "paystack" ? $amount / 100 : $amount;
 
             // return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
             return  $this->ticketReservationController->guestTicketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
@@ -56,6 +64,11 @@ class TestPaymentController extends Controller
             return response()->json(['status' => false,  'message' => 'Error processing request'], 500);
         }
     }
+
+    // public function verifyFlutterwave(Request $request) 
+    // {   
+        
+    // }
 
     public function verifyTierRef(Request $request) {
         try {

@@ -21,11 +21,12 @@ class FlutterVerificationService implements BaseServiceInterface
     public function run()
     {
       
-        return $this->verfiy();
+        return $this->verify();
     }
 
-    public function verfiy()
+    public function verify()
     { 
+        // dd("verify ran");
         $result = array();
         //The parameter after verify/ is the transaction reference to be verified
         $url = 'https://api.flutterwave.com/v3/transactions/'. $this->ref_number .'/verify';
@@ -54,5 +55,9 @@ class FlutterVerificationService implements BaseServiceInterface
         }else{
             return $result;
         }
+
+        dd("i ran");
+
+        // dd($result);
     }
 }
