@@ -24,5 +24,5 @@ use App\Http\Controllers\Test\AddWeightControllerTest;
 // });
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('testflutter');
 });

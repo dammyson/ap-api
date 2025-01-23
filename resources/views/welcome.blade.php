@@ -6,7 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>AIR PEACE API</title>
+
+  <script src="https://checkout.flutterwave.com/v3.js"></script>
+
   <script>
+ 
     function payWithPaystack() {
       var handler = PaystackPop.setup({
         key: 'pk_test_e4ac7acbc8627f70face51c904aaf3171ed824e0',
@@ -40,55 +44,56 @@
         tx_ref: 'titanic-48981487343MDI0NzMx',
         amount: 54600,
         currency: 'NGN',
-        payment_options: 'card, mobilemoneyghana, ussd',
+        payment_options:  'card, banktransfer, mpesa, mobilemoneyghana',
         redirect_url: 'https://glaciers.titanic.com/handle-flutterwave-payment',
-        callback: function(response) {
-          console.log(response)
-          alert('success. transaction ref is ' + response.tx_ref);
-        },
+        // callback: function(response) {
+        //   console.log(response)
+        //   alert('success. transaction ref is ' + response.tx_ref);
+        // },
         customer: {
-          email: 'rose@unsinkableship.com',
-          phone_number: '08102909304',
-          name: 'Rose DeWitt Bukater',
-        },
-        customizations: {
-          title: 'The Titanic Store',
-          description: 'Payment for an awesome cruise',
-          logo: 'https://www.logolynx.com/images/logolynx/22/2239ca38f5505fbfce7e55bbc0604386.jpeg',
-        },
+          email: 'achugoebuka1@gmail.com'
+          // ,
+
+          // phone_number: '08102909304',
+          // name: 'Rose DeWitt Bukater',
+        }
+       
       });
     }
 
-    function payWithFlutterwave() {
-      FlutterwaveCheckout({
-        public_key: 'FLWPUBK_TEST-247c539860787c8d4869e9b3dba2d3b3-X',
-        tx_ref: '' + Math.floor((Math.random() * 1000000000) + 1),
-        amount: 5400,
-        currency: 'NGN',
-        payment_options: 'card, banktransfer, mpesa, mobilemoneyghana',
-        callback: function(response) {
-          console.log(response)
-          alert('success. transaction ref is ' + response.tx_ref);
-        },
-        // meta: {
-        //   consumer_id: 23,
-        //   consumer_mac: '92a3-912ba-1192a',
-        // }
-        // ,
-        customer: {
-          email: 'rose@unsinkableship.com',
-          phone_number: '08102909304',
-          name: 'Rose DeWitt Bukater',
-        }
-        // ,
-        // customizations: {
-        //   title: 'The Titanic Store',
-        //   description: 'Payment for an awesome cruise',
-        //   logo: 'https://www.logolynx.com/images/logolynx/22/2239ca38f5505fbfce7e55bbc0604386.jpeg',
-        // },
-      });
-    }
+    // function payWithFlutterwave() {
+    //   FlutterwaveCheckout({
+    //     public_key: 'FLWPUBK_TEST-247c539860787c8d4869e9b3dba2d3b3-X',
+    //     tx_ref: '' + Math.floor((Math.random() * 1000000000) + 1),
+    //     amount: 5400,
+    //     currency: 'NGN',
+    //     payment_options: 'card, banktransfer, mpesa, mobilemoneyghana',
+    //     callback: function(response) {
+    //       console.log(response)
+    //       alert('success. transaction ref is ' + response.tx_ref);
+    //     },
+    //     // meta: {
+    //     //   consumer_id: 23,
+    //     //   consumer_mac: '92a3-912ba-1192a',
+    //     // }
+    //     // ,
+    //     customer: {
+    //       email: 'rose@unsinkableship.com',
+    //       phone_number: '08102909304',
+    //       name: 'Rose DeWitt Bukater',
+    //     }
+    //     // ,
+    //     // customizations: {
+    //     //   title: 'The Titanic Store',
+    //     //   description: 'Payment for an awesome cruise',
+    //     //   logo: 'https://www.logolynx.com/images/logolynx/22/2239ca38f5505fbfce7e55bbc0604386.jpeg',
+    //     // },
+    //   });
+    // }
+
+   
   </script>
+
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.bunny.net">
@@ -993,7 +998,6 @@
   </form>
 
   <form>
-    <script src="https://checkout.flutterwave.com/v3.js"></script>
     <button type="button" onclick="makePayment()">Pay with flutterwave</button>
   </form>
 </body>
