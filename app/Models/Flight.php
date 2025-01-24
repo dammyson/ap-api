@@ -29,4 +29,9 @@ class Flight extends Model
         'payment_expires_at',
         'invoice_id'
     ];
+
+    public function user() 
+    {
+        return $this->belongsTo(User::class, 'peace_id', 'peace_id');
+    }
 }

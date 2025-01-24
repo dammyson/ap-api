@@ -448,22 +448,25 @@ class DashboardAdminController extends Controller
         $twelveHoursAgo = now()->subHours(12);
         // $users = User::where('created_at', "<=", $sixHoursAgo)->get();
         $users = User::whereBetween('created_at', [$sixHoursAgo, now()])->get();
-        $bookings = Booking::whereBetween('created_at', [$sixHoursAgo, now()])->get();
+        $flights = Flight::whereBetween('created_at', [$sixHoursAgo, now()])->with('user')->get();
         // $bookings = Booking::where('created_at', "<=", $sixHoursAgo)->get();
+
+        // return $flights;
 
         $recentActivities = [];
 
         foreach ($users as $user) {
             $recentActivities[] = [
                 "title" => "New User Registeration",
-                "details" => $user
+                "details" => "{$user->first_name} {$user->last_name} ({$user->email})"
             ];
         }
 
-        foreach ($bookings as $booking) {
+        foreach ($flights as $flight) {
+            $user = 
             $recentActivities[] = [
-                "title" => "New booking creation",
-                "details" => $booking
+                "title" => "Recent Flight booking",
+                "details" => "{$flight->origin} to {$flight->destination} ({$flight->user->email})"
             ];   
         }
 
@@ -480,8 +483,8 @@ class DashboardAdminController extends Controller
 
         if ($revenuePercentageChange != 0) {
             $recentActivities[] = [
-                "title" => $revenuePercentageChange > 0 ? "Revenue increased by {$revenuePercentageChange} in the last 6 hours" : "Revenue decreased by {$revenuePercentageChange} in the last 6 hours",
-                "details" => $revenuePercentageChange
+                "title" => "Perfomance trend",
+                "details" => $revenuePercentageChange > 0 ? "Revenue increased by {$revenuePercentageChange} in the last 6 hours" : "Revenue decreased by {$revenuePercentageChange} in the last 6 hours",
             ];   
         }
       

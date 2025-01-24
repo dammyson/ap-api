@@ -766,6 +766,7 @@ class CreateBookingController extends Controller
             } else if ($paymentGateway == "flutterwave") {
                 $new_top_request = new FlutterVerificationService($ref);
             }
+            
             $verified_request = $new_top_request->run();
             $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
             // dd($paidAmount);
