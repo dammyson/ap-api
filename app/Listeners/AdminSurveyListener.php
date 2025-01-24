@@ -4,8 +4,9 @@ namespace App\Listeners;
 
 use App\Events\AdminSurveyEvent;
 use App\Models\Admin\ActivityLog;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\Admin\AdminActivityLog;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class AdminSurveyListener
 {
@@ -31,7 +32,7 @@ class AdminSurveyListener
                 $description = "Admin {$admin->user_name} {$action} {$survey->title}";
                 $activity_type = 'survey';
 
-                ActivityLog::create([
+                AdminActivityLog::create([
                     'admin_id' => $admin->id,
                     'role' => $admin->role,
                     'activity_type' => $activity_type,

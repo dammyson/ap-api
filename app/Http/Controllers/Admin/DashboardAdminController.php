@@ -458,7 +458,8 @@ class DashboardAdminController extends Controller
         foreach ($users as $user) {
             $recentActivities[] = [
                 "title" => "New User Registeration",
-                "details" => "{$user->first_name} {$user->last_name} ({$user->email})"
+                "details" => "{$user->first_name} {$user->last_name} ({$user->email})",
+                "created_at" => $user->created_at
             ];
         }
 
@@ -466,7 +467,8 @@ class DashboardAdminController extends Controller
             $user = 
             $recentActivities[] = [
                 "title" => "Recent Flight booking",
-                "details" => "{$flight->origin} to {$flight->destination} ({$flight->user->email})"
+                "details" => "{$flight->origin} to {$flight->destination} ({$flight->user->email})",
+                "created_at" => $flight->created_at
             ];   
         }
 
@@ -485,6 +487,7 @@ class DashboardAdminController extends Controller
             $recentActivities[] = [
                 "title" => "Perfomance trend",
                 "details" => $revenuePercentageChange > 0 ? "Revenue increased by {$revenuePercentageChange} in the last 6 hours" : "Revenue decreased by {$revenuePercentageChange} in the last 6 hours",
+                // "created_at" => $user->created_at
             ];   
         }
       

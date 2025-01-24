@@ -17,4 +17,10 @@ class Survey extends Model
     public function SurveyUserResponse() {
         return $this->hasMany(SurveyUserResponse::class);
     }
+
+    public function getIsExpiredAttribute()
+    {
+        $expirationTime = $this->updated_at->addMinutes($this->duration_of_survey);
+        return now()->greaterThanOrEqualTo($expirationTime);
+    }
 }
