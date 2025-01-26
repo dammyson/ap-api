@@ -656,6 +656,7 @@ class CreateBookingController extends Controller
         // we should be able to retrieve the booking id and reference using the Booking model
         $bookingId = $request->input('booking_id');
         $bookingReferenceID = $request->input('booking_reference_id');
+        $currency = $request->input('preferred_currency');
 
         $user = $request->user();
 
@@ -721,7 +722,8 @@ class CreateBookingController extends Controller
         $invoice = Invoice::create([
             "booking_id" => $bookingId,
             "amount" => $amountRemaining,
-            "is_paid" => false       
+            "is_paid" => false,
+            "currency" => $preferredCurrency   
         ]);
         // $invoice->save();
 

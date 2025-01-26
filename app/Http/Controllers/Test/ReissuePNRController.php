@@ -197,7 +197,7 @@ class ReissuePNRController extends Controller
 
             $user = $request->user();
 
-            $booking = $user ? Booking::where('booking_id', $ID)->Where('peace_id', $user->peace_id)->first() 
+            $booking = (!$user->is_guest) ? Booking::where('booking_id', $ID)->Where('peace_id', $user->peace_id)->first() 
                 : Booking::where('booking_id', $ID)->Where('last_name', $lastName)->first();
             
             // dd($booking);
@@ -604,7 +604,8 @@ class ReissuePNRController extends Controller
             $responseCodeTwo = $request->input('responseCodeTwo');
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
             $statusTwo = $request->input('statusTwo');
-            $paymentGateway = $reques->input('payment_gateway')
+            $paymentGateway = $request->input('payment_gateway');
+            $transactionDescription = $request->input("transaction_description");
             
             
             // dd(" I ran ");
@@ -832,9 +833,9 @@ class ReissuePNRController extends Controller
                         "invoice_number" => $invoice_number,                        
                         'amount' => $amount,
                     ], [
-                        'transaction_type' => $transactionType,
+                        'transaction_type' => $transactionDescription,
                         'ticket_type' => 'ticket',
-                        'user_id' => $user ? $user->id : null,
+                        'user_id' => $user->id,
                         'invoice_id' => $invoice->id,
                         // 'device_type' => $userDevice->device_type,
                         'device_type' => $deviceType,
@@ -855,9 +856,9 @@ class ReissuePNRController extends Controller
                     "invoice_number" => $invoice_number,                        
                     'amount' => $amount,
                 ], [
-                    'transaction_type' => $transactionType,
+                    'transaction_type' => $transactionDescription,
                     'ticket_type' => 'ticket',
-                    'user_id' => $user ? $user->id : null,
+                    'user_id' =>  $user->id,
                     'invoice_id' => $invoice->id,
                     'device_type' => $deviceType,
                     'is_flight' => true

@@ -41,30 +41,35 @@ class LoginController extends Controller
                     ->orWhere('peace_id', $request->peace_id);
             })->first();
 
+
+
             if ($request->has('firebase_token')) {
                 $user->firebase_token = $request->firebase_token;
                 $user->save();
             }
 
-
-            $details = [
-                'title' => 'New Message',
-                'body' => 'You have received a new message.',
-                'url' => '/messages/1'
-            ];
-
-            $user->notify(new PasswordChanged($details));
-
-            if (is_null($user)) {
-                return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
+            if (!$user->is_guest) {
+                $details = [
+                    'title' => 'New Message',
+                    'body' => 'You have received a new message.',
+                    'url' => '/messages/1'
+                ];
+    
+                $user->notify(new PasswordChanged($details));
+    
+                if (is_null($user)) {
+                    return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
+                }
+    
+                $currentTier = $user->currentTier();
+    
+                if (!$currentTier) {
+                    $this->tierService->assignTierWithDefaultFallback($user->id);
+                }    
             }
 
-            $currentTier = $user->currentTier();
 
-            if (!$currentTier) {
-                $this->tierService->assignTierWithDefaultFallback($user->id);
-            }
-
+            
             // $newpassword = $validated['password'];
             // dd($newpassword);
             if (Hash::check($request["password"], $user->password)) {

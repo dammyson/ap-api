@@ -442,6 +442,18 @@ class DashboardAdminController extends Controller
 
     }
 
+    public function totalRevenueTableDashboard(Request $request) {
+        $revenuePurchased = Transaction::with(['user' => function ($query) {
+            $query->select('id', 'first_name', 'last_name', 'email');
+        }])->get();
+
+        return response()->json([
+            'error' => false,
+            'revenue_purchased' => $revenuePurchased
+        ], 200);
+
+    }
+
 
     public function recentActivitiesTable(Request $request) {
         $sixHoursAgo = now()->subHours(6);
