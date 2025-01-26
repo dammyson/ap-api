@@ -66,7 +66,7 @@ Route::get('/soap', [FlightController::class, 'callSoapApi']);
 Route::post('test/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
 
 Route::prefix('guest')->middleware(StartSession::class)->group(function () {
-    Route::get('continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
+    Route::post('continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
     Route::post('/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
     Route::post('search-flights', [FlightController::class, 'searchFlightsForWeb']);
     Route::post('upcoming-trips', [AnalyticsUserController::class, 'guestUpcomingTrips']);
@@ -223,7 +223,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-            Route::post('/commit-two-a', [TicketReservationController::class, 'ticktReservationCommitTwoA']);
+            Route::post('/commit-two-a', [TicketReservationController::class, 'ticketReservationCommitTwoA']);
             Route::post('/commit/invoice/{invoiceId}', [TicketReservationController::class, 'ticketReservationCommit']);
             Route::post('/commit-test', [TicketReservationController::class, 'testTicketReservationCommit']);
             Route::post('/commit-rt', [TicketReservationController::class, 'ticketReservationCommitRT']);

@@ -276,7 +276,7 @@ class TicketReservationController extends Controller
                         "invoice_number" => $invoice_number,                        
                     ], [
                         'amount' => $paidAmount,
-                        'transaction_type' => $transactionType,
+                        'transaction_type' => "Flight ticket",
                         'peace_id' => $peaceId,
                         'ticket_type' => 'ticket',
                         'user_id' => $user->id,
@@ -294,7 +294,7 @@ class TicketReservationController extends Controller
                     ],
                     [
                             'amount' => $paidAmount,
-                            'transaction_type' => $transactionType,
+                            'transaction_type' => "Flight ticket",
                             'peace_id' => $peaceId,
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
@@ -328,7 +328,7 @@ class TicketReservationController extends Controller
                             "invoice_number" => $invoice_number,                            
                         ], [
                             'amount' => $paidAmount,
-                            'transaction_type' => $transactionType,
+                            'transaction_type' => "Flight ticket",
                             'peace_id' => $peaceId,
                             'ticket_type' => 'ticket',
                             'user_id' => $user->id,
@@ -346,7 +346,7 @@ class TicketReservationController extends Controller
                             "invoice_number" => $invoice_number,                            
                         ], [
                             'amount' => $paidAmount,
-                            'transaction_type' => $transactionType,
+                            'transaction_type' => "Flight ticket",
                             'peace_id' => $peaceId,
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
@@ -563,7 +563,7 @@ class TicketReservationController extends Controller
                 "description" => $user ? " {$user->first_name} made payment for flight with booking id {$bookingId} " : "Guest made payment for fligth with booking Id {$bookingId}"
             ]);
 
-            if ($user) {
+            if (!$user->is_guest) {
                 $routes = $this->bookingRequestController->readBooking($bookingId, $bookingReferenceId);
                 // dump($response);     
                 
@@ -580,7 +580,7 @@ class TicketReservationController extends Controller
 
             return response()->json([
                 "error" => false,
-                "points" => $user ? $totalPoint : 0,
+                "points" => (!$user->is_guest) ? $totalPoint : 0,
                 "amount" => $paidAmount,
                 "message" => "transaction successfully recorded"
             ], 200);           
