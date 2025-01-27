@@ -32,8 +32,8 @@ class CancelBookingController extends Controller
             $user =  $request->user();
 
             $ID = $request->input('ID'); 
-            $referenceID = $request->input('referenceID');  
-            $guestSessionToken = $request->input('guest_session_token');     
+            $referenceID = $request->input('referenceID');
+
             // dd('I ran');
             $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
                 $ID, 
@@ -44,9 +44,8 @@ class CancelBookingController extends Controller
     
             $response = $this->craneOTASoapService->run($function, $xml);
             // dd($response);
-            $userBooking = $user ? Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->where('is_cancelled', false)->first()
-                :  Booking::where('booking_id', $ID)->where('guest_session_token', $guestSessionToken)->where('is_cancelled', false)->first();
-            
+            $userBooking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->where('is_cancelled', false)->first();
+              
             if (!$userBooking) {
                 return response()->json([
                     "error" => true,

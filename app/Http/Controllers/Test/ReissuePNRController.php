@@ -193,12 +193,14 @@ class ReissuePNRController extends Controller
             $responseCodeTwo = $request->input('responseCodeTwo');
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
             $statusTwo = $request->input('statusTwo');
-            $lastName = $request->input('lastName');
+            $preferredCurrency = $request->input('preferredCurrency');
+
+            // dd($preferredCurrency);
 
             $user = $request->user();
 
-            $booking = (!$user->is_guest) ? Booking::where('booking_id', $ID)->Where('peace_id', $user->peace_id)->first() 
-                : Booking::where('booking_id', $ID)->Where('last_name', $lastName)->first();
+
+            $booking = Booking::where('booking_id', $ID)->Where('peace_id', $user->peace_id)->first();
             
             // dd($booking);
 
@@ -214,6 +216,7 @@ class ReissuePNRController extends Controller
             // dd("stopped here");
 
             $xml = $this->reissusePNRBuilder->reissuePnr(
+                $preferredCurrency,
                 $ID, 
                 $referenceID, 
                 $bookingClassCabinOne, 
@@ -357,7 +360,7 @@ class ReissuePNRController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
-            // dd($response);
+            $preferredCurrency = $response['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
             // check if response is true
             // check if invoice has been previously paid for
             $invoice = Invoice::find($invoiceId);
@@ -365,6 +368,7 @@ class ReissuePNRController extends Controller
                 // generate a new invoice if previous invoice has been paid for
                 $invoice = new Invoice();
                 $invoice->booking_id = $ID;
+                $invoice->currency = $preferredCurrency;
                 $invoice->is_paid = false;
 
             }
@@ -464,7 +468,7 @@ class ReissuePNRController extends Controller
         }
     }
 
-    public function reissueTicketCommit (Request $request) {
+    public function reissueTicketCommit (ReissuePnrPreviewRequest $request) {
         try {
             $ID = $request->input('ID');
             $referenceID = $request->input('referenceID');
@@ -604,8 +608,9 @@ class ReissuePNRController extends Controller
             $responseCodeTwo = $request->input('responseCodeTwo');
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
             $statusTwo = $request->input('statusTwo');
-            $paymentGateway = $request->input('payment_gateway');
-            $transactionDescription = $request->input("transaction_description");
+            $paymentGateway = $request->input('paymentGateway');
+            $transactionDescription = $request->input("transactionDescription");
+            // $preferredCurrency = $request->input('preferredCurrency');
             
             
             // dd(" I ran ");
@@ -636,6 +641,9 @@ class ReissuePNRController extends Controller
                 $new_top_request = new FlutterVerificationService($paymentRef);
             }
             $verified_request = $new_top_request->run();
+
+            // dd($verified_request);
+
             $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
             // dd($paidAmount);
             if (!$paidAmount) {
@@ -644,7 +652,8 @@ class ReissuePNRController extends Controller
                     "message" => "payment verification failed"
                 ], 400);
             }
-
+            $preferredCurrency = $verified_request['data']['currency'];
+           
         
             $invoiceAmount = $invoice->amount + 0;
 
@@ -662,6 +671,7 @@ class ReissuePNRController extends Controller
             
 
             $xml = $this->reissusePNRBuilder->reissuePnrCommit(
+                $preferredCurrency,
                 $invoiceAmount,
                 $ID, 
                 $referenceID, 
@@ -812,6 +822,7 @@ class ReissuePNRController extends Controller
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
             // dump($response);
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
+            // $preferredCurrency = $response['ReissuePnrCommitResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
 
 
             $id = $response["ReissuePnrCommitResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
@@ -839,6 +850,7 @@ class ReissuePNRController extends Controller
                         'invoice_id' => $invoice->id,
                         // 'device_type' => $userDevice->device_type,
                         'device_type' => $deviceType,
+                        'currency' => $preferredCurrency,
                         'is_flight' => true
                     ]);
                 }
@@ -850,8 +862,6 @@ class ReissuePNRController extends Controller
                 $invoice_number = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['invNumber'];
                 $amount = $ticketItemList['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
                 
-                $data = [];
-        
                 Transaction::firstOrCreate([
                     "invoice_number" => $invoice_number,                        
                     'amount' => $amount,
@@ -861,6 +871,7 @@ class ReissuePNRController extends Controller
                     'user_id' =>  $user->id,
                     'invoice_id' => $invoice->id,
                     'device_type' => $deviceType,
+                    'currency' => $preferredCurrency,
                     'is_flight' => true
                     
                 ]);

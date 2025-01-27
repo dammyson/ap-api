@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Models\RecentActivity;
 use App\Models\FlightTicketType;
 use App\Models\ScreenResolution;
+use Symfony\Component\Clock\now;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
@@ -431,6 +432,9 @@ class DashboardAdminController extends Controller
     }
 
     public function totalRevenueTicketTable(Request $request) {
+        // $revenuePurchased = Transaction::with(['user' => function ($query) {
+        //     $query->select('id', 'first_name', 'last_name', 'email');
+        // }])->get();
         $revenuePurchased = Transaction::with(['user' => function ($query) {
             $query->select('id', 'first_name', 'last_name', 'email');
         }])->get();
@@ -443,9 +447,11 @@ class DashboardAdminController extends Controller
     }
 
     public function totalRevenueTableDashboard(Request $request) {
-        $revenuePurchased = Transaction::with(['user' => function ($query) {
-            $query->select('id', 'first_name', 'last_name', 'email');
-        }])->get();
+        // $revenuePurchased = Transaction::with(['user' => function ($query) {
+        //     $query->select('id', 'first_name', 'last_name', 'email');
+        // }])->get();
+
+        $revenuePurchased = Transaction::with('user')->get();
 
         return response()->json([
             'error' => false,
@@ -499,7 +505,7 @@ class DashboardAdminController extends Controller
             $recentActivities[] = [
                 "title" => "Perfomance trend",
                 "details" => $revenuePercentageChange > 0 ? "Revenue increased by {$revenuePercentageChange} in the last 6 hours" : "Revenue decreased by {$revenuePercentageChange} in the last 6 hours",
-                // "created_at" => $user->created_at
+                // "created_at" => now();
             ];   
         }
       

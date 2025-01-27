@@ -12,6 +12,7 @@ class ReissuePnrTestBuilder {
     }
 
     public function reissuePnr(
+        $preferredCurrency,
         $ID, 
         $referenceID, 
         $bookingClassCabinOne, 
@@ -162,7 +163,7 @@ class ReissuePnrTestBuilder {
                         <member>false</member>
                         <password>SCINTILLA</password>
                         <userName>SCINTILLA</userName>
-                        <preferredCurrency>NGN</preferredCurrency>
+                        <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
                     </clientInformation>
                     <bookingReferenceID>
                         <companyName>
@@ -583,6 +584,7 @@ class ReissuePnrTestBuilder {
     */
 
     public function reissuePnrCommit (
+        $preferredCurrency,
         $paidAmount,
         $ID, 
         $referenceID, 
@@ -735,7 +737,7 @@ class ReissuePnrTestBuilder {
                         <member>false</member>
                         <password>SCINTILLA</password>
                         <userName>SCINTILLA</userName>
-                        <preferredCurrency>NGN</preferredCurrency>
+                        <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
                     </clientInformation>
                     <bookingReferenceID>
                         <companyName>

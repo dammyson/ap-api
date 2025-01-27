@@ -83,7 +83,6 @@ Route::prefix('guest')->middleware(StartSession::class)->group(function () {
     // Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
     Route::post('/select-seat', [AddWeightController::class, 'selectSeat']);
     Route::post('cancel-booking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
-    Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
 
     // Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
 
@@ -141,7 +140,6 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::get('revenue-sources', [CustomerAdminController::class, 'revenueSource']);
                 Route::get('activity-log', [CustomerAdminController::class, 'activityLog']);
             });            
-
         });
 
         Route::group(['prefix' => 'activity-log'], function() {
@@ -277,7 +275,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
         });
 
         Route::group(['prefix' => 'reissue-ticket-pnr'], function() {
-            Route::post('preview', [ReissuePNRController::class, 'reissueTicketPNR']);
+            Route::post('preview/{invoiceId}', [ReissuePNRController::class, 'reissueTicketPNR']);
             Route::post('commit', [ReissuePNRController::class, 'reissueTicketCommit']);
             Route::post('addFlightPreview', [ReissuePNRController::class, 'reissuePnrAddFlightPreview']);
             Route::post('addFlightCommit', [ReissuePNRController::class, 'reissuePnrAddFlightCommit']);
