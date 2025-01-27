@@ -698,6 +698,7 @@ class CreateBookingController extends Controller
         $baseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         $peacePointBalance = $peacePoint - $redemptionPoint;
+        // dd($baseFare);
 
         //dd($peacePointBalance);
         $ticketItemList = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'];

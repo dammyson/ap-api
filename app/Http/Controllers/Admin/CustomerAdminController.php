@@ -340,14 +340,8 @@ class CustomerAdminController extends Controller
 
     public function awardPointManually(Request $request, User $user) {
         try {
-            Gate::authorize('is-admin');
-
-            if (!Gate::allows('is-admin')) {
-               return response()->json([
-                    "error" => true,
-                    "message" => "not authorized to carry out this action"
-               ], 403);
-            }
+            // Gate::authorize('is-admin');
+            Gate::authorize('is-manager');
 
             $admin = $request->user('admin');
             $points = $request->input('points');
