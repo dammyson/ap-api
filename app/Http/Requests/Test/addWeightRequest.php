@@ -148,7 +148,8 @@ class addWeightRequest extends FormRequest
             "airTravelerSsrGroup" => "required|string",
             "ssrExplanation" => "required|string",            
             "bookingReferenceIDID" => "required|string",
-            "bookingReferenceID" => "required|string"
+            "bookingReferenceID" => "required|string",
+            "preferredCurrency" => "required|string"
         ];
     }
 }
