@@ -13,6 +13,7 @@ class AddWeightBuilderTest {
    }
 
    public function addWeightTest(
+      $preferredCurrency,
       $adviceCodeSegmentExist,
       $bookFlightSegmentListActionCode,
       $bookFlightAddOnSegment,
@@ -105,7 +106,7 @@ class AddWeightBuilderTest {
                <member>false</member>
                <password>SCINTILLA</password>
                <userName>SCINTILLA</userName>
-               <preferredCurrency>NGN</preferredCurrency>
+               <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
                </clientInformation>
                   <airItinerary>
                      <adviceCodeSegmentExist>' . htmlspecialchars($adviceCodeSegmentExist, ENT_XML1, 'UTF-8') . '</adviceCodeSegmentExist>

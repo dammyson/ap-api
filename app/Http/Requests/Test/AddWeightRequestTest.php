@@ -151,7 +151,8 @@ class AddWeightRequestTest extends FormRequest
             "ancillaryRequestList.*.airTravelerSsrGroup" => "required|string",
             "ancillaryRequestList.*.ssrExplanation" => "required|string",
             "bookingReferenceIDID" => "required|string",
-            "bookingReferenceID" => "required|string"
+            "bookingReferenceID" => "required|string",
+            "preferredCurrency" => "required|string"
         ];
     }
 }

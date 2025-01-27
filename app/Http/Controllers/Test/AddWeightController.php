@@ -149,6 +149,7 @@ class AddWeightController extends Controller
         $ssrExplanation = $request->input('ssrExplanation');        
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
+        $preferredCurrency = $request->input('preferredCurrency');
 
 
         $user = $request->user();
@@ -162,6 +163,7 @@ class AddWeightController extends Controller
         }
 
         $xml = $this->addWeightBuilder->addWeight(
+            $preferredCurrency,
             $adviceCodeSegmentExist,
             $bookFlightSegmentListActionCode,
             $bookFlightAddOnSegment,

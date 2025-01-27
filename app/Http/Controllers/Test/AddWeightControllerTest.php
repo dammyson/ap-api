@@ -97,7 +97,7 @@ class AddWeightControllerTest extends Controller
         $sequenceNumber = $request->input('sequenceNumber');
         $status = $request->input('status');
         $airTravelerList = $request->input('airTravelerList');
-        $preferredCurrency = $request->input('preferred_currency');
+        $preferredCurrency = $request->input('preferredCurrency');
 
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         
@@ -124,6 +124,7 @@ class AddWeightControllerTest extends Controller
         }
 
         $xml = $this->addWeightBuilderTest->addWeightTest(
+            $preferredCurrency,
             $adviceCodeSegmentExist,
             $bookFlightSegmentListActionCode,
             $bookFlightAddOnSegment,
@@ -207,8 +208,9 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dd($response);
+            // dump($response);
             $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            $preferredCurrency = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["currency"]["code"];
             $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
             $invoice = Invoice::find($invoiceId);
 
@@ -234,7 +236,7 @@ class AddWeightControllerTest extends Controller
             $invoice->save();
 
             // Use preg_match to extract the number
-            $ssrType = 'insurance';
+           
 
             $message = "";
 
@@ -373,6 +375,7 @@ class AddWeightControllerTest extends Controller
         $sequenceNumber = $request->input('sequenceNumber');
         $status = $request->input('status');
         $airTravelerList = $request->input('airTravelerList');
+        $preferredCurrency = $request->input('preferredCurrency');
 
 
         $ancillaryRequestList = $request->input('ancillaryRequestList');
@@ -402,6 +405,7 @@ class AddWeightControllerTest extends Controller
 
 
         $xml = $this->addWeightBuilderTest->addWeightTest(
+            $preferredCurrency,
             $adviceCodeSegmentExist,
             $bookFlightSegmentListActionCode,
             $bookFlightAddOnSegment,
