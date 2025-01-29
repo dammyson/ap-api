@@ -760,40 +760,35 @@ class CreateBookingController extends Controller
             
             $user = $request->user();
 
-            // dd($redemptionPoint);
-
-            //validate verifiedRequest;
-            if ($paymentGateway == "paystack") {
-                $new_top_request = new VerificationService($ref);
-
-            } else if ($paymentGateway == "flutterwave") {
-                $new_top_request = new FlutterVerificationService($ref);
-            }
-            
-            $verified_request = $new_top_request->run();
-            $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
-            // dd($paidAmount);
-
             $invoice = Invoice::find($invoiceId);
 
             $invoiceAmount = $invoice->amount + 0;
+            $paidAmount = 0;
 
-           
+            
+            // for economy ticket redeemed with peace point, the amount_remaining is 0, hence no need to make payment
+            if (!($ref == "not_applicable")) {
 
-            if ( $paidAmount < $invoiceAmount ) {
-                return response()->json([
-                    "error" => false,
-                    "message" => "fund payment for ticket is less than calculated"
-                ], 500);
+                if ($paymentGateway == "paystack") {
+                    $new_top_request = new VerificationService($ref);
+
+                } else if ($paymentGateway == "flutterwave") {
+                    $new_top_request = new FlutterVerificationService($ref);
+                }
+                
+                $verified_request = $new_top_request->run();
+                $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+
+                if ( $paidAmount < $invoiceAmount ) {
+                    return response()->json([
+                        "error" => false,
+                        "message" => "fund payment for ticket is less than calculated"
+                    ], 500);
+                }
+
             }
-    
-            
-            // dd("went well");
-          
-
-
-            /////////////////////
-            
+             /////////////////////
+            // dd("i got here");
             $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
                 $preferredCurrency,           
                 $bookingId,
