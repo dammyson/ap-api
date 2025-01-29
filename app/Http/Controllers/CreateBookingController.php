@@ -698,6 +698,7 @@ class CreateBookingController extends Controller
         $baseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
         $peacePointBalance = $peacePoint - $redemptionPoint;
+        // dd($expectedAmount);
         // dd($baseFare);
 
         //dd($peacePointBalance);
@@ -706,14 +707,19 @@ class CreateBookingController extends Controller
        $baseFare = 0;
       
         if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-            $baseFare = $ticketItemList['pricingInfo']['baseFare']['amount']['value'];
+            // $baseFare = $ticketItemList['pricingInfo']['baseFare']['amount']['value'];
+            
+            $baseFare = $ticketItemList["pricingOverview"]["totalBaseFare"]["value"];
+            // ["pricingOverview"]["totalAmount"]["value"];
 
         } else {
            foreach($ticketItemList as $ticketItem) {
-                $baseFare += $ticketItem['pricingInfo']['baseFare']['amount']['value'];
+                // $baseFare += $ticketItem['pricingInfo']['baseFare']['amount']['value'];
+                $baseFare += $ticketItem["pricingOverview"]["totalBaseFare"]["value"];
             }
 
        }
+
 
        $amountRemaining = $expectedAmount - $baseFare;
 
