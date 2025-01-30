@@ -388,6 +388,10 @@ class TicketReservationController extends Controller
     }
 
     public function guestTicketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType) { 
+         
+        $user = auth()->user();
+        // dd($user->id);
+        
         $invoice = Invoice::find($invoiceId);
         $invoiceAmount = $invoice->amount;
 
@@ -451,8 +455,7 @@ class TicketReservationController extends Controller
             $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
             // for is_associative array at for this bookOriginDestinationOptionList
             // $flightNumber = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][index]['bookFlightSegmentList']['flightSegment']['flightNumber'];
-            
-            $user = auth()->user();
+           
             // Device::where('user_id', $user->id)->first();
             $deviceType = $user ? $user->device_type : $deviceType;
            
@@ -475,7 +478,7 @@ class TicketReservationController extends Controller
                         'transaction_type' => $transactionType,
                         // 'peace_id' => $user ? $user->peace_id : null,
                         'ticket_type' => 'ticket',
-                        'user_id' => $user ? $user->id : null,
+                        'user_id' => $user->id,
                         'invoice_id' => $invoice->id,
                         'device_type' => $deviceType,
                         'is_flight' => true,
@@ -492,7 +495,7 @@ class TicketReservationController extends Controller
                             'amount' => $paidAmount,
                             'transaction_type' => $transactionType,
                             'ticket_type' => 'Ancillary',
-                            'user_id' => $user ? $user->id : null,
+                            'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
                             'is_flight' => true,                            
@@ -525,7 +528,7 @@ class TicketReservationController extends Controller
                             'amount' => $paidAmount,
                             'transaction_type' => $transactionType,
                             'ticket_type' => 'ticket',
-                            'user_id' => $user ? $user->id : null,
+                            'user_id' =>  $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
                             'is_flight' => true,                            
@@ -542,7 +545,7 @@ class TicketReservationController extends Controller
                             'amount' => $paidAmount,
                             'transaction_type' => $transactionType,
                             'ticket_type' => 'Ancillary',
-                            'user_id' => $user ? $user->id : null,
+                            'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
                             'is_flight' => true,

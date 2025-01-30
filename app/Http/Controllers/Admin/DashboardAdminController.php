@@ -432,12 +432,12 @@ class DashboardAdminController extends Controller
     }
 
     public function totalRevenueTicketTable(Request $request) {
-        // $revenuePurchased = Transaction::with(['user' => function ($query) {
-        //     $query->select('id', 'first_name', 'last_name', 'email');
-        // }])->get();
         $revenuePurchased = Transaction::with(['user' => function ($query) {
             $query->select('id', 'first_name', 'last_name', 'email');
         }])->get();
+        
+        // $revenuePurchased = Transaction::with('user')->get();
+        // $revenuePurchased = Transaction::with(['user'])->get();
 
         return response()->json([
             'error' => false,
