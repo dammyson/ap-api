@@ -243,6 +243,8 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
             Route::group(["prefix" => "read-booking"], function() {
                 Route::post('tk', [BookingRequestController::class, 'readBookingTk']);
+                Route::post('surname', [BookingRequestController::class, 'readBookingWithSurname']);
+
             });
 
             Route::group(["prefix" => "create-booking"], function() {
