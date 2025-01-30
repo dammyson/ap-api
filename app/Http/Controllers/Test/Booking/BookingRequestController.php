@@ -38,25 +38,14 @@ class BookingRequestController extends Controller
 
     public function readBookingTk(Request $request) {
         $bookingId = $request->input('ID');
-        $bookingReferenceID = $request->input('referenceID');
         $peaceId = $request->input('peace_id');
-        $lastName = $request->input('last_name');
 
         try {
 
+            $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
 
-            if ($peaceId) {
-
-                // dd("I ran");
-                $booking = Booking::where('booking_id', $bookingId)->first();
-                // dd($booking);
-                    // ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
-                
-            } else if ($lastName) {
-                $booking = Booking::where('booking_id', $bookingId)
-                    ->where('last_name', $lastName)->where('is_cancelled', false)->first();
-            }
             
+            // dd($booking);
             if (!$booking) {
                 return response()->json([
                     'error' => true,
@@ -71,7 +60,7 @@ class BookingRequestController extends Controller
 
             $xml = $this->bookingBuilder->readBookingTK(
                 $bookingId, 
-                $bookingReferenceID
+                $booking->booking_reference_id
                 // $booking->booking_reference_id
             );
 
@@ -193,6 +182,8 @@ class BookingRequestController extends Controller
 
 
             $response = $this->craneOTASoapService->run($function, $xml);
+
+            // dd($response);
 
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
                 $this->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
