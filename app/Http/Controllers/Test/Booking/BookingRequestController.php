@@ -70,7 +70,7 @@ class BookingRequestController extends Controller
             
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            //dd($response);
+            // dd($response);
 
             // return response()->json([
             //     "error" => false,
@@ -183,7 +183,7 @@ class BookingRequestController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            //dd($response);
+            // dd($response);
 
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
                 $this->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
