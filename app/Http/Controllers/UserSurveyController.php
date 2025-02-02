@@ -39,6 +39,33 @@ class UserSurveyController extends Controller
             ], 500);
         }
     }
+    public function allSurvey() {
+        try {
+    
+
+            // $surveys = Survey::whereRaw('DATE_ADD(created_at, INTERVAL duration_of_survey MINUTE) >= ?', [now()])
+            // ->with('questions.options') // Eager load questions and their options
+            // ->get();
+
+            
+            $surveys = Survey::all();
+            return $surveys;
+            
+
+            return response()->json([
+                'error' => false,
+                'message' => 'list of surveys',
+                'surveys' => $surveys
+            ]);
+            
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 
     public function showSurvey($surveyId) {
         try {
