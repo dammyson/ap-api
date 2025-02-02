@@ -153,6 +153,7 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::patch('deactivate-survey', [SurveyController::class, 'deActiveSurvey']);
             Route::post('create-survey-banner', [SurveyController::class, 'createSurveyBanner']);            
             Route::get('/', [UserSurveyController::class, 'indexSurvey']);
+            Route::get('/all-survey', [UserSurveyController::class, 'allSurvey']);
             Route::post('/survey-table', [SurveyController::class, 'surveyTable']);
             Route::group(['prefix' => '{survey}'], function () {
                 Route::get('/', [SurveyController::class, 'showSurvey']);  
