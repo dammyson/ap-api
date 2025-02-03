@@ -47,6 +47,7 @@ class SurveyController extends Controller
 
             if ($is_active) {
                 $activeSurvey = Survey::where('is_active', true)->first();
+                // return $activeSurvey;
                 if ($activeSurvey) {
                     return response()->json([
                         "error" => true,
@@ -62,9 +63,11 @@ class SurveyController extends Controller
                 'points_awarded' => $points_awarded,
                 'is_active' => $is_active,
                 'is_published' => $is_published,
-                'image_url' => $image_url
+                'image_url' => $image_url,
+                'end_time' => $is_active ? now()->addMinutes($duration_of_survey) : null
             ]);
 
+         
             // $survey->image_url = $path;
             // // $imageUrlLink = Storage::url($path);
             // $survey->save();
@@ -225,6 +228,17 @@ class SurveyController extends Controller
             $from_date = $request->input('from_date');
             $to_date = $request->input('to_date');
             $title = $request->input('title');
+            // dd(now()->addMinutes(30));
+            // return $surveys;
+            $activeExpiredSurvey = Survey::where('is_active', true)->where('end_time', '<=', now())->first();
+
+            if ($activeExpiredSurvey) {
+                // dd("i ran")
+                $activeExpiredSurvey->is_active = false;
+                $activeExpiredSurvey->is_published = false;
+                $activeExpiredSurvey->save();
+
+            }
 
             $query = Survey::query();
             
@@ -285,6 +299,11 @@ class SurveyController extends Controller
 
                 $survey->is_published = true;
                 $survey->is_active = true;
+
+                // survey end time;
+                $endTime = now()->addMinutes($survey->duration);
+
+                $survey->end_time = $endTime;
                 
             } else {
                 $survey->is_published = false;
@@ -571,6 +590,8 @@ class SurveyController extends Controller
 
     public function deleteSurvey(Request $request, Survey $survey) {
         try {
+
+            // Gate:
             $admin = $request->user('admin');
 
             if (!$admin) {
