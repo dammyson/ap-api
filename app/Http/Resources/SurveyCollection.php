@@ -25,7 +25,7 @@ class SurveyCollection extends ResourceCollection
                 'points_awarded' => $survey->points_awarded,
                 'is_published' => $survey->is_published,
                 'is_active' => $survey->is_active,
-                'is_completed' => $survey->is_published ? $this->checkCompleted($survey) : false,
+                'is_completed' => $survey->is_completed,
                 'created_at' => $survey->created_at,
                 'updated_at' => $survey->updated_at,
                 'image_url_link' => Storage::url($survey->image_url),
@@ -33,10 +33,5 @@ class SurveyCollection extends ResourceCollection
         })->toArray();
     }
 
-    private function checkCompleted($survey) {
-        $end_time = Carbon::parse($survey->updated_at)->addHours($survey->duration_of_survey);
-
-        return  Carbon::now()->greaterThan($end_time) ? true : false;
-    }
-    
+ 
 }

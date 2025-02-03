@@ -233,10 +233,10 @@ class SurveyController extends Controller
             $activeExpiredSurvey = Survey::where('is_active', true)->where('end_time', '<=', now())->first();
 
             if ($activeExpiredSurvey) {
-                // dd("i ran")
                 $activeExpiredSurvey->is_active = false;
                 $activeExpiredSurvey->is_completed = true;
                 $activeExpiredSurvey->save();
+                // dd($activeExpiredSurvey);
 
             }
 
