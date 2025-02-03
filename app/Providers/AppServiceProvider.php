@@ -41,8 +41,8 @@ class AppServiceProvider extends ServiceProvider
     {
 
         Gate::define('is-admin', function(Admin $admin) {
-            dump($admin);
-            return $admin->role == 'Admin';
+            // dump($admin);
+            return $admin->role == 'admin';
         });
        
 
