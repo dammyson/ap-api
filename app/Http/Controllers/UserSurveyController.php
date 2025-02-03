@@ -31,6 +31,7 @@ class UserSurveyController extends Controller
                $activeExpiredSurvey->save();
 
            }
+           
             $surveys = Survey::whereRaw('DATE_ADD(created_at, INTERVAL duration_of_survey MINUTE) >= ?', [now()])
             ->select(['id', 'title', 'is_published','created_at']) // Eager load questions and their options
             ->get();

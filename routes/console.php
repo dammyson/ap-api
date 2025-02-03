@@ -10,19 +10,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::call(function () {
-    $expiredSurveys = Survey::where('is_active', true)
-        ->where('is_published', true)
-        ->whereRaw("DATE_ADD(updated_at, INTERVAL duration_of_survey MINUTE) <= NOW()")
-        ->first();
-
-    $expiredSurveys->is_active = false;
-    $expiredSurveys->is_published = false;
-    $expiredSurveys->save();
-
-    // foreach ($expiredSurveys as $survey) {
-    //     $survey->update(['is_active' => false]);
-    //     logger()->info("Deactivated Survey ID: {$survey->id}");
-    // }
-})->everyTwoMinutes(); // Adjust the frequency as needed
 
