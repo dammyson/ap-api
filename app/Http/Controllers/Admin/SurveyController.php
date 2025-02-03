@@ -235,7 +235,7 @@ class SurveyController extends Controller
             if ($activeExpiredSurvey) {
                 // dd("i ran")
                 $activeExpiredSurvey->is_active = false;
-                $activeExpiredSurvey->is_published = false;
+                $activeExpiredSurvey->is_completed = true;
                 $activeExpiredSurvey->save();
 
             }
@@ -299,6 +299,7 @@ class SurveyController extends Controller
 
                 $survey->is_published = true;
                 $survey->is_active = true;
+                $survey->is_completed = false;
 
                 // survey end time;
                 $endTime = now()->addMinutes($survey->duration);
