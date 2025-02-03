@@ -20,7 +20,8 @@ class Transaction extends Model
         'invoice_id',
         'ticket_type',
         'device_type',
-        'currency'
+        'currency',
+        // 'payment_method'
         
     ];
 

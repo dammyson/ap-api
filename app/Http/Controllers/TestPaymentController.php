@@ -36,14 +36,14 @@ class TestPaymentController extends Controller
             $bookingReferenceID = $request->input('bookingReferenceID');
             $invoiceId = $request->input('invoiceId');
             $deviceType = $request->input('device_type');
-            $paymentGateWay = $request->input('payment_gateway');
+            $paymentMethod = $request->input('payment_gateway');
             
             
             //validate verifiedRequest;
-            if ($paymentGateWay == "paystack") {
+            if ($paymentMethod == "paystack") {
                 $new_top_request = new VerificationService($ref);
 
-            } else if ($paymentGateWay == "flutterwave") {
+            } else if ($paymentMethod == "flutterwave") {
                 $new_top_request = new FlutterVerificationService($ref);
 
             }
@@ -53,7 +53,7 @@ class TestPaymentController extends Controller
             $amount = $verified_request["data"]["amount"];
 
             // convert to naira (from kobo)
-            $amount = $paymentGateWay == "paystack" ? $amount / 100 : $amount;
+            $amount = $paymentMethod == "paystack" ? $amount / 100 : $amount;
 
             // return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
             return  $this->ticketReservationController->guestTicketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);

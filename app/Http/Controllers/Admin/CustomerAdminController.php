@@ -28,7 +28,7 @@ class CustomerAdminController extends Controller
     public function userInformation(Request $request, User $user) {
         // $user = $request->user();
         $tierInfo = $user->currentTier();
-        $flightCount = Transaction::where('peace_id', $user->peace_id)->
+        $flightCount = Transaction::where('user_id', $user->id)->
             where('ticket_type', 'ticket')
             ->count();
         //or
