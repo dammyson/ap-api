@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\AdminSurveyEvent;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Admin\Option;
@@ -10,15 +9,17 @@ use App\Models\Admin\Survey;
 use Illuminate\Http\Request;
 use App\Models\Admin\Question;
 use App\Models\PointAllocation;
+use App\Events\AdminSurveyEvent;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\SurveyResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\SurveyCollection;
 use App\Models\Admin\SurveyUserResponse;
-use App\Http\Requests\Admin\CreateSurveyRequest;
 use App\Http\Requests\FilterSurveyRequest;
 use App\Http\Requests\UpdateSurveyImageRequest;
-use App\Http\Resources\SurveyResource;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Admin\CreateSurveyRequest;
 
 
 class SurveyController extends Controller
@@ -28,14 +29,10 @@ class SurveyController extends Controller
         
         try {
 
+            Gate::authorize('is-admin');
+
             $admin = $request->user('admin');
     
-            if (!$admin) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'You are not authorized to carry out this action'
-                ], 500);
-            } 
             
             $title = $request->input('title');
             $questions = $request->input('questions');
@@ -121,18 +118,13 @@ class SurveyController extends Controller
 
     public function deActiveSurvey(Request $request) {
         try {
+            Gate::authorize('is-admin');
             $admin = $request->user('admin');
-    
-            if (!$admin) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'You are not authorized to carry out this action'
-                ], 500);
-            } 
     
             $survey = Survey::where('is_active', true)->first();
             if ($survey) {
                 $survey->is_active = false;
+                $survey->is_completed = false;
                 $survey->save();
 
                 event( new AdminSurveyEvent($admin, $survey, "deactived"));
@@ -185,14 +177,8 @@ class SurveyController extends Controller
     public function updateSurveyImage(UpdateSurveyImageRequest $request, Survey $survey) {        
         try {
 
+            Gate::authorize('is-admin');
             $admin = $request->user('admin');
-    
-            if (!$admin) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'You are not authorized to carry out this action'
-                ], 500);
-            } 
 
             if ($request->file('image_url')) {
                 // store the file in the admin-profile-images folder
@@ -278,15 +264,10 @@ class SurveyController extends Controller
 
     public function tooglePublishSurvey(Request $request, Survey $survey) {
         try {
+            Gate::authorize('is-admin');
+
             $admin = $request->user('admin');
     
-            if (!$admin) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'You are not authorized to carry out this action'
-                ], 500);
-            } 
-
             // if this survey is not published check if there is an active survey
             if (!$survey->is_published) {
                 $activeSurvey = Survey::where('is_active', true)->first();
@@ -309,6 +290,8 @@ class SurveyController extends Controller
             } else {
                 $survey->is_published = false;
                 $survey->is_active = false;
+                $survey->is_completed = false;
+
             }   
             
             $survey->save();
@@ -686,15 +669,9 @@ class SurveyController extends Controller
     public function deleteQuestion(Request $request, Survey $survey, Question $question) {
         try {
             
+            Gate::authorize('is-admin');
             $admin = $request->user('admin');
     
-            if (!$admin) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'You are not authorized to carry out this action'
-                ], 500);
-            } 
-
             // Use transaction with closure
             DB::transaction(function() use ($question) {
                 $question->delete();
@@ -719,16 +696,9 @@ class SurveyController extends Controller
 
     public function deleteOption(Request $request, Survey $survey, Question $question, Option $option) {
         try {
-            
+            Gate::authorize('is-admin');
             $admin = $request->user('admin');
     
-            if (!$admin) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'You are not authorized to carry out this action'
-                ], 500);
-            } 
-
             DB::transaction(function() use($option) {
                 $option->delete();
 

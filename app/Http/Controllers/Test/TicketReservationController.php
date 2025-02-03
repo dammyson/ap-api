@@ -176,6 +176,7 @@ class TicketReservationController extends Controller
         $bookingReferenceId = $request->input('reference_id');
         $paidAmount = $request->input('value');
         $preferredCurrency = $request->input('preferred_currency');
+        // dd("i ran");
         
         $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(  
             $preferredCurrency,     
@@ -482,6 +483,7 @@ class TicketReservationController extends Controller
                         'invoice_id' => $invoice->id,
                         'device_type' => $deviceType,
                         'is_flight' => true,
+                        // "payment_method" => $paymentMethod,
                         'currency' => $preferredCurrency
                     ]);                    
                 
@@ -499,7 +501,9 @@ class TicketReservationController extends Controller
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
                             'is_flight' => true,                            
+                            // "payment_method" => $paymentMethod,
                             'currency' => $preferredCurrency
+
                         ]
                     ); 
                     
@@ -532,7 +536,9 @@ class TicketReservationController extends Controller
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
                             'is_flight' => true,                            
+                            // "payment_method" => $paymentMethod,
                             'currency' => $preferredCurrency
+
                         ]);                          
                     
                     }
@@ -549,6 +555,7 @@ class TicketReservationController extends Controller
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
                             'is_flight' => true,
+                            // "payment_method" => $paymentMethod,
                             'currency' => $preferredCurrency
 
                         ]); 
