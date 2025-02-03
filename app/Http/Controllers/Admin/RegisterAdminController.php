@@ -29,7 +29,11 @@ class RegisterAdminController extends Controller
         try {
             // dd($request->input('role'));
             // // dd($request->all());
+            // dd("I ran");
+            $admin = $request->user('admin');
+            // dd($admin);
             Gate::authorize('is-admin');
+            // dd("I ran two");
             
             // $admin = $request->user('admin');
             
