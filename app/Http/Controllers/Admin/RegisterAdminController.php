@@ -44,15 +44,32 @@ class RegisterAdminController extends Controller
             
             $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
             // dump($temporaryPassword);
-
-            $admin = new Admin();
+            $admin = Admin::withTrashed()->where('email', $to_email)->first();
             
-            $admin = Admin::create([
-                'user_name' => $request->input('user_name'), 
-                'email' => $request->input('email'), 
-                'password' => Hash::make($temporaryPassword), 
-                'role' => $request->input('role')
-            ]);
+            if ($admin) {
+                if ($admin->trashed()) {
+                    // dd("I ran");
+                    $admin->restore();
+                    $admin->password = Hash::make($temporaryPassword);
+                    $admin->save();
+                } else {
+                    return response()->json([
+                        "error" => true,
+                        "message" => "email already taken"
+                    ], 400);
+                }
+            } else {
+
+                $admin = new Admin();
+                
+                $admin = Admin::create([
+                    'user_name' => $request->input('user_name'), 
+                    'email' => $request->input('email'), 
+                    'password' => Hash::make($temporaryPassword), 
+                    'role' => $request->input('role')
+                ]);
+            }
+
 
             // sendMail that contains the email and temporary password and send a warning that the
             // new admin should change the password once logged in.
@@ -60,10 +77,10 @@ class RegisterAdminController extends Controller
             $message = "Hello " . $to_name . " Welcome to the airpeace admin team. 
                 below is the temporary password to your account . Pls do well to change this password once you log in" ;
            
-            // Mail::to($to_email)
-            //     ->send(
-            //         new TemporaryPassword($to_name, $to_email, $message, $temporaryPassword)
-            //     );
+            Mail::to($to_email)
+                ->send(
+                    new TemporaryPassword($to_name, $to_email, $message, $temporaryPassword)
+                );
 
            
             // Optionally, generate a token for the newly registered admin
