@@ -132,7 +132,7 @@ class CustomerAdminController extends Controller
                 $endOfWeek = Carbon::now()->endOfWeek();     // Typically Sunday
 
 
-                $ticketRecord = Transaction::where('peace_id', $user->peace_id)
+                $ticketRecord = Transaction::where('user_id', $user->id)
                     ->where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -141,7 +141,7 @@ class CustomerAdminController extends Controller
                     ->groupBy('day_name')
                     ->get();
                 
-                $ticketAmount = Transaction::where('peace_id', $user->peace_id)
+                $ticketAmount = Transaction::where('user_id', $user->id)
                         ->where('ticket_type', 'ticket')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -150,7 +150,7 @@ class CustomerAdminController extends Controller
                 
 
 
-                $ancillaryRecord = Transaction::where('peace_id', $user->peace_id)
+                $ancillaryRecord = Transaction::where('user_id', $user->id)
                     ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -160,7 +160,7 @@ class CustomerAdminController extends Controller
                     ->get();
 
 
-                $ancillaryAmount = Transaction::where('peace_id', $user->peace_id)
+                $ancillaryAmount = Transaction::where('user_id', $user->id)
                     ->where('ticket_type', 'Ancillary')
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
@@ -168,7 +168,7 @@ class CustomerAdminController extends Controller
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
 
-                $revenueRecord = Transaction::where('peace_id', $user->peace_id)
+                $revenueRecord = Transaction::where('user_id', $user->id)
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
@@ -184,7 +184,7 @@ class CustomerAdminController extends Controller
                 // $ancillaryRecord = $this->organiseChart->organiseWeek($ancillaryRecord);
                 // $revenueRecord = $this->organiseChart->organiseWeek($revenueRecord);
                 
-                $revenueAmount = Transaction::where('peace_id', $user->peace_id)
+                $revenueAmount = Transaction::where('user_id', $user->id)
                     ->whereYear('created_at', $year)
                     ->whereMonth('created_at', $month)
                     ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
