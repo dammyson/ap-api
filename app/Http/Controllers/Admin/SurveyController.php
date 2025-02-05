@@ -29,8 +29,6 @@ class SurveyController extends Controller
         
         try {
 
-            Gate::authorize('is-admin');
-
             $admin = $request->user('admin');
     
             
@@ -118,7 +116,6 @@ class SurveyController extends Controller
 
     public function deActiveSurvey(Request $request) {
         try {
-            Gate::authorize('is-admin');
             $admin = $request->user('admin');
     
             $survey = Survey::where('is_active', true)->first();
@@ -575,7 +572,6 @@ class SurveyController extends Controller
     public function deleteSurvey(Request $request, Survey $survey) {
         try {
 
-            // Gate:
             $admin = $request->user('admin');
 
             if (!$admin) {

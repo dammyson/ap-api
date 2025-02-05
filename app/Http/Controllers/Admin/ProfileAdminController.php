@@ -17,6 +17,15 @@ class ProfileAdminController extends Controller
             // get the image url link from the stored name
             $admin = $request->user('admin');
 
+            $admin = Admin::withTrashed()->find($admin->id);
+
+            if ($admin->trashed()) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "not_permitted"
+                ], 500);
+            }
+
             $image_url = $admin->image_url;
             $image_url_link = Storage::url($image_url);
 
@@ -147,7 +156,16 @@ class ProfileAdminController extends Controller
             // }
     
             $admin = Admin::where('email', $email)->first();
-            $admin->delete();
+
+            if ($admin) {
+                $admin->delete();
+
+            } else {
+                response()->json([
+                    "error" => true,
+                    "message" => "Admin account does not exist"
+                ], 400); 
+            }
             
             return response()->json([
                 "error" => false,

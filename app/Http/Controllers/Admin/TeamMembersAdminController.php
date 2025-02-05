@@ -35,20 +35,22 @@ class TeamMembersAdminController extends Controller
 
             Gate::authorize('is-admin');
 
-            
-            // $admin = $request->user('admin');
-
-            // if ($admin->role  != 'Admin') {
-            //     return response()->json([
-            //         "error" => true,
-            //         "message" => "You do not have permission to view team members.
-            //             Please contact your system administrator if you believe this is an error"
-            //     ], 403);
-            // }
+           
+           
             
             $admin = Admin::find($teamMemberId);
             
+            if (!$admin) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "Admin account does not exist"
+                ], 400); 
+
+            } 
+
             $admin->delete();
+                
+          
             
             return response()->json([
                 'error' => false,
