@@ -10,6 +10,7 @@ use App\Models\InvoiceItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\BookingRecord;
+use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
@@ -42,294 +43,6 @@ class CreateBookingController extends Controller
         $this->getPointService = $getPointService;
     }
 
-    public function createBooking(CreateBookingTwoARequest $request){
-        $validated = $request->validated();
-        $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
-        $airTravelerList = $validated["airTravelerList"];
-        $airTravelerListChild = $validated['airTravelerChildList']; 
-        $requestPurpose = $request->input('requestPurpose');
-        $specialServiceRequestList = $validated['specialServiceRequestList'];
-        
-
-        $xml = $this->createBookingBuilder->createBookingTwoA(
-            $CreateBookOriginDestinationOptionList,
-            $airTravelerList,
-            $airTravelerListChild,
-            $requestPurpose,
-            $specialServiceRequestList
-        );
-
-    //    dd($xml);
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
-        try {
-
-            $response = $this->craneOTASoapService->run($function, $xml);
-
-        //    dd($response);
-
-            if (!array_key_exists('AirBookingResponse', $response)) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "booking is no longer available for this flight",
-                    "response" => $response
-                   
-                ], 404);
-
-            } 
-        
-            $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
-            $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
-            $timeLimitUTC = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimitUTC"];
-            $bookingId = $bookingReferenceIDList['ID'];
-            $bookingReferenceID = $bookingReferenceIDList['referenceID'];
-            $user = $request->user();
-
-            Booking::create([
-                'peace_id' => $user->peace_id,
-                'booking_id' => $bookingId,
-                'booking_reference_id' => $bookingReferenceID
-            ]);
-
-             //// read expected amount from ticketReservation (this is the accurate amount)
-            $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
-
-            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                    $bookingId,
-                    $bookingReferenceID
-            );    
-             
-            $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
-            $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-            
-
-            $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
-            $bookOriginDestinationOptionList = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
-            // $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-        
-            $ticketCount = 0;
-
-               // create invoice table   // add booking_id
-            $invoice = Invoice::create([
-                'amount' => $expectedAmount,
-                'booking_id' => $bookingReferenceIDList['ID'],
-                'is_paid' => false
-            ]);           
-
-            if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
-
-                $flightSegment = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment'];
-
-                $arrival_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
-                $departure_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-                $origin = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                $destination = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                // $arrivalAirportLocationCode = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
-                // $departureAirportLocationCode = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                $originCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                $destinationCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
-                $ticketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
-                $flightDistance = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["distance"];
-                $flightNumber = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["flightNumber"];
-                $flightDuration = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["journeyDuration"];
-                
-                
-
-                $totalHours = $this->getFlightHours($flightDuration);
-
-
-                if ($this->checkArray->isAssociativeArray($ticketItemList)) {    
-                    $passengerName = $ticketItemList['airTraveler']["personName"]["givenName"];   
-                    $passengerType = $ticketItemList['airTraveler']['passengerTypeCode'];              
-                    Flight::create([
-                        'origin' => $origin, 
-                        'destination' => $destination, 
-                        'arrival_time' => $arrival_time, 
-                        'departure_time'=> $departure_time,
-                        'peace_id' => $user->peace_id, 
-                        'passenger_name' =>  $passengerName,
-                        'passenger_type' => $passengerType,
-                        'trip_type' => 'ONE_WAY',
-                        'booking_id' => $bookingId,                        
-                        'origin_city' => $originCity,
-                        'invoice_id' => $invoice->id,
-                        'destination_city' => $destinationCity,
-                        'ticket_type' => $ticketType,
-                        'flight_number' => $flightNumber,
-                        'flight_distance' => $flightDistance,
-                        'flight_duration' => $totalHours,
-                        'payment_expires_at' => $timeLimit
-                    ]);  
-                    $ticketCount += 1;
-
-                    $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
-                    event(new UserActivityLogEvent($user, "Booking", $description));
-
-                } else {
-                    foreach($ticketItemList as $ticketItem) {
-                        $passengerName = $ticketItem['airTraveler']["personName"]["givenName"];   
-                        $passengerType = $ticketItem['airTraveler']['passengerTypeCode'];  
-
-                        Flight::create([
-                            'origin' => $origin, 
-                            'destination' => $destination, 
-                            'arrival_time' => $arrival_time, 
-                            'departure_time'=> $departure_time,
-                            'peace_id' => $user->peace_id, 
-                            'passenger_name' => $passengerName,
-                            'passenger_type' => $passengerType,
-                            'trip_type' => 'ONE_WAY',
-                            'booking_id' => $bookingId,
-                            'origin_city' => $originCity,
-                            'destination_city' => $destinationCity,
-                            'ticket_type' => $ticketType,
-                            'flight_number' => $flightNumber,
-                            'flight_distance' => $flightDistance,
-                            'flight_duration' => $totalHours,
-                            'payment_expires_at' => $timeLimit,
-                            'invoice_id' => $invoice->id
-
-                        ]); 
-
-                        $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
-                        event(new UserActivityLogEvent($user, "Booking", $description));
-                        
-                        $ticketCount += 1;
-                    }
-                }
-
-            } else {
-
-                if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-                    
-                    foreach($bookOriginDestinationOptionList as $bookOriginDestinationOption) {
-                        $arrival_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
-                        $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-                        $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                        $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                        $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                        $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
-                        $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
-                        $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
-                        $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
-                        $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
-                        
-                        $totalHours = $this->getFlightHours($flightDuration);
-                        $passengerName = $ticketItemList['airTraveler']["personName"]["givenName"];
-                        $passengerType = $ticketItemList['airTraveler']['passengerTypeCode'];
-
-                        Flight::create([
-                            'origin' => $origin, 
-                            'destination' => $destination, 
-                            'arrival_time' => $arrival_time, 
-                            'departure_time'=> $departure_time,
-                            'peace_id' => $user->peace_id, 
-                            'passenger_name' => $passengerName,
-                            'passenger_type' => $passengerType,
-                            'trip_type' => 'MULTI_CITY',
-                            'booking_id' => $bookingId,
-                            'origin_city' => $originCity,
-                            'destination_city' => $destinationCity,
-                            'ticket_type' => $ticketType,
-                            'flight_distance' => $flightDistance,
-                            'flight_number' => $flightNumber,
-                            'flight_duration' => $totalHours,
-                            'payment_expires_at' => $timeLimit,
-                            'invoice_id' => $invoice->id
-
-                        ]);  
-                        
-                        $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
-                        event(new UserActivityLogEvent($user, "Booking", $description));
-
-
-                        $ticketCount += 1;
-                    
-                    }
-                    
-                } else {
-                    foreach($ticketItemList as $ticketItem) {
-                        
-                        foreach($bookOriginDestinationOptionList as $bookOriginDestinationOption) {
-                            $arrival_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
-                            $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-                            $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                            $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                            $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                            $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
-                            $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
-                            $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
-                            $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
-                            $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
-                            
-                            $passengerName = $ticketItem['airTraveler']["personName"]["givenName"];
-                            $passengerType = $ticketItem['airTraveler']['passengerTypeCode'];
-                            
-                            $totalHours = $this->getFlightHours($flightDuration);
-
-                            Flight::create([
-                                'origin' => $origin, 
-                                'destination' => $destination, 
-                                'arrival_time' => $arrival_time, 
-                                'departure_time'=> $departure_time,
-                                'peace_id' => $user->peace_id, 
-                                'passenger_name'=> $passengerName,
-                                'passenger_type' => $passengerType,
-                                'trip_type' => 'MULTI_CITY',
-                                'booking_id' => $bookingId,
-                                'origin_city' => $originCity,
-                                'destination_city' => $destinationCity,
-                                'ticket_type' => $ticketType,
-                                'flight_distance' => $flightDistance,
-                                'flight_number' => $flightNumber,
-                                'flight_duration' => $totalHours,
-                                'payment_expires_at' => $timeLimit,
-                                'invoice_id' => $invoice->id
-                            ]); 
-                            
-                            $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
-                            event(new UserActivityLogEvent($user, "Booking", $description));
-                            $ticketCount += 1;
-                        
-                        }
-                    }                    
-                }
-
-            }    
-
-            
-
-            // create invoice_items table
-            InvoiceItem::create([
-                'invoice_id' => $invoice->id,
-                'product' => 'Ticket', 
-                'quantity' => $ticketCount,
-                'price' => $expectedAmount
-            ]);
-            
-            $bookingDetails = [
-                "booking_id" => $bookingReferenceIDList['ID'],
-                "reference_id" => $bookingReferenceIDList['referenceID'],
-                "invoice_id" => $invoice->id,
-                "amount" => $expectedAmount,
-                "timeLimit" => $timeLimit,
-                "timeLimitUTC" => $timeLimitUTC
-            ];
-
-            // dump($bookingDetails);
-            // dd($response);
-            return response()->json([
-                "error" => false,
-                "message" => "Flight booked successfully",
-                "amount" => $expectedAmount,
-                "bookingDetails" => $bookingDetails,
-                // "response" => $response
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
 
     public function guestCreateBooking(CreateBookingTwoARequest $request){
         $validated = $request->validated();
@@ -361,10 +74,11 @@ class CreateBookingController extends Controller
             //    dump($response);
 
             if (!array_key_exists('AirBookingResponse', $response)) {
+                Log::error($response);
+
                 return response()->json([
                     "error" => true,
                     "message" => "booking is no longer available for this flight",
-                    "response" => $response
                    
                 ], 404);
 
@@ -643,109 +357,128 @@ class CreateBookingController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
     }
 
     public function redeemTicketWithPeacePoint(Request $request) {
-        $preferredCurrency = $request->input('preferred_currency');
-        $routes = $request->input('routes');
-        $class = $request->input('class');
-        $type  = $request->input('type'); // domestic, regional, international
-        $noOfPassengers = $request->input('passenger_length');
-        // we should be able to retrieve the booking id and reference using the Booking model
-        $bookingId = $request->input('booking_id');
-        $bookingReferenceID = $request->input('booking_reference_id');
-        $currency = $request->input('preferred_currency');
 
-        $user = $request->user();
-
-        // dd($routes);
-        
-        // return $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
-
-        // [$class, $points] = $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
-        // add a forloop here incase of multiple route
-        $redemptionPoint = 0;
-        foreach($routes as $route) {
-            $redemptionPoint += $this->getPointService->getFlightRedemptionPoints($route['route'], $route['class'], $route['type']);
-
-        }
-        
-        $totalRedemptionPoint = $redemptionPoint * $noOfPassengers; 
-        $peacePoint = $user->points;
-        // dd($totalRedemptionPoint, $peacePoint);
-        
-
-        if ($peacePoint < $totalRedemptionPoint) {
+        try {
+            $preferredCurrency = $request->input('preferred_currency');
+            $routes = $request->input('routes');
+            $class = $request->input('class');
+            $type  = $request->input('type'); // domestic, regional, international
+            $noOfPassengers = $request->input('passenger_length');
+            // we should be able to retrieve the booking id and reference using the Booking model
+            $bookingId = $request->input('booking_id');
+            $bookingReferenceID = $request->input('booking_reference_id');
+            $currency = $request->input('preferred_currency');
+    
+            $user = $request->user();
+    
+            // dd($routes);
+            
+            // return $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
+    
+            // [$class, $points] = $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
+            // add a forloop here incase of multiple route
+            $redemptionPoint = 0;
+            foreach($routes as $route) {
+                $redemptionPoint += $this->getPointService->getFlightRedemptionPoints($route['route'], $route['class'], $route['type']);
+    
+            }
+            
+            $totalRedemptionPoint = $redemptionPoint * $noOfPassengers; 
+            $peacePoint = $user->points;
+            // dd($totalRedemptionPoint, $peacePoint);
+            
+    
+            if ($peacePoint < $totalRedemptionPoint) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "insufficient point"
+                ], 500);
+            }
+            //// read expected amount from ticketReservation (this is the accurate amount)
+            $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
+    
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                    $preferredCurrency,
+                    $bookingId,
+                    $bookingReferenceID
+            );    
+            
+            $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
+            
+            //substract base fare from expected amount to know how much the user is felt to pay
+            $baseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            $peacePointBalance = $peacePoint - $redemptionPoint;
+            // dd($expectedAmount);
+            // dd($baseFare);
+    
+            //dd($peacePointBalance);
+            $ticketItemList = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'];
+            
+           $baseFare = 0;
+          
+            if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+                // $baseFare = $ticketItemList['pricingInfo']['baseFare']['amount']['value'];
+                
+                $baseFare = $ticketItemList["pricingOverview"]["totalBaseFare"]["value"];
+                // ["pricingOverview"]["totalAmount"]["value"];
+    
+            } else {
+               foreach($ticketItemList as $ticketItem) {
+                    // $baseFare += $ticketItem['pricingInfo']['baseFare']['amount']['value'];
+                    $baseFare += $ticketItem["pricingOverview"]["totalBaseFare"]["value"];
+                }
+    
+           }
+    
+    
+           $amountRemaining = $expectedAmount - $baseFare;
+    
+        //    $totatBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingInfo']['equivBaseFare']['value'];
+        //    $totalBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingOverview']['totalBaseFare']['value'];
+    
+            $invoice = Invoice::create([
+                "booking_id" => $bookingId,
+                "amount" => $amountRemaining,
+                "is_paid" => false,
+                "currency" => $preferredCurrency   
+            ]);
+            // $invoice->save();
+    
+    
             return response()->json([
-                "error" => true,
-                "message" => "insufficient point"
+                "amount_remaining" => $amountRemaining,
+                "expected_amount" => $expectedAmount,
+                "redemption_point" => $redemptionPoint,
+                "base_fare" => $baseFare,
+                "booking_id" => $bookingId,
+                "booking_reference_id" => $bookingReferenceID,
+                "invoice_id" => $invoice->id,
+                'preferred_currency' => $preferredCurrency
+    
+            ], 200);
+        
+        } catch (\Exception $e) {
+            
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
-        //// read expected amount from ticketReservation (this is the accurate amount)
-        $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
-
-        $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                $preferredCurrency,
-                $bookingId,
-                $bookingReferenceID
-        );    
-        
-        $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
-        
-        //substract base fare from expected amount to know how much the user is felt to pay
-        $baseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-        $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-        $peacePointBalance = $peacePoint - $redemptionPoint;
-        // dd($expectedAmount);
-        // dd($baseFare);
-
-        //dd($peacePointBalance);
-        $ticketItemList = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'];
-        
-       $baseFare = 0;
-      
-        if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-            // $baseFare = $ticketItemList['pricingInfo']['baseFare']['amount']['value'];
-            
-            $baseFare = $ticketItemList["pricingOverview"]["totalBaseFare"]["value"];
-            // ["pricingOverview"]["totalAmount"]["value"];
-
-        } else {
-           foreach($ticketItemList as $ticketItem) {
-                // $baseFare += $ticketItem['pricingInfo']['baseFare']['amount']['value'];
-                $baseFare += $ticketItem["pricingOverview"]["totalBaseFare"]["value"];
-            }
-
-       }
-
-
-       $amountRemaining = $expectedAmount - $baseFare;
-
-    //    $totatBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingInfo']['equivBaseFare']['value'];
-    //    $totalBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingOverview']['totalBaseFare']['value'];
-
-        $invoice = Invoice::create([
-            "booking_id" => $bookingId,
-            "amount" => $amountRemaining,
-            "is_paid" => false,
-            "currency" => $preferredCurrency   
-        ]);
-        // $invoice->save();
-
-
-        return [
-            "amount_remaining" => $amountRemaining,
-            "expected_amount" => $expectedAmount,
-            "redemption_point" => $redemptionPoint,
-            "base_fare" => $baseFare,
-            "booking_id" => $bookingId,
-            "booking_reference_id" => $bookingReferenceID,
-            "invoice_id" => $invoice->id,
-            'preferred_currency' => $preferredCurrency
-
-        ];
+       
 
     }
 
@@ -786,6 +519,8 @@ class CreateBookingController extends Controller
                 $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
 
                 if ( $paidAmount < $invoiceAmount ) {
+                    // Log::error($throwable->getMessage());
+
                     return response()->json([
                         "error" => false,
                         "message" => "fund payment for ticket is less than calculated"
@@ -813,6 +548,9 @@ class CreateBookingController extends Controller
             // dump($response);
 
             if (!array_key_exists('AirTicketReservationResponse', $response)) {
+                
+                Log::error($response);
+
                 return response()->json([
                     'error' => true,
                     'message' => "no new addition to ticket",
@@ -951,9 +689,9 @@ class CreateBookingController extends Controller
             ]);
 
         } catch (\Throwable $throwable) {
-            // Log::error($exception->getMessage());
+            Log::error($throwable->getMessage());
         
-            return response()->json(['status' => false, 'message' => $throwable->getMessage()], 500);
+            return response()->json(['status' => false, 'message' => "something went wrong"], 500);
         }
     }
 

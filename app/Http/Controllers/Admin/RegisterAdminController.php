@@ -27,16 +27,8 @@ class RegisterAdminController extends Controller
     
     public function registerAdmin(CreateAdminRequest $request) {
         try {
-            // dd($request->input('role'));
-            // // dd($request->all());
-            // dd("I ran");
             $admin = $request->user('admin');
-            // dd($admin);
-            Gate::authorize('is-admin');
-            // dd("I ran two");
-            
-            // $admin = $request->user('admin');
-            
+            Gate::authorize('is-admin');            
     
             // generate temporary password
             $to_name = $request->input('user_name');

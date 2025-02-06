@@ -7,6 +7,7 @@ use App\Models\Device;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ScreenResolution;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\AutoGenerate\CreatePeaceId;
 use App\Services\AutoGenerate\GeneratePassword;
@@ -59,9 +60,16 @@ class GuestLoginController extends Controller
          }
         
        
-     } catch (\Exception $exception) {
-         return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
-     }
+     } catch (\Exception $e) {       
+            
+        Log::error($e->getMessage());
+
+        return response()->json([
+            "error" => true,            
+            "message" => "something went wrong"
+        ], 500);
+        
+    }
 
      $data['user'] =  $create;
      $data['token'] =  $create->createToken('Nova')->accessToken;

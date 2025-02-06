@@ -261,7 +261,6 @@ class SurveyController extends Controller
 
     public function tooglePublishSurvey(Request $request, Survey $survey) {
         try {
-            Gate::authorize('is-admin');
 
             $admin = $request->user('admin');
     
@@ -277,7 +276,6 @@ class SurveyController extends Controller
 
                 $survey->is_published = true;
                 $survey->is_active = true;
-                $survey->is_completed = false;
 
                 // survey end time;
                 $endTime = now()->addMinutes($survey->duration);
@@ -287,10 +285,10 @@ class SurveyController extends Controller
             } else {
                 $survey->is_published = false;
                 $survey->is_active = false;
-                $survey->is_completed = false;
 
             }   
             
+            $survey->is_completed = false;
             $survey->save();
             
 

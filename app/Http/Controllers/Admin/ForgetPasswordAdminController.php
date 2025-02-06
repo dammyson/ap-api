@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Admin;
 use App\Mail\ForgotPassword;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -35,13 +36,16 @@ class ForgetPasswordAdminController extends Controller
         try {
             Mail::to($admin->email)->send(new ForgotPassword($admin->user_name, $otp));
         
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {       
+            
+            Log::error($e->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => "Failed to send OTP email. Please try again."
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
+            
         }
-
         $admin->otp_expires_at = Carbon::now()->addMinutes(10); 
 
         $admin->otp = $otp;
@@ -80,10 +84,16 @@ class ForgetPasswordAdminController extends Controller
                "user" => $admin
            ], 200);
        
-       } catch (\Throwable $throwable) {
-           return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
-       
-       }   
+       } catch (\Exception $e) {       
+            
+        Log::error($e->getMessage());
+
+        return response()->json([
+            "error" => true,            
+            "message" => "something went wrong"
+        ], 500);
+        
+    }
 
    }
 
@@ -121,9 +131,15 @@ class ForgetPasswordAdminController extends Controller
            return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $admin], 200);
           
 
-        } catch (\Throwable $throwable) {
-            return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
+        } catch (\Exception $e) {       
+            
+            Log::error($e->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+            
         }
-
    }
 }
