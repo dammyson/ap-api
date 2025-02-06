@@ -178,7 +178,7 @@ class AddWeightController extends Controller
             }
             // dd($response);
         } else {
-            $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first();
+            $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $peaceId)->first();
             if (!$booking) {
                 return response()->json([
                     "error" => true,
@@ -338,7 +338,7 @@ class AddWeightController extends Controller
                     }
                 }
             }
-            
+
             return response()->json([
                 "error" => false,
                 "data" => $response
