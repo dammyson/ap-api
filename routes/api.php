@@ -62,38 +62,10 @@ use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 
-Route::get('/soap', [FlightController::class, 'callSoapApi']);
-Route::post('test/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
-
-Route::prefix('guest')->middleware(StartSession::class)->group(function () {
-    Route::post('continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
-    Route::post('/get-airport-matrix', [GetAirportMatrixController::class, 'GetAirportMatrix']);
-    Route::post('search-flights', [FlightController::class, 'searchFlightsForWeb']);
-    Route::post('upcoming-trips', [AnalyticsUserController::class, 'guestUpcomingTrips']);
-    Route::post('create-booking/two-a', [CreateBookingController::class, 'guestCreateBooking']);
-    Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
-    Route::post('ticket-reservation-view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-    Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
-    // Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingTk']);
-    Route::post('/verify-payment/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
-    Route::post('reissue-ticket-pnr/preview/{invoiceId}', [ReissuePNRController::class, 'reissueTicketPNR']);
-    Route::post('reissue-ticket-pnr/commit', [ReissuePNRController::class, 'reissueTicketCommit']);
-    Route::post('available-special-service', [AvailableSpecialController::class, 'AvailableSpecialServiceTwoA']);
-    Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
-    // Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
-    Route::post('/select-seat', [AddWeightController::class, 'selectSeat']);
-    Route::post('cancel-booking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
-
-    // Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
 
 
-
-    Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
-
-    // Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
-
-
-});
+    
+Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
 
 Route::group(['prefix' => 'user'], function ()  {
     Route::post('register', [RegisterController::class, 'userRegister']);
@@ -248,7 +220,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
             });
 
             Route::group(["prefix" => "create-booking"], function() {
-                Route::post('two-a', [CreateBookingController::class, 'guestCreateBooking']);
+                Route::post('two-a', [CreateBookingController::class, 'createBooking']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
                 Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
