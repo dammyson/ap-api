@@ -12,15 +12,20 @@ use App\Http\Requests\SSR\AddSsrRequest;
 use App\Services\Soap\AddWeightBuilderTest;
 use App\Http\Requests\Test\addWeightRequest;
 use App\Http\Requests\Test\AddWeightRequestTest;
+use App\Services\Soap\BookingBuilder;
 
 class AddWeightControllerTest extends Controller
 {
     protected $addWeightBuilderTest;
     protected $craneAncillaryOTASoapService;
+    protected $craneOTASoapService;
+    protected $bookingBuilder;
 
-    public function __construct(AddWeightBuilderTest $addWeightBuilderTest) {
+    public function __construct(AddWeightBuilderTest $addWeightBuilderTest, BookingBuilder $bookingBuilder) {
         $this->addWeightBuilderTest = $addWeightBuilderTest;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
+        $this->craneOTASoapService = app("CraneOTASoapService");
+        $this->bookingBuilder = $bookingBuilder;
         
     }
 
@@ -111,17 +116,37 @@ class AddWeightControllerTest extends Controller
         
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
+        $passengerName = $request->input('passengerName');
+        $peaceId = $request->input('peaceId');
+
 
         $user = $request->user();
 
-        $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first();
-        // : Booking::where('booking_id', $bookingReferenceIDID)->where('guest_session_token', $request->input('guest_session_token'))->first();
+        $user = $request->user();
+        
+        if ($user->is_guest) {
 
-        if (!$booking) {
-            return response()->json([
-                "error" => true,
-                "message" => "you are not authorized to carry out this action"
-            ], 401);
+            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+            $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
+    
+    
+            $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
+            if (!(isset($response['AirBookingResponse']))) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorized to carry out this action"
+                ], 401);
+            }
+            // dd($response);
+        } else {
+            $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $peaceId)->first();
+            if (!$booking) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorized to carry out this action"
+                ], 401);
+            }
         }
 
         $xml = $this->addWeightBuilderTest->addWeightTest(
