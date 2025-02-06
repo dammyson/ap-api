@@ -102,9 +102,9 @@ class CreateBookingController extends Controller
             $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
 
             $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                    $preferredCurrency,
-                    $bookingId,
-                    $bookingReferenceID
+                $preferredCurrency,
+                $bookingId,
+                $bookingReferenceID
             );    
              
             $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);

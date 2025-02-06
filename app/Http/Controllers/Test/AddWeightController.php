@@ -156,7 +156,7 @@ class AddWeightController extends Controller
         $user = $request->user();
         $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first();
         
-        dd($booking);
+        // dd($booking);
         if (!$booking) {
             return response()->json([
                 "error" => true,
