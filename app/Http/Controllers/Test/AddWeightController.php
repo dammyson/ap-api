@@ -11,16 +11,21 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\AddWeightBuilder;
 use App\Http\Requests\Test\addWeightRequest;
+use App\Services\Soap\BookingBuilder;
 
 class AddWeightController extends Controller
 {
     protected $addWeightBuilder;
     protected $craneAncillaryOTASoapService;
+    protected $bookingBuilder;
+    protected $craneOTASoapService;
 
-    public function __construct(AddWeightBuilder $addWeightBuilder)
+    public function __construct(AddWeightBuilder $addWeightBuilder, BookingBuilder $bookingBuilder)
     {
         $this->addWeightBuilder = $addWeightBuilder;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
+        $this->craneOTASoapService = app("CraneOTASoapService");
+        $this->bookingBuilder = $bookingBuilder;
     }
 
   
@@ -151,18 +156,40 @@ class AddWeightController extends Controller
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
         $preferredCurrency = $request->input('preferredCurrency');
+        $passengerName = $request->input("passengerName");
+        $peaceId =  $request->input('peaceId');
 
 
         $user = $request->user();
-        $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first();
+        
+        if ($user->is_guest) {
+
+            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+            $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
+    
+    
+            $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
+            if (!(isset($response['AirBookingResponse']))) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorized to carry out this action"
+                ], 401);
+            }
+            // dd($response);
+        } else {
+            $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $user->peace_id)->first();
+            if (!$booking) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorized to carry out this action"
+                ], 401);
+            }
+        }
+        
         
         // dd($booking);
-        if (!$booking) {
-            return response()->json([
-                "error" => true,
-                "message" => "you are not authorized to carry out this action"
-            ], 401);
-        }
+        
 
         $xml = $this->addWeightBuilder->addWeight(
             $preferredCurrency,
