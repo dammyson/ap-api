@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ChangeAdminPasswordRequest;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Admin\ChangeAdminPasswordRequest;
 
 class ChangePasswordAdminController extends Controller
 {
@@ -36,12 +37,14 @@ class ChangePasswordAdminController extends Controller
             $admin->save();
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-
-        }        
+        }      
         
         return response()->json([
             'error' => false,

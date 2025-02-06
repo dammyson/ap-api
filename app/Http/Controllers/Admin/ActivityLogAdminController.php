@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateFilterActivityRequest;
 use App\Models\Admin\AdminActivityLog;
+use App\Http\Requests\CreateFilterActivityRequest;
 
 class ActivityLogAdminController extends Controller
 {
@@ -25,10 +26,12 @@ class ActivityLogAdminController extends Controller
                 'ip_address' => request()->ip()
             ]);
 
-        } catch(\Throwable $th) {
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
        
@@ -46,10 +49,12 @@ class ActivityLogAdminController extends Controller
                 $query->withTrashed()->select('id', 'user_name', 'role');
             }])->get();
 
-        } catch(\Throwable $th) {
+        }catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
        
@@ -70,10 +75,12 @@ class ActivityLogAdminController extends Controller
                     $query->select('id', 'user_name', 'role');
                 }])->get();
 
-        } catch(\Throwable $th) {
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
 

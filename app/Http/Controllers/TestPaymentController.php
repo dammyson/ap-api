@@ -58,11 +58,15 @@ class TestPaymentController extends Controller
             // return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
             return  $this->ticketReservationController->guestTicketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
         
-        } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
-        
-            return response()->json(['status' => false,  'message' => 'Error processing request'], 500);
-        }
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     // public function verifyFlutterwave(Request $request) 
@@ -146,10 +150,14 @@ class TestPaymentController extends Controller
 
                return $this->tierController->upgradeTier($userId, $tier->id);
             }
-        } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
-        
-            return response()->json(['status' => false,  'message' => 'Error processing request'], 500);
-        }
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 }

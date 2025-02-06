@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Test;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\Soap\VoidTicketRequestBuilder;
 use App\Http\Requests\Ticket\VoidTicketCommitRequest;
 use App\Http\Requests\Ticket\VoidTicketPricingRequest;
-use App\Services\Soap\VoidTicketRequestBuilder;
 
 class VoidTicketController extends Controller
 {
@@ -63,10 +64,15 @@ class VoidTicketController extends Controller
 
             dd($xml);
         
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
 
@@ -87,9 +93,15 @@ class VoidTicketController extends Controller
 
         try {
           dd($xml);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
            
     }
 

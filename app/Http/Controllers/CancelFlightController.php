@@ -6,6 +6,7 @@ use App\Models\Wallet;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Models\BookingRecord;
+use Illuminate\Support\Facades\Log;
 use App\Services\Soap\CancelBookingBuilder;
 
 class CancelFlightController extends Controller
@@ -138,10 +139,13 @@ class CancelFlightController extends Controller
             }
          
          } catch (\Throwable $th) {
-             return response()->json([
-                 "error" => "true",
-                 "message" => $th->getMessage()
-             ], 500);
-         }
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
      }
 }

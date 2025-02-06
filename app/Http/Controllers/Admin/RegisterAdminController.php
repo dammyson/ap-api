@@ -79,11 +79,15 @@ class RegisterAdminController extends Controller
             $data['admin'] =  $admin;
             // $data['token'] = $admin->createToken('AdminToken')->accessToken;
           
-        } catch (\Exception $exception) {
-
-            Log::error($exception);
-            return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
-        }
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
 
         return response()->json(['error' => false, 
             'message' => 'Client registration successful. Verification code sent to your email.',
@@ -117,12 +121,14 @@ class RegisterAdminController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-
-        }
+        }  
     }
 
     

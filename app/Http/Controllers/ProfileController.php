@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChangePeaceIdRequest;
+use Throwable;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\Point\TierPointService;
+use App\Services\Utility\GetPointService;
+use App\Http\Requests\ChangePeaceIdRequest;
 use App\Http\Requests\User\EditProfileRequest;
 use App\Http\Requests\ChangeProfileImageRequest;
-use App\Services\Utility\GetPointService;
-use Illuminate\Support\Facades\Auth;
-use Throwable;
-use App\Services\Point\TierPointService;
 
 class ProfileController extends Controller
 {
@@ -39,11 +40,14 @@ class ProfileController extends Controller
             ], 200);
             
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => "true",
-                "message" => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
        
     }
 
@@ -76,12 +80,15 @@ class ProfileController extends Controller
             }
         
 
-        } catch (\Throwable $th) {
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
 
         
     }
@@ -114,17 +121,21 @@ class ProfileController extends Controller
 
             $user->save();
 
-        } catch (\Throwable $th) {
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ], 500);
-        }
+                'error' => false,
+                'user_data' => $user
+             ]);
 
-        return response()->json([
-           'error' => false,
-            'user_data' => $user
-        ]);
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
+        
     }
 
     public function allocatePoint(Request $request) {
@@ -137,37 +148,5 @@ class ProfileController extends Controller
             "points" => $user->points
         ]);
     }  
-
-    public function getPoint(Request $request) {
-        try {
-            
-            $user = Auth::user(); 
-
-            $result =(new GetPointService())->domesticPoints('LOS-ABV', 'C', false);
-
-            $user = User::find($user->id);
-            $user->addPoints(1);
-
-            dd( $user );
-
-           // dd( $result);
-              // Act: Add points to the user
-            $point = 100;
-            $validForDays = 365;
-
-           
-
-            $points = $user->tierPoint->total_points;
-
-            dd($points);
-            
-        } catch (\Throwable $th) {
-            return response()->json([
-                "error" => "true",
-                "message" => $th->getMessage()
-            ]);
-        }
-       
-    }
     
 }

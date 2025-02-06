@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Test;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\Soap\GetAvailabilityBuilder;
 use App\Http\Requests\Test\GetAvailability\GetAvailabilityMDRequest;
 use App\Http\Requests\Test\GetAvailability\GetAvailabilityOWRequest;
 use App\Http\Requests\Test\GetAvailability\GetAvailabilityRTRequest;
 use App\Http\Requests\Test\GetAvailability\GetAvailabilityTwoARequest;
-use App\Services\Soap\GetAvailabilityBuilder;
-use Illuminate\Http\Request;
 
 class GetAvailabilityController extends Controller
 {
@@ -31,9 +32,15 @@ class GetAvailabilityController extends Controller
             dd($response);
            
 
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
     public function getAvailabilityRT(GetAvailabilityRTRequest $request) {
         $originDateOffsetOne = $request->input('originDateOffsetOne'); 

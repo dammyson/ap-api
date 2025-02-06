@@ -222,7 +222,6 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-            Route::post('/commit-two-a', [TicketReservationController::class, 'ticketReservationCommitTwoA']);
             Route::post('/commit/invoice/{invoiceId}', [TicketReservationController::class, 'ticketReservationCommit']);
             Route::post('/commit-test', [TicketReservationController::class, 'testTicketReservationCommit']);
             Route::post('/commit-rt', [TicketReservationController::class, 'ticketReservationCommitRT']);
@@ -301,8 +300,6 @@ Route::group(["middleware" => ["auth:api"]], function() {
         Route::post('/add-seat-ssr', [AddSeatController::class, 'addSeat']);
         Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
         Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
-        Route::post('/add-weight-bag-array/invoice-test/{invoiceId}', [AddWeightControllerTest::class, 'addWeightArrayTest']);
-        Route::post('/add-weight-bag-ow/invoice/{invoiceId}', [AddWeightController::class, 'addWeight']);
         Route::post('/select-seat', [AddWeightController::class, 'selectSeat']);
         
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
@@ -327,33 +324,23 @@ Route::group(["middleware" => ["auth:api"]], function () {
         Route::post('create-wallet', [WalletController::class, 'createWallet']);
         Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
         Route::get('upcoming-trips', [AnalyticsUserController::class, 'upcomingTrips']);
-        Route::put('award-point-manually', [CustomerAdminController::class, 'testAwardPointManually']);
-
-        Route::get('getpoint', [ProfileController::class, 'getPoint']);
     });
 
 
     
     Route::prefix('verify-payment')->group(function () {
-        Route::post('/ref', [TestPaymentController::class, 'verifyTicketRef'])->name('wallet.top_up');
+        Route::post('/ref', [TestPaymentController::class, 'verifyTicketRef']);
         Route::post('/tier-ref', [TestPaymentController::class, 'verifyTierRef']);
-        Route::post('/verify-flutterwave', [TestPaymentController::class, 'verifyFlutterwave']);
-
     });
 
-    Route::post('redeem-ticket-with-peace-point', [RedeemTicketPeacePointController::class, 'payWithPeacePoint']);
-    Route::post('/upgrade-tier', [TierController::class, 'upgradeTier'])->middleware('auth');
+    Route::post('/upgrade-tier', [TierController::class, 'upgradeTier']);
 
 
     Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);
     Route::post('cancel-flight-commit', [CancelFlightController::class, 'cancelFlightCommit']);
    
     
-    Route::post('/search-flights', [FlightController::class, 'searchFlights']);
-    Route::post('/passenger/tickets', [TicketController::class, 'storeMultipleTickets']);
-    Route::post('/tickets/update-seats', [TicketController::class, 'updateSeats']);
-    Route::get('/booking', [BookingController::class, 'getBooking']);
- 
+    Route::post('/search-flights', [FlightController::class, 'searchFlights']); 
     
     // Analytics
     Route::group(['prefix' => 'analytics'], function() { // 

@@ -16,6 +16,7 @@ use App\Models\FlightTicketType;
 use App\Models\ScreenResolution;
 use Symfony\Component\Clock\now;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
 
@@ -23,72 +24,82 @@ class DashboardAdminController extends Controller
 {
     public function weeklyAnalysis()
     {
-        // Get the current date and date of 7 days ago
-        $currentDate = Carbon::now();
-        $date7DaysAgo = Carbon::now()->subDays(7);
-        $date14DaysAgo= Carbon::now()->subDays(14);
+        try {
+             // Get the current date and date of 7 days ago
+            $currentDate = Carbon::now();
+            $date7DaysAgo = Carbon::now()->subDays(7);
+            $date14DaysAgo= Carbon::now()->subDays(14);
 
-        // Query the number of users registered in the last 7 days
-        $userCountLast7Days = User::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
+            // Query the number of users registered in the last 7 days
+            $userCountLast7Days = User::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
 
-        // Query the number of users registered in the 7 days before the last 7 days        
-        $userCount14Ago = User::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
+            // Query the number of users registered in the 7 days before the last 7 days        
+            $userCount14Ago = User::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
 
-        // Calculate the percentage change
-        if ($userCount14Ago > 0) {
-            $percentageChange = (($userCountLast7Days - $userCount14Ago) / $userCount14Ago) * 100;
-        } else {
-            $percentageChange = $userCountLast7Days > 0 ? 100 : 0; // Handle edge cases
-        
-        }
-
-        // purchased-ticket
-        $ticket7DaysAgo = Flight::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
-        $ticket14DaysAgo = Flight::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
-
-        if ($ticket14DaysAgo > 0) {
-            $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
-
-        }  else {
-            $percentageChange = $ticket7DaysAgo > 0 ? 100 : 0; // Handle edge cases
-        }
-
-        // total-revenue
-
-        $total7daysRevenue = Transaction::whereBetween('created_at', [$date7DaysAgo, $currentDate])->sum('amount');
-        $total14daysRevenue = Transaction::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->sum('amount');
-
-
-        if ($total14daysRevenue > 0) { 
-            $revenuePercentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
-
-        } else {
-            $revenuePercentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
-        }
-
-        RecentActivity::create([
-            "title" => "Performance trend",
-            "description" => $revenuePercentageChange > 0 ? "Revenue Growth: +{$revenuePercentageChange} compared to last Seven days" : "Revenue Drop: {$revenuePercentageChange} compared to last Seven days"
-        ]);
-
-        return response()->json([
-            "error" => false,
-            "total_registered_users" => [
-                "total_registered_users_last_seven_days" => $userCountLast7Days,
-                "percentage" => round($percentageChange, 2)
-            ],
-
-            "total_purchased_ticket" => [
-                'ticket7DaysAgo' => $ticket7DaysAgo,
-                'percentageChange' => round($percentageChange, 2)               
-            ],
+            // Calculate the percentage change
+            if ($userCount14Ago > 0) {
+                $percentageChange = (($userCountLast7Days - $userCount14Ago) / $userCount14Ago) * 100;
+            } else {
+                $percentageChange = $userCountLast7Days > 0 ? 100 : 0; // Handle edge cases
             
-            "total_revenue" => [
-                'total7daysRevenue' => $total7daysRevenue,
-                'percentageChange' => round($percentageChange, 2)
-            ]
+            }
 
-        ]);
+            // purchased-ticket
+            $ticket7DaysAgo = Flight::whereBetween('created_at', [$date7DaysAgo, $currentDate])->count();
+            $ticket14DaysAgo = Flight::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->count();
+
+            if ($ticket14DaysAgo > 0) {
+                $percentageChange = (($ticket7DaysAgo - $ticket14DaysAgo) / $ticket14DaysAgo ) * 100;
+
+            }  else {
+                $percentageChange = $ticket7DaysAgo > 0 ? 100 : 0; // Handle edge cases
+            }
+
+            // total-revenue
+
+            $total7daysRevenue = Transaction::whereBetween('created_at', [$date7DaysAgo, $currentDate])->sum('amount');
+            $total14daysRevenue = Transaction::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->sum('amount');
+
+
+            if ($total14daysRevenue > 0) { 
+                $revenuePercentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
+
+            } else {
+                $revenuePercentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
+            }
+
+            RecentActivity::create([
+                "title" => "Performance trend",
+                "description" => $revenuePercentageChange > 0 ? "Revenue Growth: +{$revenuePercentageChange} compared to last Seven days" : "Revenue Drop: {$revenuePercentageChange} compared to last Seven days"
+            ]);
+
+            return response()->json([
+                "error" => false,
+                "total_registered_users" => [
+                    "total_registered_users_last_seven_days" => $userCountLast7Days,
+                    "percentage" => round($percentageChange, 2)
+                ],
+
+                "total_purchased_ticket" => [
+                    'ticket7DaysAgo' => $ticket7DaysAgo,
+                    'percentageChange' => round($percentageChange, 2)               
+                ],
+                
+                "total_revenue" => [
+                    'total7daysRevenue' => $total7daysRevenue,
+                    'percentageChange' => round($percentageChange, 2)
+                ]
+
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }
     }
 
     public function revenueGraph(Request $request, $filter) {
@@ -208,11 +219,13 @@ class DashboardAdminController extends Controller
                 ]
             ], 200);
 
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
     }
 
@@ -269,64 +282,75 @@ class DashboardAdminController extends Controller
 
 
     public function ticketViaApp(Request $request) {
-        $filter = $request->input('filter');
-        $data = [];
-        if ($filter == "yearly") {
-            $transactions = Transaction::where('ticket_type', 'ticket')
-                ->select(DB::raw('YEAR(created_at) as year'), DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
-                ->groupBy(DB::raw('YEAR(created_at'), DB::raw('MONTH(created_at'))
-                ->get();
-            
-            foreach($transactions as $transaction) {
-                if(!isset($data[$transaction->year])) {
-                    $data[$transaction->year] = [];
+
+        try {
+            $filter = $request->input('filter');
+            $data = [];
+            if ($filter == "yearly") {
+                $transactions = Transaction::where('ticket_type', 'ticket')
+                    ->select(DB::raw('YEAR(created_at) as year'), DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+                    ->groupBy(DB::raw('YEAR(created_at'), DB::raw('MONTH(created_at'))
+                    ->get();
+                
+                foreach($transactions as $transaction) {
+                    if(!isset($data[$transaction->year])) {
+                        $data[$transaction->year] = [];
+                    }
+
+                    $data[$transaction->year]['months'][$transaction->month] = $transaction->count;
                 }
 
-                $data[$transaction->year]['months'][$transaction->month] = $transaction->count;
             }
 
-        }
+            if ($filter == "monthly") {
+                $transactions = Transaction::where('ticket_type', 'ticket')
+                    ->where(DB::raw('YEAR(created_at)'), carbon::create(now())->year)
+                    ->select(DB::raw('MONTH(created_at) as month'), DB::raw('WEEK(created_at) as week'), DB::raw('COUNT(*) as count'))
+                    ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('WEEK(created_at)'))
+                    ->get();
 
-        if ($filter == "monthly") {
-            $transactions = Transaction::where('ticket_type', 'ticket')
-                ->where(DB::raw('YEAR(created_at)'), carbon::create(now())->year)
-                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('WEEK(created_at) as week'), DB::raw('COUNT(*) as count'))
-                ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('WEEK(created_at)'))
-                ->get();
+                foreach($transactions as $transaction) {
+                    if(!isset($transaction[$transaction->month]['weekly'][$transaction->week])) {
+                        $transaction[$transaction->month]['weekly'][$transaction->week] = [];
+                    }
 
-            foreach($transactions as $transaction) {
-                if(!isset($transaction[$transaction->month]['weekly'][$transaction->week])) {
-                    $transaction[$transaction->month]['weekly'][$transaction->week] = [];
+                    $transaction[$transaction->month]['weekly'][$transaction->week][] = $transaction->count();
                 }
-
-                $transaction[$transaction->month]['weekly'][$transaction->week][] = $transaction->count();
             }
-        }
 
-        if ($filter == "weekly") {
-            $transactions = Transaction::where('ticket_type', 'ticket')
-                ->where(DB::raw('YEAR(created_at)'), carbon::create(now())->year)
-                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('WEEK(created_at) as week'), DB::raw('DAY(created_at) as day'))
-                ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('WEEK(created_at)', DB::raw('DAY(created_at)')))
-                ->get();
+            if ($filter == "weekly") {
+                $transactions = Transaction::where('ticket_type', 'ticket')
+                    ->where(DB::raw('YEAR(created_at)'), carbon::create(now())->year)
+                    ->select(DB::raw('MONTH(created_at) as month'), DB::raw('WEEK(created_at) as week'), DB::raw('DAY(created_at) as day'))
+                    ->groupBy(DB::raw('MONTH(created_at)'), DB::raw('WEEK(created_at)', DB::raw('DAY(created_at)')))
+                    ->get();
 
-            foreach($transactions as $transaction) {
-                if(!isset($data[$transaction->month])) {
-                    $data[$transaction->month] = [];
+                foreach($transactions as $transaction) {
+                    if(!isset($data[$transaction->month])) {
+                        $data[$transaction->month] = [];
+
+                    }
+
+                    $data[$transaction->month]['weeks'][$transaction->week]['days'][$transaction->day] = $transaction->count;
+
 
                 }
-
-                $data[$transaction->month]['weeks'][$transaction->week]['days'][$transaction->day] = $transaction->count;
-
-
             }
-        }
-      
+        
 
-        return response()->json([
-            'error' => false,
-            'tickets' => $data
-        ], 200);
+            return response()->json([
+                'error' => false,
+                'tickets' => $data
+            ], 200);
+
+        }  catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }       
 
     }
 
@@ -357,33 +381,43 @@ class DashboardAdminController extends Controller
                 
             ], 200);
 
-        } catch(\Throwable $th) {
+        }  catch (\Exception $e) {
+            Log::error($e->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
         
     }
 
     public function screenResolution(Request $request) {
-
-        $screenResolutions = ScreenResolution::select('screen_resolution', DB::raw('count(*) as count'))
+        try {
+            $screenResolutions = ScreenResolution::select('screen_resolution', DB::raw('count(*) as count'))
             ->groupBy('screen_resolution')
             ->get();
 
-        $screenResolutions = $screenResolutions->map(function($screenResolution) {
-            return [
-                "screen_resolution" => $screenResolution->screen_resolution,
-                "count" => $screenResolution->count,
-                "percentage" => round((($screenResolution->count / User::count()) * 100), 2),
-            ];        
-        });
+            $screenResolutions = $screenResolutions->map(function($screenResolution) {
+                return [
+                    "screen_resolution" => $screenResolution->screen_resolution,
+                    "count" => $screenResolution->count,
+                    "percentage" => round((($screenResolution->count / User::count()) * 100), 2),
+                ];        
+            });
 
-        return response()->json([
-            'error' => false,
-            'users_and_screenResolution' => $screenResolutions
-        ]);
+            return response()->json([
+                'error' => false,
+                'users_and_screenResolution' => $screenResolutions
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }      
         
     }
 
@@ -393,10 +427,12 @@ class DashboardAdminController extends Controller
                
             return new UserCollection($users);
 
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
 
@@ -418,10 +454,12 @@ class DashboardAdminController extends Controller
             // $ticketPurchased = Transaction::with('user')->get();
             // $tickets = Ticket::with(['flight_ticket_types', 'users']);
 
-        }  catch (\Throwable $th) {
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
 
@@ -432,18 +470,27 @@ class DashboardAdminController extends Controller
     }
 
     public function totalRevenueTicketTable(Request $request) {
-        $revenuePurchased = Transaction::with(['user' => function ($query) {
-            $query->select('id', 'first_name', 'last_name', 'email');
-        }])->get();
-        
-        // $revenuePurchased = Transaction::with('user')->get();
-        // $revenuePurchased = Transaction::with(['user'])->get();
+        try {
+            $revenuePurchased = Transaction::with(['user' => function ($query) {
+                $query->select('id', 'first_name', 'last_name', 'email');
+            }])->get();
+            
+            // $revenuePurchased = Transaction::with('user')->get();
+            // $revenuePurchased = Transaction::with(['user'])->get();
+    
+            return response()->json([
+                'error' => false,
+                'revenue_purchased' => $revenuePurchased
+            ], 200);
+            
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
 
-        return response()->json([
-            'error' => false,
-            'revenue_purchased' => $revenuePurchased
-        ], 200);
-
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }
     }
 
     public function totalRevenueTableDashboard(Request $request) {

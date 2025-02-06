@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\FavoriteCityEvent;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TripController extends Controller
 {
@@ -30,12 +31,15 @@ class TripController extends Controller
                 'featured_trip' => $featuredTrip
             ], 200);
 
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function specialDeals(Request $request) {
@@ -54,13 +58,15 @@ class TripController extends Controller
                 'special_deal' => $specialDeal
             ]);
         
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
-
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function favoriteCitiesEvent(Request $request) {
@@ -88,12 +94,15 @@ class TripController extends Controller
                 'flightCitiesEvents' => $favoriteCitiesEvent
             ], 200);
 
-        } catch (\Throwable $throwable) {
+        }catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
 
     }
 
@@ -124,12 +133,15 @@ class TripController extends Controller
                 'destinations' => $destinations
             ], 200);
             
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     
     }
 
@@ -172,12 +184,15 @@ class TripController extends Controller
                 // 'busy_month_chart_data' => $busyMonthChartData
             ], 200);
 
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function averageFlightDuration(Request $request) {
@@ -218,12 +233,15 @@ class TripController extends Controller
 
             ], 200);
 
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     
@@ -243,11 +261,14 @@ class TripController extends Controller
 
             ], 200);
 
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 }
