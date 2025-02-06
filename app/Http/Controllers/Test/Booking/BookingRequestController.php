@@ -137,8 +137,7 @@ class BookingRequestController extends Controller
         return response()->json([
             'error' => false,
             'invoice_id' => $invoice->id,
-            'booking_data' => $response,
-           
+            'booking_data' => $response
         ]);
 
     }
