@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\TeamMembersCollection;
@@ -22,11 +23,14 @@ class TeamMembersAdminController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 
     public function deleteTeamMembers(Request $request, $teamMemberId) {
@@ -58,10 +62,13 @@ class TeamMembersAdminController extends Controller
             ], 204);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 }

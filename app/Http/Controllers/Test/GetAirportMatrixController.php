@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Test;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\GetAirportMatrixBuilder;
-use Illuminate\Http\Request;
 
 class GetAirportMatrixController extends Controller
 {
@@ -99,20 +100,24 @@ class GetAirportMatrixController extends Controller
 
                 $availableFlights[] = $availableFlightDetails;
             }
-        
-        } catch (\Throwable $th) {
+
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
+                "error" => "false",
+                "message" => "available flights",
+                "availableFlights" => $availableFlights
+            ], 200);
+        
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
+        }  
 
-        }
-
-        return response()->json([
-            "error" => "false",
-            "message" => "available flights",
-            "availableFlights" => $availableFlights
-        ], 200);
+      
 
     }
 }

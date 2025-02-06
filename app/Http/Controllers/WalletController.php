@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Wallet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WalletController extends Controller
 {
@@ -24,12 +25,15 @@ class WalletController extends Controller
                 'wallet' => $wallet
             ], 200);
         
-        }catch (\Throwable $th) {
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
         
     }
 }

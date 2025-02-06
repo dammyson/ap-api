@@ -9,12 +9,13 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
 use App\Services\Soap\ReissuePnrTestBuilder;
 use App\Services\Wallet\VerificationService;
-use App\Http\Requests\Reissue\ReissuePnrPreviewRequest;
 use App\Services\Wallet\FlutterVerificationService;
+use App\Http\Requests\Reissue\ReissuePnrPreviewRequest;
 
 class ReissuePNRController extends Controller
 {
@@ -460,12 +461,14 @@ class ReissuePNRController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage(),
-                "response" => $response
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 
     public function reissueTicketCommit (ReissuePnrPreviewRequest $request) {
@@ -913,13 +916,15 @@ class ReissuePNRController extends Controller
                 "data" => $data,
                 // "response" => $response
             ]);
-        } catch (\Throwable $th)  {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage(),
-                // "response" => $response
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 
     public function reissuePnrAddFlightPreview(Request $request) {

@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
 use App\Models\InvoiceRecord;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\AddWeightBuilder;
 use App\Http\Requests\Test\addWeightRequest;
@@ -301,11 +302,14 @@ class AddWeightController extends Controller
             ]);
         
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
     
    

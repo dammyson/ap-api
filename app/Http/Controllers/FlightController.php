@@ -141,7 +141,12 @@ class FlightController extends Controller
            
             return response()->json($result);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
     }
     public function searchFlightsForWeb(SearchFlightRequest $request)
@@ -250,7 +255,12 @@ class FlightController extends Controller
            
             return response()->json($result);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Admin\Survey;
 use Illuminate\Http\Request;
 use App\Models\Admin\Question;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\FillSurveyRequest;
 use App\Models\Admin\SurveyUserResponse;
 
@@ -43,12 +44,15 @@ class UserSurveyController extends Controller
             ]);
             
 
-        } catch (\Throwable $th) {
+        }catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
     public function allSurvey() {
         try {
@@ -71,11 +75,14 @@ class UserSurveyController extends Controller
             
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 
     public function showSurvey($surveyId) {
@@ -92,12 +99,14 @@ class UserSurveyController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
-
+        }  
     }
 
     public function fillSurvey(FillSurveyRequest $request) {
@@ -125,22 +134,20 @@ class UserSurveyController extends Controller
                 }
             }
 
-
-        } catch(\Throwable $th) {
-           
-            return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ], 500);
-            
-        }
-
-           // Return success response
+        // Return success response
         return response()->json([
             'error' => false,
             'message' => 'Survey responses saved successfully'
         ], 201);
 
-
+        }catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }   
 }

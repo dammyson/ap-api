@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Test;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\DividePNRBuilder;
 use App\Http\Requests\Test\DividePNR\DividePNRRequest;
@@ -133,10 +134,13 @@ class DividePNRController extends Controller
             dd($xml);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => "true",
-                "message" => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 }

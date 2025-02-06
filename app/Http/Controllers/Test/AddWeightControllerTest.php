@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SSR\AddSsrRequest;
 use App\Services\Soap\AddWeightBuilderTest;
@@ -280,7 +281,7 @@ class AddWeightControllerTest extends Controller
                 "amount" => $amount
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             $message = "Something went wrong";
             if (array_key_exists("detail", $response)) {
                 if (array_key_exists("CraneFault", $response["detail"])){
@@ -291,9 +292,10 @@ class AddWeightControllerTest extends Controller
                     }
                 }
             }
+            Log::error($th->getMessage());
 
             return response()->json([
-                'error' => $e->getMessage(),
+                'error' => true,
                 "message" => $message
         
             ], 500);
@@ -497,12 +499,14 @@ class AddWeightControllerTest extends Controller
                 "data" => $response                
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => $e->getMessage(),
-                // 'response' => $response
-        
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 }

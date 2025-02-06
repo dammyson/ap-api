@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Test;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Test\Penalty\PenaltyRulesRequest;
-use App\Services\Soap\PenaltyRulesBuilder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Services\Soap\PenaltyRulesBuilder;
+use App\Http\Requests\Test\Penalty\PenaltyRulesRequest;
 
 class PenaltyRulesController extends Controller
 {
@@ -29,9 +30,15 @@ class PenaltyRulesController extends Controller
          try {
 
             dd($response);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
 
     }
 }

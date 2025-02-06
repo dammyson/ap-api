@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\SharePeacePointRequest;
 
 class SharePeacePointController extends Controller
@@ -54,12 +55,15 @@ class SharePeacePointController extends Controller
             ], 200);
              
         
-        } catch(\Throwable $th) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
         
     }
 

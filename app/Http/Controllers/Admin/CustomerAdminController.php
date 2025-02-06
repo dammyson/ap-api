@@ -12,6 +12,7 @@ use App\Events\AdminSurveyEvent;
 use App\Models\ReferralActivity;
 use App\Events\AdminCustomerEvent;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use App\Services\Utility\OrganiseChart;
@@ -210,10 +211,12 @@ class CustomerAdminController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
     }
 
@@ -265,43 +268,6 @@ class CustomerAdminController extends Controller
             ->sum('amount'); 
 
 
-
-        //////////////////////////////////////
-        $ticketRecord = Transaction::where('user_id', $user->id)
-                ->where('ticket_type', 'ticket')
-            ->whereYear('created_at', $year)
-            ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
-            ->groupBy(DB::raw('month_name'))
-            ->get();
-    
-
-        $ticketAmount =  Transaction::where('user_id', $user->id)
-                ->where('ticket_type', 'ticket')
-            ->whereYear('created_at', $year)
-            ->sum(DB::raw('CAST(amount AS SIGNED)'));
-
-        $ancillaryRecord = Transaction::where('ticket_type', 'Ancillary')
-            ->whereYear('created_at', $year)
-            ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
-            ->groupBy(DB::raw('month_name'))
-            ->get();
-        
-
-        $ancillaryAmount = Transaction::where('ticket_type', 'Ancillary')
-                ->whereYear('created_at', $year)                    
-                ->sum(DB::raw('CAST(amount AS SIGNED)'));
-        
-        $revenueRecord =  Transaction::whereYear('created_at', $year)
-            ->select(DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('SUM(CAST(amount AS SIGNED)) as total_amount'))
-            ->groupBy(DB::raw('month_name'))
-            ->get();
-
-        $revenueAmount = Transaction::whereYear('created_at', $year)                    
-            ->sum(DB::raw('CAST(amount AS SIGNED)'));
-
-        ///////////////////////////////////
-
-
         $totalRevenue = $this->organiseChart($totalRevenue);
         $flightBooking = $this->organiseChart($flightBooking);
         $appPurchase = $this->organiseChart($appPurchase);
@@ -326,18 +292,20 @@ class CustomerAdminController extends Controller
             $users = User::all();
 
             $customerCollection = new CustomerCollection($users);
+            
+            return response()->json([
+                'error' => false,
+                'users_table_data' => $customerCollection
+            ]);
 
         }  catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
-
-        return response()->json([
-            'error' => false,
-            'users_table_data' => $customerCollection
-        ]);
     }
 
     public function awardPointManually(Request $request, User $user) {
@@ -363,54 +331,15 @@ class CustomerAdminController extends Controller
             ], 200);
 
         }  catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
 
-    }
-    public function testAwardPointManually(Request $request) {
-        try {
-
-            dd("i ran");
-            // Gate::authorize('is-admin');
-
-            // if (!Gate::allows('is-admin')) {
-            //    return response()->json([
-            //         "error" => true,
-            //         "message" => "not authorized to carry out this action"
-            //    ], 403);
-            // }
-
-            // $admin = $request->user('admin');
-            $points = $request->input('points');
-            // $reason = $request->input('reason');
-
-            // $message = "reason {$reason}";
-            dd($user->first_name);
-        
-            $user->points += $points;
-            $user->save();
-            dd("i got here");
-        
-            // event( new AdminCustomerEvent($admin,  $points, $user, $reason));
-
-            return response()->json([
-                'error' => false,
-                'points' => $points,
-                'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
-            ], 200);
-
-        }  catch (\Throwable $th) {
-            return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ], 500);
-        }
-
-    }
-    
+    }  
 
 
     protected function organiseChart($items) {
@@ -425,16 +354,6 @@ class CustomerAdminController extends Controller
 
         ];
 
-        $data = [];
-        // foreach(array_keys($daysOfWeek) as $dayOfWeek) {
-        //     if(!isset($items[$dayOfWeek])) {
-        //         $data[] = [ "day_name"  => $dayOfWeek, "total_amount" => 0];
-        //     } else {
-        //         $data[] = ["day_name" => $dayOfWeek, "total_amount" => 0];
-        //     }
-
-        // }
-   
         foreach($items as $item) {
             $dayName = $item->day_name;
             $daysOfWeek[$dayName]["total_amount"] = $item->total_amount;
@@ -443,29 +362,25 @@ class CustomerAdminController extends Controller
         return array_values($daysOfWeek);
     }
 
-    public function activityLog(Request $request) {
-        $user = $request->user();
+    public function activityLog(Request $request, User $user) {
+    
 
-        try {
-            if (!$user->is_admin) { 
-                return response()->json([
-                    'error' => true,
-                    'message' => 'unauthorized'
-                ], 400);
-            } 
+        try {            
+           $userActivityLog = UserActivityLog::where('user_id', $user->id);
             
-            $adminUser = User::where('is_admin', true);
-        
-        } catch (\Throwable $th) {
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                'error' => false,
+                'user_activity_log' => $userActivityLog
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
-        return response()->json([
-            'error' => false,
-            'admin_table_data' => $adminUser
-        ]);
+       
     }
 
     private function organiseWeek($transactionArray) {

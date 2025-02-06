@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -45,11 +46,14 @@ class ProfileAdminController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }    
 
     }
 
@@ -74,11 +78,14 @@ class ProfileAdminController extends Controller
                     ], 200);
                }
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
         
 
     }
@@ -104,11 +111,14 @@ class ProfileAdminController extends Controller
            ]);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function changeAdminRole(Request $request) {
@@ -130,12 +140,15 @@ class ProfileAdminController extends Controller
                 "message" => "Admin role successfully updated"
             ], 200);
         
-        } catch(\Throwable $th) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
 
@@ -172,12 +185,15 @@ class ProfileAdminController extends Controller
                 "message" => "Admin account deleted successfully"
             ], 200);
         
-        } catch(\Throwable $th) {
+        }catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function deactivateAdminAccount(Request $request) {
@@ -205,11 +221,14 @@ class ProfileAdminController extends Controller
                 "message" => "Admin account deleted successfully"
             ], 200);
         
-        } catch(\Throwable $th) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 }

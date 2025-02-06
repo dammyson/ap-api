@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Flight;
-use App\Models\ReferralActivity;
-use App\Models\Transaction;
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Flight;
+use App\Models\Transaction;
+use Illuminate\Http\Request;
+use App\Models\ReferralActivity;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AnalyticsUserController extends Controller
 {
@@ -26,12 +27,15 @@ class AnalyticsUserController extends Controller
                 'total_flight_count' => $flightsCount
             ]);
 
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     
@@ -57,12 +61,15 @@ class AnalyticsUserController extends Controller
                 'referred_users' => $referredUsers
             ], 200);
 
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
 
     }
 
@@ -78,12 +85,15 @@ class AnalyticsUserController extends Controller
                 "number_of_countries_visted" => $numberOfCountriesVisited
             ], 200);
 
-        } catch (\Throwable $throwable) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
 
@@ -99,12 +109,15 @@ class AnalyticsUserController extends Controller
                 "total_flight_distance" => $totalFlightDistance
             ]);
 
-        } catch (\Throwable $throwable) {
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $throwable->getMessage()
-            ], 500); 
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function countriesAndCityChart(Request $request) {
@@ -127,12 +140,15 @@ class AnalyticsUserController extends Controller
                 "user_tickets" => $organisedUserTickets
             ], 200);
         
-        } catch (\Throwable $th) {
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
         
     }
 
@@ -178,11 +194,14 @@ class AnalyticsUserController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function guestTripHistory(Request $request) {
@@ -210,11 +229,14 @@ class AnalyticsUserController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function upcomingTrips(Request $request) {
@@ -244,11 +266,14 @@ class AnalyticsUserController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function guestUpcomingTrips(Request $request) {
@@ -298,11 +323,14 @@ class AnalyticsUserController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     // public function deleteFlight() {

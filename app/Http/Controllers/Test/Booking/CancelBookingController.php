@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Test\Booking;
 
+use App\Models\Booking;
+use Illuminate\Http\Request;
+use App\Models\BookingRecord;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Services\Utility\CheckArray;
+use App\Services\Soap\CancelBookingBuilder;
 use App\Http\Requests\Test\Booking\CancelBooking\CancelBookingCommitRequest;
 use App\Http\Requests\Test\Booking\CancelBooking\CancelBookingViewOnlyRequest;
-use App\Models\Booking;
-use App\Models\BookingRecord;
-use App\Services\Soap\CancelBookingBuilder;
-use App\Services\Utility\CheckArray;
-use Illuminate\Http\Request;
 
 class CancelBookingController extends Controller
 {
@@ -76,12 +77,14 @@ class CancelBookingController extends Controller
 
 
         } catch (\Throwable $th) {
-            response()->json([
-                "error" => true,
-                "message" => "something went wrong",
-                // "response" => $response
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
        
         
     }
@@ -120,10 +123,13 @@ class CancelBookingController extends Controller
             // display response of voiding a ticket to user
             dd($totalPenalty);
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => "true",
-                "message" => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 }

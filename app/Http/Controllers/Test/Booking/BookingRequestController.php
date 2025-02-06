@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Models\BookingRecord;
 use App\Models\InvoiceRecord;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
 use App\Services\Soap\BookingBuilder;
@@ -124,11 +125,14 @@ class BookingRequestController extends Controller
             }
             
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
-        }
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
 
         return response()->json([
             'error' => false,
@@ -239,12 +243,14 @@ class BookingRequestController extends Controller
         ]);
 
         } catch (\Throwable $th) {
-
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 
 
@@ -310,17 +316,19 @@ class BookingRequestController extends Controller
                 //    $cities->toCity = $toCity;
                 //    $routes[] = $cities;
             }
+            return $routes;
 
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
-
+        }  
        
-       return $routes;
     }
        
 }

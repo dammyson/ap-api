@@ -11,6 +11,7 @@ use App\Models\Admin\Question;
 use App\Models\PointAllocation;
 use App\Events\AdminSurveyEvent;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\SurveyResource;
@@ -99,10 +100,12 @@ class SurveyController extends Controller
             
 
         } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
         
         return response()->json([
@@ -139,10 +142,13 @@ class SurveyController extends Controller
 
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
     }
 
@@ -163,11 +169,14 @@ class SurveyController extends Controller
                 ], 200);
             }
 
-        }  catch (\Throwable $th) {
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
     }
 
@@ -196,10 +205,13 @@ class SurveyController extends Controller
                     ], 200);
                }
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
         }
         
 
@@ -244,17 +256,21 @@ class SurveyController extends Controller
             }
 
             $filteredSurveys = new SurveyCollection($query->get());
-
-        } catch(\Throwable $th) {
+            
             return response()->json([
                 'error' => false,
-                'message' => $th->getMessage()
+                'surveys' => $filteredSurveys
+            ], 200);
+
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
-        return response()->json([
-            'error' => false,
-            'surveys' => $filteredSurveys
-        ], 200);
+        }      
 
     }
 
@@ -310,10 +326,13 @@ class SurveyController extends Controller
                 'survey' => $survey
             ], 200);
 
-        } catch (\Throwable $th) {
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
 
@@ -375,10 +394,13 @@ class SurveyController extends Controller
                 'results' => $results
             ]);
 
-        } catch (\Throwable $th) {
+        }  catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
         }
     }
@@ -433,84 +455,95 @@ class SurveyController extends Controller
     }
 
     public function editSurvey (Request $request, Survey $survey) {      
-        $title = $request->input('title');
-        $duration_of_survey = $request->input('duration_of_survey');
-        $points_awarded = $request->input('points_awarded');
-        $requestQuestions = $request->input('questions');
-        $is_published = $request->input('is_published');
-        $is_active = $request->input('is_active');
+       try { 
+            $title = $request->input('title');
+            $duration_of_survey = $request->input('duration_of_survey');
+            $points_awarded = $request->input('points_awarded');
+            $requestQuestions = $request->input('questions');
+            $is_published = $request->input('is_published');
+            $is_active = $request->input('is_active');
 
-        $admin = $request->user('admin');        
+            $admin = $request->user('admin');        
 
-        if ($is_active) {
-            $activeSurvey = Survey::where('is_active', true)->first();
-            if ($activeSurvey) {
-                 return response()->json([
-                     "error" => true,
-                     "message" => "A survey is currently active would you like to end and begin a new one"
-                 ], 500);
-            }
-
-        }
-
-        $survey->update([
-            'title' => $title,
-            'duration_of_survey' => $duration_of_survey,
-            'points_awarded' => $points_awarded,
-            'is_active' => $is_active,
-            'is_published' => $is_published
-        ]);
-       
-
-        foreach($requestQuestions as $requestQuestion) {
-            if (array_key_exists('id', $requestQuestion)) {
-                $question = Question::find($requestQuestion['id']); 
-              
-                if (!$question) {
-                    $question = new Question();
+            if ($is_active) {
+                $activeSurvey = Survey::where('is_active', true)->first();
+                if ($activeSurvey) {
+                    return response()->json([
+                        "error" => true,
+                        "message" => "A survey is currently active would you like to end and begin a new one"
+                    ], 500);
                 }
-            } else {
-                $question = new Question();
+
+            }
+
+            $survey->update([
+                'title' => $title,
+                'duration_of_survey' => $duration_of_survey,
+                'points_awarded' => $points_awarded,
+                'is_active' => $is_active,
+                'is_published' => $is_published
+            ]);
+        
+
+            foreach($requestQuestions as $requestQuestion) {
+                if (array_key_exists('id', $requestQuestion)) {
+                    $question = Question::find($requestQuestion['id']); 
                 
-                // dump('i ')
-            }
-
-            // dd($requestQuestion);
-            $question->question_text = $requestQuestion['question_text'];
-            $question->is_multiple_choice =  $requestQuestion['is_multiple_choice'];
-            $question->survey_id = $survey->id;
-            // dd($question);
-            $question->save();
-
-            foreach($requestQuestion['options'] as $requestOption) {
-                if (!array_key_exists('id', $requestOption)) {
-                    $option  = new Option();
-                } else {
-                    $option = Option::find($requestOption['id']);
-                    if (!$option) {
-                        $option  = new Option();
+                    if (!$question) {
+                        $question = new Question();
                     }
-                }                
-                $option->question_id = $question->id;
-                $option->option_text = $requestOption['option_text'];
-                $option->save();
-            }
+                } else {
+                    $question = new Question();
+                    
+                    // dump('i ')
+                }
 
-        }   
+                // dd($requestQuestion);
+                $question->question_text = $requestQuestion['question_text'];
+                $question->is_multiple_choice =  $requestQuestion['is_multiple_choice'];
+                $question->survey_id = $survey->id;
+                // dd($question);
+                $question->save();
 
-        $survey->save();
+                foreach($requestQuestion['options'] as $requestOption) {
+                    if (!array_key_exists('id', $requestOption)) {
+                        $option  = new Option();
+                    } else {
+                        $option = Option::find($requestOption['id']);
+                        if (!$option) {
+                            $option  = new Option();
+                        }
+                    }                
+                    $option->question_id = $question->id;
+                    $option->option_text = $requestOption['option_text'];
+                    $option->save();
+                }
 
-        event(new AdminSurveyEvent($admin, $survey, "edited"));
+            }   
+
+            $survey->save();
+
+            event(new AdminSurveyEvent($admin, $survey, "edited"));
 
 
-        $surveyData = $survey->load('questions.options');
+            $surveyData = $survey->load('questions.options');
 
-        return response()->json(
-            [
-                'error' => false,
-                'edited_survey' => $surveyData
-            ]
-        );
+            return response()->json([
+                    'error' => false,
+                    'edited_survey' => $surveyData
+                ]
+            );
+
+       } catch (\Throwable $th) {
+            
+        Log::error($th->getMessage());
+
+        return response()->json([
+            "error" => true,            
+            "message" => "something went wrong"
+        ], 500);
+    }
+        
     
     }
 
@@ -527,27 +560,25 @@ class SurveyController extends Controller
                 "survey" => $survey
             ];
 
-        } catch (\Throwable $th) {
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                'error' => false,
+                'surveyData' => $surveyData
+            ], 200);
 
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
-
-        return response()->json([
-            'error' => false,
-            'surveyData' => $surveyData
-        ], 200);
+        }      
 
     }
 
     public function surveyParticipants($surveyId) {
         try {
-            // $users = SurveyUserResponse::where('survey_id', $surveyId)
-            //             ->whereHas('users', function($query) {
-            //                 $query->with('users');
-            //             })->select('user_id');
 
             $users = User::whereHas('surveyUserResponses', function($query) use($surveyId) {
                         $query->where('survey_id', $surveyId);
@@ -559,12 +590,14 @@ class SurveyController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ]);
-        }
-
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+        }  
     }
 
     public function deleteSurvey(Request $request, Survey $survey) {
@@ -594,11 +627,14 @@ class SurveyController extends Controller
 
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 
     public function allocatePointToParticipant(Request $request, Survey $survey, $participantId) {
@@ -650,12 +686,14 @@ class SurveyController extends Controller
             ], 200);
             
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
-        
+        }          
     }
 
     //////////// move the below to question controller
@@ -681,11 +719,14 @@ class SurveyController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 
     public function deleteOption(Request $request, Survey $survey, Question $question, Option $option) {
@@ -708,10 +749,13 @@ class SurveyController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
             return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
+                "error" => true,            
+                "message" => "something went wrong"
             ], 500);
-        }
+        }  
     }
 }
