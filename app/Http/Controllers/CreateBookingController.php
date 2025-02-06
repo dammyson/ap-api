@@ -44,7 +44,7 @@ class CreateBookingController extends Controller
     }
 
 
-    public function guestCreateBooking(CreateBookingTwoARequest $request){
+    public function createBooking(CreateBookingTwoARequest $request){
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
         $airTravelerList = $validated["airTravelerList"];
