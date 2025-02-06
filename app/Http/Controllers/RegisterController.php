@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\RecentActivity;
 use App\Models\ReferralActivity;
 use App\Models\ScreenResolution;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Services\Utility\CheckDevice;
@@ -120,8 +121,15 @@ class RegisterController extends Controller
             // $deviceType = $this->checkDevice->checkDeviceType($userAgent, $create);
             // $screenResolution = $this->checkDevice->saveScreenSize($create, $request->screen_resolution);
           
-        } catch (\Exception $exception) {
-            return response()->json(['error' => true, 'message' => $exception->getMessage()], 500);
+        } catch (\Exception $e) {       
+            
+            Log::error($e->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+            
         }
 
         $data['user'] =  $create;
@@ -160,8 +168,15 @@ class RegisterController extends Controller
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
            
 
-        } catch (\Throwable $throwable) {
-            return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
+        } catch (\Exception $e) {       
+            
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+            
         }
 
     }
@@ -210,7 +225,7 @@ class RegisterController extends Controller
         $user->save();
 
         return response()->json([
-            "error" => "false",
+            "error" => false,
             "message" => "otp sent to email successfully"
         ]);
     }
@@ -237,10 +252,16 @@ class RegisterController extends Controller
                 "user" => $user
             ]);
         
-        } catch (\Throwable $throwable) {
-            return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
-        
-        }   
+        } catch (\Exception $e) {       
+            
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+            
+        }
 
     }
 
@@ -268,8 +289,15 @@ class RegisterController extends Controller
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
            
 
-        } catch (\Throwable $throwable) {
-            return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
+        } catch (\Exception $e) {       
+            
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+            
         }
 
     }
@@ -284,12 +312,15 @@ class RegisterController extends Controller
                 'message' => 'Successfully logged out'
             ], 200);
 
-        } catch (\Throwable $th) {
-            return response()->json([
-                'error' => true,
-                'message' => $th->getMessage()
-            ], 500);
+        } catch (\Exception $e) {       
+            
+            Log::error($e->getMessage());
 
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+            
         }
     }
 

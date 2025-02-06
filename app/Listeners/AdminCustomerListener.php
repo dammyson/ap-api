@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Models\Admin\ActivityLog;
 use App\Events\AdminCustomerEvent;
+use App\Models\Admin\AdminActivityLog;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -29,7 +30,7 @@ class AdminCustomerListener
 
         $description = "Admin {$admin->user_name} shared {$points} points to {$user->first_name} {$user->last_name} reason : {$reason}"; 
         
-        ActivityLog::create([
+        AdminActivityLog::create([
             'admin_id' => $admin->id,
             'role' => $admin->role,
             'activity_type' => "Point allocation",
