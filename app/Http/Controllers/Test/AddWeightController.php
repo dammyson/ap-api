@@ -322,20 +322,39 @@ class AddWeightController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
         try {
-            $data = $this->craneAncillaryOTASoapService->run($function, $xml);
-
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            
+            if (array_key_exists("detail", $response)) {
+                if (array_key_exists("CraneFault", $response["detail"])){
+                    if (array_key_exists("code", $response["detail"]["CraneFault"])){
+                        if ($response["detail"]["CraneFault"]["code"] == "ASR_ADDING_SEAT_NOT_ALLOWED") {
+                            $message = "You are not allowed to add more seat for this passenger";
+                            return response()->json([
+                                "error" => true,            
+                                "message" => $message
+                            ], 400);
+                        
+                        }
+                    }
+                }
+            }
+            
             return response()->json([
                 "error" => false,
-                "data" => $data
+                "data" => $response
             ]);
         
         } catch (\Throwable $th) {
-            
+           
             Log::error($th->getMessage());
+
+            $message = "something went wrong";
+
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => $message,
+                "actual_message" => $th->getMessage()
             ], 500);
         }  
     }
