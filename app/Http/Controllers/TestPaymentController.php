@@ -81,6 +81,7 @@ class TestPaymentController extends Controller
             ]);
             $preferredCurrency = $request->input('preferred_currency');
             $ref = $request->input('ref_id');
+            $paymentGateway = $request->input('payment_gateway');
             // $deviceType = $request->input('device_type');
             $user = $request->user();
             $userId = $user->id;
@@ -88,12 +89,22 @@ class TestPaymentController extends Controller
     
             //validate verifiedRequest;
 
-            $new_top_request = new VerificationService($ref);
+
+             //validate verifiedRequest;
+             if ($paymentGateway == "paystack") {
+                $new_top_request = new VerificationService($ref);
+
+            } else if ($paymentGateway == "flutterwave") {
+                $new_top_request = new FlutterVerificationService($ref);
+
+            }
             $verified_request = $new_top_request->run();
-           
+            // dd($new_top_request);
             
-            $paidAmount = $verified_request["data"]["amount"];
-            $paidAmount = $paidAmount / 100;
+            $amount = $verified_request["data"]["amount"];
+
+            // convert to naira (from kobo)
+            $paidAmount = $paymentGateway == "paystack" ? $amount / 100 : $amount;
           
             // create invoice table   // add booking_id
             $invoice = Invoice::create([
