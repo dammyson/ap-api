@@ -84,7 +84,7 @@ class TestPaymentController extends Controller
             // $deviceType = $request->input('device_type');
             $user = $request->user();
             $userId = $user->id;
-            
+            // dd($preferredCurrency);
     
             //validate verifiedRequest;
 
@@ -99,7 +99,8 @@ class TestPaymentController extends Controller
             $invoice = Invoice::create([
                 'amount' => $paidAmount,
                 'booking_id' => "not applicable",
-                'is_paid' => true
+                'is_paid' => true,
+                "currency" => $preferredCurrency
             ]);            
             
             // convert to naira (from kobo)
@@ -140,12 +141,13 @@ class TestPaymentController extends Controller
                     "invoice_number" => "not applicable",                        
                     'amount' => $paidAmount,
                     'transaction_type' => "tier purchase",
-                    'peace_id' => $user->peace_id,
+                    'user_id' => $user->id,
                     'ticket_type' => "Ancillary",
                     'user_id' => $user->id,
                     'invoice_id' => $invoice->id,
                     'device_type' => $user->device_type,
-                    'currency' => $preferredCurrency
+                    'currency' => $preferredCurrency,
+                    'is_flight' => false
                 ]);   
 
                return $this->tierController->upgradeTier($userId, $tier->id);
@@ -156,7 +158,8 @@ class TestPaymentController extends Controller
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message_error" => $th->getMessage()
+                // "message" => "something went wrong",
             ], 500);
         }  
     }
