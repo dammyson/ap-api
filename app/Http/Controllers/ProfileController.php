@@ -32,7 +32,7 @@ class ProfileController extends Controller
             $tierDetails = $user->currentTier();
             
             return response()->json([
-                "error" => "false",
+                "error" => false,
                 "user" => $user,
                 "image_url_link" => $imageUrlLink,
                 'travel_document_link' => $travelDocumentLink,
@@ -135,11 +135,19 @@ class ProfileController extends Controller
             $user->save();
 
             $tierDetails = $user->currentTier();        
-        
+               // get the image_url  path
+            $pathToImage = $user->image_url;
+            $pathToTravelDoc = $user->travel_document;
+   
+               // image url link
+            $imageUrlLink = Storage::url($pathToImage);
+            $travelDocumentLink = Storage::url($pathToTravelDoc);
 
             return response()->json([
                 'error' => false,
                 'user' => $user,
+                "travel_document_link" => $travelDocumentLink,
+                "image_url_link" => $imageUrlLink,
                 "tier_details" => $tierDetails
 
              ]);
