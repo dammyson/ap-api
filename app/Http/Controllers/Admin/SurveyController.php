@@ -485,6 +485,8 @@ class SurveyController extends Controller
                 'is_published' => $is_published,
                 'is_completed' => false
             ]);
+            $survey->is_active = $is_active;
+            $survey->save();
         
 
             foreach($requestQuestions as $requestQuestion) {
