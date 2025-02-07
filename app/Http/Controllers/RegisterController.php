@@ -128,7 +128,7 @@ class RegisterController extends Controller
             return response()->json([
                 "error" => true,            
                 "message" => "something went wrong",
-                "message_err" => $e->getMessage()
+                // "message_err" => $e->getMessage(
             ], 500);
             
         }
