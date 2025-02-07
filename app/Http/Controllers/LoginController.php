@@ -67,7 +67,9 @@ class LoginController extends Controller
     
                 if (!$currentTier) {
                     $this->tierService->assignTierWithDefaultFallback($user->id);
-                }    
+                }   
+                
+                $user->notify(new LoginNotification($details));
             }
 
 
@@ -116,7 +118,8 @@ class LoginController extends Controller
                 }
 
                 // $user->notify(new PasswordChanged($details));
-                $user->notify(new LoginNotification($details));
+               
+                
 
                 return response()->json([
                     'is_correct' => true,
