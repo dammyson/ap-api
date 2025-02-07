@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Tier;
 use App\Models\User;
 use App\Models\Device;
 use App\Mail\ForgotPassword;
@@ -46,7 +47,7 @@ class RegisterController extends Controller
             $points = 50;
             $deviceType = $request->input('device_type');
             $screenResolution = $request->input('screen_resolution');
-            
+            $tier = Tier::where('rank', 1)->first();
            
             $create = User::create([
                 'first_name' => $request->input('first_name'),
@@ -60,6 +61,7 @@ class RegisterController extends Controller
                 'device_type' => $deviceType,
                 'points' => 50, // allocate appropriate pointts once decided
                 "firebase_token" => $request->firebase_token,
+                'tier_id' => $tier->id
             
             ]);
 
@@ -128,7 +130,7 @@ class RegisterController extends Controller
             return response()->json([
                 "error" => true,            
                 "message" => "something went wrong",
-                // "message_err" => $e->getMessage(
+                "message_err" => $e->getMessage()
             ], 500);
             
         }
