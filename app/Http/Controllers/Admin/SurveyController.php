@@ -156,6 +156,7 @@ class SurveyController extends Controller
     public function createSurveyBanner(Request $request) {
 
         try {
+            // dd($request->file('image_url'));
             if ($request->file('image_url')) {
                 $path = $request->file('image_url')->store('survey-images');
     

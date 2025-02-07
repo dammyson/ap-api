@@ -51,24 +51,30 @@ class ProfileController extends Controller
        
     }
 
-    public function changeProfileImage(ChangeProfileImageRequest $request) {
+    // public function changeProfileImage(ChangeProfileImageRequest $request) {
+    public function changeProfileImage(Request $request) {
         $user = $request->user(); 
         
-        // dd("I ran");
         try {
             if ($request->file('image_url')) {
                 // store the user image in a folder;
+                // dd(" I got here");
                 if ($user->image_url) {
                     $oldPath = $user->image_url;
                     Storage::delete($oldPath);
+                   
 
                 }
                 $path = $request->file('image_url')->store('users-images-folder', 'public');
+                // $path = $request->file('image_url')->store('users-images-folder');
                 // store the path to the image in the image_url column
                 $user->image_url = $path;
                 $user->save();
 
                 $imageUrlLink = Storage::url($path);
+
+                // dd($imageUrlLink);
+
                 return response()->json([
                     "error" => false,
                     "message" => "Profile picture updated successfully",
@@ -121,9 +127,13 @@ class ProfileController extends Controller
 
             $user->save();
 
+            $tierDetails = $user->currentTier();        
+
             return response()->json([
                 'error' => false,
-                'user_data' => $user
+                'user_data' => $user,
+                "tier_details" => $tierDetails
+
              ]);
 
         }  catch (\Throwable $th) {

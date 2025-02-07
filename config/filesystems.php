@@ -38,10 +38,10 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => storage_path('public'),
             // 'url' => env('APP_URL').'/storage',
-            // 'url' => 'http://127.0.0.1:8000/storage',
-            'url' => 'https://srv575046.hstgr.cloud/storage',
+            'url' => 'http://127.0.0.1:8000/storage',
+            // 'url' => 'https://srv575046.hstgr.cloud/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
