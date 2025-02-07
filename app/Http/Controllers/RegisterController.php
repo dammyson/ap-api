@@ -22,7 +22,8 @@ use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
-
+use App\Notifications\SignUpNotification;
+use Google\Service\Walletobjects\SignUpInfo;
 
 class RegisterController extends Controller
 {
@@ -112,6 +113,18 @@ class RegisterController extends Controller
 
                 }            
             }
+
+            if (!$create->is_guest) {
+                $details = [
+                    'title' => 'New Message',
+                    'body' => 'You have received a new message.',
+                    'url' => '/messages/1'
+                ];
+    
+                $create->notify(new SignUpNotification($details));
+
+            }
+
 
             // RecentActivity::create([
             //     "title" => "New user registration",
