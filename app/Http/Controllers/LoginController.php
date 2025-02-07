@@ -14,6 +14,7 @@ use App\Services\Utility\CheckDevice;
 use App\Notifications\PasswordChanged;
 use App\Services\Point\TierPointService;
 use App\Http\Requests\Auth\UserLoginRequest;
+use App\Notifications\LoginNotification;
 
 class LoginController extends Controller
 {
@@ -114,8 +115,9 @@ class LoginController extends Controller
                     }
                 }
 
-                $user->notify(new PasswordChanged($details));
-                
+                // $user->notify(new PasswordChanged($details));
+                $user->notify(new LoginNotification($details));
+
                 return response()->json([
                     'is_correct' => true,
                     'message' => 'Login Successful',
