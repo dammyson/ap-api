@@ -57,7 +57,8 @@ class ProfileAdminController extends Controller
 
     }
 
-    public function changeAdminProfileImage(ChangeProfileImageRequest $request) {
+    // public function changeAdminProfileImage(ChangeProfileImageRequest $request) {
+    public function changeAdminProfileImage(Request $request) {
         $admin = $request->user('admin');
         
         try {
