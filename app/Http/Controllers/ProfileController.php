@@ -52,7 +52,7 @@ class ProfileController extends Controller
     }
 
     // public function changeProfileImage(ChangeProfileImageRequest $request) {
-    public function changeProfileImage(Request $request) {
+    public function changeProfileImage(ChangeProfileImageRequest $request) {
         $user = $request->user(); 
         
         try {
