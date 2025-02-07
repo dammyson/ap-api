@@ -62,14 +62,14 @@ class ProfileController extends Controller
                 if ($user->image_url) {
                     $oldPath = $user->image_url;
                     Storage::delete($oldPath);
-                    dd(" I got here");
+                    // dd(" I got here");
                    
 
                 }
                 $path = $request->file('image_url')->store('users-images-folder', 'public');
                 // $path = $request->file('image_url')->store('users-images-folder');
                 // store the path to the image in the image_url column
-                dd("else");
+                dd($path);
                 $user->image_url = $path;
                 $user->save();
 
