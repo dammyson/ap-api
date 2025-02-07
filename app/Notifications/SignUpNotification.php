@@ -39,7 +39,7 @@ class SignUpNotification extends Notification
         return (new MailMessage)
             ->line("Welcome Aboard! Your Journey Begins Now ✈")
             ->line("Your Wings Are Ready! 🕊")
-            ->line("Welcome to Airpeace {$notifiable->first_name}! 🎉")
+            ->line("Welcome to Airpeace, {$notifiable->first_name}! 🎉")
             ->line("You’re officially part of a world where seamless travel meets convenience. Book flights, manage your trips, and unlock exclusive rewards—all in one place.")
             // ->action('Good to see you again! Your trips, bookings, and rewards are just a tap away.', url('/'))
             ->line("Let’s get you started:")
