@@ -245,24 +245,26 @@ class AnalyticsUserController extends Controller
         try {
 
             // get the unpaid upcoming trip where the payment time has not expired
-            $unPaidUpcomingTrip = Flight::where('peace_id', $user->peace_id)
+            $unPaidUpcomingTrips = Flight::where('peace_id', $user->peace_id)
                 // ->where('is_paid', false)
                 ->where('payment_expires_at', '<', Carbon::now()->toIso8601String())
                 ->get();
 
             //get the paid upcoming trip using departure time    
-            $paidUpcomingTrip = Flight::where('peace_id', $user->peace_id)
+            $paidUpcomingTrips = Flight::where('peace_id', $user->peace_id)
                 // ->where('is_paid', true)
                 ->where('departure_time', '>', Carbon::now()->toIso8601String())
                 ->get();
             
-            $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
+            // $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
+          
 
             
     
             return response()->json([
                 "error" => false,
-                "upcoming_trip" => $upComingTrip
+                "upcoming_trip" => $paidUpcomingTrips,
+                "upcoming_trip_unpaid" => $unPaidUpcomingTrips
             ], 200);
 
         } catch (\Throwable $th) {
