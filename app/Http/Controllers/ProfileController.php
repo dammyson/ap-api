@@ -13,6 +13,7 @@ use App\Services\Utility\GetPointService;
 use App\Http\Requests\ChangePeaceIdRequest;
 use App\Http\Requests\User\EditProfileRequest;
 use App\Http\Requests\ChangeProfileImageRequest;
+use Defuse\Crypto\File;
 
 class ProfileController extends Controller
 {
@@ -56,7 +57,8 @@ class ProfileController extends Controller
         $user = $request->user(); 
         
         try {
-            // dd($request->file('image_url'));
+            // dd(storage_path('app'), storage_path('public'));
+        
             if ($request->file('image_url')) {
                 // store the user image in a folder;
                 if ($user->image_url) {
@@ -67,9 +69,11 @@ class ProfileController extends Controller
 
                 }
                 $path = $request->file('image_url')->store('users-images-folder', 'public');
-                // $path = $request->file('image_url')->store('users-images-folder');
+                // $path = "test/"."emeka.".$request->file('image_url')->getClientOriginalExtension();
+                
+                // Storage::disk("public")->put($path, file_get_contents($request->file('image_url')));
                 // store the path to the image in the image_url column
-                dd($path);
+                // dd($path);
                 $user->image_url = $path;
                 $user->save();
 
@@ -93,7 +97,8 @@ class ProfileController extends Controller
             Log::error($th->getMessage());
     
             return response()->json([
-                "error" => true,            
+                "error" => true,  
+                "error_message" => $th->getMessage(),          
                 "message" => "something went wrong"
             ], 500);
         }  
@@ -130,10 +135,11 @@ class ProfileController extends Controller
             $user->save();
 
             $tierDetails = $user->currentTier();        
+        
 
             return response()->json([
                 'error' => false,
-                'user_data' => $user,
+                'user' => $user,
                 "tier_details" => $tierDetails
 
              ]);

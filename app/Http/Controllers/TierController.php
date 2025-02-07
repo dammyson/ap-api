@@ -86,7 +86,8 @@ class TierController extends Controller
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => "something went wrong",
+                "meesage_error" => $th->getMessage()
             ], 500);
         }  
        
