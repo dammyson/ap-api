@@ -79,6 +79,7 @@ class ProfileController extends Controller
 
                 $imageUrlLink = Storage::url($path);
 
+                $tierDetails = $user->currentTier();
                 // dd($imageUrlLink);
 
                 return response()->json([
@@ -86,7 +87,8 @@ class ProfileController extends Controller
                     "message" => "Profile picture updated successfully",
                     "user" => $user,
                     "image_url" => $user->image_url,
-                    "image_url_link" => $imageUrlLink
+                    "image_url_link" => $imageUrlLink,
+                    "tier_details" => $tierDetails
                     
                 ], 200);
             }
@@ -143,6 +145,13 @@ class ProfileController extends Controller
             $imageUrlLink = Storage::url($pathToImage);
             $travelDocumentLink = Storage::url($pathToTravelDoc);
 
+            if (!$pathToImage) {
+                return response()->json([
+                    "error" => false,
+                    "message" => "cannot upload image"
+                ], 500);
+            }
+
             return response()->json([
                 'error' => false,
                 'user' => $user,
@@ -150,7 +159,7 @@ class ProfileController extends Controller
                 "image_url_link" => $imageUrlLink,
                 "tier_details" => $tierDetails
 
-             ]);
+            ], 200);
 
         }  catch (\Throwable $th) {
             
