@@ -148,6 +148,9 @@ class TestPaymentController extends Controller
 
             } else {
             
+                
+                $response = $this->tierController->upgradeTier($userId, $tier->id);
+                
                 Transaction::create([
                     "invoice_number" => "not applicable",                        
                     'amount' => $paidAmount,
@@ -159,9 +162,9 @@ class TestPaymentController extends Controller
                     'device_type' => $user->device_type,
                     'currency' => $preferredCurrency,
                     'is_flight' => false
-                ]);   
-
-               return $this->tierController->upgradeTier($userId, $tier->id);
+                ]);  
+                
+                return $response; 
             }
         } catch (\Throwable $th) {
             
