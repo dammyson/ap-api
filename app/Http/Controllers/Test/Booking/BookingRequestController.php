@@ -137,6 +137,7 @@ class BookingRequestController extends Controller
         return response()->json([
             'error' => false,
             'invoice_id' => $invoice->id,
+            'is_paid' => $invoice->is_paid,
             'booking_data' => $response
         ]);
 
@@ -239,6 +240,7 @@ class BookingRequestController extends Controller
         return response()->json([
             'error' => false,
             'invoice_id' => $invoice->id,
+            'is_paid' => $invoice->is_paid,
             'booking_data' => $response
         ]);
 
