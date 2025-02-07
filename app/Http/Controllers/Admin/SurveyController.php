@@ -482,7 +482,8 @@ class SurveyController extends Controller
                 'duration_of_survey' => $duration_of_survey,
                 'points_awarded' => $points_awarded,
                 'is_active' => $is_active,
-                'is_published' => $is_published
+                'is_published' => $is_published,
+                'is_completed' => false
             ]);
         
 
