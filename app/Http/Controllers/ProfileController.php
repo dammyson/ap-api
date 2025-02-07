@@ -56,6 +56,7 @@ class ProfileController extends Controller
         $user = $request->user(); 
         
         try {
+            dd($request->file('image_url'));
             if ($request->file('image_url')) {
                 // store the user image in a folder;
                 // dd(" I got here");
