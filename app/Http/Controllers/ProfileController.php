@@ -59,16 +59,17 @@ class ProfileController extends Controller
             // dd($request->file('image_url'));
             if ($request->file('image_url')) {
                 // store the user image in a folder;
-                dd(" I got here");
                 if ($user->image_url) {
                     $oldPath = $user->image_url;
                     Storage::delete($oldPath);
+                    dd(" I got here");
                    
 
                 }
                 $path = $request->file('image_url')->store('users-images-folder', 'public');
                 // $path = $request->file('image_url')->store('users-images-folder');
                 // store the path to the image in the image_url column
+                dd("else");
                 $user->image_url = $path;
                 $user->save();
 
