@@ -82,6 +82,13 @@ class ProfileController extends Controller
                 $tierDetails = $user->currentTier();
                 // dd($imageUrlLink);
 
+                if (!$path) {
+                    return response()->json([
+                        "error" => false,
+                        "message" => "cannot upload image"
+                    ], 500);
+                }
+
                 return response()->json([
                     "error" => false,
                     "message" => "Profile picture updated successfully",
@@ -144,13 +151,6 @@ class ProfileController extends Controller
                // image url link
             $imageUrlLink = Storage::url($pathToImage);
             $travelDocumentLink = Storage::url($pathToTravelDoc);
-
-            if (!$pathToImage) {
-                return response()->json([
-                    "error" => false,
-                    "message" => "cannot upload image"
-                ], 500);
-            }
 
             return response()->json([
                 'error' => false,
