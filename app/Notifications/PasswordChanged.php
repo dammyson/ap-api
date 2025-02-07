@@ -35,7 +35,7 @@ class PasswordChanged extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Welcome back! ✈')
+                    ->line("Welcome back! {$notifiable->first_name} ✈")
                     ->action('Good to see you again! Your trips, bookings, and rewards are just a tap away.', url('/'))
                     ->line('Didn’t sign in? If this wasn’t you, please reset your password immediately to keep your account secure.')
                     ->line("Safe travel,")
