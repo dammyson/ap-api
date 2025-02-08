@@ -188,6 +188,12 @@ class AnalyticsUserController extends Controller
                 ->where('peace_id', $user->peace_id)
                 // ->where('is_paid', true)
                 ->get();
+
+                $flights =  $flights = DB::table('flights as f1')
+                ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
+                ->where('f1.peace_id', $user->peace_id)
+                ->where('departure_time', '>', Carbon::now()->toIso8601String())
+                ->get();
     
             return response()->json([
                 "error" => false,
@@ -288,62 +294,7 @@ class AnalyticsUserController extends Controller
     }
    
 
-    public function guestUpcomingTrips(Request $request) {
-        $user = $request->user();
-
-        try {
-
-            // get the unpaid upcoming trip where the payment time has not expired
-            if ($user) {
-                $unPaidUpcomingTrip = Flight::where('peace_id', $user->peace_id)
-                    // ->where('is_paid', false)
-                    ->where('payment_expires_at', '<', Carbon::now()->toIso8601String())
-                    ->get();
     
-                //get the paid upcoming trip using departure time    
-                $paidUpcomingTrip = Flight::where('peace_id', $user->peace_id)
-                    // ->where('is_paid', true)
-                    ->where('departure_time', '>', Carbon::now()->toIso8601String())
-                    ->get();
-                
-                $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
-
-            } else {
-                // $guestToken = $request->session()->get('guest_session_token');
-                $guestToken = $request->input('guest_session_token');
-                // dd($guestToken);
-
-                $unPaidUpcomingTrip = Flight::where('guest_session_token', $guestToken)
-                    // ->where('is_paid', false)
-                    ->where('payment_expires_at', '<', Carbon::now()->toIso8601String())
-                    ->get();
-    
-                //get the paid upcoming trip using departure time    
-                $paidUpcomingTrip = Flight::where('guest_session_token', $guestToken)
-                    // ->where('is_paid', true)
-                    ->where('departure_time', '>', Carbon::now()->toIso8601String())
-                    ->get();
-                
-                $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
-            }
-
-            
-    
-            return response()->json([
-                "error" => false,
-                "upcoming_trip" => $upComingTrip
-            ], 200);
-
-        } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
-            return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
-            ], 500);
-        }  
-    }
 
     // public function deleteFlight() {
     //     $Flight = Flight::find(135);
