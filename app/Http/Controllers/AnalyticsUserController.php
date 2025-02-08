@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\ReferralActivity;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+// use Illuminate\Support\Facades\DB;
 
 class AnalyticsUserController extends Controller
 {
@@ -259,12 +260,18 @@ class AnalyticsUserController extends Controller
             // $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
           
 
+          
+            $flights =  $flights = DB::table('flights as f1')
+                ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
+                ->where('f1.peace_id', $user->peace_id)
+                ->where('departure_time', '>', Carbon::now()->toIso8601String())
+                ->get();
             
-    
             return response()->json([
                 "error" => false,
-                "upcoming_trip" => $paidUpcomingTrips,
-                "upcoming_trip_unpaid" => $unPaidUpcomingTrips
+                "flights" => $flights
+                // "upcoming_trip" => $paidUpcomingTrips,
+                // "upcoming_trip_unpaid" => $unPaidUpcomingTrips
             ], 200);
 
         } catch (\Throwable $th) {
@@ -273,10 +280,13 @@ class AnalyticsUserController extends Controller
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => "something went wrong",
+                "error_message" => $th->getMessage()
+
             ], 500);
         }  
     }
+   
 
     public function guestUpcomingTrips(Request $request) {
         $user = $request->user();
