@@ -184,15 +184,16 @@ class AnalyticsUserController extends Controller
         $user = $request->user();
 
         try {
-            $tripHistory = Flight::where('departure_time', '<=', Carbon::now()->toIso8601String())
-                ->where('peace_id', $user->peace_id)
-                // ->where('is_paid', true)
-                ->get();
+            // $tripHistory = Flight::where('departure_time', '<=', Carbon::now()->toIso8601String())
+            //     ->where('peace_id', $user->peace_id)
+            //     // ->where('is_paid', true)
+            //     ->get();
 
-                $flights =  $flights = DB::table('flights as f1')
+                $tripHistory =  $flights = DB::table('flights as f1')
                 ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
                 ->where('f1.peace_id', $user->peace_id)
-                ->where('departure_time', '>', Carbon::now()->toIso8601String())
+                ->where('f1.departure_time', '<=', Carbon::now()->toIso8601String())
+                // ->where('f1.departure_time', '>', Carbon::now()->toDateTimeString())
                 ->get();
     
             return response()->json([
