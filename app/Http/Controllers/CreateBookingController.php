@@ -43,7 +43,9 @@ class CreateBookingController extends Controller
         $this->getPointService = $getPointService;
     }
 
-
+    public function bankTranfer(Request $request) {
+        dd($request);
+    }
     public function createBooking(CreateBookingTwoARequest $request){
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];

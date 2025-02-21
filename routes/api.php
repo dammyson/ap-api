@@ -64,8 +64,9 @@ use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 
 
 
-    
-Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
+Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {        
+    Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
+});
 
 Route::group(['prefix' => 'user'], function ()  {
     Route::post('register', [RegisterController::class, 'userRegister']);
@@ -283,7 +284,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
 });
 
 
-Route::group(["middleware" => ["auth:api"]], function () {    
+Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter"]], function () {    
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
