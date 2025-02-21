@@ -44,6 +44,10 @@ class LoginController extends Controller
             })->first();
 
 
+            
+            if (!$user) {
+                return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
+            }
 
             if ($request->has('firebase_token')) {
                 $user->firebase_token = $request->firebase_token;
@@ -59,9 +63,6 @@ class LoginController extends Controller
     
               
     
-                if (is_null($user)) {
-                    return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
-                }
     
                 $currentTier = $user->currentTier();
     

@@ -50,7 +50,7 @@ class BookingRequestController extends Controller
             if (!$booking) {
                 return response()->json([
                     'error' => true,
-                    'message' => 'no booking found'
+                    'message' => 'PNR not found'
                 ], 500);
             }
 

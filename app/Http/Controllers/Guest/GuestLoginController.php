@@ -24,7 +24,6 @@ class GuestLoginController extends Controller
 
     public function continueAsGuest(Request $request) {
         try {
-           
          $deviceType = $request->input('device_type');
          $screenResolution = $request->input('screen_resolution');
          

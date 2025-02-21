@@ -2,21 +2,24 @@
 
 namespace App\Providers;
 
-use App\Events\AdminCustomerEvent;
 use App\Models\Admin;
+use Illuminate\Http\Request;
 use App\Events\AdminLoginEvent;
 use App\Events\AdminSurveyEvent;
-use App\Events\UserActivityLogEvent;
-use App\Listeners\AdminCustomerListener;
 use App\Observers\AdminObserver;
-use App\Listeners\AdminLoginListener;
-use App\Listeners\AdminSurveyListener;
-use App\Listeners\UserActivityLogListener;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\ServiceProvider;
-use App\Services\Transaction\Transactions;
-use App\Services\Ticket\PassengerTicketService;
+use App\Events\AdminCustomerEvent;
+use App\Events\UserActivityLogEvent;
 use Illuminate\Support\Facades\Gate;
+use App\Listeners\AdminLoginListener;
+use Illuminate\Support\Facades\Event;
+use App\Listeners\AdminSurveyListener;
+use Illuminate\Support\ServiceProvider;
+use App\Listeners\AdminCustomerListener;
+use Illuminate\Cache\RateLimiting\Limit;
+use App\Listeners\UserActivityLogListener;
+use App\Services\Transaction\Transactions;
+use Illuminate\Support\Facades\RateLimiter;
+use App\Services\Ticket\PassengerTicketService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,13 +41,19 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
+    {   
+
+        RateLimiter::for('global-rate-limiter', function (Request $request) {
+            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip())->response(function (Request $request, array $headers) {
+                return response('Amount of request per minute exceeded', 429, $headers);
+            });
+        });
 
         Gate::define('is-admin', function(Admin $admin) {
             // dump($admin);
             return $admin->role == 'admin';
-        });
-       
+        });      
+        
 
         
         

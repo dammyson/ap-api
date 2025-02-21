@@ -16,6 +16,7 @@ class LoginAdminController extends Controller
 {
     public function loginAdmin(LoginAdminRequest $request) {
         try {
+            
             $admin = Admin::where('email', $request->email)->first();
 
             // dd($admin);
