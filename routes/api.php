@@ -222,6 +222,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
 
             Route::group(["prefix" => "create-booking"], function() {
                 Route::post('two-a', [CreateBookingController::class, 'createBooking']);
+                Route::post('bank-transfer/callback', [CreateBookingController::class, 'bankTranfer']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
                 Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
