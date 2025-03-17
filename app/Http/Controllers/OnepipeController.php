@@ -26,8 +26,10 @@ class OnepipeController extends Controller
         $requestRef = $this->generateRandom->generateRandomNumber();
         $secret = env('SECRET');
         // $signature = md5("{$requestRef};{$secret}");
-        $signature = md5("123456789999;ASknRFTLsQfrxAsl");
+        $signature = md5( $requestRef.";ASknRFTLsQfrxAsl");
         // dd($signature);
+
+
 
         // $client = new Client();
         // $headers = [
@@ -86,12 +88,12 @@ class OnepipeController extends Controller
         // dd($user->id);
         $response = Http::withHeaders([
             // 'Authorization' => env('BEARER_API_KEY'), // move this to env once test is complete
-            'Authorization' => "JpPRs4kYiv99mYZRluo4_5b57e19da0fb4e679aa42cc1bfa173e1", // move this to env once test is complete
-            'Signature' => "a2fbac4545f080f3c06f158c68a1d086", // md5 hash of ref;secret
+            'Authorization' => "Bearer JpPRs4kYiv99mYZRluo4_5b57e19da0fb4e679aa42cc1bfa173e1", // move this to env once test is complete
+            'Signature' =>  $signature, // md5 hash of ref;secret
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ])->post('https://api.paygateplus.ng/v2/transact', [
-            "request_ref"=> "123456789999",
+            "request_ref"=>  $requestRef,
             "request_type"=> "create_booking",
             "auth"=> [
                 "type"=> null,
@@ -101,12 +103,12 @@ class OnepipeController extends Controller
             ],
             "transaction"=> [
                 "mock_mode"=> "live",
-                "transaction_ref"=> "2222222222222222",
+                "transaction_ref"=> "22222222222222222",
                 "transaction_desc"=> "testing account creation",
                 "transaction_ref_parent"=> null,
                 "amount"=> "20000",
                 "customer"=> [
-                    "customer_ref"=> "333333333333333",
+                    "customer_ref"=> "3333333333333333",
                     "firstname"=> "AAA",
                     "surname"=> "TEST",
                     "email"=> "AAA.TEST@HITITCS.COM",
@@ -121,7 +123,7 @@ class OnepipeController extends Controller
                 ],
                 "details"=> [
                     "title"=> "Mr",
-                    "reference_number"=> "55555555555555555",
+                    "reference_number"=> "555555555555555555",
                     "service_number"=> "LOSABV",
                     "booking_creation"=> "2025-03-13-11:45:40", 
                     "booking_expiry" => "2025-03-15-12-45-38" 
@@ -130,7 +132,7 @@ class OnepipeController extends Controller
             ]]);
 
 
-        
+            dd($response->successful(), $response->status(), $response->body());
         
       
         return response()->json([
