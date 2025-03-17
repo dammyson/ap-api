@@ -44,9 +44,14 @@ class CreateBookingController extends Controller
     }
 
     public function bankTranfer(Request $request) {
+        return response()->json([
+            "error" => false,
+            "message" => "page is still being built"
+        ]);
         dd($request);
     }
     public function createBooking(CreateBookingTwoARequest $request){
+        // dd(auth()->user()->id);
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
         $airTravelerList = $validated["airTravelerList"];

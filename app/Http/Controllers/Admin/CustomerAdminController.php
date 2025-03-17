@@ -408,7 +408,7 @@ class CustomerAdminController extends Controller
 
     private function organiseYear($transactionArray) {
         // Define an array for all days of the week with default total_amount as 0
-        $daysOfWeek = [
+        $months = [
             "January" => ["name" => "January", "total_amount" => 0],
             "Febuary" => ["name" => "Febuary", "total_amount" => 0],
             "March" => ["name" => "March", "total_amount" => 0],
@@ -426,11 +426,11 @@ class CustomerAdminController extends Controller
          // Populate ticket data with query results
         foreach ($transactionArray as $transaction) {
             $monthName = $transaction->month_name;
-            $daysOfWeek[$monthName]['total_amount'] = (int) $transaction->total_amount;
+            $months[$monthName]['total_amount'] = (int) $transaction->total_amount;
         }
 
         // Convert the daysOfWeek array to a non-associative array for JSON response
-        return array_values($daysOfWeek);
+        return array_values($months);
         
     }
 }

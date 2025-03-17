@@ -67,9 +67,6 @@ class BookingRequestController extends Controller
 
             
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
-            
-            $response = $this->craneOTASoapService->run($function, $xml);
 
             // dd($response);
 

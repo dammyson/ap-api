@@ -57,6 +57,7 @@ use App\Http\Controllers\Test\TicketReservationController;
 use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OnepipeController;
 use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
@@ -67,6 +68,10 @@ use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
 Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {        
     Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
 });
+
+Route::post("transfer-payment/callback", [OnepipeController::class, 'transferPaymentCallback']);
+Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware('auth:api');
+Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware('auth:api');
 
 Route::group(['prefix' => 'user'], function ()  {
     Route::post('register', [RegisterController::class, 'userRegister']);

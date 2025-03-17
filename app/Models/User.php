@@ -32,8 +32,6 @@ class User extends Authenticatable
         'password',
         'image_url',
         'title',
-        'first_name',
-        'last_name',
         'nationality',
         'date_of_birth',
         'travel_document',
