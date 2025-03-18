@@ -41,7 +41,8 @@ class User extends Authenticatable
         'all_time_point',
         'device_type',
         'firebase_token',
-        'is_guest'
+        'is_guest',
+        'last_login'
     ];
 
     /**
