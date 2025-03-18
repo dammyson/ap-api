@@ -58,7 +58,8 @@ class RegisterController extends Controller
                 'peace_id' => $request->input('peace_id'),
                 // 'peace_id' => $peace_id,
                 'password' => Hash::make($request->input('password')),
-                'status' => $request->input('status') ?? null,
+                // 'status' => $request->input('status') ?? null,
+                'status' => 'active',
                 'device_type' => $deviceType,
                 'points' => 50, // allocate appropriate pointts once decided
                 "firebase_token" => $request->firebase_token,
