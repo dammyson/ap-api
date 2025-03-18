@@ -62,8 +62,7 @@ use App\Http\Controllers\Test\Booking\CancelBookingController;
 use App\Http\Controllers\Test\Booking\BookingRequestController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
-
-
+use App\Http\Middleware\LastLogin;
 
 Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {        
     Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
@@ -190,7 +189,7 @@ Route::group(['prefix' => 'admin/'], function () {
 });
 
 
-Route::group(["middleware" => ["auth:api"]], function() {
+Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
     Route::group(['prefix' => "soap/"], function () {
         Route::group(["prefix" => "void-ticket"], function() {
             Route::post('/pricing', [VoidTicketController::class, 'voidTicketPricing']);
@@ -289,7 +288,7 @@ Route::group(["middleware" => ["auth:api"]], function() {
 });
 
 
-Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter"]], function () {    
+Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastLogin::class]], function () {    
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
@@ -344,7 +343,7 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter"]], fun
 });
 
 
-Route::group(["middleware" => ["auth:api"]], function () {
+Route::group(["middleware" => ["auth:api"], LastLogin::class], function () {
 
     Route::get('game-categories', [GameCategoryController::class, 'index']);
     Route::get('game-categories/{gameCategory}', [GameCategoryController::class, 'show']);

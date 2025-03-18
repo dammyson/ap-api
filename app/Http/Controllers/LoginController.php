@@ -121,6 +121,7 @@ class LoginController extends Controller
                 }
 
                 // $user->notify(new PasswordChanged($details));
+                $user->last_login = now();
                 $user->status = 'active';
                 $user->save();
 

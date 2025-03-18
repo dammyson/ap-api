@@ -63,7 +63,8 @@ class RegisterController extends Controller
                 'device_type' => $deviceType,
                 'points' => 50, // allocate appropriate pointts once decided
                 "firebase_token" => $request->firebase_token,
-                'tier_id' => $tier->id
+                'tier_id' => $tier->id,
+                'last_login' => now()
             
             ]);
 
