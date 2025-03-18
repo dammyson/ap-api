@@ -24,7 +24,7 @@ class UserCollection extends ResourceCollection
                 "email" => $user->email,
                 // "peace_id" => $user->peace_id,
                 "tier" => $user->tiers->where('pivot.is_current', true)->first()?->name,
-                "status" => "null",
+                "status" => $user->status,
                 "last_login" => "null",
                 "total_booked_flight" => $user->total_booked_flight ?? 0,
                 // "total_booked_flight" => $this->getTotalBookedFlight($user->peace_id),
