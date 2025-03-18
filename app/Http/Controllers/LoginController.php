@@ -141,7 +141,8 @@ class LoginController extends Controller
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => "something went wrong",
+                "msg" => $e->getMessage()
             ], 500);
             
         }
