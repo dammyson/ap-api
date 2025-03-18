@@ -302,7 +302,8 @@ class TicketReservationController extends Controller
                         'invoice_id' => $invoice->id,
                         'device_type' => $deviceType,
                         'is_flight' => true,
-                        // "payment_method" => $paymentMethod,
+                        "payment_method" => $paymentMethod,
+                        "payment_channel" => $paymentChannel,
                         'currency' => $preferredCurrency
                     ]);                    
                 
