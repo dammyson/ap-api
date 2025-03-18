@@ -49,7 +49,7 @@ class LoginController extends Controller
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
             }
 
-            $user->status = 'active';
+           
 
             if ($request->has('firebase_token')) {
                 $user->firebase_token = $request->firebase_token;
@@ -121,7 +121,7 @@ class LoginController extends Controller
                 }
 
                 // $user->notify(new PasswordChanged($details));
-               
+                $user->status = 'active';
                 $user->save();
 
                 return response()->json([
