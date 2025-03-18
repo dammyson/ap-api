@@ -36,15 +36,15 @@ class TestPaymentController extends Controller
             $bookingReferenceID = $request->input('bookingReferenceID');
             $invoiceId = $request->input('invoiceId');
             $deviceType = $request->input('device_type');
-            $paymentMethod = $request->input('payment_gateway');
-            $paymentChannel = $request->input('payment_channel');
+            $paymentMethod = $request->input('payment_method') ?? 'card';
+            $paymentChannel = $request->input('payment_channel') ?? 'flutterwave';
             
             
             //validate verifiedRequest;
-            if ($paymentMethod == "paystack") {
+            if ($paymentChannel == "paystack") {
                 $new_top_request = new VerificationService($ref);
 
-            } else if ($paymentMethod == "flutterwave") {
+            } else if ($paymentChannel == "flutterwave") {
                 $new_top_request = new FlutterVerificationService($ref);
 
             }
@@ -82,7 +82,8 @@ class TestPaymentController extends Controller
             ]);
             $preferredCurrency = $request->input('preferred_currency');
             $ref = $request->input('ref_id');
-            $paymentGateway = $request->input('payment_gateway');
+            $paymentMethod = $request->input('payment_method') ?? 'card';
+            $paymentChannel = $request->input('payment_channel') ?? 'flutterwave';
             // $deviceType = $request->input('device_type');
             $user = $request->user();
             $userId = $user->id;
@@ -92,10 +93,10 @@ class TestPaymentController extends Controller
 
 
              //validate verifiedRequest;
-             if ($paymentGateway == "paystack") {
+             if ($paymentChannel == "paystack") {
                 $new_top_request = new VerificationService($ref);
 
-            } else if ($paymentGateway == "flutterwave") {
+            } else if ($paymentChannel == "flutterwave") {
                 $new_top_request = new FlutterVerificationService($ref);
 
             }
@@ -105,7 +106,7 @@ class TestPaymentController extends Controller
             $amount = $verified_request["data"]["amount"];
 
             // convert to naira (from kobo)
-            $paidAmount = $paymentGateway == "paystack" ? $amount / 100 : $amount;
+            $paidAmount = $paymentChannel == "paystack" ? $amount / 100 : $amount;
           
             // create invoice table   // add booking_id
             $invoice = Invoice::create([
@@ -161,7 +162,9 @@ class TestPaymentController extends Controller
                     'user_id' => $user->id,
                     'invoice_id' => $invoice->id,
                     'device_type' => $user->device_type,
-                    'currency' => $preferredCurrency,
+                    'currency' => $preferredCurrency,                                                
+                    "payment_method" => $paymentMethod,
+                    "payment_channel" => $paymentChannel,
                     'is_flight' => false
                 ]);  
                 
