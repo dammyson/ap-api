@@ -23,7 +23,7 @@ class UserCollection extends ResourceCollection
                 "user_last_name" => $user->last_name,
                 "email" => $user->email,
                 // "peace_id" => $user->peace_id,
-                "tier" => "null",
+                "tier" => $user->tiers->where('pivot.is_current', true)->first()?->name,
                 "status" => "null",
                 "last_login" => "null",
                 "total_booked_flight" => $user->total_booked_flight ?? 0,

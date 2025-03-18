@@ -69,7 +69,6 @@ Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {
     Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
 });
 
-Route::post("transfer-payment/callback", [OnepipeController::class, 'transferPaymentCallback']);
 Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware('auth:api');
 Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware('auth:api');
 
@@ -382,6 +381,8 @@ Route::group(["middleware" => ["auth:api"]], function () {
     Route::get('redeemed-rewards/{redeemedReward}', [RedeemedRewardController::class, 'show']);
     Route::put('redeemed-rewards/{redeemedReward}', [RedeemedRewardController::class, 'update']);
     Route::delete('redeemed-rewards/{redeemedReward}', [RedeemedRewardController::class, 'destroy']);
+
+    Route::post('logout', [LoginController::class, 'logout']);
 });
 
 Route::prefix('notifications')->middleware('auth:api')->group(function () {

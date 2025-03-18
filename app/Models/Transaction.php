@@ -21,7 +21,8 @@ class Transaction extends Model
         'ticket_type',
         'device_type',
         'currency',
-        // 'payment_method'
+        'payment_method',
+        'payment_channel'
         
     ];
 

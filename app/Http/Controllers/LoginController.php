@@ -49,6 +49,8 @@ class LoginController extends Controller
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
             }
 
+            $user->status = 'active';
+
             if ($request->has('firebase_token')) {
                 $user->firebase_token = $request->firebase_token;
                 $user->save();
@@ -120,7 +122,7 @@ class LoginController extends Controller
 
                 // $user->notify(new PasswordChanged($details));
                
-                
+                $user->save();
 
                 return response()->json([
                     'is_correct' => true,
@@ -141,6 +143,39 @@ class LoginController extends Controller
                 "message" => "something went wrong"
             ], 500);
             
+        }
+    }
+
+    public function logout()
+    {
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No authenticated user found'
+            ], 401);
+        }
+    
+        $user = auth()->user();
+    
+        try {
+            $user->update(['status' => 'inactive']);
+            $user->token()->revoke();
+    
+            return response()->json([
+                'status' => true,
+                'message' => 'User logged out'
+            ], 200);
+    
+        } catch (\Throwable $throwable) {
+            // Rollback status update only if it was modified
+            if ($user->status === 'inactive') {
+                $user->update(['status' => 'active']);
+            }
+    
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to log user out'
+            ], 500);
         }
     }
 }

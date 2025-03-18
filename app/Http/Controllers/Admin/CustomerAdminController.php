@@ -425,8 +425,11 @@ class CustomerAdminController extends Controller
 
          // Populate ticket data with query results
         foreach ($transactionArray as $transaction) {
-            $monthName = $transaction->month_name;
-            $months[$monthName]['total_amount'] = (int) $transaction->total_amount;
+            
+            $monthName = $transaction->month_name ?? null;
+            if ($monthName && isset($daysOfWeek[$monthName])) {
+                $months[$monthName]['total_amount'] = (int) $transaction->total_amount;
+            }
         }
 
         // Convert the daysOfWeek array to a non-associative array for JSON response

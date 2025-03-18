@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Models\Booking;
-use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use Illuminate\Support\Facades\Http;
 use App\Services\AutoGenerate\GenerateRandom;
 use App\Http\Controllers\Test\TicketReservationController;
@@ -25,73 +24,17 @@ class OnepipeController extends Controller
         // dd(now());
         $requestRef = $this->generateRandom->generateRandomNumber();
         $secret = env('SECRET');
-        // $signature = md5("{$requestRef};{$secret}");
-        $signature = md5("123456789999;ASknRFTLsQfrxAsl");
-        // dd($signature);
-
-        // $client = new Client();
-        // $headers = [
-        //     'Authorization' => 'Bearer JpPRs4kYiv99mYZRluo4_5b57e19da0fb4e679aa42cc1bfa173e1',
-        //     'Signature' => 'a2fbac4545f080f3c06f158c68a1d086',
-        //     'Content-Type' => 'application/json',
-        //     'Accept' => 'application/json'
-        // ];
-
-        // $body = [
-        //     "request_ref"=> "123456789999",
-        //     "request_type"=> "create_booking",
-        //     "auth"=> [
-        //       "type"=> null,
-        //       "secure"=> null,
-        //       "auth_provider"=> null,
-        //       "route_mode"=> null
-        //     ],
-        //     "transaction"=> [
-        //       "mock_mode"=> "live",
-        //       "transaction_ref"=> "2222222222222222",
-        //       "transaction_desc"=> "testing account creation",
-        //       "transaction_ref_parent"=> null,
-        //       "amount"=> "20000",
-        //       "customer"=> [
-        //         "customer_ref"=> "3333333333333",
-        //         "firstname"=> "AAA",
-        //         "surname"=> "TEST",
-        //         "email"=> "AAA.TEST@HITITCS.COM",
-        //         "mobile_no"=> "2347012382234"
-        //       ],
-        //       "meta"=> [
-        //         "merchant_id"=> "7027",
-        //         "pnr"=> "12D36S",
-        //         "travel_date"=> "2025-03-26-06-30-00",
-        //         "currency"=> "NGN"
-        //       ],
-        //       "details"=> [
-        //         "title"=> "Mr",
-        //         "reference_number"=> "55555555555555555",
-        //         "service_number"=> "LOSABV",
-        //         "booking_creation"=> "2025-03-13-11:45:40",
-        //         "booking_expiry"=> "2025-03-15-12-45-38"
-        //       ]
-        //     ]
-        // ];
-            
-        // $request = new GuzzleRequest('POST', 'https://api.paygateplus.ng/v2/transact', $headers, $body);
-        // $res = $client->sendAsync($request)->wait();
-        // echo $res->getBody();
-
-        // return $res;
-       
-        
-        
-        // dd($user->id);
+        $signature = md5("{$requestRef};{$secret}");
+        $user = $request->user();
+      
         $response = Http::withHeaders([
             // 'Authorization' => env('BEARER_API_KEY'), // move this to env once test is complete
-            'Authorization' => "JpPRs4kYiv99mYZRluo4_5b57e19da0fb4e679aa42cc1bfa173e1", // move this to env once test is complete
-            'Signature' => "a2fbac4545f080f3c06f158c68a1d086", // md5 hash of ref;secret
+            'Authorization' => "Bearer JpPRs4kYiv99mYZRluo4_5b57e19da0fb4e679aa42cc1bfa173e1", // move this to env once test is complete
+            'Signature' => $signature, // md5 hash of ref;secret
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ])->post('https://api.paygateplus.ng/v2/transact', [
-            "request_ref"=> "123456789999",
+            "request_ref"=> $requestRef,
             "request_type"=> "create_booking",
             "auth"=> [
                 "type"=> null,
@@ -101,46 +44,46 @@ class OnepipeController extends Controller
             ],
             "transaction"=> [
                 "mock_mode"=> "live",
-                "transaction_ref"=> "2222222222222222",
-                "transaction_desc"=> "testing account creation",
+                "transaction_ref"=> $this->generateRandom->generateRandomNumber(),
+                "transaction_desc"=> "Account creation",
                 "transaction_ref_parent"=> null,
-                "amount"=> "20000",
+                "amount"=> $request['amount'],
                 "customer"=> [
-                    "customer_ref"=> "333333333333333",
-                    "firstname"=> "AAA",
-                    "surname"=> "TEST",
-                    "email"=> "AAA.TEST@HITITCS.COM",
-                    "mobile_no"=> "2347012382234"
+                    "customer_ref"=> $user->id,
+                    "firstname"=> $user->first_name,
+                    "surname"=> $user->last_name,
+                    "email"=> $user->email,
+                    "mobile_no"=> $user->phone_number
                 ],
                 "meta"=> [
-                    "merchant_id"=> "7027",
-                    "pnr"=> "12D36S",
-                    "travel_date"=> "2025-03-26-06-30-00", 
-                    
-                    "currency"=> "NGN" 
+                    "merchant_id"=> $this->generateRandom->generateRandomNumber(),
+                    "pnr"=> $request['booking_id'],
+                    "travel_date"=> "",                     
+                    "currency"=> $request['currency']
                 ],
                 "details"=> [
-                    "title"=> "Mr",
-                    "reference_number"=> "55555555555555555",
-                    "service_number"=> "LOSABV",
-                    "booking_creation"=> "2025-03-13-11:45:40", 
-                    "booking_expiry" => "2025-03-15-12-45-38" 
-                   
+                    "title"=> $user->title,
+                    "reference_number"=> $this->generateRandom->generateRandomNumber(),
+                    "service_number"=> "",
+                    "booking_creation"=> "", 
+                    "booking_expiry" => ""                    
                 ]
             ]]);
 
 
-        
+        // dd($response->body());
         
       
         return response()->json([
             "error" => false,
-            "data" => $response
-        ], 200);
+            "data" => $response->body()
+        ], $response->status());
      
     }
 
     public function queryPaymentStatus(Request $request) {
+        $bankName = $request['bank_name'];
+
         $response = Http::withHeaders([
             'Authorization' => 'Bearer JpPRs4kYiv99mYZRluo4_5b57e19da0fb4e679aa42cc1bfa173e1', // move this to env once test is complete
             'Signature' => '284d315f16869a74e0c84395ef642987', // md5 hash of ref;secret
@@ -160,10 +103,9 @@ class OnepipeController extends Controller
         ]);
         
         // or dd($response->json()) to debug
-        return $response;
+        // return $response;
      
         $status = $response["status"];
-        // return  $status;
 
         if ($status == 'PendingFulfilment') {
             return response()->json([
@@ -189,8 +131,8 @@ class OnepipeController extends Controller
         $amount = $amount / 100;
 
         // dd(["currecny" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
-
-        return  $this->ticketReservationController->guestTicketReservationCommit($currency, $pnr, $booking->booking_reference_id, 25200, $booking->invoice_id, $deviceType);
+                            
+        return  $this->ticketReservationController->guestTicketReservationCommit("bank transfer", $bankName , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
 
     }
 
