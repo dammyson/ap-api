@@ -36,7 +36,7 @@ class TestPaymentController extends Controller
             $bookingReferenceID = $request->input('bookingReferenceID');
             $invoiceId = $request->input('invoiceId');
             $deviceType = $request->input('device_type');
-            $paymentMethod = $request->input('payment_method') ?? 'card';
+            $paymentMethod = $request->input('payment_method') ?? 'flutterwave';
             $paymentChannel = $request->input('payment_channel') ?? 'flutterwave';
             
             
@@ -82,7 +82,7 @@ class TestPaymentController extends Controller
             ]);
             $preferredCurrency = $request->input('preferred_currency');
             $ref = $request->input('ref_id');
-            $paymentMethod = $request->input('payment_method') ?? 'card';
+            $paymentMethod = $request->input('payment_method') ?? 'flutterwave';
             $paymentChannel = $request->input('payment_channel') ?? 'flutterwave';
             // $deviceType = $request->input('device_type');
             $user = $request->user();
@@ -93,10 +93,10 @@ class TestPaymentController extends Controller
 
 
              //validate verifiedRequest;
-             if ($paymentChannel == "paystack") {
+             if ($paymentMethod == "paystack") {
                 $new_top_request = new VerificationService($ref);
 
-            } else if ($paymentChannel == "flutterwave") {
+            } else if ($paymentMethod == "flutterwave") {
                 $new_top_request = new FlutterVerificationService($ref);
 
             }
