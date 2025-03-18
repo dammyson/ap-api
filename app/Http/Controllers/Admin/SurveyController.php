@@ -316,7 +316,7 @@ class SurveyController extends Controller
             
              
             $action = $survey->is_published ? 'published' 
-                    : 'unpublished';
+                : 'unpublished';
             
 
             event( new AdminSurveyEvent($admin, $survey, $action));

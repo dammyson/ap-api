@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Test;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Device;
 use App\Models\Wallet;
 use App\Models\Booking;
 use App\Models\Invoice;
-use App\Models\Transaction;
 // use Illuminate\Support\Facades\Request;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\RecentActivity;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use App\Services\Utility\GetPointService;
 use App\Services\Soap\TicketReservationRequestBuilder;
@@ -204,12 +206,14 @@ class TicketReservationController extends Controller
 
     }
 
-    public function guestTicketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType) { 
+    public function guestTicketReservationCommit($paymentMethod, $paymentChannel, $preferredCurrency, $bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType) { 
          
         $user = auth()->user();
         // dd($user->id);
         
         $invoice = Invoice::find($invoiceId);
+
+        // dd($invoice->amount);
         $invoiceAmount = $invoice->amount;
 
         if (!$invoice) {
@@ -254,7 +258,7 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-           
+            // dd($response);
             $invoice->is_paid = true;
             $invoice->save();
            
@@ -316,7 +320,8 @@ class TicketReservationController extends Controller
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
                             'is_flight' => true,                            
-                            // "payment_method" => $paymentMethod,
+                            "payment_method" => $paymentMethod,
+                            "payment_channel" => $paymentChannel,
                             'currency' => $preferredCurrency
 
                         ]
@@ -350,8 +355,9 @@ class TicketReservationController extends Controller
                             'user_id' =>  $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
-                            'is_flight' => true,                            
-                            // "payment_method" => $paymentMethod,
+                            'is_flight' => true,                             
+                            "payment_method" => $paymentMethod,
+                            "payment_channel" => $paymentChannel,
                             'currency' => $preferredCurrency
 
                         ]);                          
@@ -369,8 +375,9 @@ class TicketReservationController extends Controller
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
-                            'is_flight' => true,
-                            // "payment_method" => $paymentMethod,
+                            'is_flight' => true,                            
+                            "payment_method" => $paymentMethod,
+                            "payment_channel" => $paymentChannel,
                             'currency' => $preferredCurrency
 
                         ]); 
@@ -420,6 +427,8 @@ class TicketReservationController extends Controller
             ], 500);
         }  
     }
+
+   
 
     
 }

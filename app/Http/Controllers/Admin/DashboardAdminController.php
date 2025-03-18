@@ -270,9 +270,16 @@ class DashboardAdminController extends Controller
         ];
 
          // Populate ticket data with query results
+        // foreach ($transactionArray as $transaction) {
+        //     $monthName = $transaction->month_name;
+        //     $daysOfWeek[$monthName]['total_amount'] = (int) $transaction->total_amount;
+        // }
+
         foreach ($transactionArray as $transaction) {
-            $monthName = $transaction->month_name;
-            $daysOfWeek[$monthName]['total_amount'] = (int) $transaction->total_amount;
+            $monthName = $transaction->month_name ?? null;
+            if ($monthName && isset($daysOfWeek[$monthName])) {
+                $daysOfWeek[$monthName]['total_amount'] = (int) $transaction->total_amount;
+            }
         }
 
         // Convert the daysOfWeek array to a non-associative array for JSON response

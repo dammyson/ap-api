@@ -37,6 +37,7 @@ class TestPaymentController extends Controller
             $invoiceId = $request->input('invoiceId');
             $deviceType = $request->input('device_type');
             $paymentMethod = $request->input('payment_gateway');
+            $paymentChannel = $request->input('payment_channel');
             
             
             //validate verifiedRequest;
@@ -56,7 +57,7 @@ class TestPaymentController extends Controller
             $amount = $paymentMethod == "paystack" ? $amount / 100 : $amount;
 
             // return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
-            return  $this->ticketReservationController->guestTicketReservationCommit($preferredCurrency, $bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
+            return  $this->ticketReservationController->guestTicketReservationCommit($paymentMethod, $paymentChannel, $preferredCurrency, $bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
         
         } catch (\Throwable $th) {
             
