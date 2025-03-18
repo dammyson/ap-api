@@ -36,6 +36,7 @@ class User extends Authenticatable
         'date_of_birth',
         'travel_document',
         'tier_id',
+        'status',
         'points',
         'all_time_point',
         'device_type',
