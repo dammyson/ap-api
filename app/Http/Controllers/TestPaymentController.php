@@ -93,10 +93,10 @@ class TestPaymentController extends Controller
 
 
              //validate verifiedRequest;
-             if ($paymentMethod == "paystack") {
+             if ($paymentChannel == "paystack") {
                 $new_top_request = new VerificationService($ref);
 
-            } else if ($paymentMethod == "flutterwave") {
+            } else if ($paymentChannel == "flutterwave") {
                 $new_top_request = new FlutterVerificationService($ref);
 
             }

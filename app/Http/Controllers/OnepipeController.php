@@ -23,17 +23,18 @@ class OnepipeController extends Controller
         $user = $request->user();
         // dd(now());
         $requestRef = $this->generateRandom->generateRandomNumber();
-        $secret = env('SECRET');
+        $secret = env('ONE_PIPE_SECRET');
         $signature = md5("{$requestRef};{$secret}");
         $user = $request->user();
-      
+        $bookingId = $request['booking_id'];
+        $transactionRef =  $this->generateRandom->generateRandomNumber();
+       
         $response = Http::withHeaders([
-            // 'Authorization' => env('BEARER_API_KEY'), // move this to env once test is complete
-            'Authorization' => "Bearer JpPRs4kYiv99mYZRluo4_5b57e19da0fb4e679aa42cc1bfa173e1", // move this to env once test is complete
+            'Authorization' =>  'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
             'Signature' => $signature, // md5 hash of ref;secret
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->post('https://api.paygateplus.ng/v2/transact', [
+        ])->post(env('ONE_PIPE_TRANSACT_URL'), [
             "request_ref"=> $requestRef,
             "request_type"=> "create_booking",
             "auth"=> [
@@ -44,7 +45,7 @@ class OnepipeController extends Controller
             ],
             "transaction"=> [
                 "mock_mode"=> "live",
-                "transaction_ref"=> $this->generateRandom->generateRandomNumber(),
+                "transaction_ref"=> $transactionRef,
                 "transaction_desc"=> "Account creation",
                 "transaction_ref_parent"=> null,
                 "amount"=> $request['amount'],
@@ -57,7 +58,7 @@ class OnepipeController extends Controller
                 ],
                 "meta"=> [
                     "merchant_id"=> $this->generateRandom->generateRandomNumber(),
-                    "pnr"=> $request['booking_id'],
+                    "pnr"=> $bookingId,
                     "travel_date"=> "",                     
                     "currency"=> $request['currency']
                 ],
@@ -70,13 +71,33 @@ class OnepipeController extends Controller
                 ]
             ]]);
 
+            $booking = Booking::where('booking_id', $bookingId)->first();
+                
+            if (!$booking) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "please ensure bookingId is correct"
+                ], 400);
+            }
+
+            $booking->request_ref = $requestRef;
+            $booking->save();
+            // Booking::create([
+            //     'booking_id' => $pnr,
+            //     'request_ref' => $request_ref
+            // ]);
+
 
         // dd($response->body());
         
       
         return response()->json([
             "error" => false,
-            "data" => $response->body()
+            "data" => $response->body(),
+            'booking_id' => $bookingId,
+            "request_ref" => $requestRef,
+            "transaction_ref" => $transactionRef,
+            'response' => $response
         ], $response->status());
      
     }
@@ -84,13 +105,30 @@ class OnepipeController extends Controller
     public function queryPaymentStatus(Request $request) {
         $bankName = $request['bank_name'];
 
+        $secret = env('ONE_PIPE_SECRET');
+        // $secret = env('ONEPIPE_SECRET');
+        $requestRef = $request->input('request_ref');
+        $bookingId = $request->input('booking_id');
+        $signature = md5("{$request->input('request_ref')};{$secret}");
+
+        $booking = Booking::where('request_ref', $requestRef)
+            ->where('booking_id', $bookingId)->first();
+
+        if(!$booking) {
+            return response()->json([
+                "error" => true,
+                "message" => "request ref does not match record"
+            ], 400);
+        }
+
+
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer JpPRs4kYiv99mYZRluo4_5b57e19da0fb4e679aa42cc1bfa173e1', // move this to env once test is complete
-            'Signature' => '284d315f16869a74e0c84395ef642987', // md5 hash of ref;secret
+            'Authorization' => 'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
+            'Signature' => $signature, // md5 hash of ref;secret
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->post('https://api.paygateplus.ng/v2/transact/query', [
-            'request_ref' => '1234567899',
+        ])->post(env('ONE_PIPE_TRANSACT_QUERY_URL'), [
+            'request_ref' => $requestRef,
             'request_type' => 'create_booking',
             'auth' => [
                 'type' => null,
@@ -98,33 +136,39 @@ class OnepipeController extends Controller
                 'auth_provider' => null
             ],
             'transaction' => [
-                'transaction_ref' => '2222222222222'
+                'transaction_ref' => $request->input('transaction_ref')
             ]
         ]);
         
-        // or dd($response->json()) to debug
+        // dd($response->json()); 
         // return $response;
      
         $status = $response["status"];
 
+        if ($status == 'Failed') {
+            return response()->json([
+                "error" => true,
+                "message" => $response["message"]
+            ], 400);
+        }
+
         if ($status == 'PendingFulfilment') {
             return response()->json([
                 "error" => true,
-                "message" => "payment is pending fulfilment"
+                "message" => $response["message"]
             ], 400);
         }
 
         if ($status != 'Successful') {
             return response()->json([
                 "error" => true,
-                "message" => "transfer was unsuccesful"
+                "message" => $response["message"]
             ], 400);
         }
 
         $currency = $response["data"]["provider_response"]["meta"]["account"]["currency_code"];
         $pnr = $response["data"]["provider_response"]["meta"]["pnr"];
         $amount = $response["data"]["provider_response"]["meta"]["booking_amount"];
-        $booking = Booking::where('booking_id', $pnr)->first();
         $deviceType = $request['device_type'];
 
         // convert to naira (from kobo)

@@ -138,9 +138,12 @@ class DashboardAdminController extends Controller
                 $revenueAmount = Transaction::whereYear('created_at', $year)                    
                     ->sum(DB::raw('CAST(amount AS SIGNED)'));
 
+                
+                // return $ticketRecord;
+
                 $ticketRecord = $this->organiseYear($ticketRecord);
                 $ancillaryRecord = $this->organiseYear($ancillaryRecord);
-                $ticketRecord = $this->organiseYear($revenueRecord);
+                $revenueRecord = $this->organiseYear($revenueRecord);
     
                 
     

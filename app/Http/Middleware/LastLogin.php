@@ -19,7 +19,7 @@ class LastLogin
     {
         if (Auth::check()) {
             // dd(new DateTime());
-            Auth::user()->update(['last_login' => now()]);
+            Auth::user()->update(['last_login' => now()->setTimezone('Africa/Lagos')]);
             // $user = $request->user();
             // $user->last_login = now();
             // $user->save();
