@@ -14,15 +14,15 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\Admin\CreateAdminRequest;
-use App\Services\AutoGenerate\GeneratePassword;
+use App\Services\AutoGenerate\GenerateRandom;
 use App\Http\Requests\Auth\Admin\LoginAdminRequest;
 
 class RegisterAdminController extends Controller
 {
-    public $generatePassword;
+    public $generateRandom;
 
-    public function __construct(GeneratePassword $generatePassword) {
-        $this->generatePassword = $generatePassword;
+    public function __construct(GenerateRandom $generateRandom) {
+        $this->generateRandom = $generateRandom;
     }
     
     public function registerAdmin(CreateAdminRequest $request) {
@@ -34,7 +34,7 @@ class RegisterAdminController extends Controller
             $to_name = $request->input('user_name');
             $to_email = $request->input('email');
             
-            $temporaryPassword = $this->generatePassword->generateTemporaryPassword();
+            $temporaryPassword = $this->generateRandom->generateTemporaryPassword();
             // dump($temporaryPassword);
             $admin = Admin::withTrashed()->where('email', $to_email)->first();
             
@@ -62,6 +62,7 @@ class RegisterAdminController extends Controller
                 ]);
             }
 
+            return [$admin, 'temporary_password' => $temporaryPassword];
 
             // sendMail that contains the email and temporary password and send a warning that the
             // new admin should change the password once logged in.

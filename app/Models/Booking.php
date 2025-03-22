@@ -11,7 +11,7 @@ class Booking extends Model
     use HasFactory, HasUuids;
 
 
-    protected $fillable = ['peace_id', 'last_name', 'booking_id', 'invoice_id', 'booking_reference_id', 'is_cancelled', 'guest_session_token'];
+    protected $fillable = ['peace_id', 'last_name', 'booking_id', 'invoice_id', 'booking_reference_id', 'is_cancelled', 'guest_session_token', 'request_ref'];
 
 
     // protected $fillable = [

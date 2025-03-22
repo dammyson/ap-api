@@ -32,6 +32,7 @@ class LoginController extends Controller
     //
     public function login(UserLoginRequest $request)
     {
+        // dd(now()->setTimezone('Africa/Lagos'));
         try {
 
             // dd($request->all());
@@ -56,25 +57,7 @@ class LoginController extends Controller
                 $user->save();
             }
 
-            if (!$user->is_guest) {
-                $details = [
-                    'title' => 'New Message',
-                    'body' => 'You have received a new message.',
-                    'url' => '/messages/1'
-                ];
-    
-              
-    
-    
-                $currentTier = $user->currentTier();
-    
-                if (!$currentTier) {
-                    $this->tierService->assignTierWithDefaultFallback($user->id);
-                }   
-                
-                $user->notify(new LoginNotification($details));
-            }
-
+            
 
             
             // $newpassword = $validated['password'];
@@ -121,9 +104,25 @@ class LoginController extends Controller
                 }
 
                 // $user->notify(new PasswordChanged($details));
-                $user->last_login = now();
+                $user->last_login = now()->setTimezone('Africa/Lagos');
                 $user->status = 'active';
                 $user->save();
+
+                if (!$user->is_guest) {
+                    $details = [
+                        'title' => 'New Message',
+                        'body' => 'You have received a new message.',
+                        'url' => '/messages/1'
+                    ];
+        
+                    $currentTier = $user->currentTier();
+        
+                    if (!$currentTier) {
+                        $this->tierService->assignTierWithDefaultFallback($user->id);
+                    }   
+                    
+                    $user->notify(new LoginNotification($details));
+                }
 
                 return response()->json([
                     'is_correct' => true,
