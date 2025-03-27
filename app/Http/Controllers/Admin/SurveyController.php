@@ -60,7 +60,7 @@ class SurveyController extends Controller
                 'is_active' => $is_active,
                 'is_published' => $is_published,
                 'image_url' => $image_url,
-                'end_time' => $is_active ? now()->addMinutes($duration_of_survey) : null
+                'end_time' => now()->addMinutes($duration_of_survey)
             ]);
 
          
@@ -226,14 +226,14 @@ class SurveyController extends Controller
             $title = $request->input('title');
             // dd(now()->addMinutes(30));
             // return $surveys;    
-                                                      
-            // Survey::where('is_active', true)
-            //     // ->where('is_published', true)
-            //     ->where('end_time', '<=', now()->toDateTimeString())
-            //     ->update([
-            //         'is_active' => false,
-            //         'is_completed' => true,
-            //     ]);
+
+            Survey::where('is_active', true)
+                // ->where('is_published', true)
+                ->where('end_time', '<=', now()->toDateTimeString())
+                ->update([
+                    'is_active' => false,
+                    'is_completed' => true,
+                ]);
 
             $query = Survey::query();
             
