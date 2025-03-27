@@ -226,13 +226,13 @@ class SurveyController extends Controller
             $title = $request->input('title');
             // dd(now()->addMinutes(30));
             // return $surveys;                                              
-            Survey::where('is_active', true)
-                // ->where('is_published', true)
-                ->where('end_time', '<=', now()->toDateTimeString())
-                ->update([
-                    'is_active' => false,
-                    'is_completed' => true,
-                ]);
+            // Survey::where('is_active', true)
+            //     // ->where('is_published', true)
+            //     ->where('end_time', '<=', now()->toDateTimeString())
+            //     ->update([
+            //         'is_active' => false,
+            //         'is_completed' => true,
+            //     ]);
 
             $query = Survey::query();
             
