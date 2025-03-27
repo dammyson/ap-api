@@ -260,6 +260,7 @@ class SurveyController extends Controller
             
             return response()->json([
                 'error' => false,
+                'now' => now(),
                 'surveys' => $filteredSurveys,
                 'surveyTable' => Survey::get()
             ], 200);
