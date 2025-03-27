@@ -228,7 +228,6 @@ class SurveyController extends Controller
             // return $surveys;    
 
             Survey::where('is_active', true)
-                // ->where('is_published', true)
                 ->where('end_time', '<=', now()->toDateTimeString())
                 ->update([
                     'is_active' => false,
@@ -296,23 +295,23 @@ class SurveyController extends Controller
 
                 $survey->is_published = true;
                 $survey->is_active = true;
-                $survey->is_completed = false;
                
 
                 // survey end time;
-                $endTime = now()->addMinutes($survey->duration);
+                $endTime = now()->addMinutes($survey->duration_of_survey);
 
                 $survey->end_time = $endTime;
-
-                $survey->save();
                 
             } else {
                 $survey->is_published = false;
                 $survey->is_active = false;
-                $survey->is_completed = false;
-                $survey->save();
 
             }   
+
+            $survey->is_completed = false;
+            $survey->save();
+
+
             
             
             
