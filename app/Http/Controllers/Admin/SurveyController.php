@@ -339,6 +339,13 @@ class SurveyController extends Controller
 
     }
 
+    public function surveyFalse(Survey $survey) {
+         
+        $survey->is_completed = false;
+        $survey->save();
+        return $survey;
+    }
+
 
     public function getSurveyResults(Survey $survey) {
         try {
