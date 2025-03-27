@@ -293,20 +293,25 @@ class SurveyController extends Controller
 
                 $survey->is_published = true;
                 $survey->is_active = true;
+                $survey->is_completed = false;
+               
 
                 // survey end time;
                 $endTime = now()->addMinutes($survey->duration);
 
                 $survey->end_time = $endTime;
+
+                $survey->save();
                 
             } else {
                 $survey->is_published = false;
                 $survey->is_active = false;
+                $survey->is_completed = false;
+                $survey->save();
 
             }   
             
-            $survey->is_completed = false;
-            $survey->save();
+            
             
 
             // $survey->is_published = !$survey->is_published;
@@ -319,12 +324,14 @@ class SurveyController extends Controller
                 : 'unpublished';
             
 
+            $surveyAll = Survey::get();
             event( new AdminSurveyEvent($admin, $survey, $action));
 
             return response()->json([
                 'error' => false,
                 'message' => "survey {$action} successfully",
-                'survey' => $survey
+                'survey' => $survey,
+                'survey_table' =>  $surveyAll
             ], 200);
 
         }  catch (\Throwable $th) {
