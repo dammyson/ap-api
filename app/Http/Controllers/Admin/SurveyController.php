@@ -225,7 +225,8 @@ class SurveyController extends Controller
             $to_date = $request->input('to_date');
             $title = $request->input('title');
             // dd(now()->addMinutes(30));
-            // return $surveys;                                              
+            // return $surveys;    
+                                                      
             // Survey::where('is_active', true)
             //     // ->where('is_published', true)
             //     ->where('end_time', '<=', now()->toDateTimeString())
