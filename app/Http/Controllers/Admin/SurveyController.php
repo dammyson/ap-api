@@ -257,10 +257,13 @@ class SurveyController extends Controller
             }
 
             $filteredSurveys = new SurveyCollection($query->get());
+
+
             
             return response()->json([
                 'error' => false,
-                'surveys' => $filteredSurveys
+                'surveys' => $filteredSurveys,
+                'surveyTable' => Survey::get()
             ], 200);
 
         }  catch (\Throwable $th) {
