@@ -275,6 +275,89 @@ class OnepipeController extends Controller
 
     }
 
+    public function verifyQuickTeller(Request $request) {
+        $merchantCode = $request->input('merchant_code');
+        $transactionReference = $request->input('transaction_reference');
+        $amount = $request->input('amount');
+        $bookingId = $request->input('booking_id');
+        $deviceType = $request->input('device_type');
+
+        $booking = Booking::where('booking_id', $bookingId)->first();
+
+        if(!$booking) {
+            return response()->json([
+                "error" => true,
+                "message" => "request ref does not match record"
+            ], 400);
+        }
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ])->get("https://qa.interswitchng.com/collections/api/v1/gettransaction?merchant_code=MX6072&transaction_reference={$transactionReference}&amount={$amount}");
+          
+        dump($response);
+
+        // {
+        //     "Amount": 9108,
+        //     "CardNumber": "506099*********7499",
+        //     "MerchantReference": "202311301354481LIFJ",
+        //     "PaymentReference": "FBN|API|MX6072|30-11-2023|474568251|335432",
+        //     "RetrievalReferenceNumber": "000106923853",
+        //     "Stan": "000008",
+        //     "Channel": "API",
+        //     "TerminalId": "3PXM0001",
+        //     "SplitAccounts": [],
+        //     "TransactionDate": "2023-11-30T01:55:09",
+        //     "ResponseCode": "00",
+        //     "ResponseDescription": "Approved by Financial Institution",
+        //     "BankCode": "011",
+        //     "PaymentId": 474568251,
+        //     "RemittanceAmount": 0
+        // }
+        $responseCode = $response["ResponseCode"];
+
+        if ($responseCode == "S0" ) {
+            $currency = "NGN";
+            $pnr = $booking->booking_id;
+            $amount = $response['amount'];
+        }
+
+        if ($responseCode == "T0" ) {
+            $currency = "NGN";
+            $pnr = $booking->booking_id;
+            $amount = $response['amount'];
+        }
+
+        if ($responseCode == "00" ) {
+            $currency = "NGN";
+            $pnr = $booking->booking_id;
+            $amount = $response['amount'];
+            $deviceType = $request['device_type'];
+    
+            // convert to naira (from kobo)
+            $amount = $amount / 100;
+    
+            // dd(["currecny" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
+                                
+            return  $this->ticketReservationController->guestTicketReservationCommit("bank transfer", "Quick teller" , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
+        
+        }
+
+        $currency = $response["data"]["provider_response"]["meta"]["account"]["currency_code"];
+        $pnr = $response["data"]["provider_response"]["meta"]["pnr"];
+        $amount = $response["data"]["provider_response"]["meta"]["booking_amount"];
+        $deviceType = $request['device_type'];
+
+        // convert to naira (from kobo)
+        $amount = $amount / 100;
+
+        // dd(["currency" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
+                            
+        return  $this->ticketReservationController->guestTicketReservationCommit("bank transfer", "Quick teller" , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
+    }
+
   
    
    
