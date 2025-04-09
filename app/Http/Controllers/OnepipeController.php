@@ -303,29 +303,8 @@ class OnepipeController extends Controller
             'Accept' => 'application/json'
         ])->get("https://qa.interswitchng.com/collections/api/v1/gettransaction?merchantcode=MX6072&transactionreference={$transactionReference}&amount={$amount}");
           
-        // dump($response->body());
-
-        // {
-        //     "Amount": 9108,
-        //     "CardNumber": "506099*********7499",
-        //     "MerchantReference": "202311301354481LIFJ",
-        //     "PaymentReference": "FBN|API|MX6072|30-11-2023|474568251|335432",
-        //     "RetrievalReferenceNumber": "000106923853",
-        //     "Stan": "000008",
-        //     "Channel": "API",
-        //     "TerminalId": "3PXM0001",
-        //     "SplitAccounts": [],
-        //     "TransactionDate": "2023-11-30T01:55:09",
-        //     "ResponseCode": "00",
-        //     "ResponseDescription": "Approved by Financial Institution",
-        //     "BankCode": "011",
-        //     "PaymentId": 474568251,
-        //     "RemittanceAmount": 0
-        // }
-
-        // $returnedResponse = $response;
-        // dd($returnedResponse);
-        // dd($returnedResponse->ResponseCode);
+       
+        // dd($response->body());
         $responseCode = $response["ResponseCode"];
         // dd($responseCode);
 
@@ -344,7 +323,8 @@ class OnepipeController extends Controller
         if ($responseCode == "00" ) {
             $currency = "NGN";
             $pnr = $booking->booking_id;
-            $amount = $response['amount'];
+            // $amount = $response['Amount'];
+            // $amount = $response['Amount'];
             $deviceType = $request['device_type'];
     
             // convert to naira (from kobo)
