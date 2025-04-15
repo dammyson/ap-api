@@ -502,8 +502,8 @@ class CreateBookingController extends Controller
             $expectedAmount = $request->input('expected_amount');
             $userDevice = $request->input('device_type');
             $redemptionPoint = $request->input('redemption_point');
-            $paymentGateway = $request->input('payment_gateway');
             $paymentChannel = $request->input('payment_channel');
+            $paymentGateway = $request->input('payment_gateway');
             
             $user = $request->user();
 
@@ -516,10 +516,10 @@ class CreateBookingController extends Controller
             // for economy ticket redeemed with peace point, the amount_remaining is 0, hence no need to make payment
             if (!($ref == "not_applicable")) {
 
-                if ($paymentGateway == "paystack") {
+                if ($paymentChannel == "paystack") {
                     $new_top_request = new VerificationService($ref);
 
-                } else if ($paymentGateway == "flutterwave") {
+                } else if ($paymentChannel == "flutterwave") {
                     $new_top_request = new FlutterVerificationService($ref);
                 }
                 
