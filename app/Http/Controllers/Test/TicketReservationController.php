@@ -261,6 +261,8 @@ class TicketReservationController extends Controller
             // dd($response);
             $invoice->is_paid = true;
             $invoice->save();
+
+            // AirTicketReservationResponse
            
             if (!array_key_exists('AirTicketReservationResponse', $response)) {
                 return response()->json([

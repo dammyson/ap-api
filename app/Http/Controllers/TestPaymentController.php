@@ -56,7 +56,7 @@ class TestPaymentController extends Controller
             $amount = $verified_request["data"]["amount"];
 
             // convert to naira (from kobo)
-            $amount = $paymentMethod == "paystack" ? $amount / 100 : $amount;
+            $amount = $paymentChannel == "paystack" ? $amount / 100 : $amount;
 
             // return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
             return  $this->ticketReservationController->guestTicketReservationCommit($paymentMethod, $paymentChannel, $preferredCurrency, $bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
