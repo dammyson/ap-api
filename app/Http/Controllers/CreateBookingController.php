@@ -707,7 +707,7 @@ class CreateBookingController extends Controller
         } catch (\Throwable $throwable) {
             Log::error($throwable->getMessage());
         
-            return response()->json(['status' => false, 'message' => "something went wrong"], 500);
+            return response()->json(['status' => false, 'actual_error' => $throwable->getMessage(), 'message' => "something went wrong"], 500);
         }
     }
 
