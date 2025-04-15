@@ -503,7 +503,7 @@ class CreateBookingController extends Controller
             $userDevice = $request->input('device_type');
             $redemptionPoint = $request->input('redemption_point');
             $paymentChannel = $request->input('payment_channel');
-            $paymentGateway = $request->input('payment_gateway');
+            $paymentMethod = $request->input('payment_method');
             
             $user = $request->user();
 
@@ -609,7 +609,7 @@ class CreateBookingController extends Controller
                         'is_flight' => true,
                         'currency' => $preferredCurrency,
                         'payment_channel' => $paymentChannel ?? "redeemed with point",
-                        'payment_gateway' => $paymentGateway ?? "redeemed with point",
+                        'payment_method' => $paymentMethod ?? "redeemed with point",
                     ]);                    
                 
                 } else { 
@@ -627,8 +627,8 @@ class CreateBookingController extends Controller
                             'device_type' => $userDevice,
                             'is_flight' => true,                            
                             'currency' => $preferredCurrency,
-                            'payment_channel' => $paymentGateway ?? "redeemed with point",
-                            'payment_gateway' => $paymentGateway ?? "redeemed with point",
+                            'payment_channel' => $paymentChannel ?? "redeemed with point",
+                            'payment_method' => $paymentMethod ?? "redeemed with point",
                         ]
                     ); 
                     
@@ -661,8 +661,8 @@ class CreateBookingController extends Controller
                             'device_type' => $userDevice,
                             'is_flight' => true,                            
                             'currency' => $preferredCurrency,
-                            'payment_channel' => $paymentGateway ?? "redeemed with point",
-                            'payment_gateway' => $paymentGateway ?? "redeemed with point",
+                            'payment_channel' => $paymentChannel ?? "redeemed with point",
+                            'payment_method' => $paymentMethod ?? "redeemed with point",
                         ]);                          
                     
                     }
@@ -680,8 +680,8 @@ class CreateBookingController extends Controller
                             'device_type' => $userDevice,
                             'is_flight' => true,                            
                             'currency' => $preferredCurrency,
-                            'payment_channel' => $paymentGateway ?? "redeemed with point",
-                            'payment_gateway' => $paymentGateway ?? "redeemed with point",
+                            'payment_channel' => $paymentChannel ?? "redeemed with point",
+                            'payment_method' => $paymentMethod ?? "redeemed with point",
                         ]); 
                     }                
                 }
