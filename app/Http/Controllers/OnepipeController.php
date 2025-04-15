@@ -27,6 +27,8 @@ class OnepipeController extends Controller
         $signature = md5("{$requestRef};{$secret}");
         $user = $request->user();
         $bookingId = $request['booking_id'];
+        $timeLimit = $request['time_limit'];
+        $bookingCreatedAt = $request['booking_created_at'];
         $transactionRef =  $this->generateRandom->generateRandomNumber();
        
         $response = Http::withHeaders([
@@ -66,8 +68,8 @@ class OnepipeController extends Controller
                     "title"=> $user->title,
                     "reference_number"=> $this->generateRandom->generateRandomNumber(),
                     "service_number"=> "",
-                    "booking_creation"=> "", 
-                    "booking_expiry" => ""                    
+                    "booking_creation"=> $bookingCreatedAt, 
+                    "booking_expiry" => $timeLimit                    
                 ]
             ]]);
 
