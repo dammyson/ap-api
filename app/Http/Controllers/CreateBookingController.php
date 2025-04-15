@@ -524,7 +524,7 @@ class CreateBookingController extends Controller
                 }
                 
                 $verified_request = $new_top_request->run();
-                $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+                $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
 
                 if ( $paidAmount < $invoiceAmount ) {
                     // Log::error($throwable->getMessage());
