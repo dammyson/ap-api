@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Device;
 use App\Models\Flight;
 use App\Models\Booking;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
+use Illuminate\Support\Facades\Date;
 use App\Services\Utility\GetPointService;
 use App\Services\Soap\CreateBookingBuilder;
 use App\Services\Wallet\VerificationService;
@@ -348,8 +350,9 @@ class CreateBookingController extends Controller
                 "reference_id" => $bookingReferenceIDList['referenceID'],
                 "invoice_id" => $invoice->id,
                 "amount" => $expectedAmount,
-                "timeLimit" => $timeLimit,
-                "timeLimitUTC" => $timeLimitUTC
+                "booking_created_at" =>  Carbon::now()->format('Y-m-d-H-i-s'),
+                "timeLimit" => Carbon::parse($timeLimit)->format('Y-m-d-H-i-s'),
+                "timeLimitUTC" => Carbon::parse($timeLimitUTC)->format('Y-m-d-H-i-s')
             ];
 
             // dump($bookingDetails);
