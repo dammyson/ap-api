@@ -149,6 +149,8 @@ class AddWeightControllerTest extends Controller
             }
         }
 
+        dump("i ran");
+
         $xml = $this->addWeightBuilderTest->addWeightTest(
             $preferredCurrency,
             $adviceCodeSegmentExist,
