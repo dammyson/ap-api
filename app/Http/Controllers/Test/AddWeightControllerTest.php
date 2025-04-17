@@ -149,7 +149,7 @@ class AddWeightControllerTest extends Controller
             }
         }
 
-        dump("i ran");
+        // dump("i ran");
 
         $xml = $this->addWeightBuilderTest->addWeightTest(
             $preferredCurrency,
@@ -236,11 +236,26 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dump($response);
+            // dump($response);
+
+            // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
+            // $amount = 0;
+
+            // if (!array_key_exists('totalAmount', $ticketInfo)) {
+            //     $amount = str_replace(['NGN', ',', ' '], '', $ticketInfo['totalAmountText']);
+            // }else {
+            //     $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+
+            // }            
+            // dd($amount);
+            
             $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             $preferredCurrency = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["currency"]["code"];
+            // $preferredCurrency= $invoice->currency;
             $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
             $invoice = Invoice::find($invoiceId);
+
+
 
             // if user has not paid set the new invoice balance else generate a new invoice
             

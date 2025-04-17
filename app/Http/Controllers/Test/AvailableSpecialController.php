@@ -48,18 +48,18 @@ class AvailableSpecialController extends Controller
 
         $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
 
+        return $response;
+        // $availableSSRList = $response["AirAvailSpecialServicesResponse"]["availSpecialServices"]["availSpecialServiceList"]["availableSSRList"];
 
-        $availableSSRList = $response["AirAvailSpecialServicesResponse"]["availSpecialServices"]["availSpecialServiceList"]["availableSSRList"];
+        // $baggageData = '';
+        // foreach($availableSSRList as $availableSSR) {
+        //     if ($availableSSR["code"] == "XBAG") {
+        //         $baggageData = $availableSSR;
+        //         break;
+        //     }
+        // }
 
-        $baggageData = '';
-        foreach($availableSSRList as $availableSSR) {
-            if ($availableSSR["code"] == "XBAG") {
-                $baggageData = $availableSSR;
-                break;
-            }
-        }
-
-        return $baggageData;
+        // return $baggageData;
     }
 
     public function AvailableSpecialServiceRT(AvailableSpecialServiceRTRequest $request) {
