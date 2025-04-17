@@ -47,7 +47,19 @@ class AvailableSpecialController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
 
         $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
-        return $response;
+
+
+        $availableSSRList = $response["AirAvailSpecialServicesResponse"]["availSpecialServices"]["availSpecialServiceList"]["availableSSRList"];
+
+        $baggageData = '';
+        foreach($availableSSRList as $availableSSR) {
+            if ($availableSSR["code"] == "XBAG") {
+                $baggageData = $availableSSR;
+                break;
+            }
+        }
+
+        return $baggageData;
     }
 
     public function AvailableSpecialServiceRT(AvailableSpecialServiceRTRequest $request) {

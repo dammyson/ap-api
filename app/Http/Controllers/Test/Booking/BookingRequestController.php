@@ -40,6 +40,7 @@ class BookingRequestController extends Controller
     public function readBookingTk(Request $request) {
         $bookingId = $request->input('ID');
         $peaceId = $request->input('peace_id');
+        // $bookingReference = $request->input('referenceID');
 
         try {
 
