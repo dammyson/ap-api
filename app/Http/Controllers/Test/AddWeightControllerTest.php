@@ -236,7 +236,7 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dump($response);
+            dump($response);
 
             // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
             // $amount = 0;

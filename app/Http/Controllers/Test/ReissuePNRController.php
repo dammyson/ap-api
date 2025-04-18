@@ -458,7 +458,7 @@ class ReissuePNRController extends Controller
                 "invoice_id" => $invoice->id,
                 "invoice" => $invoice,
                 "response" => $response
-            ]);
+            ], 200);
 
         } catch (\Throwable $th) {
             
@@ -466,7 +466,8 @@ class ReissuePNRController extends Controller
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => "something went wrong",
+                "actual_error" => $th->getMessage()
             ], 500);
         }  
     }
@@ -610,9 +611,10 @@ class ReissuePNRController extends Controller
             $referenceIDTwo = $request->input('referenceIDTwo');
             $responseCodeTwo = $request->input('responseCodeTwo');
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
-            $statusTwo = $request->input('statusTwo');
-            $paymentGateway = $request->input('paymentGateway');
             $transactionDescription = $request->input("transactionDescription");
+            $statusTwo = $request->input('statusTwo');
+            $paymentMethod = $request->input('payment_method');
+            $paymentChannel = $request->input('payment_channel');
             // $preferredCurrency = $request->input('preferredCurrency');
             
             
@@ -637,17 +639,17 @@ class ReissuePNRController extends Controller
             // dd($invoiceId);     
             
             //validate verifiedRequest;
-            if ($paymentGateway == "paystack") {
+            if ($paymentChannel == "paystack") {
                 $new_top_request = new VerificationService($paymentRef);
 
-            } else if ($paymentGateway == "flutterwave") {
+            } else if ($paymentChannel == "flutterwave") {
                 $new_top_request = new FlutterVerificationService($paymentRef);
             }
             $verified_request = $new_top_request->run();
 
             // dd($verified_request);
 
-            $paidAmount = $paymentGateway == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+            $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
             // dd($paidAmount);
             if (!$paidAmount) {
                 return response()->json([
@@ -854,6 +856,8 @@ class ReissuePNRController extends Controller
                         // 'device_type' => $userDevice->device_type,
                         'device_type' => $deviceType,
                         'currency' => $preferredCurrency,
+                        "payment_method" => $paymentMethod,
+                        "payment_channel" => $paymentChannel,
                         'is_flight' => true
                     ]);
                 }
@@ -875,6 +879,8 @@ class ReissuePNRController extends Controller
                     'invoice_id' => $invoice->id,
                     'device_type' => $deviceType,
                     'currency' => $preferredCurrency,
+                    "payment_method" => $paymentMethod,
+                    "payment_channel" => $paymentChannel,
                     'is_flight' => true
                     
                 ]);
@@ -915,7 +921,7 @@ class ReissuePNRController extends Controller
                 "booking_reference" => $referenceId,
                 "data" => $data,
                 // "response" => $response
-            ]);
+            ], 200);
         } catch (\Throwable $th) {
             
             Log::error($th->getMessage());
