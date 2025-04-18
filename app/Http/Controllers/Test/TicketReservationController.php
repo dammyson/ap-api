@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Test;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Device;
+use App\Models\Flight;
 use App\Models\Wallet;
 use App\Models\Booking;
-use App\Models\Invoice;
 // use Illuminate\Support\Facades\Request;
+use App\Models\Invoice;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\RecentActivity;
@@ -299,8 +300,6 @@ class TicketReservationController extends Controller
     
                 foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
                     $totalDistance += $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['distance'];
-    
-    
                 }
     
             } else {
@@ -308,8 +307,10 @@ class TicketReservationController extends Controller
             }
     
            $user->addMilesFromKilometers($totalDistance);
-
-
+            Flight::where('booking_id', $bookingId)->update([
+                'is_paid' => true
+            ]);
+            
             // dd($response);
             $invoice->is_paid = true;
             $invoice->save();

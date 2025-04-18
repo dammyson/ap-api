@@ -1,695 +1,947 @@
 <?php
-{
-    "departure": [
+
+"all_flight": [
         {
-            "flightSegment": {
-                "airline": {
-                    "code": "P4",
-                    "companyFullName": "Air Peace"
-                },
-                "arrivalAirport": {
-                    "cityInfo": {
-                        "city": {
-                            "locationCode": "ABV",
-                            "locationName": "Abuja",
-                            "locationNameLanguage": "EN"
-                        },
-                        "country": {
-                            "locationCode": "NG",
-                            "locationName": "Nigeria",
-                            "locationNameLanguage": "EN",
-                            "currency": {
-                                "code": "NGN"
-                            }
-                        }
-                    },
-                    "codeContext": "IATA",
-                    "language": "EN",
-                    "locationCode": "ABV",
-                    "locationName": "Abuja",
-                    "timeZoneInfo": "Africa/Lagos"
-                },
-                "arrivalDateTime": "2025-04-30T07:50:00+01:00",
-                "arrivalDateTimeUTC": "2025-04-30T06:50:00+01:00",
-                "departureAirport": {
-                    "cityInfo": {
-                        "city": {
-                            "locationCode": "LOS",
-                            "locationName": "Lagos",
-                            "locationNameLanguage": "EN"
-                        },
-                        "country": {
-                            "locationCode": "NG",
-                            "locationName": "Nigeria",
-                            "locationNameLanguage": "EN",
-                            "currency": {
-                                "code": "NGN"
-                            }
-                        }
-                    },
-                    "codeContext": "IATA",
-                    "language": "EN",
-                    "locationCode": "LOS",
-                    "locationName": "Lagos",
-                    "timeZoneInfo": "Africa/Lagos"
-                },
-                "departureDateTime": "2025-04-30T06:30:00+01:00",
-                "departureDateTimeUTC": "2025-04-30T05:30:00+01:00",
-                "flightNumber": "7120",
-                "flightSegmentID": "1144346",
-                "ondControlled": "false",
-                "sector": "DOMESTIC",
-                "accumulatedDuration": "",
-                "codeshare": "false",
-                "distance": "511",
-                "equipment": {
-                    "airEquipType": "ERJ195-12C/112Y",
-                    "changeofGauge": "false"
-                },
-                "flightNotes": [
-                    {
-                        "deiCode": "504",
-                        "explanation": "Secure Flight Info",
-                        "note": "T"
-                    },
-                    {
-                        "deiCode": "504",
-                        "explanation": "Secure Flight Info",
-                        "note": "T"
-                    }
-                ],
-                "flownMileageQty": "0",
-                "groundDuration": "",
-                "iatciFlight": "false",
-                "journeyDuration": "PT1H20M",
-                "onTimeRate": "0",
-                "secureFlightDataRequired": "true",
-                "stopQuantity": "0",
-                "ticketType": "PAPER",
-                "trafficRestriction": {
-                    "code": "",
-                    "explanation": ""
-                }
-            },
-            "BUSINESS": {
-                "availability": {
-                    "cabin": "BUSINESS",
-                    "resBookDesigCode": "J",
-                    "resBookDesigQuantity": "1",
-                    "resBookDesigStatusCode": "O"
-                },
-                "cost": {
-                    "accountingSign": "ADC",
-                    "currency": {
-                        "code": "NGN"
-                    },
-                    "mileAmount": "0.0",
-                    "value": "142952.0"
-                },
-                "fareInfoList": [
-                    {
-                        "fareInfoList": {
-                            "cabin": "BUSINESS",
-                            "cabinClassCode": "C",
-                            "fareBaggageAllowance": {
-                                "allowanceType": "WEIGHT",
-                                "maxAllowedPieces": "0",
-                                "maxAllowedWeight": {
-                                    "unitOfMeasureCode": "KG",
-                                    "weight": "30"
-                                }
-                            },
-                            "fareGroupName": "Business Dom",
-                            "fareReferenceCode": "JOW",
-                            "fareReferenceID": "0cef7f9084db12d38d0dbc3a7ce27734ffa7c03884488608c099c821e149e6055e21691c51c2a3d8c65cec5ddf4a09a4796938b11027f4ba910c7397e2fc5b550028336d5b08b96cdb2f082b71814d0d2a658fedc9969b764b8ed0283209e0d3325e47e6b7a0c9f54d088ba45a8ca51b7005dab5d0e547436a8f1c0fc81aa345b5967641661dbccd679cac8de85c7b7431feaeb4162fc1fcf3ff5529f0527cac9dd7e4fa4ad15356b38c601ba7b6f21f262279dd2d2adb29de371c3397b4f6bd109bb7796d1450a372f3e79a7be008fa9ea1ac979c7bc6955549bed3817c798437e197174e42508ab7f7c46ed98d5fb2ab468dc32a595b6b508a3fe8491a306b2a5e99b33cd56d79cb409db8369ed2",
-                            "fareReferenceName": "JOWDOM",
-                            "flightSegmentSequence": "1",
-                            "portTax": "T",
-                            "resBookDesigCode": "J"
-                        },
-                        "passengerTypeQuantity": {
-                            "hasStrecher": "false",
-                            "passengerType": {
-                                "code": "ADLT"
-                            },
-                            "quantity": "1"
-                        },
-                        "pricingInfo": {
-                            "baseFare": {
-                                "amount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "75952.0"
-                                }
-                            },
-                            "fareBaggageAllowance": "0",
-                            "fareConstruction": "",
-                            "fees": {
-                                "totalAmount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                }
-                            },
-                            "surcharges": {
-                                "surchargeList": {
-                                    "paid": "false",
-                                    "surchargeAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "65000.0"
-                                    },
-                                    "surchargeCode": "YQ",
-                                    "surchargeName": "YQ",
-                                    "surchargeType": "S"
-                                },
-                                "totalAmount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "65000.0"
-                                }
-                            },
-                            "taxes": {
-                                "taxList": {
-                                    "paid": "false",
-                                    "taxAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "2000.0"
-                                    },
-                                    "taxCode": "QT",
-                                    "taxName": "AIRPORT SERVICE CHARGE",
-                                    "taxType": "T"
-                                },
-                                "totalAmount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "2000.0"
-                                }
-                            },
-                            "totalFare": {
-                                "amount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "142952.0"
-                                }
-                            },
-                            "discountApplied": "false",
-                            "passengerTypeCode": "ADLT"
-                        }
-                    }
-                ]
-            },
-            "ECONOMY": {
-                "availability": {
-                    "cabin": "ECONOMY",
-                    "resBookDesigCode": "V",
-                    "resBookDesigQuantity": "9",
-                    "resBookDesigStatusCode": "O"
-                },
-                "cost": {
-                    "accountingSign": "ADC",
-                    "currency": {
-                        "code": "NGN"
-                    },
-                    "mileAmount": "0.0",
-                    "value": "63200.0"
-                },
-                "fareInfoList": [
-                    {
-                        "fareInfoList": {
-                            "cabin": "ECONOMY",
-                            "cabinClassCode": "Y",
-                            "fareBaggageAllowance": {
-                                "allowanceType": "WEIGHT",
-                                "maxAllowedPieces": "0",
-                                "maxAllowedWeight": {
-                                    "unitOfMeasureCode": "KG",
-                                    "weight": "15"
-                                }
-                            },
-                            "fareGroupName": "Eco Non Flexi Dom",
-                            "fareReferenceCode": "VRTN",
-                            "fareReferenceID": "0fe3789a8ed812d38d0dbc3a7ce27734ffa7c03884488608c099c821e149e6055e21691c51c2a3ddc657e95fdf4a09a4796938b11027f4ba910c7397e2fc5b550028336d5b08b96cdb2f082b71814d0d2a658fedc9969b764b8ed0283209e0d3325e47e6b7a0c9f54d088ba45a8ca51b7005dab5d0e547436a8f1c0fc81aa345b5967641661db9ce679cac8de85c7b7431feaeb4162fc1fcf3ff5529f0527cac9dd7e4fa4ad15356b38c601ba7b6f21f262279dd2d2adb29de371c3397b4f6bd109bb7796d1450a372f3e79a7be008fa9ea1ac999c7bc6945448ee88d42b7d876dec90141919038ab7a7956f8c8a5fe5a94b80c0250d586c5c8d69ee4f13624319291eb7a5aa168a85e42d70b83ccd",
-                            "fareReferenceName": "VRTNIG",
-                            "flightSegmentSequence": "1",
-                            "portTax": "T",
-                            "resBookDesigCode": "V"
-                        },
-                        "passengerTypeQuantity": {
-                            "hasStrecher": "false",
-                            "passengerType": {
-                                "code": "ADLT"
-                            },
-                            "quantity": "1"
-                        },
-                        "pricingInfo": {
-                            "baseFare": {
-                                "amount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "25200.0"
-                                }
-                            },
-                            "fareBaggageAllowance": "0",
-                            "fareConstruction": "",
-                            "fees": {
-                                "totalAmount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                }
-                            },
-                            "surcharges": {
-                                "surchargeList": {
-                                    "paid": "false",
-                                    "surchargeAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "36000.0"
-                                    },
-                                    "surchargeCode": "YQ",
-                                    "surchargeName": "YQ",
-                                    "surchargeType": "S"
-                                },
-                                "totalAmount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "36000.0"
-                                }
-                            },
-                            "taxes": {
-                                "taxList": {
-                                    "paid": "false",
-                                    "taxAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "2000.0"
-                                    },
-                                    "taxCode": "QT",
-                                    "taxName": "AIRPORT SERVICE CHARGE",
-                                    "taxType": "T"
-                                },
-                                "totalAmount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "2000.0"
-                                }
-                            },
-                            "totalFare": {
-                                "amount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "63200.0"
-                                }
-                            },
-                            "discountApplied": "false",
-                            "passengerTypeCode": "ADLT"
-                        }
-                    }
-                ]
-            }
+            "id": 1,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-03-26 07:50:00",
+            "departure_time": "2025-03-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D208",
+            "payment_expires_at": "2025-02-28 12:45:38",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9e4bccb4-0459-4eae-8ef8-3f2c9d3472d9",
+            "created_at": "2025-02-25T10:45:40.000000Z",
+            "updated_at": "2025-02-25T10:45:40.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
         },
         {
-            "flightSegment": {
-                "airline": {
-                    "code": "P4",
-                    "companyFullName": "Air Peace"
-                },
-                "arrivalAirport": {
-                    "cityInfo": {
-                        "city": {
-                            "locationCode": "ABV",
-                            "locationName": "Abuja",
-                            "locationNameLanguage": "EN"
-                        },
-                        "country": {
-                            "locationCode": "NG",
-                            "locationName": "Nigeria",
-                            "locationNameLanguage": "EN",
-                            "currency": {
-                                "code": "NGN"
-                            }
-                        }
-                    },
-                    "codeContext": "IATA",
-                    "language": "EN",
-                    "locationCode": "ABV",
-                    "locationName": "Abuja",
-                    "timeZoneInfo": "Africa/Lagos"
-                },
-                "arrivalDateTime": "2025-04-30T11:55:00+01:00",
-                "arrivalDateTimeUTC": "2025-04-30T10:55:00+01:00",
-                "departureAirport": {
-                    "cityInfo": {
-                        "city": {
-                            "locationCode": "LOS",
-                            "locationName": "Lagos",
-                            "locationNameLanguage": "EN"
-                        },
-                        "country": {
-                            "locationCode": "NG",
-                            "locationName": "Nigeria",
-                            "locationNameLanguage": "EN",
-                            "currency": {
-                                "code": "NGN"
-                            }
-                        }
-                    },
-                    "codeContext": "IATA",
-                    "language": "EN",
-                    "locationCode": "LOS",
-                    "locationName": "Lagos",
-                    "timeZoneInfo": "Africa/Lagos"
-                },
-                "departureDateTime": "2025-04-30T10:35:00+01:00",
-                "departureDateTimeUTC": "2025-04-30T09:35:00+01:00",
-                "flightNumber": "7124",
-                "flightSegmentID": "1145650",
-                "ondControlled": "false",
-                "sector": "DOMESTIC",
-                "accumulatedDuration": "",
-                "codeshare": "false",
-                "distance": "511",
-                "equipment": {
-                    "airEquipType": "ERJ195-12C/112Y",
-                    "changeofGauge": "false"
-                },
-                "flightNotes": [
-                    {
-                        "deiCode": "504",
-                        "explanation": "Secure Flight Info",
-                        "note": "T"
-                    },
-                    {
-                        "deiCode": "504",
-                        "explanation": "Secure Flight Info",
-                        "note": "T"
-                    }
-                ],
-                "flownMileageQty": "0",
-                "groundDuration": "",
-                "iatciFlight": "false",
-                "journeyDuration": "PT1H20M",
-                "onTimeRate": "0",
-                "secureFlightDataRequired": "true",
-                "stopQuantity": "0",
-                "ticketType": "PAPER",
-                "trafficRestriction": {
-                    "code": "",
-                    "explanation": ""
-                }
-            },
-            "BUSINESS": {
-                "availability": {
-                    "cabin": "BUSINESS",
-                    "resBookDesigCode": "C",
-                    "resBookDesigQuantity": "7",
-                    "resBookDesigStatusCode": "O"
-                },
-                "cost": {
-                    "accountingSign": "ADC",
-                    "currency": {
-                        "code": "NGN"
-                    },
-                    "mileAmount": "0.0",
-                    "value": "123904.0"
-                },
-                "fareInfoList": [
-                    {
-                        "fareInfoList": {
-                            "cabin": "BUSINESS",
-                            "cabinClassCode": "C",
-                            "fareBaggageAllowance": {
-                                "allowanceType": "WEIGHT",
-                                "maxAllowedPieces": "0",
-                                "maxAllowedWeight": {
-                                    "unitOfMeasureCode": "KG",
-                                    "weight": "30"
-                                }
-                            },
-                            "fareGroupName": "Business Dom",
-                            "fareReferenceCode": "COW",
-                            "fareReferenceID": "0cef7f9084dd12d38d0dbc3a7ce27734ffa7c03884488608c099c821e149e6055e21691c51c2a3d9c25ce95bdf4a09a4796938b11027f4ba910c7397e2fc5b550028336d5b08b96cdb2f082b71814d0d2a658fedc9969b764b8ed0283209e0d3325e47e6b7a0c9f54d088ba45a8ca51b7005dab5d0e547436a8f1c0fc81aa345b5967641661dbcc8679cac8de85c7b7431feaeb4162fc1fcf3ff5529f0527cac9dd7e4fa4ad15356b38c601ba7b6f21f262279dd2d2adb29de371c3397b4f6bd109bb7796d1450a372f3e79a7be008fa9ea1a2969c7bc6925e4debd386792fd26fbc90434b4901dae6f6c73f8d8901b5a51d8992725950685dd869bd48146260e7174af57d0ef25b2d3b4a746f32be",
-                            "fareReferenceName": "COWDOM",
-                            "flightSegmentSequence": "1",
-                            "portTax": "T",
-                            "resBookDesigCode": "C"
-                        },
-                        "passengerTypeQuantity": {
-                            "hasStrecher": "false",
-                            "passengerType": {
-                                "code": "ADLT"
-                            },
-                            "quantity": "1"
-                        },
-                        "pricingInfo": {
-                            "baseFare": {
-                                "amount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "61904.0"
-                                }
-                            },
-                            "fareBaggageAllowance": "0",
-                            "fareConstruction": "",
-                            "fees": {
-                                "totalAmount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                }
-                            },
-                            "surcharges": {
-                                "surchargeList": {
-                                    "paid": "false",
-                                    "surchargeAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "60000.0"
-                                    },
-                                    "surchargeCode": "YQ",
-                                    "surchargeName": "YQ",
-                                    "surchargeType": "S"
-                                },
-                                "totalAmount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "60000.0"
-                                }
-                            },
-                            "taxes": {
-                                "taxList": {
-                                    "paid": "false",
-                                    "taxAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "2000.0"
-                                    },
-                                    "taxCode": "QT",
-                                    "taxName": "AIRPORT SERVICE CHARGE",
-                                    "taxType": "T"
-                                },
-                                "totalAmount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "2000.0"
-                                }
-                            },
-                            "totalFare": {
-                                "amount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "123904.0"
-                                }
-                            },
-                            "discountApplied": "false",
-                            "passengerTypeCode": "ADLT"
-                        }
-                    }
-                ]
-            },
-            "ECONOMY": {
-                "availability": {
-                    "cabin": "ECONOMY",
-                    "resBookDesigCode": "V",
-                    "resBookDesigQuantity": "9",
-                    "resBookDesigStatusCode": "O"
-                },
-                "cost": {
-                    "accountingSign": "ADC",
-                    "currency": {
-                        "code": "NGN"
-                    },
-                    "mileAmount": "0.0",
-                    "value": "63200.0"
-                },
-                "fareInfoList": [
-                    {
-                        "fareInfoList": {
-                            "cabin": "ECONOMY",
-                            "cabinClassCode": "Y",
-                            "fareBaggageAllowance": {
-                                "allowanceType": "WEIGHT",
-                                "maxAllowedPieces": "0",
-                                "maxAllowedWeight": {
-                                    "unitOfMeasureCode": "KG",
-                                    "weight": "15"
-                                }
-                            },
-                            "fareGroupName": "Eco Non Flexi Dom",
-                            "fareReferenceCode": "VRTN",
-                            "fareReferenceID": "0fe3789a8ed812d38d0dbc3a7ce27734ffa7c03884488608c099c821e149e6055e21691c51c2a3ddc657e95fdf4a09a4796938b11027f4ba910c7397e2fc5b550028336d5b08b96cdb2f082b71814d0d2a658fedc9969b764b8ed0283209e0d3325e47e6b7a0c9f54d088ba45a8ca51b7005dab5d0e547436a8f1c0fc81aa345b5967641661db9ce679cac8de85c7b7431feaeb4162fc1fcf3ff5529f0527cac9dd7e4fa4ad15356b38c601ba7b6f21f262279dd2d2adb29de371c3397b4f6bd109bb7796d1450a372f3e79a7be008fa9ea1a2979c7bc6c75b1eedd3d3227c823eecc71b494f01d8e6f3966988de09b5aa488d9525590c3e5c883ebc4f46673cf5266fb66a08686746c85818629a5f",
-                            "fareReferenceName": "VRTNIG",
-                            "flightSegmentSequence": "1",
-                            "portTax": "T",
-                            "resBookDesigCode": "V"
-                        },
-                        "passengerTypeQuantity": {
-                            "hasStrecher": "false",
-                            "passengerType": {
-                                "code": "ADLT"
-                            },
-                            "quantity": "1"
-                        },
-                        "pricingInfo": {
-                            "baseFare": {
-                                "amount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "25200.0"
-                                }
-                            },
-                            "fareBaggageAllowance": "0",
-                            "fareConstruction": "",
-                            "fees": {
-                                "totalAmount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "0.0"
-                                }
-                            },
-                            "surcharges": {
-                                "surchargeList": {
-                                    "paid": "false",
-                                    "surchargeAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "36000.0"
-                                    },
-                                    "surchargeCode": "YQ",
-                                    "surchargeName": "YQ",
-                                    "surchargeType": "S"
-                                },
-                                "totalAmount": {
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "36000.0"
-                                }
-                            },
-                            "taxes": {
-                                "taxList": {
-                                    "paid": "false",
-                                    "taxAmount": {
-                                        "accountingSign": "ADC",
-                                        "currency": {
-                                            "code": "NGN"
-                                        },
-                                        "mileAmount": "0.0",
-                                        "value": "2000.0"
-                                    },
-                                    "taxCode": "QT",
-                                    "taxName": "AIRPORT SERVICE CHARGE",
-                                    "taxType": "T"
-                                },
-                                "totalAmount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "2000.0"
-                                }
-                            },
-                            "totalFare": {
-                                "amount": {
-                                    "accountingSign": "ADC",
-                                    "currency": {
-                                        "code": "NGN"
-                                    },
-                                    "mileAmount": "0.0",
-                                    "value": "63200.0"
-                                }
-                            },
-                            "discountApplied": "false",
-                            "passengerTypeCode": "ADLT"
-                        }
-                    }
-                ]
-            }
+            "id": 2,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-03-26 07:50:00",
+            "departure_time": "2025-03-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D368",
+            "payment_expires_at": "2025-03-13 15:04:12",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9e6c285a-922c-4f56-9cc6-a173f99725da",
+            "created_at": "2025-03-13T12:48:27.000000Z",
+            "updated_at": "2025-03-13T12:48:27.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 3,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-03-26 07:50:00",
+            "departure_time": "2025-03-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D369",
+            "payment_expires_at": "2025-03-13 18:19:57",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9e6c6e56-ee2d-4651-bf1a-fe74e15a18bd",
+            "created_at": "2025-03-13T16:04:08.000000Z",
+            "updated_at": "2025-03-13T16:04:08.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 4,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-03-26 07:50:00",
+            "departure_time": "2025-03-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D36A",
+            "payment_expires_at": "2025-03-13 18:32:23",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9e6c72ca-3f57-4924-90f0-3cf2a1582532",
+            "created_at": "2025-03-13T16:16:35.000000Z",
+            "updated_at": "2025-03-13T16:16:35.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 5,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-03-26 07:50:00",
+            "departure_time": "2025-03-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D36M",
+            "payment_expires_at": "2025-03-14 13:25:48",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9e6e0822-d5e5-4d52-8a20-6013bd38c4de",
+            "created_at": "2025-03-14T11:10:01.000000Z",
+            "updated_at": "2025-03-14T11:10:01.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 6,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-03-26 07:50:00",
+            "departure_time": "2025-03-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D36S",
+            "payment_expires_at": "2025-03-14 15:18:59",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9e6e309d-8c55-4132-9c7f-7a8d3c71f966",
+            "created_at": "2025-03-14T13:03:12.000000Z",
+            "updated_at": "2025-03-14T13:03:12.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 7,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-03-26 07:50:00",
+            "departure_time": "2025-03-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D36T",
+            "payment_expires_at": "2025-03-14 17:48:51",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9e6e6635-1aaa-4a60-8460-0ab1edf3edcd",
+            "created_at": "2025-03-14T15:33:03.000000Z",
+            "updated_at": "2025-03-14T15:33:03.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 8,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D697",
+            "payment_expires_at": "2025-04-19 11:33:27",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb04819-f131-4277-86fb-ca33a420a171",
+            "created_at": "2025-04-16T10:33:31.000000Z",
+            "updated_at": "2025-04-16T10:33:31.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 9,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D698",
+            "payment_expires_at": "2025-04-19 11:37:52",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb049ae-800d-4e80-884b-955d5c850a5a",
+            "created_at": "2025-04-16T10:37:56.000000Z",
+            "updated_at": "2025-04-16T10:37:56.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 10,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455678",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D699",
+            "payment_expires_at": "2025-04-19 11:41:50",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb04b16-a315-494f-8b21-4da04782c21f",
+            "created_at": "2025-04-16T10:41:52.000000Z",
+            "updated_at": "2025-04-16T10:41:52.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 11,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D69A",
+            "payment_expires_at": "2025-04-19 11:56:54",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb05079-9ae7-41df-8848-9407d4ebb75c",
+            "created_at": "2025-04-16T10:56:55.000000Z",
+            "updated_at": "2025-04-16T10:56:55.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 12,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D69Z",
+            "payment_expires_at": "2025-04-20 11:20:01",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb2464b-dd9c-40ed-ad2a-6033d09354a3",
+            "created_at": "2025-04-17T10:20:09.000000Z",
+            "updated_at": "2025-04-17T10:20:09.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 13,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D69U",
+            "payment_expires_at": "2025-04-20 14:10:38",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb28350-0731-4161-ad5c-bf235cccca7c",
+            "created_at": "2025-04-17T13:10:44.000000Z",
+            "updated_at": "2025-04-17T13:10:44.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 14,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D69U",
+            "payment_expires_at": "2025-04-20 14:10:38",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb28350-0731-4161-ad5c-bf235cccca7c",
+            "created_at": "2025-04-17T13:10:44.000000Z",
+            "updated_at": "2025-04-17T13:10:44.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 15,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6A0",
+            "payment_expires_at": "2025-04-20 14:40:03",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb28dd3-f978-4f62-888c-300b7b6eb62d",
+            "created_at": "2025-04-17T13:40:08.000000Z",
+            "updated_at": "2025-04-17T13:40:08.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 16,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6A0",
+            "payment_expires_at": "2025-04-20 14:40:03",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb28dd3-f978-4f62-888c-300b7b6eb62d",
+            "created_at": "2025-04-17T13:40:08.000000Z",
+            "updated_at": "2025-04-17T13:40:08.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 17,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AL",
+            "payment_expires_at": "2025-04-18 05:42:30",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb3caeb-d7aa-4252-84e8-5a7b3c95b603",
+            "created_at": "2025-04-18T04:26:49.000000Z",
+            "updated_at": "2025-04-18T04:26:49.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 18,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AM",
+            "payment_expires_at": "2025-04-21 07:56:46",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb40095-8079-4858-b4d5-da43cf9a119c",
+            "created_at": "2025-04-18T06:56:51.000000Z",
+            "updated_at": "2025-04-18T06:56:51.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 19,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AM",
+            "payment_expires_at": "2025-04-21 07:56:46",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb40095-8079-4858-b4d5-da43cf9a119c",
+            "created_at": "2025-04-18T06:56:51.000000Z",
+            "updated_at": "2025-04-18T06:56:51.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 20,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AZ",
+            "payment_expires_at": "2025-04-21 09:57:13",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb42ba8-2044-4496-80a3-dae6e4a711e6",
+            "created_at": "2025-04-18T08:57:17.000000Z",
+            "updated_at": "2025-04-18T08:57:17.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 21,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AZ",
+            "payment_expires_at": "2025-04-21 09:57:13",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb42ba8-2044-4496-80a3-dae6e4a711e6",
+            "created_at": "2025-04-18T08:57:17.000000Z",
+            "updated_at": "2025-04-18T08:57:17.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 22,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AP",
+            "payment_expires_at": "2025-04-18 10:55:31",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb43ada-879b-4ef9-851e-f4abaa8f9f5b",
+            "created_at": "2025-04-18T09:39:47.000000Z",
+            "updated_at": "2025-04-18T09:39:47.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 23,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AP",
+            "payment_expires_at": "2025-04-18 10:55:31",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb43ada-879b-4ef9-851e-f4abaa8f9f5b",
+            "created_at": "2025-04-18T09:39:47.000000Z",
+            "updated_at": "2025-04-18T09:39:47.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 24,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AP",
+            "payment_expires_at": "2025-04-18 10:55:31",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb43ada-879b-4ef9-851e-f4abaa8f9f5b",
+            "created_at": "2025-04-18T09:39:47.000000Z",
+            "updated_at": "2025-04-18T09:39:47.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 25,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AP",
+            "payment_expires_at": "2025-04-18 10:55:31",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb43ada-879b-4ef9-851e-f4abaa8f9f5b",
+            "created_at": "2025-04-18T09:39:47.000000Z",
+            "updated_at": "2025-04-18T09:39:47.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 26,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AP",
+            "payment_expires_at": "2025-04-18 10:55:31",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb43ada-879b-4ef9-851e-f4abaa8f9f5b",
+            "created_at": "2025-04-18T09:39:47.000000Z",
+            "updated_at": "2025-04-18T09:39:47.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 27,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AP",
+            "payment_expires_at": "2025-04-18 10:55:31",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb43ada-879b-4ef9-851e-f4abaa8f9f5b",
+            "created_at": "2025-04-18T09:39:47.000000Z",
+            "updated_at": "2025-04-18T09:39:47.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 28,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AP",
+            "payment_expires_at": "2025-04-18 10:55:31",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb43ada-879b-4ef9-851e-f4abaa8f9f5b",
+            "created_at": "2025-04-18T09:39:47.000000Z",
+            "updated_at": "2025-04-18T09:39:47.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 29,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6AP",
+            "payment_expires_at": "2025-04-18 10:55:31",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb43ada-879b-4ef9-851e-f4abaa8f9f5b",
+            "created_at": "2025-04-18T09:39:47.000000Z",
+            "updated_at": "2025-04-18T09:39:47.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 30,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B1",
+            "payment_expires_at": "2025-04-18 12:08:06",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb454cb-9095-4016-9ebf-6d78e564729e",
+            "created_at": "2025-04-18T10:52:19.000000Z",
+            "updated_at": "2025-04-18T10:52:19.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 31,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B1",
+            "payment_expires_at": "2025-04-18 12:08:06",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb454cb-9095-4016-9ebf-6d78e564729e",
+            "created_at": "2025-04-18T10:52:19.000000Z",
+            "updated_at": "2025-04-18T10:52:19.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 32,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B2",
+            "payment_expires_at": "2025-04-18 12:09:30",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb4554f-de1a-4d82-b930-62886a5f724f",
+            "created_at": "2025-04-18T10:53:46.000000Z",
+            "updated_at": "2025-04-18T10:53:46.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 33,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B2",
+            "payment_expires_at": "2025-04-18 12:09:30",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb4554f-de1a-4d82-b930-62886a5f724f",
+            "created_at": "2025-04-18T10:53:46.000000Z",
+            "updated_at": "2025-04-18T10:53:46.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 34,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B3",
+            "payment_expires_at": "2025-04-21 11:58:22",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb456fa-cccc-410d-9614-2d3afff5ccdb",
+            "created_at": "2025-04-18T10:58:25.000000Z",
+            "updated_at": "2025-04-18T10:58:25.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 35,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B4",
+            "payment_expires_at": "2025-04-18 12:15:07",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb45751-219f-4d91-ab59-246c2bced4f4",
+            "created_at": "2025-04-18T10:59:22.000000Z",
+            "updated_at": "2025-04-18T10:59:22.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 36,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B4",
+            "payment_expires_at": "2025-04-18 12:15:07",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb45751-219f-4d91-ab59-246c2bced4f4",
+            "created_at": "2025-04-18T10:59:22.000000Z",
+            "updated_at": "2025-04-18T10:59:22.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 37,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B5",
+            "payment_expires_at": "2025-04-18 12:17:44",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb4583e-ba5c-4138-9683-f90d80dc92bb",
+            "created_at": "2025-04-18T11:01:58.000000Z",
+            "updated_at": "2025-04-18T11:01:58.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 38,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B5",
+            "payment_expires_at": "2025-04-18 12:17:44",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb4583e-ba5c-4138-9683-f90d80dc92bb",
+            "created_at": "2025-04-18T11:01:58.000000Z",
+            "updated_at": "2025-04-18T11:01:58.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 39,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6B6",
+            "payment_expires_at": "2025-04-21 12:13:22",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb45c57-7cf8-471f-af77-aeaa04f5a370",
+            "created_at": "2025-04-18T11:13:25.000000Z",
+            "updated_at": "2025-04-18T11:13:25.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": ""
+        },
+        {
+            "id": 40,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-04-30 07:50:00",
+            "departure_time": "2025-04-30 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6BB",
+            "payment_expires_at": "2025-04-18 15:31:45",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb49da4-8b41-48fc-8d28-30956cc92e34",
+            "created_at": "2025-04-18T14:16:01.000000Z",
+            "updated_at": "2025-04-18T14:16:01.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": "15874215"
+        },
+        {
+            "id": 41,
+            "origin": "Lagos",
+            "destination": "Abuja",
+            "arrival_time": "2025-06-26 07:50:00",
+            "departure_time": "2025-06-26 06:30:00",
+            "peace_id": "56455672",
+            "guest_session_token": null,
+            "trip_type": "ONE_WAY",
+            "booking_id": "12D6BB",
+            "payment_expires_at": "2025-04-18 15:31:45",
+            "origin_city": "LOS",
+            "destination_city": "ABV",
+            "ticket_type": "ECONOMY",
+            "flight_distance": 511,
+            "flight_duration": "1.33",
+            "flight_number": "7120",
+            "invoice_id": "9eb49da4-8b41-48fc-8d28-30956cc92e34",
+            "created_at": "2025-04-18T14:16:01.000000Z",
+            "updated_at": "2025-04-18T14:16:01.000000Z",
+            "is_paid": 0,
+            "booking_flight_reference_id": "15874216"
         }
-    ]
-}
+    ],

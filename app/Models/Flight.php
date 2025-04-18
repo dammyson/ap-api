@@ -16,8 +16,8 @@ class Flight extends Model
         'departure_time',
         'peace_id', 
         'guest_session_token',
-        'passenger_name',
-        'passenger_type',
+        // 'passenger_name',
+        // 'passenger_type',
         'trip_type',
         'booking_id',
         'origin_city',
@@ -27,7 +27,9 @@ class Flight extends Model
         'flight_distance',
         'flight_duration',
         'payment_expires_at',
-        'invoice_id'
+        'invoice_id',
+        'is_paid',
+        'booking_flight_reference_id'
     ];
 
     public function user() 

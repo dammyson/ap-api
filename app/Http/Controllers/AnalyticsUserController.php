@@ -184,17 +184,17 @@ class AnalyticsUserController extends Controller
         $user = $request->user();
 
         try {
-            // $tripHistory = Flight::where('departure_time', '<=', Carbon::now()->toIso8601String())
-            //     ->where('peace_id', $user->peace_id)
-            //     // ->where('is_paid', true)
-            //     ->get();
-
-                $tripHistory =  $flights = DB::table('flights as f1')
-                ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
-                ->where('f1.peace_id', $user->peace_id)
-                ->where('f1.departure_time', '<=', Carbon::now()->toIso8601String())
-                // ->where('f1.departure_time', '>', Carbon::now()->toDateTimeString())
+            $tripHistory = Flight::where('departure_time', '<=', Carbon::now()->toIso8601String())
+                ->where('peace_id', $user->peace_id)
+                ->where('is_paid', true)
                 ->get();
+
+                // $tripHistory =  $flights = DB::table('flights as f1')
+                // ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
+                // ->where('f1.peace_id', $user->peace_id)
+                // ->where('f1.departure_time', '<=', Carbon::now()->toIso8601String())
+                // // ->where('f1.departure_time', '>', Carbon::now()->toDateTimeString())
+                // ->get();
     
             return response()->json([
                 "error" => false,
@@ -252,33 +252,37 @@ class AnalyticsUserController extends Controller
 
         try {
 
+           $allFlight = Flight::all();
+
             // get the unpaid upcoming trip where the payment time has not expired
             $unPaidUpcomingTrips = Flight::where('peace_id', $user->peace_id)
-                // ->where('is_paid', false)
-                ->where('payment_expires_at', '<', Carbon::now()->toIso8601String())
+                ->where('is_paid', false)
+                ->where('payment_expires_at', '>', Carbon::now()->toIso8601String())
                 ->get();
 
+                
             //get the paid upcoming trip using departure time    
             $paidUpcomingTrips = Flight::where('peace_id', $user->peace_id)
-                // ->where('is_paid', true)
+                ->where('is_paid', true)
                 ->where('departure_time', '>', Carbon::now()->toIso8601String())
                 ->get();
             
-            // $upComingTrip = $unPaidUpcomingTrip->merge($paidUpcomingTrip);
+            $upComingTrip = $unPaidUpcomingTrips->merge($paidUpcomingTrips)->values();
           
 
           
-            $flights =  $flights = DB::table('flights as f1')
-                ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
-                ->where('f1.peace_id', $user->peace_id)
-                ->where('f1.departure_time', '>', Carbon::now()->toIso8601String())
-                ->get();
+            // $flights =  $flights = DB::table('flights as f1')
+            //     ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
+            //     ->where('f1.peace_id', $user->peace_id)
+            //     ->where('f1.departure_time', '>', Carbon::now()->toIso8601String())
+            //     ->get();
             
             return response()->json([
                 "error" => false,
-                "upcoming_trip" => $flights
-                // "upcoming_trip" => $paidUpcomingTrips,
-                // "upcoming_trip_unpaid" => $unPaidUpcomingTrips
+                "all_flight" => $allFlight,
+                "upcoming_trip" => $upComingTrip,
+                "paid_upcoming_trip" => $paidUpcomingTrips,
+                "unpaid_upcoming_trip" => $unPaidUpcomingTrips
             ], 200);
 
         } catch (\Throwable $th) {
