@@ -11,21 +11,27 @@ class Passenger extends Model
 
     protected $fillable = [
         'user_id',
-        'title',
-        'first_name',
-        'last_name',
-        'email',
-        'phone_number',
-        'date_of_birth',
-        'sex',
-        'country',
-        'passport_number',
-        'is_blind',
-        'is_deaf',
-        'needs_mobility_assistance',
-        'is_contact_person',
-        'invoice_type',
-        'user_category', // Add this line
+        'passenger_type',
+        'passenger_name',
+        'passenger_surname',
+
+        
+        // 'user_id',
+        // 'title',
+        // 'first_name',
+        // 'last_name',
+        // 'email',
+        // 'phone_number',
+        // 'date_of_birth',
+        // 'sex',
+        // 'country',
+        // 'passport_number',
+        // 'is_blind',
+        // 'is_deaf',
+        // 'needs_mobility_assistance',
+        // 'is_contact_person',
+        // 'invoice_type',
+        // 'user_category', // Add this line
     ];
 
     public function tickets()
