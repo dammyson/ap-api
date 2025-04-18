@@ -42,7 +42,8 @@ class User extends Authenticatable
         'device_type',
         'firebase_token',
         'is_guest',
-        'last_login'
+        'last_login',
+        'miles_accumulated'
     ];
 
     /**
@@ -223,6 +224,18 @@ class User extends Authenticatable
         if ($tier && (!$currentTier || $tier->id !== $currentTier->id)) {
             $this->tiers()->updateExistingPivot($currentTier?->id, ['is_current' => false]);
             $this->tiers()->attach($tier->id, ['is_current' => true, 'expires_at' => Carbon::now()->addMonth(),  'source' => 'calculated',]);
+        }
+    }
+
+    public function addMilesFromKilometers(float $kilometers) {
+        $km = floatval($kilometers);
+
+        if ($km <= 0) return;
+    
+        $miles = round($km * 0.621371);
+        
+        if ($miles > 0) {
+            $this->increment('miles_accumulated', $miles);
         }
     }
 }

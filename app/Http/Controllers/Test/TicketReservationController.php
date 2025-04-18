@@ -202,7 +202,40 @@ class TicketReservationController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
         $response = $this->craneOTASoapService->run($function, $xml);
-        dd($response);
+        dump($response);
+        $totalDistance = 0;
+
+        $bookOriginDestinationOptionLists =   $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
+        if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+
+            foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                $totalDistance += $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['distance'];
+
+
+            }
+
+        } else {
+            $totalDistance = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['distance'];
+        }
+
+        $user = $request->user();
+
+        $bookOriginDestinationOptionLists =   $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
+        if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+
+            foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                $totalDistance += $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['distance'];
+
+
+            }
+
+        } else {
+            $totalDistance = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['distance'];
+        }
+
+       $user->addMilesFromKilometers($totalDistance);
+
+       return $user;
 
     }
 
@@ -258,6 +291,25 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
+
+            $totalDistance = 0;
+
+            $bookOriginDestinationOptionLists =  $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
+            if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+    
+                foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                    $totalDistance += $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['distance'];
+    
+    
+                }
+    
+            } else {
+                $totalDistance = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['distance'];
+            }
+    
+           $user->addMilesFromKilometers($totalDistance);
+
+
             // dd($response);
             $invoice->is_paid = true;
             $invoice->save();

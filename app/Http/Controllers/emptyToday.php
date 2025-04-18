@@ -1,8 +1,7 @@
 <?php
-
 {
     "error": false,
-    "invoice_id": "9eb28dd3-f978-4f62-888c-300b7b6eb62d",
+    "invoice_id": "9eb3caeb-d7aa-4252-84e8-5a7b3c95b603",
     "is_paid": 0,
     "booking_data": {
         "AirBookingResponse": {
@@ -33,7 +32,7 @@
                                         },
                                         "fareGroupName": "Eco Non Flexi Dom",
                                         "fareReferenceCode": "VRTN",
-                                        "fareReferenceID": "0fe3789a8ed812c1be1d8b3d18fd7120e1ac9b4adc18d712c38cbc56f051f6540d7f22101384a1d69553bd0cc84f11e42b2d2ea0427aa4a2d65030b892d7184a113b347b1008e738df6d68b744b9c5a98c4555e357e5921bc75b90",
+                                        "fareReferenceID": "0fe3789a8ed812c1be1d8b3d18fd7120e1ac9b4adc18d713cf8bbb52f75cf6530d7f22111dd0f88cc754ea5c924e44b0797f7aa5137cf6f5820437ec9086414e143d63281c0be469dc6c3d279ef3d57546950eca810854a55d41d8",
                                         "fareReferenceName": "VRTNIG",
                                         "flightSegmentSequence": "0",
                                         "resBookDesigCode": "V"
@@ -65,8 +64,8 @@
                                             "locationName": "Abuja",
                                             "timeZoneInfo": "Africa/Lagos"
                                         },
-                                        "arrivalDateTime": "2025-06-26T07:50:00+01:00",
-                                        "arrivalDateTimeUTC": "2025-06-26T06:50:00+01:00",
+                                        "arrivalDateTime": "2025-04-30T07:50:00+01:00",
+                                        "arrivalDateTimeUTC": "2025-04-30T06:50:00+01:00",
                                         "departureAirport": {
                                             "cityInfo": {
                                                 "city": {
@@ -89,10 +88,10 @@
                                             "locationName": "Lagos",
                                             "timeZoneInfo": "Africa/Lagos"
                                         },
-                                        "departureDateTime": "2025-06-26T06:30:00+01:00",
-                                        "departureDateTimeUTC": "2025-06-26T05:30:00+01:00",
+                                        "departureDateTime": "2025-04-30T06:30:00+01:00",
+                                        "departureDateTimeUTC": "2025-04-30T05:30:00+01:00",
                                         "flightNumber": "7120",
-                                        "flightSegmentID": "1144403",
+                                        "flightSegmentID": "1144346",
                                         "ondControlled": "false",
                                         "sector": "DOMESTIC",
                                         "accumulatedDuration": "",
@@ -130,7 +129,7 @@
                                     },
                                     "involuntaryPermissionGiven": "false",
                                     "legStatus": "RZ",
-                                    "referenceID": "15874138",
+                                    "referenceID": "15874164",
                                     "responseCode": "HK",
                                     "sequenceNumber": "0",
                                     "status": "HK"
@@ -206,7 +205,7 @@
                             },
                             "requestedSeatCount": "1",
                             "shareMarketInd": "false",
-                            "travelerReferenceID": "16018040",
+                            "travelerReferenceID": "16018082",
                             "unaccompaniedMinor": "false"
                         }
                     ],
@@ -245,11 +244,11 @@
                             "companyShortName": "SCINTILLA",
                             "countryCode": "NG"
                         },
-                        "ID": "12D6A0",
-                        "referenceID": "13448612"
+                        "ID": "12D6AL",
+                        "referenceID": "13448633"
                     },
                     "bookingType": "R",
-                    "dateCreated": "2025-04-17T14:40:03+01:00",
+                    "dateCreated": "2025-04-18T05:26:39+01:00",
                     "emergencyContactRequired": "false",
                     "FFPReservation": "false",
                     "groupBooking": "false",
@@ -267,7 +266,7 @@
                                     "allowedQuantityPerPassenger": "1",
                                     "bundleRelatedSsr": "false",
                                     "code": "CTCM",
-                                    "entryDate": "2025-04-17T14:40:03+01:00",
+                                    "entryDate": "2025-04-18T05:26:39+01:00",
                                     "exchangeable": "false",
                                     "explanation": "90 532 1111111",
                                     "extraBaggage": "false",
@@ -281,7 +280,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30497854",
+                                "specialServiceReferenceId": "30498087",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -293,7 +292,7 @@
                                     "allowedQuantityPerPassenger": "1",
                                     "bundleRelatedSsr": "false",
                                     "code": "CTCE",
-                                    "entryDate": "2025-04-17T14:40:03+01:00",
+                                    "entryDate": "2025-04-18T05:26:39+01:00",
                                     "exchangeable": "false",
                                     "explanation": "AAA.TEST@HITITCS.COM",
                                     "extraBaggage": "false",
@@ -307,81 +306,9 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30497855",
+                                "specialServiceReferenceId": "30498088",
                                 "status": "HK",
                                 "ticketed": "false"
-                            },
-                            {
-                                "airTravelerSequence": "1",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "KK",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "1",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "INSU",
-                                    "entryDate": "2025-04-17T14:40:04+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "INSU-TRAVEL INSURANCE",
-                                    "extraBaggage": "false",
-                                    "free": "false",
-                                    "groupCode": "INSU",
-                                    "groupCodeExplanation": "INSU",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "false",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30497856",
-                                "status": "HK",
-                                "ticketTimeLimit": "2025-04-17T14:50:04+01:00",
-                                "ticketTimeLimitUTC": "2025-04-17T13:50:04+01:00",
-                                "ticketed": "false",
-                                "timeZone": "Africa/Lagos"
-                            },
-                            {
-                                "airTravelerSequence": "1",
-                                "flightSegmentSequence": "1",
-                                "paymentStatus": "KK",
-                                "SSR": {
-                                    "allowedQuantityPerPassenger": "0",
-                                    "bundleRelatedSsr": "false",
-                                    "code": "ASVC",
-                                    "entryDate": "2025-04-17T14:40:04+01:00",
-                                    "exchangeable": "false",
-                                    "explanation": "D/0BG/INSU/INSU-Travel Insurance/A",
-                                    "extraBaggage": "false",
-                                    "free": "false",
-                                    "groupCode": "OTH",
-                                    "groupCodeExplanation": "OTH",
-                                    "iciAllowed": "false",
-                                    "refundable": "false",
-                                    "showOnItinerary": "false",
-                                    "ssrReasonCode": "USER_SELECTION",
-                                    "unitOfMeasureExist": "false"
-                                },
-                                "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30497857",
-                                "status": "HD",
-                                "ticketed": "false",
-                                "amount": {
-                                    "mileAmount": "0.0",
-                                    "redeemedMiles": {
-                                        "quantity": "0.0",
-                                        "terminology": "MILE"
-                                    },
-                                    "value": "0.0"
-                                },
-                                "emdType": "A",
-                                "exchangable": "true",
-                                "reasonForIssuanceCode": "D",
-                                "reasonForIssuanceExplanation": "Financial Impact",
-                                "reasonForIssuanceSubCode": "0BG",
-                                "reasonForIssuanceSubExplanation": "INSU-Travel Insurance",
-                                "refundable": "false",
-                                "remark": "INSU INSU-TRAVEL INSURANCE",
-                                "ssrSequence": "2"
                             },
                             {
                                 "airTravelerSequence": "1",
@@ -391,7 +318,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "DOCS",
-                                    "entryDate": "2025-04-17T14:40:04+01:00",
+                                    "entryDate": "2025-04-18T05:26:41+01:00",
                                     "exchangeable": "false",
                                     "explanation": "/////08AUG91/M//TEST/AAA",
                                     "extraBaggage": "false",
@@ -405,7 +332,7 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30497858",
+                                "specialServiceReferenceId": "30498089",
                                 "status": "HK",
                                 "ticketed": "false"
                             },
@@ -417,7 +344,7 @@
                                     "allowedQuantityPerPassenger": "0",
                                     "bundleRelatedSsr": "false",
                                     "code": "CCSF",
-                                    "entryDate": "2025-04-17T14:40:04+01:00",
+                                    "entryDate": "2025-04-18T05:26:41+01:00",
                                     "exchangeable": "false",
                                     "explanation": "CALL CENTER - SERVICE CHARGE",
                                     "extraBaggage": "false",
@@ -431,15 +358,15 @@
                                     "unitOfMeasureExist": "false"
                                 },
                                 "serviceQuantity": "1",
-                                "specialServiceReferenceId": "30497859",
+                                "specialServiceReferenceId": "30498090",
                                 "status": "HK",
                                 "ticketed": "false"
                             }
                         ]
                     },
                     "ticketOnDeparture": "false",
-                    "ticketTimeLimit": "2025-04-20T14:40:03+01:00",
-                    "ticketTimeLimitUTC": "2025-04-20T13:40:03+01:00",
+                    "ticketTimeLimit": "2025-04-18T05:42:30+01:00",
+                    "ticketTimeLimitUTC": "2025-04-18T04:42:30+01:00",
                     "timeZone": "Africa/Lagos"
                 }
             }

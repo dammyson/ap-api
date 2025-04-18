@@ -29,7 +29,7 @@ class UserCollection extends ResourceCollection
                 "total_booked_flight" => $user->total_booked_flight ?? 0,
                 // "total_booked_flight" => $this->getTotalBookedFlight($user->peace_id),
                 "date_registered" => $user->created_at,
-                "miles_accumulated" => "null",
+                "miles_accumulated" => $user->miles_accumulated,
                 "image_url" => $user->image_url,
                 "image_url_link" => Storage::url($user->image_url),
             ];
