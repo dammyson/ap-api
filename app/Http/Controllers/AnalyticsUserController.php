@@ -252,8 +252,6 @@ class AnalyticsUserController extends Controller
 
         try {
 
-           $allFlight = Flight::all();
-
             // get the unpaid upcoming trip where the payment time has not expired
             $unPaidUpcomingTrips = Flight::where('peace_id', $user->peace_id)
                 ->where('is_paid', false)
@@ -279,10 +277,9 @@ class AnalyticsUserController extends Controller
             
             return response()->json([
                 "error" => false,
-                "all_flight" => $allFlight,
                 "upcoming_trip" => $upComingTrip,
-                "paid_upcoming_trip" => $paidUpcomingTrips,
-                "unpaid_upcoming_trip" => $unPaidUpcomingTrips
+                // "paid_upcoming_trip" => $paidUpcomingTrips,
+                // "unpaid_upcoming_trip" => $unPaidUpcomingTrips
             ], 200);
 
         } catch (\Throwable $th) {
