@@ -44,7 +44,7 @@ class LoginController extends Controller
                     ->orWhere('peace_id', $request->peace_id);
             })->first();
 
-
+            // dd($user);
             
             if (!$user) {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);

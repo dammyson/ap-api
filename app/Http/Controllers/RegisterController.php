@@ -22,6 +22,7 @@ use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Notifications\ForgotPassword as NotificationsForgotPassword;
 use App\Notifications\SignUpNotification;
 use Google\Service\Walletobjects\SignUpInfo;
 
@@ -238,7 +239,9 @@ class RegisterController extends Controller
         }
 
         $otp = $this->generateOtp();
-        $this->sendMail($user->user_name, $user->email, $otp);
+
+        $user->notify(new NotificationsForgotPassword($otp));
+        // $this->sendMail($user->user_name, $user->email, $otp);
         $user->otp = $otp;
         $user->save();
 
