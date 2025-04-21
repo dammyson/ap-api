@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\Admin;
-use App\Mail\ForgotPassword;
+// use App\Mail\ForgotPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -15,6 +15,7 @@ use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Admin\VerifyAdminOtpRequest;
 use App\Http\Requests\Admin\ResetAdminPasswordRequest;
+use App\Notifications\ForgotPassword;
 
 class ForgetPasswordAdminController extends Controller
 {
@@ -34,7 +35,8 @@ class ForgetPasswordAdminController extends Controller
        $otp = random_int(1000, 9999);
        
         try {
-            Mail::to($admin->email)->send(new ForgotPassword($admin->user_name, $otp));
+            $admin->notify(new ForgotPassword($otp));
+            // Mail::to($admin->email)->send(new ForgotPassword($admin->user_name, $otp));
         
         } catch (\Exception $e) {       
             
