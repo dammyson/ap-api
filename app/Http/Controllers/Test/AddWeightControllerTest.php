@@ -13,6 +13,7 @@ use App\Services\Soap\AddWeightBuilderTest;
 use App\Http\Requests\Test\addWeightRequest;
 use App\Http\Requests\Test\AddWeightRequestTest;
 use App\Services\Soap\BookingBuilder;
+use App\Services\Utility\CheckArray;
 
 class AddWeightControllerTest extends Controller
 {
@@ -20,12 +21,14 @@ class AddWeightControllerTest extends Controller
     protected $craneAncillaryOTASoapService;
     protected $craneOTASoapService;
     protected $bookingBuilder;
+    protected $checkArray;
 
-    public function __construct(AddWeightBuilderTest $addWeightBuilderTest, BookingBuilder $bookingBuilder) {
+    public function __construct(AddWeightBuilderTest $addWeightBuilderTest, BookingBuilder $bookingBuilder, CheckArray $checkArray) {
         $this->addWeightBuilderTest = $addWeightBuilderTest;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->craneOTASoapService = app("CraneOTASoapService");
         $this->bookingBuilder = $bookingBuilder;
+        $this->checkArray = $checkArray;
         
     }
 
@@ -124,30 +127,30 @@ class AddWeightControllerTest extends Controller
 
         $user = $request->user();
         
-        if ($user->is_guest) {
+        // if ($user->is_guest) {
 
-            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
-            $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
+        //     $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+        //     $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
     
     
-            $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
-            if (!(isset($response['AirBookingResponse']))) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "you are not authorized to carry out this action"
-                ], 401);
-            }
-            // dd($response);
-        } else {
-            $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $peaceId)->first();
-            if (!$booking) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "you are not authorized to carry out this action"
-                ], 401);
-            }
-        }
+        //     $response = $this->craneOTASoapService->run($function, $xml);
+        //     // dd($response);
+        //     if (!(isset($response['AirBookingResponse']))) {
+        //         return response()->json([
+        //             "error" => true,
+        //             "message" => "you are not authorized to carry out this action"
+        //         ], 401);
+        //     }
+        //     // dd($response);
+        // } else {
+        //     $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $peaceId)->first();
+        //     if (!$booking) {
+        //         return response()->json([
+        //             "error" => true,
+        //             "message" => "you are not authorized to carry out this action"
+        //         ], 401);
+        //     }
+        // }
 
         // dump("i ran");
 
@@ -236,7 +239,6 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dump($response);
 
             // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
             // $amount = 0;
@@ -248,13 +250,32 @@ class AddWeightControllerTest extends Controller
 
             // }            
             // dd($amount);
-            
-            $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-            $preferredCurrency = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["currency"]["code"];
-            // $preferredCurrency= $invoice->currency;
+
+            $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
+            $amount = 0;
+            $preferredCurrency = null;
+
+            if (array_key_exists('totalAmount', $ticketInfo)) {
+                $amount = $ticketInfo["totalAmount"]["value"];
+                $preferredCurrency = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["currency"]["code"];
+
+            } else {
+                $ticketItemList = $ticketInfo['ticketItemList'];
+                if (!$this->checkArray->isAssociativeArray($ticketItemList)) {
+                
+                    foreach($ticketItemList as $ticketItem) {
+                      $preferredCurrency = $preferredCurrency ?? $ticketItem['pricingOverview']['totalAmount']['currency']['code'];
+                      $amount += $ticketItem['pricingOverview']['totalAmount']['value'];                        
+                    }
+                } else  {
+                  
+                    $preferredCurrency = $ticketItemList['pricingOverview']['totalAmount']['currency']['code'];
+                    $amount = $ticketItemList['pricingOverview']['totalAmount']['value'];   
+                }
+            }
+
             $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
             $invoice = Invoice::find($invoiceId);
-
 
 
             // if user has not paid set the new invoice balance else generate a new invoice

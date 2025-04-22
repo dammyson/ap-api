@@ -240,8 +240,8 @@ class RegisterController extends Controller
 
         $otp = $this->generateOtp();
 
-        $user->notify(new NotificationsForgotPassword($otp));
-        // $this->sendMail($user->user_name, $user->email, $otp);
+        // $user->notify(new NotificationsForgotPassword($otp));
+        $this->sendMail($user->user_name, $user->email, $otp);
         $user->otp = $otp;
         $user->save();
 
