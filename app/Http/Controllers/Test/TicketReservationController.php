@@ -203,7 +203,7 @@ class TicketReservationController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
         $response = $this->craneOTASoapService->run($function, $xml);
-        dump($response);
+        dd($response);
         $totalDistance = 0;
 
         $bookOriginDestinationOptionLists =   $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
