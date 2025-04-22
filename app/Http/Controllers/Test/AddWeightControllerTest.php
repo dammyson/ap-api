@@ -127,30 +127,30 @@ class AddWeightControllerTest extends Controller
 
         $user = $request->user();
         
-        // if ($user->is_guest) {
+        if ($user->is_guest) {
 
-        //     $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
-        //     $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
+            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+            $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
     
     
-        //     $response = $this->craneOTASoapService->run($function, $xml);
-        //     // dd($response);
-        //     if (!(isset($response['AirBookingResponse']))) {
-        //         return response()->json([
-        //             "error" => true,
-        //             "message" => "you are not authorized to carry out this action"
-        //         ], 401);
-        //     }
-        //     // dd($response);
-        // } else {
-        //     $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $peaceId)->first();
-        //     if (!$booking) {
-        //         return response()->json([
-        //             "error" => true,
-        //             "message" => "you are not authorized to carry out this action"
-        //         ], 401);
-        //     }
-        // }
+            $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
+            if (!(isset($response['AirBookingResponse']))) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorized to carry out this action"
+                ], 401);
+            }
+            // dd($response);
+        } else {
+            $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $peaceId)->first();
+            if (!$booking) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorized to carry out this action"
+                ], 401);
+            }
+        }
 
         // dump("i ran");
 
