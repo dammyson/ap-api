@@ -28,7 +28,6 @@ class GuestLoginController extends Controller
          $deviceType = $request->input('device_type');
          $screenResolution = $request->input('screen_resolution');
          
-        // dd($this->createPeaceId->generateUniqueEmail());\
         $guestPassword = $this->generateRandom->generateTemporaryPassword();
          $create = User::create([
              'first_name' => $this->createPeaceId->generateName(),
