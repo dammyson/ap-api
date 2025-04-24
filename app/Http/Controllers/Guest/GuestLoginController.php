@@ -11,15 +11,16 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\AutoGenerate\CreatePeaceId;
 use App\Services\AutoGenerate\GeneratePassword;
+use App\Services\AutoGenerate\GenerateRandom;
 
 class GuestLoginController extends Controller
 {
     protected $createPeaceId;
-    protected $generatePassword;
+    protected $generateRandom;
 
-    public function __construct(CreatePeaceId $createPeaceId, GeneratePassword $generatePassword) {
+    public function __construct(CreatePeaceId $createPeaceId, GenerateRandom $generateRandom) {
         $this->createPeaceId = $createPeaceId;
-        $this->generatePassword = $generatePassword;
+        $this->generateRandom = $generateRandom;
     }
 
     public function continueAsGuest(Request $request) {
@@ -28,7 +29,7 @@ class GuestLoginController extends Controller
          $screenResolution = $request->input('screen_resolution');
          
         // dd($this->createPeaceId->generateUniqueEmail());\
-        $guestPassword = $this->generatePassword->generateTemporaryPassword();
+        $guestPassword = $this->generateRandom->generateTemporaryPassword();
          $create = User::create([
              'first_name' => $this->createPeaceId->generateName(),
              'last_name' => $this->createPeaceId->generateName(),
@@ -65,7 +66,8 @@ class GuestLoginController extends Controller
 
         return response()->json([
             "error" => true,            
-            "message" => "something went wrong"
+            "message" => "something went wrong",
+            "actual_message" => $e->getMessage()
         ], 500);
         
     }
