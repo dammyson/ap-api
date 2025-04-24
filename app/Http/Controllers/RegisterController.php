@@ -227,127 +227,105 @@ class RegisterController extends Controller
     }
 
 
-    public function forgotPassword(ForgotPasswordRequest $request) {
+    // public function forgotPassword(ForgotPasswordRequest $request) {
 
-        $user = User::where('email', $request->email)->first();
+    //     $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return response()->json([
-                "error" => "true",
-                "message" => "user not found"
-            ], 404);
-        }
+    //     if (!$user) {
+    //         return response()->json([
+    //             "error" => "true",
+    //             "message" => "user not found"
+    //         ], 404);
+    //     }
 
-        $otp = $this->generateOtp();
+    //     $otp = $this->generateOtp();
 
-        // $user->notify(new NotificationsForgotPassword($otp));
-        $this->sendMail($user->user_name, $user->email, $otp);
-        $user->otp = $otp;
-        $user->save();
+    //     // $user->notify(new NotificationsForgotPassword($otp));
+    //     $this->sendMail($user->user_name, $user->email, $otp);
+    //     $user->otp = $otp;
+    //     $user->save();
 
-        return response()->json([
-            "error" => false,
-            "message" => "otp sent to email successfully"
-        ]);
-    }
+    //     return response()->json([
+    //         "error" => false,
+    //         "message" => "otp sent to email successfully"
+    //     ]);
+    // }
 
-    public function verifyOtp(VerifyOtpRequest $request) {
+    // public function verifyOtp(VerifyOtpRequest $request) {
 
-        try {
+    //     try {
             
-            $user = User::where('email', $request->input('email'))->firstOrFail();
+    //         $user = User::where('email', $request->input('email'))->firstOrFail();
 
-            if ( $user->otp !== $request->otp ) {
-                return response()->json([
-                    'error' => 'true',
-                    "message" => "otp verification failed"
-                ]);
-            }
+    //         if ( $user->otp !== $request->otp ) {
+    //             return response()->json([
+    //                 'error' => 'true',
+    //                 "message" => "otp verification failed"
+    //             ]);
+    //         }
 
-            $user->can_change_password = true;
-            $user->save();
+    //         // $user->can_change_password = true;
+    //         $user->save();
             
-            return response()->json([
-                'error' => 'false',
-                "message" => "You've been verified",
-                "user" => $user
-            ]);
+    //         return response()->json([
+    //             'error' => 'false',
+    //             "message" => "You've been verified",
+    //             "user" => $user
+    //         ]);
         
-        } catch (\Exception $e) {       
+    //     } catch (\Exception $e) {       
             
-            Log::error($e->getMessage());
+    //         Log::error($e->getMessage());
 
-            return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
-            ], 500);
+    //         return response()->json([
+    //             "error" => true,            
+    //             "message" => "something went wrong"
+    //         ], 500);
             
-        }
+    //     }
 
-    }
+    // }
 
-    public function resetPassword(ResetPasswordRequest $request) {
-        try {
+    // public function resetPassword(ResetPasswordRequest $request) {
+    //     try {
              
-            $user = User::where('email', $request->email)->first();
+    //         $user = User::where('email', $request->email)->first();
             
-            if (!$user) {
-                    return response()->json([
-                            "error" => "true",
-                            "message" => "user not found"
-                        ], 404);
-                    }
+    //         if (!$user) {
+    //                 return response()->json([
+    //                         "error" => "true",
+    //                         "message" => "user not found"
+    //                     ], 404);
+    //                 }
     
-            if (!$user->can_change_password) {
-                return response()->json(['error' => true, 'message' => 'please verify otp first'], 500);
+    //         // if (!$user->can_change_password) {
+    //         //     return response()->json(['error' => true, 'message' => 'please verify otp first'], 500);
     
-            }
+    //         // }
     
     
-            $user->password =  $request->input("new_password");
-            $user->save();
+    //         $user->password =  $request->input("new_password");
+    //         $user->save();
     
-            return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
+    //         return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
            
 
-        } catch (\Exception $e) {       
+    //     } catch (\Exception $e) {       
             
-            Log::error($e->getMessage());
+    //         Log::error($e->getMessage());
 
-            return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
-            ], 500);
+    //         return response()->json([
+    //             "error" => true,            
+    //             "message" => "something went wrong"
+    //         ], 500);
             
-        }
+    //     }
 
-    }
-
-    public function logoutUser(Request $request)
-    {
-        try {
-            $request->user()->token()->revoke();
-           
-            return response()->json([
-                'error' => false,
-                'message' => 'Successfully logged out'
-            ], 200);
-
-        } catch (\Exception $e) {       
-            
-            Log::error($e->getMessage());
-
-            return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
-            ], 500);
-            
-        }
-    }
+    // }
 
 
     //// new forget password implementation
-    public function forgotPasswordNew(ForgotPasswordRequest $request) {
+    public function forgotPassword(ForgotPasswordRequest $request) {
 
         $user = User::where('email', $request->email)->first();
  
@@ -384,7 +362,7 @@ class RegisterController extends Controller
          ], 200);
     }
  
-    public function verifyOtpNew(Request $request) {
+    public function verifyOtp(VerifyOtpRequest $request) {
  
         try {
             
@@ -394,13 +372,12 @@ class RegisterController extends Controller
             $otp_expiration = Carbon::parse($user->otp_expires_at);
             
             // Check if OTP is correct and hasn't expired
-             if ($user->otp !== $request->otp || $otp_expiration->isPast()) {
+             if ($user->otp != $request->otp || $otp_expiration->isPast()) {
                  return response()->json([
                      'error' => true,
                      "message" => "OTP verification failed."
                  ], 400);
-             }
- 
+            }
          
             
             return response()->json([
@@ -416,7 +393,7 @@ class RegisterController extends Controller
  
     }
  
-    public function resetPasswordNew(Request $request) {
+    public function resetPassword(Request $request) {
         try {
              
             $user = User::where('email', $request->email)->first();
@@ -425,16 +402,17 @@ class RegisterController extends Controller
             if (!$user) {
                  return response()->json([
                      "error" => true,
-                     "message" => "admin not found"
+                     "message" => "user not found"
                  ], 404);
              }
  
-             $otp_expiration = Carbon::parse($user->otp_expires_at);
+            //  $otp_expiration = Carbon::parse($user->otp_expires_at);
  
-             if ($user->otp !== $request->otp || $otp_expiration->isPast()) {
+            //  if ($user->otp !== $request->otp || $otp_expiration->isPast()) {
+             if ($user->otp != $request->otp ) {
                  return response()->json([
                      'error' => true,
-                     "message" => "otp does not match or has expired"
+                     "message" => "otp does not match"
                  ]);
              }
      
@@ -452,6 +430,29 @@ class RegisterController extends Controller
              return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
          }
  
+    }
+
+
+    public function logoutUser(Request $request)
+    {
+        try {
+            $request->user()->token()->revoke();
+           
+            return response()->json([
+                'error' => false,
+                'message' => 'Successfully logged out'
+            ], 200);
+
+        } catch (\Exception $e) {       
+            
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong"
+            ], 500);
+            
+        }
     }
 
 }

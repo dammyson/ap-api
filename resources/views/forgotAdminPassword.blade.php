@@ -8,6 +8,6 @@
 <body>
     <div> hello {{ $adminName}}</div>
     <div> Your otp is {{ $otp }}</div>
-    <div> Pls not this otp expires after 10 minutes</div>
+    <div> Please note this otp expires after 10 minutes</div>
 </body>
 </html>
