@@ -43,7 +43,8 @@ class User extends Authenticatable
         'firebase_token',
         'is_guest',
         'last_login',
-        'miles_accumulated'
+        'miles_accumulated',
+        'otp_expires_at'
     ];
 
     /**
