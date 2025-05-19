@@ -80,14 +80,13 @@ Route::group(['prefix' => 'user'], function ()  {
 });
 
 Route::group(['prefix' => 'admin/'], function () {
-    // Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
     Route::post('admin-login', [LoginAdminController::class, 'loginAdmin']);
     Route::post('forgot-password', [ForgetPasswordAdminController::class, 'forgotPassword']);
     Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
     Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
     
-    Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
     Route::middleware('auth:admin')->group(function () {  
+        Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
   
         Route::group(['prefix' => 'dashboard'], function () {
             Route::get('weekly-analysis', [DashboardAdminController::class, 'weeklyAnalysis']);
