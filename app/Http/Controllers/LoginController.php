@@ -64,7 +64,26 @@ class LoginController extends Controller
             // dd($newpassword);
             if (Hash::check($request["password"], $user->password)) {
                 $data['user'] = $user;
-                $data['token'] = $user->createToken('Nova')->accessToken;
+                // $data['token'] = $user->createToken('Nova')->accessToken;
+            
+
+                $tokenResult = $user->createToken('Nova');
+                $data['token'] = $tokenResult->accessToken;
+                $tokenObject = $tokenResult->token;
+        
+                // Set expiration for refresh token based on remember_me flag
+                if ($request->remember_me) {
+                    // Extend refresh token expiration to 30 days
+                    $tokenObject->expires_at = now()->addDays(30);
+                }
+                 else {
+                    // Set refresh token expiration to 2 days
+                    $tokenObject->expires_at = now()->addMinute();
+                }
+        
+                $data['expires_at'] = $tokenObject->expires_at;
+                // Save the token
+                $tokenObject->save();
 
                 // $userAgent = $request->header('User-Agent');
 

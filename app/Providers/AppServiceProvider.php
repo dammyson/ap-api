@@ -4,12 +4,14 @@ namespace App\Providers;
 
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Laravel\Passport\Passport;
 use App\Events\AdminLoginEvent;
 use App\Events\AdminSurveyEvent;
 use App\Observers\AdminObserver;
 use App\Events\AdminCustomerEvent;
 use App\Events\UserActivityLogEvent;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\Response;
 use App\Listeners\AdminLoginListener;
 use Illuminate\Support\Facades\Event;
 use App\Listeners\AdminSurveyListener;
@@ -50,8 +52,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('is-admin', function(Admin $admin) {
-            // dump($admin);
-            return $admin->role == 'admin';
+          
+            return $admin->role == 'admin' ? Response::allow()
+                : Response::deny('You must be an admin');;
         });      
         
 
@@ -79,6 +82,14 @@ class AppServiceProvider extends ServiceProvider
             UserActivityLogEvent::class,
             UserActivityLogListener::class
         );
+        
+        // Set Passport token expiration logic here
+        Passport::tokensExpireIn(now()->addHours(2)); // Access token expiration (2 hours)
+    
+        Passport::refreshTokensExpireIn(now()->addHours(2)); 
     }
+
+    
+    
 
 }

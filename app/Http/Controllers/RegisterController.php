@@ -152,7 +152,20 @@ class RegisterController extends Controller
         }
 
         $data['user'] =  $create;
-        $data['token'] =  $create->createToken('Nova')->accessToken;
+        // $data['token'] =  $create->createToken('Nova')->accessToken;
+        // $tokenResult =  $create->createToken('Nova');
+        // $token = $tokenResult->token;
+
+        $tokenResult = $create->createToken('Nova');
+        $data['token'] = $tokenResult->accessToken;
+        $tokenObject = $tokenResult->token;
+
+        if ($request->remember_me) {
+            $tokenObject->expires_at = now()->addDays(30); // Customize duration as needed
+        }
+
+        $data['token_type'] = 'Bearer';
+        $data['expires_at'] = $tokenObject->expires_at;
 
         return response()->json([
             'error' => false, 
