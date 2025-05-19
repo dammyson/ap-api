@@ -35,7 +35,7 @@ class TemporaryPassword extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('gilbergenye4@gmail.com', 'Airpeace'),
+            from: new Address('gilbertgenye4@gmail.com', 'Airpeace'),
             subject: "Airpeace Admin Temporary Password",
 
         );

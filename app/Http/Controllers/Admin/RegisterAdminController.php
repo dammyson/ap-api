@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
-use App\Mail\TemporaryPassword;
 use App\Http\Services\AutoGenerate;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -16,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\Admin\CreateAdminRequest;
 use App\Services\AutoGenerate\GenerateRandom;
 use App\Http\Requests\Auth\Admin\LoginAdminRequest;
+use App\Notifications\TemporaryPassword;
 
 class RegisterAdminController extends Controller
 {
@@ -27,17 +27,17 @@ class RegisterAdminController extends Controller
     
     public function registerAdmin(CreateAdminRequest $request) {
         try {
-            $admin = $request->user('admin');
+            // $admin = $request->user('admin');
             
             Gate::authorize('is-admin');            
     
             // generate temporary password
-            $to_name = $request->input('user_name');
-            $to_email = $request->input('email');
+            $username = $request->input('user_name');
+            $email = $request->input('email');
             
             $temporaryPassword = $this->generateRandom->generateTemporaryPassword();
             // dump($temporaryPassword);
-            $admin = Admin::withTrashed()->where('email', $to_email)->first();
+            $admin = Admin::withTrashed()->where('email', $email)->first();
             
             if ($admin) {
                 if ($admin->trashed()) {
@@ -56,25 +56,15 @@ class RegisterAdminController extends Controller
                 $admin = new Admin();
                 
                 $admin = Admin::create([
-                    'user_name' => $request->input('user_name'), 
-                    'email' => $request->input('email'), 
+                    'user_name' => $username, 
+                    'email' => $email, 
                     'password' => Hash::make($temporaryPassword), 
                     'role' => $request->input('role')
                 ]);
             }
 
-            return [$admin, 'temporary_password' => $temporaryPassword];
-
-            // sendMail that contains the email and temporary password and send a warning that the
-            // new admin should change the password once logged in.
-
-            $message = "Hello " . $to_name . " Welcome to the airpeace admin team. 
-                below is the temporary password to your account . Pls do well to change this password once you log in" ;
-           
-            Mail::to($to_email)
-                ->send(
-                    new TemporaryPassword($to_name, $to_email, $message, $temporaryPassword)
-                );
+            
+            $admin->notify(new TemporaryPassword($temporaryPassword));
 
            
             // Optionally, generate a token for the newly registered admin

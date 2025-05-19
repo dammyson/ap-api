@@ -3,16 +3,17 @@
 namespace App\Models;
 
 use App\Observers\AdminObserver;
-use App\Models\Admin\AdminActivityLog;
 use Laravel\Passport\HasApiTokens;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Admin\AdminActivityLog;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 // #[ObservedBy([AdminObserver::class])]
 class Admin extends Authenticatable
 {
-    use HasFactory, HasApiTokens, SoftDeletes;
+    use HasFactory, HasApiTokens, SoftDeletes, Notifiable;
 
     protected $fillable = ['user_name', 'email', 'password', 'image_url', 'role', 'phone_number'];
 

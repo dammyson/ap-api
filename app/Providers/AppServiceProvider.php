@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('is-admin', function(Admin $admin) {
           
             return $admin->role == 'admin' ? Response::allow()
-                : Response::deny('You must be an admin');;
+                : Response::deny('You must be an admin');
         });      
         
 
