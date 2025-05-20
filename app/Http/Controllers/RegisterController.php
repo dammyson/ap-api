@@ -345,7 +345,7 @@ class RegisterController extends Controller
         if (!$user) {
             return response()->json([
                 "error" => true,
-                "message" => "Email not found"
+                "message" => "We couldn't find an account associated with that email address."
             ], 404);
         }
  
