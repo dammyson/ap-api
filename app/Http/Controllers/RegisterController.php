@@ -388,7 +388,7 @@ class RegisterController extends Controller
              if ($user->otp != $request->otp || $otp_expiration->isPast()) {
                  return response()->json([
                      'error' => true,
-                     "message" => "OTP verification failed."
+                     "message" => "Incorrect OTP"
                  ], 400);
             }
          
