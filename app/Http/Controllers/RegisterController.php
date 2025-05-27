@@ -139,41 +139,43 @@ class RegisterController extends Controller
             // $deviceType = $this->checkDevice->checkDeviceType($userAgent, $create);
             // $screenResolution = $this->checkDevice->saveScreenSize($create, $request->screen_resolution);
           
+        
+
+            $data['user'] =  $create;
+            // $data['token'] =  $create->createToken('Nova')->accessToken;
+            // $tokenResult =  $create->createToken('Nova');
+            // $token = $tokenResult->token;
+
+            $tokenResult = $create->createToken('Nova');
+            $data['token'] = $tokenResult->accessToken;
+            $tokenObject = $tokenResult->token;
+
+            if ($request->remember_me) {
+                $tokenObject->expires_at = now()->addDays(30); // Customize duration as needed
+            }
+
+            $data['token_type'] = 'Bearer';
+            $data['expires_at'] = $tokenObject->expires_at;
+
+            return response()->json([
+                'error' => false, 
+                'message' => 'Client registration successful. Verification code sent to your email.', 
+                'data' => $data,
+                // 'device_type' => $deviceType,
+                // 'screen_resolution' => $screenResolution
+            ], 201);
+
         } catch (\Exception $e) {       
             
             Log::error($e->getMessage());
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong",
+                "message" => $e->getMessage(),
                 "message_err" => $e->getMessage()
             ], 500);
             
         }
-
-        $data['user'] =  $create;
-        // $data['token'] =  $create->createToken('Nova')->accessToken;
-        // $tokenResult =  $create->createToken('Nova');
-        // $token = $tokenResult->token;
-
-        $tokenResult = $create->createToken('Nova');
-        $data['token'] = $tokenResult->accessToken;
-        $tokenObject = $tokenResult->token;
-
-        if ($request->remember_me) {
-            $tokenObject->expires_at = now()->addDays(30); // Customize duration as needed
-        }
-
-        $data['token_type'] = 'Bearer';
-        $data['expires_at'] = $tokenObject->expires_at;
-
-        return response()->json([
-            'error' => false, 
-            'message' => 'Client registration successful. Verification code sent to your email.', 
-            'data' => $data,
-            // 'device_type' => $deviceType,
-            // 'screen_resolution' => $screenResolution
-        ], 201);
 
     }
 
