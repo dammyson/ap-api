@@ -179,12 +179,25 @@ class BookingRequestController extends Controller
             $passengerName = $request->input('surname');
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
+            $booking = Booking::where('booking_id', $bookingId)->where('is_cancelled', false)->first();
+
+            
+            // dd($booking);
+            if (!$booking) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'PNR not found'
+                ], 500);
+            }
+
             $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
 
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
 
 
             $response = $this->craneOTASoapService->run($function, $xml);
+
+           
 
             // dd($response);
 
@@ -247,7 +260,7 @@ class BookingRequestController extends Controller
             Log::error($th->getMessage());
     
             return response()->json([
-                "error" => true,            
+                "error" => true,         
                 "message" => "something went wrong"
             ], 500);
         }  

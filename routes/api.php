@@ -265,7 +265,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
         Route::group(["prefix" => "cancel-booking"], function () {
             Route::post('commit', [CancelBookingController::class, 'cancelBookingCommit']);
             Route::post('view-only', [CancelBookingController::class, 'cancelBookingViewOnly']);
-            Route::post('cancel-booking-commit', [CancelBookingController::class, 'cancelBookingCommit']);
         });
 
         Route::group(["prefix" => "available-special-service"], function() {
