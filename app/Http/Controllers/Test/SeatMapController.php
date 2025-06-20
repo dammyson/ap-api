@@ -130,6 +130,18 @@ class SeatMapController extends Controller
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
 
             // dd($response);
+            
+            // Check if there's a SOAP fault in the response
+            if (
+                isset($response['faultcode']) &&
+                isset($response['detail']['CraneFault']['code']) &&
+                $response['detail']['CraneFault']['code'] === 'SEAT_MAP_FREE_SEAT_FLIGHT'
+            ) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "Seat selection is not available for this flight. Please try another flight."
+                ], 400); // You can adjust status code (e.g., 422 or 404 if preferred)
+            }
             $airplaneCabinList = $response['AirSeatMapResponse']['seatMapResponse']['airplane']['airplaneCabinList'];
 
             $seatArray = [];
