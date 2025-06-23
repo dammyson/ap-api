@@ -139,7 +139,7 @@ class SeatMapController extends Controller
             ) {
                 return response()->json([
                     "error" => true,
-                    "message" => "Seat selection is not available for this flight. Please try another flight."
+                    "message" => "seat selection unavailable, please try again later"
                 ], 400); // You can adjust status code (e.g., 422 or 404 if preferred)
             }
             $airplaneCabinList = $response['AirSeatMapResponse']['seatMapResponse']['airplane']['airplaneCabinList'];
@@ -168,7 +168,7 @@ class SeatMapController extends Controller
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => "seat selection unavailable, please try again later"
             ], 500);
         }  
     }    
