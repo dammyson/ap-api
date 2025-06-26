@@ -395,7 +395,8 @@ class CreateBookingController extends Controller
             Log::error($e->getMessage());
 
             return response()->json([
-                "error" => true,            
+                "error" => true,   
+                "actual_message" => $e->getMessage(),         
                 "message" => "something went wrong"
             ], 500);
         }
