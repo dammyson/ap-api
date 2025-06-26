@@ -105,7 +105,6 @@ class FlightController extends Controller
 
                 $availabilityByDateList = $response['Availability']['availabilityResultList']['availabilityRouteList'][1]['availabilityByDateList'];
                 if(!array_key_exists('originDestinationOptionList', $availabilityByDateList)) {
-                   
                     return response()->json([
                         'error' => true,
                         'message' => "flight is not available for selected return date"
@@ -113,12 +112,7 @@ class FlightController extends Controller
                 }
 
                 $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
-                if(!$originDestinationOptionList0) {
-                    return response()->json([
-                        'error' => true,
-                        'message' => "no availability"
-                    ], 500);
-                }
+               
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity, $travelerInformation_count);
                 $originDestinationOptionList1 = $response['Availability']['availabilityResultList']['availabilityRouteList'][1]['availabilityByDateList']['originDestinationOptionList'];
                 // dd("i got here");                
@@ -130,7 +124,7 @@ class FlightController extends Controller
                 $result = $rt;
             }else{
                 $availabilityRouteList = $response['Availability']['availabilityResultList']['availabilityRouteList'];
-
+                // dd($response);
                 $multiDirectionalFlights = $validated['multi_directional_flights'];
 
                 $rt = new \stdClass();
@@ -140,8 +134,17 @@ class FlightController extends Controller
                     $mainkey =  $multiDirectionalFlights[$i]['departure_airport'] . " - " .  $multiDirectionalFlights[$i]['arrival_airport'];
 
                     $originDestinationOptionList =  $availabilityRouteList[$i];
+                    $availabilityByDateList = $originDestinationOptionList['availabilityByDateList'];
+                    if (!array_key_exists("originDestinationOptionList", $originDestinationOptionList['availabilityByDateList'])) {
+                   
+                    return response()->json([
+                            'error' => true,
+                            'message' => "flight is selected for date ({$availabilityByDateList['dateList']}) is not available"
+
+                        ], 500);
+                    };
                   
-                    $result = $this->groupFaresByCabin($originDestinationOptionList['availabilityByDateList']['originDestinationOptionList'], $quantity, $travelerInformation_count);
+                    $result = $this->groupFaresByCabin($availabilityByDateList["originDestinationOptionList"], $quantity, $travelerInformation_count);
                     $rt->{$mainkey}  =  $result;
                 }
                // $originDestinationOptionList0 = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList']['originDestinationOptionList'];
