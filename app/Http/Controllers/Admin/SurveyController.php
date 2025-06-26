@@ -189,11 +189,11 @@ class SurveyController extends Controller
 
             if ($request->file('image_url')) {
                 // store the file in the admin-profile-images folder
-                    $path = $request->file('image_url')->store('survey-images');
+                    $file = $request->file('image_url');
+                    $path = Storage::disk('cloudinary')->putFile('uploads', $file);
+                    $url = Storage::disk('cloudinary')->url($path);
                     // store the path to the image
-                    $survey->image_url = $path;
-
-                    $imageUrlLink = Storage::url($path);
+                    $survey->image_url = $url;
 
                     $survey->save();
 
@@ -202,7 +202,7 @@ class SurveyController extends Controller
                     return response()->json([
                         "error" => false,
                         "message" => "Survey image updated successfully",
-                        "image_url_link" => $imageUrlLink
+                        "image_url_link" => $url
                     ], 200);
                }
         } catch (\Throwable $th) {

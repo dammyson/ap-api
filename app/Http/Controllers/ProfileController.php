@@ -57,9 +57,11 @@ class ProfileController extends Controller
         $user = $request->user(); 
         
         try {
+
             // dd(storage_path('app'), storage_path('public'));
         
             if ($request->file('image_url')) {
+               
                 // store the user image in a folder;
                 if ($user->image_url) {
                     $oldPath = $user->image_url;
@@ -68,16 +70,20 @@ class ProfileController extends Controller
                    
 
                 }
-                $path = $request->file('image_url')->store('users-images-folder', 'public');
+
+                $file = $request->file('image_url');
+                $path = Storage::disk('cloudinary')->putFile('uploads', $file);
+                $url = Storage::disk('cloudinary')->url($path);
+
+
+                // $path = $request->file('image_url')->store('users-images-folder', 'public');
                 // $path = "test/"."emeka.".$request->file('image_url')->getClientOriginalExtension();
                 
                 // Storage::disk("public")->put($path, file_get_contents($request->file('image_url')));
                 // store the path to the image in the image_url column
                 // dd($path);
-                $user->image_url = $path;
+                $user->image_url = $url;
                 $user->save();
-
-                $imageUrlLink = Storage::url($path);
 
                 $tierDetails = $user->currentTier();
                 // dd($imageUrlLink);
@@ -93,12 +99,17 @@ class ProfileController extends Controller
                     "error" => false,
                     "message" => "Profile picture updated successfully",
                     "user" => $user,
-                    "image_url" => $user->image_url,
-                    "image_url_link" => $imageUrlLink,
+                    "image_url" => $url,
+                    "image_url_link" => $url,
                     "tier_details" => $tierDetails
                     
                 ], 200);
             }
+
+            // $path = Storage::disk('cloudinary')->putFile('uploads', $file);
+            // $url = Storage::disk('cloudinary')->url($path);
+
+            // return $url;
         
 
         }  catch (\Throwable $th) {
