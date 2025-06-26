@@ -139,7 +139,7 @@ class FlightController extends Controller
                    
                     return response()->json([
                             'error' => true,
-                            'message' => "flight is selected for date ({$availabilityByDateList['dateList']}) is not available"
+                            'message' => "flight is not available for date ({$availabilityByDateList['dateList']}) for the selected route"
 
                         ], 500);
                     };
