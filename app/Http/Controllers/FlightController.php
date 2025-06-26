@@ -83,7 +83,7 @@ class FlightController extends Controller
                 if(!array_key_exists('originDestinationOptionList', $availabilityByDateList)) {
                     return response()->json([
                         'error' => true,
-                        'message' => "no availability"
+                        'message' => "flight is not available for selected date"
                     ], 500);
                 }
 
