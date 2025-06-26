@@ -93,11 +93,22 @@ class FlightController extends Controller
                 $rt->departure = $result0;
                 $result = $rt;
             } else  if ($request->input('trip_type') == "ROUND_TRIP") {
+                // dd(" i ran");
                 $availabilityByDateList = $response['Availability']['availabilityResultList']['availabilityRouteList'][0]['availabilityByDateList'];
                 if(!array_key_exists('originDestinationOptionList', $availabilityByDateList)) {
+                   
                     return response()->json([
                         'error' => true,
-                        'message' => "no availability"
+                        'message' => "flight is not available for selected departure date"
+                    ], 500);
+                }
+
+                $availabilityByDateList = $response['Availability']['availabilityResultList']['availabilityRouteList'][1]['availabilityByDateList'];
+                if(!array_key_exists('originDestinationOptionList', $availabilityByDateList)) {
+                   
+                    return response()->json([
+                        'error' => true,
+                        'message' => "flight is not available for selected return date"
                     ], 500);
                 }
 
@@ -110,6 +121,7 @@ class FlightController extends Controller
                 }
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList0, $quantity, $travelerInformation_count);
                 $originDestinationOptionList1 = $response['Availability']['availabilityResultList']['availabilityRouteList'][1]['availabilityByDateList']['originDestinationOptionList'];
+                // dd("i got here");                
                 $result1 = $this->groupFaresByCabin($originDestinationOptionList1, $quantity,  $travelerInformation_count);
 
                 $rt = new \stdClass();
