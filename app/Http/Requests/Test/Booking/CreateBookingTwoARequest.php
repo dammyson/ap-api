@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Test\Booking;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CreateBookingTwoARequest extends FormRequest
 {
@@ -133,5 +135,40 @@ class CreateBookingTwoARequest extends FormRequest
             "specialServiceRequestList.*.ticketedStatus" => "required|string",  
             
         ];
+    }
+
+
+    public function messages(): array
+    {
+        return [
+            'CreateBookOriginDestinationOptionList.required' => 'Flight details are required.',
+
+            // General message for any missing subfield inside each flight segment
+            'CreateBookOriginDestinationOptionList.*.required' => 'A required field is missing in flight segment details.',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.required' => 'flight note is required',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.deiCode.required' => 'flight note deiCode is required',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.explanation.required' => 'flight note explanation is required',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.explanation.required' => 'flight notes explanation is required',
+            'CreateBookOriginDestinationOptionList.*.flightNotes.*.note.required' => 'flight notes note is required',
+
+            // Optional: More specific overrides if needed
+            'CreateBookOriginDestinationOptionList.*.actionCode.required' => 'Action code is missing for a flight segment.',
+            'CreateBookOriginDestinationOptionList.*.bookingClassCabin.required' => 'Booking class cabin is missing.',
+            'airTravelerList.required' => 'At least one traveler is required.',
+            'airTravelerList.*.airTravelerListGivenName.required' => 'Traveler first name is required.',
+            'airTravelerList.*.airTravelerListSurname.required' => 'Traveler given name is required.',
+        ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $firstError = collect($validator->errors()->all())->first();
+
+        throw new HttpResponseException(
+            response()->json([
+                'success' => false,
+                'message' => $firstError
+            ], 422)
+        );
     }
 }

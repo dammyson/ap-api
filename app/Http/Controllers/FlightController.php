@@ -145,7 +145,8 @@ class FlightController extends Controller
 
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => "something went wrong",
+                "actual_message" => $e->getMessage()
             ], 500);
         }
     }
@@ -154,15 +155,21 @@ class FlightController extends Controller
 
     public function groupFaresByCabin($originDestinationOptionList, $quantity,  $count)
     {
-       // dd($originDestinationOptionList);
+    //    dd($originDestinationOptionList);
 
         $itemsCollection = collect();
         if (!$this->checkArray->isAssociativeArray($originDestinationOptionList)) {
+            // dd($originDestinationOptionList);
+           
             foreach ($originDestinationOptionList as  $originDestinationOptionItems) {
+                // dump(" i ran once");
                 $fareComponentGroupList = $originDestinationOptionItems['fareComponentGroupList'];
                 $bookingClassList = $fareComponentGroupList['boundList']['availFlightSegmentList']["bookingClassList"];
                 $flightSegment = $fareComponentGroupList['boundList']['availFlightSegmentList']["flightSegment"];
-                if(!is_array($flightSegment['flightNotes'])) {
+                
+                
+                if($this->checkArray->isAssociativeArray($flightSegment['flightNotes'])) {
+                    // dd(" i ran");
                     $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
                 }
 
@@ -217,7 +224,8 @@ class FlightController extends Controller
             $grouped_bookingClassList = collect($bookingClassList)->groupBy('cabin');
             $fareComponentList = $fareComponentGroupList['fareComponentList'];
 
-            if (is_array($flightSegment['flightNotes'])) {
+            if ($this->checkArray->isAssociativeArray($flightSegment['flightNotes'])) {
+              
                 $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
 
             }
