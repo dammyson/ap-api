@@ -58,25 +58,31 @@ class ProfileAdminController extends Controller
     }
 
     // public function changeAdminProfileImage(ChangeProfileImageRequest $request) {
-    public function changeAdminProfileImage(Request $request) {
+    public function changeAdminProfileImage(ChangeProfileImageRequest $request) {
         $admin = $request->user('admin');
-        
         try {
             if ($request->file('image_url')) {
                 // store the file in the admin-profile-images folder
-                    $path = $request->file('image_url')->store('admin-profile-images');
-                    // store the path to the image
-                    $admin->image_url = $path;
+                
+                if ($admin->image_url) {
+                    $oldPath = $admin->image_url;
+                    Storage::delete($oldPath);
+                    // dd(" I got here");
+                }
 
-                    $imageUrlLink = Storage::url($path);
+                $file = $request->file('image_url');
+                $path = Storage::disk('cloudinary')->putFile('uploads', $file);
+                $url = Storage::disk('cloudinary')->url($path);
+                // store the path to the image
+                $admin->image_url = $url;
 
-                    $admin->save();
+                $admin->save();
 
-                    return response()->json([
-                        "error" => false,
-                        "message" => "Profile picture updated successfully",
-                        "image_url_link" => $imageUrlLink
-                    ], 200);
+                return response()->json([
+                    "error" => false,
+                    "message" => "Profile picture updated successfully",
+                    "image_url_link" => $url
+                ], 200);
                }
         } catch (\Throwable $th) {
             
