@@ -203,7 +203,7 @@ class TicketReservationController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
         $response = $this->craneOTASoapService->run($function, $xml);
-        dd($response);
+        // dd($response);
         $totalDistance = 0;
 
         $bookOriginDestinationOptionLists =   $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
@@ -234,9 +234,13 @@ class TicketReservationController extends Controller
             $totalDistance = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['distance'];
         }
 
-       $user->addMilesFromKilometers($totalDistance);
+        $user->addMilesFromKilometers($totalDistance);
 
-       return $user;
+        return [
+            "user" => $user,
+            "response" => $response
+        ];
+
 
     }
 
@@ -478,8 +482,9 @@ class TicketReservationController extends Controller
             Log::error($th->getMessage());
     
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                "error" => true,  
+                "message" => $th->getMessage(),          
+                // "message" => "something went wrong"
             ], 500);
         }  
     }
