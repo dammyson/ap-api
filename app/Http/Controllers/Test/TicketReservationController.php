@@ -234,9 +234,13 @@ class TicketReservationController extends Controller
             $totalDistance = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['distance'];
         }
 
-       $user->addMilesFromKilometers($totalDistance);
+        $user->addMilesFromKilometers($totalDistance);
 
-       return $user;
+        return [
+            "user" => $user,
+            "response" => $response
+        ];
+
 
     }
 
@@ -478,8 +482,9 @@ class TicketReservationController extends Controller
             Log::error($th->getMessage());
     
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                "error" => true,  
+                "message" => $th->getMessage(),          
+                // "message" => "something went wrong"
             ], 500);
         }  
     }
