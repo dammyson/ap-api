@@ -198,7 +198,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-            Route::post('/commit/invoice/{invoiceId}', [TicketReservationController::class, 'ticketReservationCommit']);
             Route::post('/commit-test', [TicketReservationController::class, 'testTicketReservationCommit']);
             Route::post('/commit-rt', [TicketReservationController::class, 'ticketReservationCommitRT']);
 
