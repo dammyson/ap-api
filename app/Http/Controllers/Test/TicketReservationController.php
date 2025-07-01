@@ -311,6 +311,7 @@ class TicketReservationController extends Controller
             }
     
            $user->addMilesFromKilometers($totalDistance);
+           
             Flight::where('booking_id', $bookingId)->update([
                 'is_paid' => true
             ]);
@@ -483,8 +484,7 @@ class TicketReservationController extends Controller
     
             return response()->json([
                 "error" => true,  
-                "message" => $th->getMessage(),          
-                // "message" => "something went wrong"
+                "message" => "something went wrong"
             ], 500);
         }  
     }
