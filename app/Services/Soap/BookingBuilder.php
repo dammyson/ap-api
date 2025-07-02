@@ -78,13 +78,13 @@ class BookingBuilder {
                 <impl:GetTicketHistory>
                 <!-- Optional: -->
                 <TicketHistoryRequest>
-                <clientInformation>
-                <clientIP>129.0.0.1</clientIP>
-                <member>false</member>
-                <password>SCINTILLA</password>
-                <userName>SCINTILLA</userName>
-                <preferredCurrency>NGN</preferredCurrency>
-                </clientInformation>
+                  <clientInformation>
+                     <clientIP>129.0.0.1</clientIP>
+                     <member>false</member>
+                     <password>SCINTILLA</password>
+                     <userName>SCINTILLA</userName>
+                     <preferredCurrency>NGN</preferredCurrency>
+                  </clientInformation>
                     <bookingReferenceId>' . htmlspecialchars($bookingReferenceID, ENT_XML1, 'UTF-8') . '</bookingReferenceId>
                 </TicketHistoryRequest>
                 </impl:GetTicketHistory>

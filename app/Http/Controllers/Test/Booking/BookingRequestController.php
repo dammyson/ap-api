@@ -160,7 +160,10 @@ class BookingRequestController extends Controller
        
         $xml = $this->bookingBuilder->retrievePNRHistory($id);
 
-        dd($xml);
+        $function = "http://impl.soap.ws.crane.hititcs.com/GetAirBookingHistory";
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        return $response;
 
     }   
 
@@ -169,8 +172,13 @@ class BookingRequestController extends Controller
         $bookingReferenceID = $request->input('bookingReferenceID');
 
         $xml = $this->bookingBuilder->RetrieveTicketHistory($bookingReferenceID);
+        // dd($xml);
 
-        dd($xml);
+        $function = "http://impl.soap.ws.crane.hititcs.com/GetTicketHistory";
+        $response = $this->craneOTASoapService->run($function, $xml);
+
+        return $response;
+
     }
 
     public function readBookingWithSurname(Request $request) {

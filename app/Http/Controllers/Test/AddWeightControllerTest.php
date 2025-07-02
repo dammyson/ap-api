@@ -124,8 +124,6 @@ class AddWeightControllerTest extends Controller
 
 
         $user = $request->user();
-
-        $user = $request->user();
         
         if ($user->is_guest) {
 
@@ -239,7 +237,7 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-
+            // dump($response);
             // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
             // $amount = 0;
 
@@ -281,6 +279,7 @@ class AddWeightControllerTest extends Controller
             // if user has not paid set the new invoice balance else generate a new invoice
             
             $addedPrice = 0;
+            // dd($invoice);
            
             if (!$invoice->is_paid) {
                 $addedPrice = $invoice->amount - $amount;

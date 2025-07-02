@@ -104,12 +104,14 @@ class CancelBookingController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
 
             $response = $this->craneOTASoapService->run($function, $xml);
+
+            // dd($response);
             
             $totalPenalty = 0;
 
             if (isset($response['AirCancelBookingResponse']['airBookingList']['ticketInfo'])) {
                 if ($this->checkArray->isAssociativeArray($response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'])) {
-                    dd($response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['couponInfoList']);
+                    // dd($response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['couponInfoList']);
                     $totalPenalty = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['couponInfoList']['pricingOverview']['totalPenalty'];
 
                 } else {
@@ -121,7 +123,13 @@ class CancelBookingController extends Controller
             }
 
             // display response of voiding a ticket to user
-            dd($totalPenalty);
+            // dd($totalPenalty);
+
+            return response()->json([
+                "total_penalty" => $totalPenalty,
+                "message" => "A fee of {$totalPenalty} wil be deducted from your refund",
+                "response" => $response
+            ]);
         } catch (\Throwable $th) {
             
             Log::error($th->getMessage());
