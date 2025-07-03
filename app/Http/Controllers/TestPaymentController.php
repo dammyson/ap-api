@@ -38,8 +38,8 @@ class TestPaymentController extends Controller
             $bookingReferenceID = $request->input('bookingReferenceID');
             $invoiceId = $request->input('invoiceId');
             $deviceType = $request->input('device_type');
-            $paymentMethod = $request->input('payment_method') ?? 'flutterwave';
-            $paymentChannel = $request->input('payment_channel') ?? 'flutterwave';
+            $paymentMethod = $request->input('payment_method');
+            $paymentChannel = $request->input('payment_channel');
             
             
             //validate verifiedRequest;

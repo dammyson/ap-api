@@ -22,7 +22,11 @@ class Transaction extends Model
         'device_type',
         'currency',
         'payment_method',
-        'payment_channel'
+        'payment_channel',
+        'booking_id',
+        'is_cancelled',
+        'status',
+        'is_refunded'
         
     ];
 

@@ -42,43 +42,6 @@ class TicketReservationController extends Controller
         $this->getPointService = $getPointService;
     }
 
-
-    public function ticketReservationView(TicketReservationViewOnlyRequest $request) {
-        $ID = $request->input('ID');
-        $referenceID = $request->input('referenceID');
-        $preferredCurrency = $request->input('preferred_currency');
-
-        // $function = 'http://impl.soap.ws.crane.hititcs.com/ticketReservationViewOnlyRT';
-
-        $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-            $preferredCurrency,
-            $ID,
-            $referenceID
-        );
-
-        try {
-          
-            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
-
-            $response = $this->craneOTASoapService->run($function, $xml);
-
-            return response()->json([
-                "error" => false,
-                "response" => $response
-            ]);
-           
-        } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
-            return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
-            ], 500);
-        }  
-    }
-
-
     public function ticketReservationViewOnly(Request $request) {
         $bookingId = $request->input('ID');
         $peaceId = $request->input('peace_id');
@@ -358,6 +321,7 @@ class TicketReservationController extends Controller
                         'transaction_type' => $transactionType,
                         // 'peace_id' => $user ? $user->peace_id : null,
                         'ticket_type' => 'ticket',
+                        'booking_id' => $bookingId,
                         'user_id' => $user->id,
                         'invoice_id' => $invoice->id,
                         'device_type' => $deviceType,
@@ -375,6 +339,7 @@ class TicketReservationController extends Controller
                         ],
                         [
                             'amount' => $paidAmount,
+                            'booking_id' => $bookingId,
                             'transaction_type' => $transactionType,
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,
@@ -411,7 +376,9 @@ class TicketReservationController extends Controller
                             "invoice_number" => $invoice_number,                            
                         ], [
                             'amount' => $paidAmount,
+                            'booking_id' => $bookingId,
                             'transaction_type' => $transactionType,
+                            'booking_id' => $bookingId,
                             'ticket_type' => 'ticket',
                             'user_id' =>  $user->id,
                             'invoice_id' => $invoice->id,
@@ -431,6 +398,7 @@ class TicketReservationController extends Controller
                             "invoice_number" => $invoice_number,                            
                         ], [
                             'amount' => $paidAmount,
+                            'booking_id' => $bookingId,
                             'transaction_type' => $transactionType,
                             'ticket_type' => 'Ancillary',
                             'user_id' => $user->id,

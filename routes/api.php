@@ -311,10 +311,6 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
     });
 
     Route::post('/upgrade-tier', [TierController::class, 'upgradeTier']);
-
-
-    Route::post('cancel-flight-view-only', [CancelFlightController::class, 'cancelFlightViewOnly']);
-    Route::post('cancel-flight-commit', [CancelFlightController::class, 'cancelFlightCommit']);
    
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']); 

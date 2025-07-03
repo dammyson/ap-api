@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Test\Booking;
 
 use App\Models\Booking;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\BookingRecord;
 use Illuminate\Support\Facades\Log;
@@ -29,11 +30,20 @@ class CancelBookingController extends Controller
     public function cancelBookingCommit(CancelBookingCommitRequest $request) {
         // $response = '';
         try {
-            // dd('i ran');
+
+            //  Transaction::where('booking_id', $ID)->update([
+            //     'is_cancelled' => true,
+            //     'status' => "cancelled",
+            //     "is_refunded" => false,
+            // ]);
             $user =  $request->user();
 
             $ID = $request->input('ID'); 
             $referenceID = $request->input('referenceID');
+
+            
+            // $tx = Transaction::where('booking_id', $ID)->get();
+            // dd($tx);
 
             // dd('I ran');
             $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
@@ -53,8 +63,15 @@ class CancelBookingController extends Controller
                     "message" => "booking does not exist for this user"
                 ], 500);
             }
+            
             Booking::where('booking_id', $ID)->update([
                 'is_cancelled' => true
+            ]);
+
+            Transaction::where('booking_id', $ID)->update([
+                'is_cancelled' => true,
+                'status' => "cancelled",
+                "is_refunded" => false,
             ]);
 
             if (array_key_exists('ticketInfo', $response['AirCancelBookingResponse']['airBookingList'])){
