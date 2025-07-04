@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use Illuminate\Support\Facades\Http;
 use App\Services\AutoGenerate\GenerateRandom;
-use App\Http\Controllers\Test\TicketReservationController;
+use App\Http\Controllers\Soap\TicketReservationController;
 
 class OnepipeController extends Controller
 {
@@ -179,7 +179,7 @@ class OnepipeController extends Controller
 
         // dd(["currecny" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
                             
-        return  $this->ticketReservationController->guestTicketReservationCommit("bank transfer", $bankName , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
+        return  $this->ticketReservationController->ticketReservationCommit("bank transfer", $bankName , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
 
     }
 
@@ -335,7 +335,7 @@ class OnepipeController extends Controller
     
             // dd(["currecny" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
                                 
-            return  $this->ticketReservationController->guestTicketReservationCommit("bank transfer", "Quick teller" , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
+            return  $this->ticketReservationController->ticketReservationCommit("bank transfer", "Quick teller" , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
         
         }
 
@@ -349,7 +349,7 @@ class OnepipeController extends Controller
 
         // dd(["currency" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
                             
-        return  $this->ticketReservationController->guestTicketReservationCommit("bank transfer", "Quick teller" , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
+        return  $this->ticketReservationController->ticketReservationCommit("bank transfer", "Quick teller" , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
     }
 
   

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Test;
+namespace App\Http\Controllers\Soap;
 
 use Carbon\Carbon;
 use App\Models\Flight;

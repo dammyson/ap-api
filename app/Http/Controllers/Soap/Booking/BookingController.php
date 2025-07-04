@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Test\Booking;
+namespace App\Http\Controllers\Soap\Booking;
 
 use stdClass;
 use App\Models\Booking;
@@ -19,7 +19,7 @@ use App\Http\Requests\Test\Booking\ReadBookingTkRequest;
 use App\Http\Requests\Test\Booking\RetrievePNRHistoryRequest;
 use App\Http\Requests\Test\Booking\RetrieveTicketHistoryRequest;
 
-class BookingRequestController extends Controller
+class BookingController extends Controller
 {
     protected $bookingBuilder;
     protected $ticketReservationRequestBuilder;
@@ -78,7 +78,7 @@ class BookingRequestController extends Controller
 
        
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
-                $this->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
+                $this->checkArray->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
                     // dd('I ran');
                     $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'] = 
                     [$response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']];
@@ -142,19 +142,6 @@ class BookingRequestController extends Controller
 
     }
 
-   
-
-
-    private function isAssociativeArray($array) {
-        // if the value is no at array at all return false;
-        if (!is_array($array)) {
-            return false;
-        }
-
-        // Check if the array is associative by looking at the keys
-        return array_keys($array) !== range(0, count($array) - 1);
-    }
-
 
     public function retrievePNRHistory(RetrievePNRHistoryRequest $request) {
         $id = $request->input('ID');
@@ -211,7 +198,7 @@ class BookingRequestController extends Controller
             // dd($response);
 
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
-                $this->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
+                $this->checkArray->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
                     // dd('I ran');
                     $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'] = 
                     [$response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']];

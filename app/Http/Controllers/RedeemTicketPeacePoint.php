@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Test\TicketReservationController;
+use App\Http\Controllers\Soap\TicketReservationController;
 
 class RedeemTicketPeacePoint extends Controller
 {
@@ -21,6 +21,7 @@ class RedeemTicketPeacePoint extends Controller
             $bookingId = $request->input('bookingId');
             $bookingReferenceID = $request->input('bookingReferenceID');
             $invoiceId = $request->input('invoiceId');
+            $deviceType = $request->input('device_type');
             $peacePoint = $user->peace_points;
     
             // convert peacepoint to naira
@@ -44,7 +45,7 @@ class RedeemTicketPeacePoint extends Controller
             $user->save();
     
             // make payment to the soap api
-            $result =  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
+            $result =  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
         
             // Commit the transaction
             DB::commit();

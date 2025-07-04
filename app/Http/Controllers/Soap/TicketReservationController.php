@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Test;
+namespace App\Http\Controllers\Soap;
 
 use Carbon\Carbon;
 use App\Models\User;
@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use App\Services\Utility\GetPointService;
 use App\Services\Soap\TicketReservationRequestBuilder;
-use App\Http\Controllers\Test\Booking\BookingRequestController;
+use App\Http\Controllers\Soap\Booking\BookingController;
 use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
 
 class TicketReservationController extends Controller
@@ -30,15 +30,15 @@ class TicketReservationController extends Controller
     protected $ticketReservationRequestBuilder;    
     protected $craneOTASoapService;
     protected $checkArray;
-    protected $bookingRequestController;
+    protected $bookingController;
     protected $getPointService;
 
-    public function __construct(TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray, BookingRequestController $bookingRequestController, GetPointService $getPointService)
+    public function __construct(TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray, BookingController $bookingController, GetPointService $getPointService)
     {
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->checkArray = $checkArray;
-        $this->bookingRequestController = $bookingRequestController;
+        $this->bookingController = $bookingController;
         $this->getPointService = $getPointService;
     }
 
@@ -207,7 +207,7 @@ class TicketReservationController extends Controller
 
     }
 
-    public function guestTicketReservationCommit($paymentMethod, $paymentChannel, $preferredCurrency, $bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType) { 
+    public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType, $paymentMethod = null, $paymentChannel = null, $preferredCurrency = null) { 
          
         $user = auth()->user();
         // dd($user->id);
@@ -326,8 +326,8 @@ class TicketReservationController extends Controller
                         'invoice_id' => $invoice->id,
                         'device_type' => $deviceType,
                         'is_flight' => true,
-                        "payment_method" => $paymentMethod,
-                        "payment_channel" => $paymentChannel,
+                        "payment_method" => $paymentMethod ?? "not applicable",
+                        "payment_channel" => $paymentChannel ?? "not applicable",
                         'currency' => $preferredCurrency
                     ]);                    
                 
@@ -345,9 +345,9 @@ class TicketReservationController extends Controller
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
-                            'is_flight' => true,                            
-                            "payment_method" => $paymentMethod,
-                            "payment_channel" => $paymentChannel,
+                            'is_flight' => true,
+                            "payment_method" => $paymentMethod ?? "not applicable",
+                            "payment_channel" => $paymentChannel ?? "not applicable",
                             'currency' => $preferredCurrency
 
                         ]
@@ -404,9 +404,9 @@ class TicketReservationController extends Controller
                             'user_id' => $user->id,
                             'invoice_id' => $invoice->id,
                             'device_type' => $deviceType,
-                            'is_flight' => true,                            
-                            "payment_method" => $paymentMethod,
-                            "payment_channel" => $paymentChannel,
+                            'is_flight' => true,
+                            "payment_method" => $paymentMethod ?? "not applicable",
+                            "payment_channel" => $paymentChannel ?? "not applicable",
                             'currency' => $preferredCurrency
 
                         ]); 
@@ -425,7 +425,7 @@ class TicketReservationController extends Controller
             ]);
 
             if (!$user->is_guest) {
-                $routes = $this->bookingRequestController->readBooking($bookingId, $bookingReferenceId);
+                $routes = $this->bookingController->readBooking($bookingId, $bookingReferenceId);
                 // dump($response);     
                 
                 $totalPoint = 0;

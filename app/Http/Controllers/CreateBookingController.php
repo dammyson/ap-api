@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Date;
 use App\Services\Utility\GetPointService;
 use App\Services\Soap\CreateBookingBuilder;
 use App\Services\Wallet\VerificationService;
-use App\Services\Soap\CreateBookingTestBuilder;
 use App\Services\Wallet\FlutterVerificationService;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
@@ -31,28 +30,19 @@ class CreateBookingController extends Controller
     protected $craneOTASoapService;
     protected $craneAncillaryOTASoapService;
     protected $checkArray;
-    protected $createBookingTestBuilder;
     protected $ticketReservationRequestBuilder;
     protected $getPointService;
 
-    public function __construct(CreateBookingBuilder $createBookingBuilder, CreateBookingTestBuilder $createBookingTestBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray, GetPointService $getPointService) {
+    public function __construct(CreateBookingBuilder $createBookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray, GetPointService $getPointService) {
         $this->createBookingBuilder = $createBookingBuilder;
 
         $this->craneOTASoapService = app('CraneOTASoapService');
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->checkArray = $checkArray;
-        $this->createBookingTestBuilder = $createBookingTestBuilder;
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->getPointService = $getPointService;
     }
 
-    public function bankTranfer(Request $request) {
-        return response()->json([
-            "error" => false,
-            "message" => "page is still being built"
-        ]);
-        dd($request);
-    }
     public function createBooking(CreateBookingTwoARequest $request){
         // dd(auth()->user()->id);
         $validated = $request->validated();
