@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Test;
+namespace App\Http\Controllers\Soap;
 
 use App\Models\Booking;
 use App\Models\Invoice;

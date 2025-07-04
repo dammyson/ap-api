@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Http;
 use App\Services\Wallet\TopUpService;
 use App\Services\Wallet\VerificationService;
 use App\Services\Wallet\FlutterVerificationService;
-use App\Http\Controllers\Test\TicketReservationController;
+use App\Http\Controllers\Soap\TicketReservationController;
 
-class TestPaymentController extends Controller
+class PaymentController extends Controller
 {   
     protected $ticketReservationController;
     protected $tierController;
@@ -58,8 +58,8 @@ class TestPaymentController extends Controller
             // convert to naira (from kobo)
             $amount = $paymentChannel == "paystack" ? $amount / 100 : $amount;
 
-            // return  $this->ticketReservationController->guestTicketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
-            return  $this->ticketReservationController->guestTicketReservationCommit($paymentMethod, $paymentChannel, $preferredCurrency, $bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
+            // return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
+            return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType, $paymentMethod, $paymentChannel, $preferredCurrency );
         
         } catch (\Throwable $th) {
             

@@ -14,54 +14,53 @@ use App\Http\Controllers\FlightController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\WalletController;
-use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GamePlayController;
 use App\Http\Controllers\GameRuleController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserSurveyController;
-use App\Http\Controllers\TestPaymentController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Session\Middleware\StartSession;
 use App\Http\Controllers\Admin\SurveyController;
 use App\Http\Controllers\CancelFlightController;
 use App\Http\Controllers\GameCategoryController;
-use App\Http\Controllers\Test\AddSeatController;
-use App\Http\Controllers\Test\SeatMapController;
+use App\Http\Controllers\Soap\AddSeatController;
+use App\Http\Controllers\Soap\SeatMapController;
 use App\Http\Controllers\AnalyticsUserController;
 use App\Http\Controllers\CreateBookingController;
 use App\Http\Controllers\RedeemedRewardController;
-use App\Http\Controllers\Test\AddWeightController;
-use App\Http\Controllers\Test\DividePNRController;
+use App\Http\Controllers\Soap\AddWeightController;
+use App\Http\Controllers\Soap\DividePNRController;
 use App\Http\Controllers\SharePeacePointController;
-use App\Http\Controllers\Test\ReissuePNRController;
-use App\Http\Controllers\Test\VoidTicketController;
+use App\Http\Controllers\Soap\ReissuePNRController;
+use App\Http\Controllers\Soap\VoidTicketController;
 use App\Http\Controllers\Admin\LoginAdminController;
 use App\Http\Controllers\Guest\GuestLoginController;
-use App\Http\Controllers\Test\DivideDinerController;
-use App\Http\Controllers\Test\SegmentBaseController;
+use App\Http\Controllers\Soap\DivideDinerController;
+use App\Http\Controllers\Soap\SegmentBaseController;
 use App\Http\Controllers\Admin\ChangeAdminController;
-use App\Http\Controllers\Test\PenaltyRulesController;
+use App\Http\Controllers\Soap\PenaltyRulesController;
 use App\Http\Controllers\Admin\ProfileAdminController;
-use App\Http\Controllers\Test\AddWeightControllerTest;
+use App\Http\Controllers\Soap\AddWeightControllerTest;
 use App\Http\Controllers\Admin\CustomerAdminController;
 use App\Http\Controllers\Admin\RegisterAdminController;
 use App\Http\Controllers\Admin\DashboardAdminController;
-use App\Http\Controllers\Test\GetAvailabilityController;
-use App\Http\Controllers\Test\AvailableSpecialController;
-use App\Http\Controllers\Test\GetAirportMatrixController;
+use App\Http\Controllers\Soap\GetAvailabilityController;
+use App\Http\Controllers\Soap\AvailableSpecialController;
+use App\Http\Controllers\Soap\GetAirportMatrixController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\Admin\ActivityLogAdminController;
 use App\Http\Controllers\Admin\TeamMembersAdminController;
 use App\Http\Controllers\RedeemTicketPeacePointController;
-use App\Http\Controllers\Test\TicketReservationController;
+use App\Http\Controllers\Soap\TicketReservationController;
 use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OnepipeController;
-use App\Http\Controllers\Test\Booking\CancelBookingController;
-use App\Http\Controllers\Test\Booking\BookingRequestController;
-use App\Http\Controllers\Test\GetAirExtraChargesAndProductController;
-use App\Http\Controllers\Test\GetAirExtraChargesAndProductsController;
+use App\Http\Controllers\Soap\Booking\CancelBookingController;
+use App\Http\Controllers\Soap\Booking\BookingController;
+use App\Http\Controllers\Soap\GetAirExtraChargesAndProductController;
+use App\Http\Controllers\Soap\GetAirExtraChargesAndProductsController;
 use App\Http\Middleware\LastLogin;
 
 Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {        
@@ -205,26 +204,25 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
         Route::group(["prefix" => "booking"], function() {
             Route::group(["prefix" => "retrieve"], function() {
-                Route::post('retrieve-pnr-history', [BookingRequestController::class, 'retrievePNRHistory']);
-                Route::post('retrieve-ticket-history', [BookingRequestController::class, 'retrieveTicketHistory']);
+                Route::post('retrieve-pnr-history', [BookingController::class, 'retrievePNRHistory']);
+                Route::post('retrieve-ticket-history', [BookingController::class, 'retrieveTicketHistory']);
             });
 
             // Route::group(["prefix" => "read-booking"], function() {
-            //     Route::post('read-booking-tk', [BookingRequestController::class, 'readBookingTK']);
+            //     Route::post('read-booking-tk', [BookingController::class, 'readBookingTK']);
             //     Route::get('read-booking/{ID}/{referenceID}', [TicketReservationController::class, 'ticketReservationViewOnly']);
-            //     Route::post('read-booking/surname', [BookingRequestController::class, 'readBookingWithSurname']);
-            //     Route::get('read-booking/{ID}/{referenceID}', [BookingRequestController::class, 'readBooking']);
+            //     Route::post('read-booking/surname', [BookingController::class, 'readBookingWithSurname']);
+            //     Route::get('read-booking/{ID}/{referenceID}', [BookingController::class, 'readBooking']);
             // });
 
             Route::group(["prefix" => "read-booking"], function() {
-                Route::post('tk', [BookingRequestController::class, 'readBookingTk']);
-                Route::post('surname', [BookingRequestController::class, 'readBookingWithSurname']);
+                Route::post('tk', [BookingController::class, 'readBookingTk']);
+                Route::post('surname', [BookingController::class, 'readBookingWithSurname']);
 
             });
 
             Route::group(["prefix" => "create-booking"], function() {
                 Route::post('two-a', [CreateBookingController::class, 'createBooking']);
-                Route::post('bank-transfer/callback', [CreateBookingController::class, 'bankTranfer']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
                 Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
@@ -304,9 +302,9 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
 
     
     Route::prefix('verify-payment')->group(function () {
-        Route::post('/ref', [TestPaymentController::class, 'verifyTicketRef']);
-        Route::post('/tier-ref', [TestPaymentController::class, 'verifyTierRef']);
-        // Route::post('/ref-quick-teller', [TestPaymentController::class, 'verifyQuickTeller']);
+        Route::post('/ref', [PaymentController::class, 'verifyTicketRef']);
+        Route::post('/tier-ref', [PaymentController::class, 'verifyTierRef']);
+        // Route::post('/ref-quick-teller', [PaymentController::class, 'verifyQuickTeller']);
         Route::post('/ref-quick-teller', [OnepipeController::class, 'verifyQuickTeller']);
     });
 

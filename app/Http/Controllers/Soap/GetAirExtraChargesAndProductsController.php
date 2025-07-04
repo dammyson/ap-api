@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Test;
+namespace App\Http\Controllers\Soap;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

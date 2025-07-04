@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FlightController;
-use App\Http\Controllers\TestPaymentController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AnalyticsUserController;
 use App\Http\Controllers\Test\ReissuePNRController;
 use App\Http\Controllers\Guest\GuestLoginController;
