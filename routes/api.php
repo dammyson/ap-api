@@ -300,7 +300,6 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
     });
 
 
-    
     Route::prefix('verify-payment')->group(function () {
         Route::post('/ref', [PaymentController::class, 'verifyTicketRef']);
         Route::post('/tier-ref', [PaymentController::class, 'verifyTierRef']);
@@ -309,7 +308,6 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
     });
 
     Route::post('/upgrade-tier', [TierController::class, 'upgradeTier']);
-   
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']); 
     
