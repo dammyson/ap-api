@@ -51,7 +51,7 @@ class PaymentController extends Controller
 
             }
             $verified_request = $new_top_request->run();
-            // dd($new_top_request);
+            // dd($verified_request);
             
             $amount = $verified_request["data"]["amount"];
 

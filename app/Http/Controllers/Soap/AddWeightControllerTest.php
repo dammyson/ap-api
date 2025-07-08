@@ -122,7 +122,7 @@ class AddWeightControllerTest extends Controller
         $passengerName = $request->input('passengerName');
         $peaceId = $request->input('peaceId');
 
-
+        // dd("i ran");
         $user = $request->user();
         
         if ($user->is_guest) {
@@ -132,7 +132,7 @@ class AddWeightControllerTest extends Controller
     
     
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
+          
             if (!(isset($response['AirBookingResponse']))) {
                 return response()->json([
                     "error" => true,
@@ -237,7 +237,7 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dump($response);
+            dd($response);
             // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
             // $amount = 0;
 
