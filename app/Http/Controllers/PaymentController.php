@@ -67,7 +67,7 @@ class PaymentController extends Controller
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => $th->getMessage()
             ], 500);
         }  
     }
