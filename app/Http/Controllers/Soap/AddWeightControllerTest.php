@@ -237,7 +237,7 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dd($response);
+            // dd($response);
             // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
             // $amount = 0;
 
@@ -295,8 +295,7 @@ class AddWeightControllerTest extends Controller
                 $addedPrice = $amount;
             }
             
-            $invoice->is_paid = false;
-            $invoice->save();
+          
 
             // Use preg_match to extract the number
            
@@ -334,6 +333,9 @@ class AddWeightControllerTest extends Controller
 
             }
             
+            // set invoice is paid to false
+            $invoice->is_paid = false;
+            $invoice->save();
             
 
             return response()->json([
