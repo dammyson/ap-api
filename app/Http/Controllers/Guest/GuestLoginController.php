@@ -9,8 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\ScreenResolution;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Services\AutoGenerate\CreatePeaceId;
-use App\Services\AutoGenerate\GeneratePassword;
+use App\Services\AutoGenerate\Generate;
 use App\Services\AutoGenerate\GenerateRandom;
 
 class GuestLoginController extends Controller
@@ -18,9 +17,7 @@ class GuestLoginController extends Controller
     protected $createPeaceId;
     protected $generateRandom;
 
-    public function __construct(CreatePeaceId $createPeaceId, GenerateRandom $generateRandom) {
-        $this->createPeaceId = $createPeaceId;
-        $this->generateRandom = $generateRandom;
+    public function __construct() {
     }
 
     public function continueAsGuest(Request $request) {
@@ -28,14 +25,15 @@ class GuestLoginController extends Controller
          $deviceType = $request->input('device_type');
          $screenResolution = $request->input('screen_resolution');
          
-        // dd($this->createPeaceId->generateUniqueEmail());\
-        $guestPassword = $this->generateRandom->generateTemporaryPassword();
+        $autogenerate = new GenerateRandom();
+
+        $guestPassword = $autogenerate->generateTemporaryPassword();
          $create = User::create([
-             'first_name' => $this->createPeaceId->generateName(),
-             'last_name' => $this->createPeaceId->generateName(),
-             'email' => $this->createPeaceId->generateUniqueEmail(),
-             'phone_number' => $this->createPeaceId->generateUniquePhoneNo(),
-             'peace_id' => $this->createPeaceId->generateUniquePeaceId(),
+             'first_name' => $autogenerate->generateName(),
+             'last_name' => $autogenerate->generateName(),
+             'email' => $autogenerate->generateUniqueEmail(),
+             'phone_number' => $autogenerate->generateUniquePhoneNo(),
+             'peace_id' => $autogenerate->generateUniquePeaceId(),
              // 'peace_id' => $peace_id,
              'password' => $guestPassword,
              'status' => $request->input('status') ?? null,
