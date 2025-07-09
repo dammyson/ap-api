@@ -332,10 +332,22 @@ class AddWeightControllerTest extends Controller
                 $message = "Baggages added successfully";
 
             }
+
+            if ($amount == $invoice->amount) {
+                return response()->json([
+                     "error" => true,
+                    "message" => "unable to add baggage try again later"
+                    ]                   
+                , 500);
+            }
+
+            if ($amount != $invoice->amount) {
+                // set invoice is paid to false
+                $invoice->is_paid = false;
+                $invoice->save();
+            }
             
-            // set invoice is paid to false
-            $invoice->is_paid = false;
-            $invoice->save();
+            
             
 
             return response()->json([
