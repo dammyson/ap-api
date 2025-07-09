@@ -31,7 +31,7 @@ class OnepipeController extends Controller
         $bookingCreatedAt = $request['booking_created_at'];
         $transactionRef =  $this->generateRandom->generateRandomNumber();
 
-        dd(env('ONE_PIPE_SECRET'), env('ONE_PIPE_TRANSACT_URL'));
+        // dd(env('ONE_PIPE_SECRET'), env('ONE_PIPE_TRANSACT_URL'));
        
         $response = Http::withHeaders([
             'Authorization' =>  'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
