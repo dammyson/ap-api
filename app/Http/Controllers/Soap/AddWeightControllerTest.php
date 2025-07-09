@@ -341,11 +341,11 @@ class AddWeightControllerTest extends Controller
                 , 500);
             }
 
-            if ($amount != $invoice->amount) {
-                // set invoice is paid to false
-                $invoice->is_paid = false;
-                $invoice->save();
-            }
+           
+            // set invoice is paid to false
+            $invoice->is_paid = false;
+            $invoice->save();
+            
             
             
             
