@@ -22,7 +22,7 @@ class OnepipeController extends Controller
     public function generateVirtualAccount(Request $request) {
 
         try {
-            
+
             $user = $request->user();
             // dd(now());
             $requestRef = $this->generateRandom->generateRandomNumber();
@@ -99,6 +99,7 @@ class OnepipeController extends Controller
         } catch(\Throwable $th) {
             return response()->json([
                 "error" => true,
+                "actual_error" => $th->getMessage(),
                 "message" => "something went wrong"
             ], 500);
         }
