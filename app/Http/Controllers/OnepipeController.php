@@ -20,79 +20,88 @@ class OnepipeController extends Controller
     }
 
     public function generateVirtualAccount(Request $request) {
-        $user = $request->user();
-        // dd(now());
-        $requestRef = $this->generateRandom->generateRandomNumber();
-        $secret = env('ONE_PIPE_SECRET');
-        $signature = md5("{$requestRef};{$secret}");
-        $user = $request->user();
-        $bookingId = $request['booking_id'];
-        $timeLimit = $request['time_limit'];
-        $bookingCreatedAt = $request['booking_created_at'];
-        $transactionRef =  $this->generateRandom->generateRandomNumber();
 
-        dd(env('ONE_PIPE_SECRET'), env('ONE_PIPE_TRANSACT_URL'));
-       
-        $response = Http::withHeaders([
-            'Authorization' =>  'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
-            'Signature' => $signature, // md5 hash of ref;secret
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json'
-        ])->post(env('ONE_PIPE_TRANSACT_URL'), [
-            "request_ref"=> $requestRef,
-            "request_type"=> "create_booking",
-            "auth"=> [
-                "type"=> null,
-                "secure"=> null,
-                "auth_provider"=> null,
-                "route_mode"=> null
-            ],
-            "transaction"=> [
-                "mock_mode"=> "live",
-                "transaction_ref"=> $transactionRef,
-                "transaction_desc"=> "Account creation",
-                "transaction_ref_parent"=> null,
-                "amount"=> $request['amount'],
-                "customer"=> [
-                    "customer_ref"=> $user->id,
-                    "firstname"=> $user->first_name,
-                    "surname"=> $user->last_name,
-                    "email"=> $user->email,
-                    "mobile_no"=> $user->phone_number
+        try {
+            
+            $user = $request->user();
+            // dd(now());
+            $requestRef = $this->generateRandom->generateRandomNumber();
+            $secret = env('ONE_PIPE_SECRET');
+            $signature = md5("{$requestRef};{$secret}");
+            $user = $request->user();
+            $bookingId = $request['booking_id'];
+            $timeLimit = $request['time_limit'];
+            $bookingCreatedAt = $request['booking_created_at'];
+            $transactionRef =  $this->generateRandom->generateRandomNumber();
+
+            // dd(env('ONE_PIPE_SECRET'), env('ONE_PIPE_TRANSACT_URL'));
+        
+            $response = Http::withHeaders([
+                'Authorization' =>  'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
+                'Signature' => $signature, // md5 hash of ref;secret
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ])->post(env('ONE_PIPE_TRANSACT_URL'), [
+                "request_ref"=> $requestRef,
+                "request_type"=> "create_booking",
+                "auth"=> [
+                    "type"=> null,
+                    "secure"=> null,
+                    "auth_provider"=> null,
+                    "route_mode"=> null
                 ],
-                "meta"=> [
-                    "merchant_id"=> $this->generateRandom->generateRandomNumber(),
-                    "pnr"=> $bookingId,
-                    "travel_date"=> "",                     
-                    "currency"=> $request['currency']
-                ],
-                "details"=> [
-                    "title"=> $user->title,
-                    "reference_number"=> $this->generateRandom->generateRandomNumber(),
-                    "service_number"=> "",
-                    "booking_creation"=> $bookingCreatedAt, 
-                    "booking_expiry" => $timeLimit                    
-                ]
-            ]]);
+                "transaction"=> [
+                    "mock_mode"=> "live",
+                    "transaction_ref"=> $transactionRef,
+                    "transaction_desc"=> "Account creation",
+                    "transaction_ref_parent"=> null,
+                    "amount"=> $request['amount'],
+                    "customer"=> [
+                        "customer_ref"=> $user->id,
+                        "firstname"=> $user->first_name,
+                        "surname"=> $user->last_name,
+                        "email"=> $user->email,
+                        "mobile_no"=> $user->phone_number
+                    ],
+                    "meta"=> [
+                        "merchant_id"=> $this->generateRandom->generateRandomNumber(),
+                        "pnr"=> $bookingId,
+                        "travel_date"=> "",                     
+                        "currency"=> $request['currency']
+                    ],
+                    "details"=> [
+                        "title"=> $user->title,
+                        "reference_number"=> $this->generateRandom->generateRandomNumber(),
+                        "service_number"=> "",
+                        "booking_creation"=> $bookingCreatedAt, 
+                        "booking_expiry" => $timeLimit                    
+                    ]
+                ]]);
 
-            $booking = Booking::where('booking_id', $bookingId)->first();
-                
-            if (!$booking) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "please ensure bookingId is correct"
-                ], 400);
-            }
+                $booking = Booking::where('booking_id', $bookingId)->first();
+                    
+                if (!$booking) {
+                    return response()->json([
+                        "error" => true,
+                        "message" => "please ensure bookingId is correct"
+                    ], 400);
+                }
 
-            $booking->request_ref = $requestRef;
-            $booking->save();
-            // Booking::create([
-            //     'booking_id' => $pnr,
-            //     'request_ref' => $request_ref
-            // ]);
+                $booking->request_ref = $requestRef;
+                $booking->save();
+                // Booking::create([
+                //     'booking_id' => $pnr,
+                //     'request_ref' => $request_ref
+                // ]);
 
 
-        // dd($response->body());
+            // dd($response->body());
+        } catch(\Throwable $th) {
+            return response()->json([
+                "error" => true,
+                "message" => "something went wrong"
+            ], 500);
+        }
         
       
         return response()->json([
