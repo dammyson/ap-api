@@ -36,7 +36,7 @@ class OnepipeController extends Controller
             'Signature' => $signature, // md5 hash of ref;secret
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->post(env('ONE_PIPE_TRANSACT_URL'), [
+        ])->post("https://api.paygateplus.ng/v2/transact", [
             "request_ref"=> $requestRef,
             "request_type"=> "create_booking",
             "auth"=> [
