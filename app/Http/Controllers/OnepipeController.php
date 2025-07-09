@@ -30,13 +30,15 @@ class OnepipeController extends Controller
         $timeLimit = $request['time_limit'];
         $bookingCreatedAt = $request['booking_created_at'];
         $transactionRef =  $this->generateRandom->generateRandomNumber();
+
+        dd(env('ONE_PIPE_SECRET'), env('ONE_PIPE_TRANSACT_URL'));
        
         $response = Http::withHeaders([
             'Authorization' =>  'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
             'Signature' => $signature, // md5 hash of ref;secret
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->post("https://api.paygateplus.ng/v2/transact", [
+        ])->post(env('ONE_PIPE_TRANSACT_URL'), [
             "request_ref"=> $requestRef,
             "request_type"=> "create_booking",
             "auth"=> [
