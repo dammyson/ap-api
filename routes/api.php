@@ -76,6 +76,7 @@ Route::group(['prefix' => 'user'], function ()  {
     Route::post('verify/otp', [RegisterController::class, 'verifyOtp']);
     Route::post('reset/password', [RegisterController::class, 'resetPassword']);
     Route::post('login', [LoginController::class, 'login']);
+    Route::post('google-verify', [LoginController::class, 'googleVerify']);
 });
 
 Route::group(['prefix' => 'admin/'], function () {

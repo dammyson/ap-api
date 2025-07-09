@@ -184,42 +184,6 @@ class OnepipeController extends Controller
     }
 
     public function paymentTransferCallback(Request $request) {
-        /*
-        curl --location '' \
-        --header 'Content-Type: application/json' \
-        --header 'Signature:  {{MD5Hash(request_ref;app_secret)}}' \
-        --data-raw '{
-            "request_ref": "{{request_ref}}",
-            "request_type": "transaction_notification",
-            "requester": "FidelityVirtual",
-            "mock_mode": "live",
-            "details": {
-                "amount": 10000000,
-                "status": "Successful",
-                "provider": "FidelityVirtual",
-                "customer_ref": "2347012382234",
-                "customer_email": "johndoe@gmail.com",
-                "transaction_ref": "{{transaction_ref}}",
-                "customer_surname": "John",
-                "customer_firstname": "Doe",
-                "transaction_desc": "{{transaction_description}}",
-                "transaction_type": "collect",
-                "customer_mobile_no": "2347012382234",
-                "meta": {
-                    "reference_number": "70279922332",
-                    "service_number": "PHCLOS",
-                    "pnr": "AVLP6D",
-                    "transaction_date": "2022-11-18-11-41-58",
-                    "booking_amount": 10000000
-                },
-                "data": {}
-            },
-            "app_info": {
-                "app_code": "{{your_app_code}}"
-            }
-        }'
-        */
-
         $requestRef = $request['request_ref'];
         $requestType = $request['request_type'];
         $requester = $request['requester'];
@@ -257,24 +221,6 @@ class OnepipeController extends Controller
                 "message" => "header credentials dont match record"
             ], 403);
         } 
-
-     
-        // if ($status == 'Failed') {
-        //     return response()->json([
-        //         "error" => true,
-        //         "message" => "Payment failed"
-        //     ], 400);
-        // }
-
-        // // read booking amount from crane
-        // if ($amount < ) {
-        //     return response()->json([
-        //         "error" => true,
-        //         "message" => "insufficient amount paid. Please contact office for refunded"
-        //     ], 400);
-        // }      
-
-
 
     }
 

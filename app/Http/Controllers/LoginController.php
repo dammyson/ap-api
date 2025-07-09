@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tier;
 use App\Models\User;
 use App\Models\Device;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ScreenResolution;
-// use App\Services\Utility\CheckDevice;
-
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
-use App\Services\Utility\CheckDevice;
-use App\Notifications\PasswordChanged;
+use App\Notifications\LoginNotification;
 use App\Services\Point\TierPointService;
 use App\Http\Requests\Auth\UserLoginRequest;
-use App\Notifications\LoginNotification;
+use App\Services\AutoGenerate\GenerateRandom;
 
 class LoginController extends Controller
 {
-    // protected $checkDevice;
-    // public function __construct(CheckDevice $checkDevice) {
-    //     $this->$checkDevice = $checkDevice;
-    // }
-
+   
     protected $tierService;
 
     public function __construct(TierPointService $tierService)
@@ -32,13 +27,11 @@ class LoginController extends Controller
     //
     public function login(UserLoginRequest $request)
     {
-        // dd(now()->setTimezone('Africa/Lagos'));
         try {
 
-            // dd($request->all());
             $deviceType = $request->input('device_type');
             $screenResolution = $request->input('screen_resolution');
-            // $user = User::where('email', $request->credential);
+
             $user = User::where(function ($query) use ($request) {
                 $query->where('email', $request->credential)
                     ->orWhere('peace_id', $request->peace_id);
@@ -49,8 +42,6 @@ class LoginController extends Controller
             if (!$user) {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
             }
-
-           
 
             if ($request->has('firebase_token')) {
                 $user->firebase_token = $request->firebase_token;
@@ -85,63 +76,59 @@ class LoginController extends Controller
                 // Save the token
                 $tokenObject->save();
 
-                // $userAgent = $request->header('User-Agent');
-
-                // $deviceType = $this->checkDevice->checkDeviceType($userAgent, $user);
-                // $screenResolution = $this->checkDevice->saveScreenSize($user, $request->screen_resolution);
+                $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
 
 
+                // if ($deviceType) {
+                //     $userDevice = Device::where('user_id', $user->id)->first();
+                //     $user->device_type = $deviceType;
+                //     $user->save();
 
-                if ($deviceType) {
-                    $userDevice = Device::where('user_id', $user->id)->first();
-                    $user->device_type = $deviceType;
-                    $user->save();
+                //     if (!$userDevice) {
+                //         Device::create([
+                //             'user_id' => $user->id,
+                //             'device_type' => $deviceType
+                //         ]);
+                //     } else {
+                //         $userDevice->device_type = $deviceType;
+                //         $userDevice->save();
+                //     }
+                // }
 
-                    if (!$userDevice) {
-                        Device::create([
-                            'user_id' => $user->id,
-                            'device_type' => $deviceType
-                        ]);
-                    } else {
-                        $userDevice->device_type = $deviceType;
-                        $userDevice->save();
-                    }
-                }
+                // if ($screenResolution) {
+                //     $userScreenResolution = ScreenResolution::where('user_id', $user->id)->first();
 
-                if ($screenResolution) {
-                    $userScreenResolution = ScreenResolution::where('user_id', $user->id)->first();
+                //     if (!$userScreenResolution) {
+                //         ScreenResolution::create([
+                //             'user_id' => $user->id,
+                //             'screen_resolution' => $screenResolution
+                //         ]);
+                //     } else {
+                //         $userScreenResolution->screen_resolution = $screenResolution;
+                //         $userScreenResolution->save();
+                //     }
+                // }
 
-                    if (!$userScreenResolution) {
-                        ScreenResolution::create([
-                            'user_id' => $user->id,
-                            'screen_resolution' => $screenResolution
-                        ]);
-                    } else {
-                        $userScreenResolution->screen_resolution = $screenResolution;
-                        $userScreenResolution->save();
-                    }
-                }
+                // // $user->notify(new PasswordChanged($details));
+                // $user->last_login = now()->setTimezone('Africa/Lagos');
+                // $user->status = 'active';
+                // $user->save();
 
-                // $user->notify(new PasswordChanged($details));
-                $user->last_login = now()->setTimezone('Africa/Lagos');
-                $user->status = 'active';
-                $user->save();
-
-                if (!$user->is_guest) {
-                    $details = [
-                        'title' => 'New Message',
-                        'body' => 'You have received a new message.',
-                        'url' => '/messages/1'
-                    ];
+                // if (!$user->is_guest) {
+                //     $details = [
+                //         'title' => 'New Message',
+                //         'body' => 'You have received a new message.',
+                //         'url' => '/messages/1'
+                //     ];
         
-                    $currentTier = $user->currentTier();
+                //     $currentTier = $user->currentTier();
         
-                    if (!$currentTier) {
-                        $this->tierService->assignTierWithDefaultFallback($user->id);
-                    }   
+                //     if (!$currentTier) {
+                //         $this->tierService->assignTierWithDefaultFallback($user->id);
+                //     }   
                     
-                    $user->notify(new LoginNotification($details));
-                }
+                //     $user->notify(new LoginNotification($details));
+                // }
 
                 return response()->json([
                     'is_correct' => true,
@@ -164,6 +151,109 @@ class LoginController extends Controller
             ], 500);
             
         }
+    }
+
+    public function googleVerify(Request $request)
+    {         
+        $deviceType = $request->input('device_type');
+        $screenResolution = $request->input('screen_resolution');
+        
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            $peace_id = (new GenerateRandom())->generateUniquePeaceId();
+            // dd($peace_id);
+            $tier = Tier::where('rank', 1)->first();
+            $user = User::create([
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'email' => $request->input('email'),
+                'phone_number' => "000000000",
+                'peace_id' => $peace_id,
+                // 'peace_id' => $peace_id,
+                'password' => Hash::make(Str::random(16)),
+                // 'status' => $request->input('status') ?? null,
+                'status' => 'active',
+                'device_type' => $deviceType,
+                'points' => 50, // allocate appropriate pointts once decided
+                "firebase_token" => $request->firebase_token,
+                'tier_id' => $tier->id,
+                'last_login' => now()->setTimezone('Africa/Lagos')
+            ]);
+
+        }
+
+        
+        $tokenResult = $user->createToken('Nova');
+        $data['token'] = $tokenResult->accessToken;
+        $data['user'] = $user;
+        
+        $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
+      
+
+         return response()->json([
+            'is_correct' => true,
+            'message' => 'Login Successful',
+            // 'deviceType' => $deviceType,
+            // 'screenResolution' => $screenResolution,
+            'data' => $data
+        ], 200);
+    }
+
+          
+    
+    private function setDeviceAndScreenResolution(User $user, $deviceType = null, $screenResolution = null) {
+        if ($deviceType) {
+            $userDevice = Device::where('user_id', $user->id)->first();
+            $user->device_type = $deviceType;
+            $user->save();
+
+            if (!$userDevice) {
+                Device::create([
+                    'user_id' => $user->id,
+                    'device_type' => $deviceType
+                ]);
+            } else {
+                $userDevice->device_type = $deviceType;
+                $userDevice->save();
+            }
+        }
+
+        if ($screenResolution) {
+            $userScreenResolution = ScreenResolution::where('user_id', $user->id)->first();
+
+            if (!$userScreenResolution) {
+                ScreenResolution::create([
+                    'user_id' => $user->id,
+                    'screen_resolution' => $screenResolution
+                ]);
+            } else {
+                $userScreenResolution->screen_resolution = $screenResolution;
+                $userScreenResolution->save();
+            }
+        }
+
+        $user->last_login = now()->setTimezone('Africa/Lagos');
+        $user->status = 'active';
+        $user->save();
+
+        if (!$user->is_guest) {
+            $details = [
+                'title' => 'New Message',
+                'body' => 'You have received a new message.',
+                'url' => '/messages/1'
+            ];
+
+            $currentTier = $user->currentTier();
+
+            if (!$currentTier) {
+                $this->tierService->assignTierWithDefaultFallback($user->id);
+            }   
+            
+            $user->notify(new LoginNotification($details));
+        }
+
+
+       
     }
 
     public function logout()
