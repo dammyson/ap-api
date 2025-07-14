@@ -86,7 +86,7 @@ class OnepipeController extends Controller
                 if (!$booking) {
                     return response()->json([
                         "error" => true,
-                        "message" => "please ensure bookingId is correct"
+                        "message" => "please ensure bookingId is correct",
                     ], 400);
                 }
 
@@ -114,7 +114,9 @@ class OnepipeController extends Controller
             'booking_id' => $bookingId,
             "request_ref" => $requestRef,
             "transaction_ref" => $transactionRef,
-            'response' => $response
+            'response' => $response,
+            'secret' => $secret,
+            'bearer_key' => $bearerKey 
         ], $response->status());
      
     }
