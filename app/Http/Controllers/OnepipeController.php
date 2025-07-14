@@ -103,7 +103,10 @@ class OnepipeController extends Controller
             return response()->json([
                 "error" => true,
                 "actual_error" => $th->getMessage(),
-                "message" => "something went wrong"
+                "message" => "something went wrong",
+                'secret' => $secret,
+                'bearer_key' => $bearerKey,
+                'url' => $url
             ], 500);
         }
         
