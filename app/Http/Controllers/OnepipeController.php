@@ -26,7 +26,9 @@ class OnepipeController extends Controller
             $user = $request->user();
             // dd(now());
             $requestRef = $this->generateRandom->generateRandomNumber();
-            $secret = env('ONE_PIPE_SECRET');
+            $secret = config('services.one_pipe.secret');
+            $bearerKey = config('services.one_pipe.bearer_key');
+            $url = config('services.one_pipe.url');
             $signature = md5("{$requestRef};{$secret}");
             $user = $request->user();
             $bookingId = $request['booking_id'];
@@ -34,14 +36,15 @@ class OnepipeController extends Controller
             $bookingCreatedAt = $request['booking_created_at'];
             $transactionRef =  $this->generateRandom->generateRandomNumber();
 
+            // dd($secret, $bearerKey, $url);
             // dd(env('ONE_PIPE_SECRET'), env('ONE_PIPE_TRANSACT_URL'));
         
             $response = Http::withHeaders([
-                'Authorization' =>  'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
+                'Authorization' =>  'Bearer ' . $bearerKey, // move this to env once test is complete
                 'Signature' => $signature, // md5 hash of ref;secret
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json'
-            ])->post(env('ONE_PIPE_TRANSACT_URL'), [
+            ])->post($url, [
                 "request_ref"=> $requestRef,
                 "request_type"=> "create_booking",
                 "auth"=> [
@@ -123,6 +126,7 @@ class OnepipeController extends Controller
         $bearerKey = config('services.one_pipe.bearer_key');
         $url = config('services.one_pipe.url');
 
+        // dd($secret, $bearerKey, $url);
         // $secret = env('ONE_PIPE_SECRET');
         $requestRef = $request->input('request_ref');
         $bookingId = $request->input('booking_id');
