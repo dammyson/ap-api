@@ -119,8 +119,11 @@ class OnepipeController extends Controller
     public function queryPaymentStatus(Request $request) {
         $bankName = $request['bank_name'];
 
-        $secret = env('ONE_PIPE_SECRET');
-        // $secret = env('ONEPIPE_SECRET');
+        $secret = config('services.one_pipe.secret');
+        $bearerKey = config('services.one_pipe.bearer_key');
+        $url = config('services.one_pipe.url');
+
+        // $secret = env('ONE_PIPE_SECRET');
         $requestRef = $request->input('request_ref');
         $bookingId = $request->input('booking_id');
         $signature = md5("{$request->input('request_ref')};{$secret}");
@@ -137,11 +140,11 @@ class OnepipeController extends Controller
 
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
+            'Authorization' => 'Bearer ' . $bearerKey, // move this to env once test is complete
             'Signature' => $signature, // md5 hash of ref;secret
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
-        ])->post(env('ONE_PIPE_TRANSACT_QUERY_URL'), [
+        ])->post($url, [
             'request_ref' => $requestRef,
             'request_type' => 'create_booking',
             'auth' => [
@@ -239,7 +242,7 @@ class OnepipeController extends Controller
     public function verifyQuickTeller(Request $request) {
 
         try {
-        
+
             $merchantCode = $request->input('merchant_code');
             $transactionReference = $request->input('transaction_reference');
             $amount = $request->input('amount');
