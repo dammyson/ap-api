@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Mail;
 use App\Services\Utility\CheckDevice;
 use App\Services\Point\TierPointService;
 use App\Http\Requests\Auth\VerifyOtpRequest;
-use App\Services\AutoGenerate\CreatePeaceId;
 use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
@@ -28,15 +27,12 @@ use Google\Service\Walletobjects\SignUpInfo;
 
 class RegisterController extends Controller
 {
-    //
-    public $createPeaceId;
     // public $checkDevice;
 
     protected $tierService;
 
-    public function __construct(CreatePeaceId $createPeaceId, TierPointService $tierService)
+    public function __construct(TierPointService $tierService)
     {
-        $this->createPeaceId = $createPeaceId;
         // $this->checkDevice = $checkDevice;
         $this->tierService = $tierService;
     }
