@@ -26,9 +26,9 @@ class OnepipeController extends Controller
             $user = $request->user();
             // dd(now());
             $requestRef = $this->generateRandom->generateRandomNumber();
-            $secret = config('services.one_pipe.secret');
-            $bearerKey = config('services.one_pipe.bearer_key');
-            $url = config('services.one_pipe.url');
+            $secret = config('app.one_pipe.secret');
+            $bearerKey = config('app.one_pipe.bearer_key');
+            $url = config('app.one_pipe.url');
             $signature = md5("{$requestRef};{$secret}");
             $user = $request->user();
             $bookingId = $request['booking_id'];
@@ -114,20 +114,16 @@ class OnepipeController extends Controller
             "data" => $response->body(),
             'booking_id' => $bookingId,
             "request_ref" => $requestRef,
-            "transaction_ref" => $transactionRef,
-            'response' => $response,
-            'secret' => $secret,
-            'bearer_key' => $bearerKey 
-        ], $response->status());
+            "transaction_ref" => $transactionRef
+        ]);
      
     }
 
     public function queryPaymentStatus(Request $request) {
-        $bankName = $request['bank_name'];
 
-        $secret = config('services.one_pipe.secret');
-        $bearerKey = config('services.one_pipe.bearer_key');
-        $url = config('services.one_pipe.url');
+        $secret = config('app.one_pipe.secret');
+        $bearerKey = config('app.one_pipe.bearer_key');
+        $url = config('app.one_pipe.query_url');
 
         // dd($secret, $bearerKey, $url);
         // $secret = env('ONE_PIPE_SECRET');
@@ -145,6 +141,8 @@ class OnepipeController extends Controller
             ], 400);
         }
 
+
+        // dd($bearerKey, $signature, $requestRef, $request->input('transaction_ref'));
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearerKey, // move this to env once test is complete
@@ -164,7 +162,7 @@ class OnepipeController extends Controller
             ]
         ]);
         
-        // dump($response->json());
+    //    return $response->json();
         // dd($response->json()); 
         // return $response;
      
@@ -192,16 +190,13 @@ class OnepipeController extends Controller
         }
 
         $currency = $response["data"]["provider_response"]["meta"]["account"]["currency_code"];
+        $bankName = $response["data"]["provider_response"]["meta"]["account"]["bank_name"];
         $pnr = $response["data"]["provider_response"]["meta"]["pnr"];
-        $amount = $response["data"]["provider_response"]["meta"]["booking_amount"];
+        $bookingAmount = $response["data"]["provider_response"]["meta"]["booking_amount"];
+        $paymentAmount = $response["data"]["provider_response"]["meta"]["payment_amount"];
         $deviceType = $request['device_type'];
-
-        // convert to naira (from kobo)
-        $amount = $amount / 100;
-
-        // dd(["currecny" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
-                            
-        return  $this->ticketReservationController->ticketReservationCommit("bank transfer", $bankName , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
+      
+        return  $this->ticketReservationController->ticketReservationCommit($pnr,$booking->booking_reference_id, $paymentAmount, $booking->invoice_id, $deviceType, "bank transfer", $bankName ,  $currency);
 
     }
 
@@ -330,8 +325,4 @@ class OnepipeController extends Controller
             ]);
         }
     }
-
-  
-   
-   
 }
