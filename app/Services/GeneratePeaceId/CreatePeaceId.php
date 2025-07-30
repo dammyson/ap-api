@@ -20,7 +20,8 @@ class CreatePeaceId {
       
     }
 
-    public function generatePeaceId() { '-' . time();
+    public function generatePeaceId() { 
+        '-' . time();
         
         // Define a set of digits
         $digits = '0123456789';
