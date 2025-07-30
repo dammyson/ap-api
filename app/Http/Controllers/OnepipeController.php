@@ -195,8 +195,10 @@ class OnepipeController extends Controller
         $bookingAmount = $response["data"]["provider_response"]["meta"]["booking_amount"];
         $paymentAmount = $response["data"]["provider_response"]["meta"]["payment_amount"];
         $deviceType = $request['device_type'];
+
+        // dd($bookingAmount, $paymentAmount);
       
-        return  $this->ticketReservationController->ticketReservationCommit($pnr,$booking->booking_reference_id, $paymentAmount, $booking->invoice_id, $deviceType, "bank transfer", $bankName ,  $currency);
+        return  $this->ticketReservationController->ticketReservationCommit($pnr,$booking->booking_reference_id, $bookingAmount, $booking->invoice_id, $deviceType, "bank transfer", $bankName ,  $currency);
 
     }
 
