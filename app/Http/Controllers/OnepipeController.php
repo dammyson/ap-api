@@ -128,9 +128,9 @@ class OnepipeController extends Controller
     public function queryPaymentStatus(Request $request) {
         $bankName = $request['bank_name'];
 
-        $secret = config('services.one_pipe.secret');
-        $bearerKey = config('services.one_pipe.bearer_key');
-        $url = config('services.one_pipe.url');
+        $secret = config('app.one_pipe.secret');
+        $bearerKey = config('app.one_pipe.bearer_key');
+        $url = config('app.one_pipe.url');
 
         // dd($secret, $bearerKey, $url);
         // $secret = env('ONE_PIPE_SECRET');
