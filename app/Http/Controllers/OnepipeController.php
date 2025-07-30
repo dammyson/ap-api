@@ -26,9 +26,9 @@ class OnepipeController extends Controller
             $user = $request->user();
             // dd(now());
             $requestRef = $this->generateRandom->generateRandomNumber();
-            $secret = config('services.one_pipe.secret');
-            $bearerKey = config('services.one_pipe.bearer_key');
-            $url = config('services.one_pipe.url');
+            $secret = config('app.one_pipe.secret');
+            $bearerKey = config('app.one_pipe.bearer_key');
+            $url = config('app.one_pipe.url');
             $signature = md5("{$requestRef};{$secret}");
             $user = $request->user();
             $bookingId = $request['booking_id'];
