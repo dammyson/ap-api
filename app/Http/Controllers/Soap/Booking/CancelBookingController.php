@@ -55,6 +55,7 @@ class CancelBookingController extends Controller
     
             $response = $this->craneOTASoapService->run($function, $xml);
             // dd($response);
+            // $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
             $userBooking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->where('is_cancelled', false)->first();
               
             if (!$userBooking) {
