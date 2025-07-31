@@ -46,8 +46,6 @@ class BookingController extends Controller
 
             $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
 
-            
-            // dd($booking);
             if (!$booking) {
                 return response()->json([
                     'error' => true,
