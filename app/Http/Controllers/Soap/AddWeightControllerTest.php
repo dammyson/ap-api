@@ -333,19 +333,21 @@ class AddWeightControllerTest extends Controller
 
             }
 
-            $invoice->is_paid = false;
-            $invoice->save();
                 
             if ($amount == $invoice->amount) {
-                 // set invoice is paid to false
-              
+                // set invoice as true (since weight was not added)
+                $invoice->is_paid = true;
+                $invoice->save();
+
                 return response()->json([
                     "error" => true,
                     "message" => "unable to add baggage try again later"
-                ]                   
-                , 500);
+                ], 500);
             }
             
+            // set invoice as false if baggages was added
+            $invoice->is_paid = false;
+            $invoice->save();
 
             return response()->json([
                 "error" => false,
