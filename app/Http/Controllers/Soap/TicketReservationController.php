@@ -44,88 +44,26 @@ class TicketReservationController extends Controller
 
     public function ticketReservationViewOnly(Request $request) {
         $bookingId = $request->input('ID');
-        $peaceId = $request->input('peace_id');
-        $lastName = $request->input('surname');
+        $bookingReferenceId = $request->input('referenceID');
         $preferredCurrency = $request->input('preferred_currency');
 
         try {
 
-            if ($peaceId) {
-                $booking = Booking::where('booking_id', $bookingId)
-                    ->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
-                
-            } else if ($lastName) {
-                $booking = Booking::where('booking_id', $bookingId)
-                    ->where('last_name', $lastName)->where('is_cancelled', false)->first();
-            }
-            
-            if (!$booking) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'no booking found'
-                ], 500);
-            }
-
-            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-    
-
+           
     
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
     
             $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
                 $preferredCurrency,
-                $booking->booking_id,
-                $booking->booking_reference_id
+                $bookingId,
+                $bookingReferenceId
             );    
             
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            // dd($response);
+            dd($response);
 
-            if (isset($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']) &&
-                $this->checkArray->isAssociativeArray($response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'])) {
-                    // dd('I ran');
-                    $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'] = 
-                    [$response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList']];
-            }
-
-            $bookOriginDestinationOptionLists = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
-
-            if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
-                $filteredOptions = array_filter($bookOriginDestinationOptionLists, function ($option) {
-                    return array_key_exists('bookFlightSegmentList', $option);
-                });
-
-                $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'] = $filteredOptions;
-
-                foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
-                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
-                    if(array_key_exists('deiCode', $flightNotes)) {
-                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
-                        
-                    }
-                    
-                }
-
-            } else if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists) && count($bookOriginDestinationOptionLists) > 1) {
-                
-                foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
-                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
-    
-                    if(array_key_exists('deiCode', $flightNotes)) {
-                        $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
-                    
-                    }
-                }
-
-            } else {
-                $flightNotes = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
-
-                if(array_key_exists('deiCode', $flightNotes)) {
-                    $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
-                
-                }
-            }
+            
             
         } catch (\Throwable $th) {
             
@@ -145,67 +83,6 @@ class TicketReservationController extends Controller
 
     }
 
-    public function testTicketReservationCommit(Request $request) {
-        
-       
-        $bookingId = $request->input('ID');
-        $bookingReferenceId = $request->input('reference_id');
-        $paidAmount = $request->input('value');
-        $preferredCurrency = $request->input('preferred_currency');
-        // dd("i ran");
-        
-        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(  
-            $preferredCurrency,     
-            $bookingId,
-            $bookingReferenceId,           
-            $paidAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
-          
-        );
-        // dd($xml);
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
-
-        $response = $this->craneOTASoapService->run($function, $xml);
-        // dd($response);
-        $totalDistance = 0;
-
-        $bookOriginDestinationOptionLists =   $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
-        if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
-
-            foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
-                $totalDistance += $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['distance'];
-
-
-            }
-
-        } else {
-            $totalDistance = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['distance'];
-        }
-
-        $user = $request->user();
-
-        $bookOriginDestinationOptionLists =   $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
-        if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
-
-            foreach($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
-                $totalDistance += $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['distance'];
-
-
-            }
-
-        } else {
-            $totalDistance = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['distance'];
-        }
-
-        $user->addMilesFromKilometers($totalDistance);
-
-        return [
-            "user" => $user,
-            "response" => $response
-        ];
-
-
-    }
 
     public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType, $paymentMethod = null, $paymentChannel = null, $preferredCurrency = null) { 
         $user = auth()->user();
