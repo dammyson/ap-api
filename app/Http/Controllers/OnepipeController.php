@@ -276,8 +276,7 @@ class OnepipeController extends Controller
             $url = config('app.quick_teller.url');
 
             $response = Http::withHeaders([
-                // 'Authorization' => 'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
-                'Authorization' => "Bearer {$bearer}", // move this to env once test is complete
+                'Authorization' => "Bearer {$bearer}", 
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json'
             ])->get("{$url}&transactionreference={$transactionReference}&amount={$amount}");
