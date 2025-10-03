@@ -66,8 +66,8 @@ class PaymentController extends Controller
             Log::error($th->getMessage());
     
             return response()->json([
-                "error" => true,            
-                "message" => $th->getMessage()
+                "error" => true,   
+                "message" => "something went wrong"
             ], 500);
         }  
     }
