@@ -15,7 +15,7 @@
       var handler = PaystackPop.setup({
         key: 'pk_test_e4ac7acbc8627f70face51c904aaf3171ed824e0',
         email: 'customer@email.com',
-        amount: 30611700,
+        amount: 30700,
         currency: "NGN",
         ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
         firstname: 'Stephen',
@@ -41,15 +41,15 @@
     function makePayment() {
       FlutterwaveCheckout({
         public_key: 'FLWPUBK_TEST-247c539860787c8d4869e9b3dba2d3b3-X',
-        tx_ref: 'titanic-48981487343MDI0NzMx',
-        amount: 108350,
+        tx_ref: 'titanic-48981487343MDI0NzMux',
+        amount: 100,
         currency: 'NGN',
         payment_options:  'card, banktransfer, mpesa, mobilemoneyghana',
-        redirect_url: 'https://glaciers.titanic.com/handle-flutterwave-payment',
-        // callback: function(response) {
-        //   console.log(response)
-        //   alert('success. transaction ref is ' + response.tx_ref);
-        // },
+        // redirect_url: 'https://glaciers.titanic.com/handle-flutterwave-payment',
+        callback: function(response) {
+          console.log(response)
+          alert('success. transaction ref is ' + response.tx_ref);
+        },
         customer: {
           email: 'achugoebuka1@gmail.com'
           // ,

@@ -124,11 +124,16 @@ return [
     ],
 
 
-     'one_pipe' => [
+    'one_pipe' => [
         'secret' => env('ONE_PIPE_SECRET'),
         'bearer_key' => env('ONE_PIPE_BEARER_API_KEY'),
         'url' => env('ONE_PIPE_TRANSACT_URL'),
         'query_url' => env('ONE_PIPE_TRANSACT_QUERY_URL'),
+    ],
+
+    'quick_teller' => [
+        'bearer_key' => env('QUICK_TELLER_BEARER'),
+        'url' => env('QUICK_TELLER_URL')
     ],
 
 

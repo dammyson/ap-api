@@ -253,6 +253,12 @@ class OnepipeController extends Controller
             $bookingId = $request->input('booking_id');
             $deviceType = $request->input('device_type');
 
+            $bearer = config('app.quick_teller.bearer_key');
+            $url = config('app.quick_teller.url');
+
+            // dump($bearer);
+            // dd($url);
+
             $booking = Booking::where('booking_id', $bookingId)->first();
 
             if(!$booking) {
@@ -266,13 +272,14 @@ class OnepipeController extends Controller
             //convert amount to kobo
             $amount = $amount * 100;
 
-            $bearer = "Bearer eyJhbGciOiJSUzI1NiJ9.eyJtZXJjaGFudF9jb2RlIjoiTVg2MDcyIiwicmVxdWVzdG9yX2lkIjoiMTIzODA4NTk1MDMiLCJpbmNvZ25pdG9fcmVxdWVzdG9yX2lkIjoiMTIzODA4NTk1MDMiLCJwYXlhYmxlX2lkIjoiMzM1OTciLCJjbGllbnRfZGVzY3JpcHRpb24iOm51bGwsImNsaWVudF9pZCI6IklLSUFCMjNBNEUyNzU2NjA1QzFBQkMzM0NFM0MyODdFMjcyNjdGNjYwRDYxIiwiYXVkIjpbImFwaS1nYXRld2F5IiwiYXJiaXRlciIsImNhZXNhciIsImhpbXMtcG9ydGxldCIsImltdG8tb3JkZXItc2VydmljZSIsImltdG8tc2VydmljZSIsImltdG8tdHJhbnNhY3Rpb24tc2VydmljZSIsImluY29nbml0byIsImlzdy1jb2xsZWN0aW9ucyIsImlzdy1jb3JlIiwiaXN3LWluc3RpdHV0aW9uIiwiaXN3LWxlbmRpbmctc2VydmljZSIsImlzdy1wYXBlIiwiaXN3LXBhcHJzIiwiaXN3LXBhcHNzIiwiaXN3LXBheW1lbnRnYXRld2F5IiwiaXN3LXBvc3Qtb2ZmaWNlIiwia3ljLXNlcnZpY2UiLCJtZXJjaGFudC13YWxsZXQiLCJwYXNzcG9ydCIsInBheW1hdGUtd2FsbGV0LXNlcnZpY2UiLCJwb3N0aWxpb24tYXBpIiwicHJvamVjdC14LWNvbnN1bWVyIiwicHJvamVjdC14LW1lcmNoYW50IiwicXQtc2VydmljZSIsInF1aWNrdGVsbGVyLWV0bHItcmVxdWVyeSIsInJlY3VycmVudC1iaWxsaW5nLWFwaSIsInRyYW5zZmVyLXNlcnZpY2UtYWRtaW4iLCJ0cmFuc2Zlci1zZXJ2aWNlLWNvcmUiLCJ2YXVsdCIsInZlcnZlLXB1c2gtc2VydmljZSIsInZvdWNoZXItYXBpIiwid2FsbGV0Iiwid2VicGF5LXBvcnRsZXQiXSwiY2xpZW50X2F1dGhvcml6YXRpb25fZG9tYWluIjoiTVg2MDcyIiwic2NvcGUiOlsiY2xpZW50cyIsInByb2ZpbGUiXSwiYXBpX3Jlc291cmNlcyI6WyJyaWQtUE9TVC9hcGkvdjEvcHVyY2hhc2VzIiwicmlkLVBPU1QvYXBpL3YxL3B1cmNoYXNlcy8qKiIsInJpZC1QVVQvYXBpL3YxL3B1cmNoYXNlcyIsInJpZC1QVVQvYXBpL3YxL3B1cmNoYXNlcy8qKiIsInJpZC1HRVQvYXBpL3YxL3B1cmNoYXNlcyIsInJpZC1HRVQvYXBpL3YxL3B1cmNoYXNlcy8qKiIsInJpZC1ERUxFVEUvYXBpL3YxL3B1cmNoYXNlcyIsInJpZC1ERUxFVEUvYXBpL3YxL3B1cmNoYXNlcy8qKiIsInJpZC1QT1NUL2FwaS92Mi9wdXJjaGFzZXMiLCJyaWQtUE9TVC9hcGkvdjIvcHVyY2hhc2VzLyoqIiwicmlkLVBVVC9hcGkvdjIvcHVyY2hhc2VzIiwicmlkLVBVVC9hcGkvdjIvcHVyY2hhc2VzLyoqIiwicmlkLUdFVC9hcGkvdjIvcHVyY2hhc2VzIiwicmlkLUdFVC9hcGkvdjIvcHVyY2hhc2VzLyoqIiwicmlkLURFTEVURS9hcGkvdjIvcHVyY2hhc2VzIiwicmlkLURFTEVURS9hcGkvdjIvcHVyY2hhc2VzLyoqIiwicmlkLVBPU1QvYXBpL3YzL3B1cmNoYXNlcyIsInJpZC1QT1NUL2FwaS92My9wdXJjaGFzZXMvKioiLCJyaWQtUFVUL2FwaS92My9wdXJjaGFzZXMiLCJyaWQtUFVUL2FwaS92My9wdXJjaGFzZXMvKioiLCJyaWQtR0VUL2FwaS92My9wdXJjaGFzZXMiLCJyaWQtR0VUL2FwaS92My9wdXJjaGFzZXMvKioiLCJyaWQtREVMRVRFL2FwaS92My9wdXJjaGFzZXMiLCJyaWQtREVMRVRFL2FwaS92My9wdXJjaGFzZXMvKioiXSwibWVyY2hhbnQtd2FsbGV0LWFjdGlvbnMiOlsic2V0dGxlIiwidHJhbnNhY3QiLCJyZXZlcnNlIl0sImV4cCI6MTc0NDI3MTU2MywiY2xpZW50X25hbWUiOiJSN2pKaHJFZ3lMIiwiY2xpZW50X2xvZ28iOm51bGwsImp0aSI6IjlkOWNiMmM4LWEyZjUtNGExNS04YjcwLWU1ZTg4ZGNkNjc0NyJ9.ew4118y40IFwcqS8sDwVPSyactMEhk95QXA8XBi1avXDdxLS5nSRG3EKk3fpRZW9HKfWmsSwjElgtJ991OMG-79cFfdsK59RVSVW6Q8FQN26Rj-bETJjlneIEFx8E0HP0du9DDtRGibENI-Ag_e_UnOzkHcKGxmsfil7hbF1OHeXUBeZ0OVj9CAYJNWoxr6w_LzF0dhHPsq_hJmAtrtWqPlNvzMEtaDzNlnMk3D8M7ZY9kA1GeyxqNxpW1RTKBz1kfSA860gJgPZG5_hofpMowBh--3Vp2ofINnD9z2y3L11hqgjjmQEa3Jq8V8A90vVUohWufBeBpc-jiVvRA4_2w";
+            $bearer = config('app.quick_teller.bearer_key');
+            $url = config('app.quick_teller.url');
+
             $response = Http::withHeaders([
-                // 'Authorization' => 'Bearer ' . env('ONE_PIPE_BEARER_API_KEY'), // move this to env once test is complete
-                'Authorization' => $bearer, // move this to env once test is complete
+                'Authorization' => "Bearer {$bearer}", 
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json'
-            ])->get("https://qa.interswitchng.com/collections/api/v1/gettransaction?merchantcode=MX6072&transactionreference={$transactionReference}&amount={$amount}");
+            ])->get("{$url}&transactionreference={$transactionReference}&amount={$amount}");
             
         
             // dd($response->body());

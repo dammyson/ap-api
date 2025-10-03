@@ -51,14 +51,8 @@ class FlutterVerificationService implements BaseServiceInterface
         }
         // dd($result);
         
-        if (array_key_exists('data', $result) && array_key_exists('status', $result['data']) && ($result['data']['status'] === 'success')) {
-            return $result;
-        }else{
+        if (array_key_exists('data', $result) && array_key_exists('status', $result['data']) && ($result['data']['status'] === 'successful')) {
             return $result;
         }
-
-        // dd("i ran");
-
-        // dd($result);
     }
 }
