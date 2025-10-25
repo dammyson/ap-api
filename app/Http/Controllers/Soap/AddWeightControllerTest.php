@@ -233,13 +233,13 @@ class AddWeightControllerTest extends Controller
             $bookingReferenceIDID,
             $bookingReferenceID
         );
-        // dd($xml);
+         dd($xml);
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-             dd($response);
+            // dd($response);
             // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
             // $amount = 0;
 
