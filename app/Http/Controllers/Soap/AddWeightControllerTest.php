@@ -129,9 +129,11 @@ class AddWeightControllerTest extends Controller
 
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
             $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
-    
+           // dd($xml);
     
             $response = $this->craneOTASoapService->run($function, $xml);
+
+            dd($response);
           
             if (!(isset($response['AirBookingResponse']))) {
                 return response()->json([
