@@ -233,7 +233,7 @@ class AddWeightControllerTest extends Controller
             $bookingReferenceIDID,
             $bookingReferenceID
         );
-         dd($xml);
+        // dd($xml);
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
