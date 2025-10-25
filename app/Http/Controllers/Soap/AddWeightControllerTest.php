@@ -133,7 +133,7 @@ class AddWeightControllerTest extends Controller
     
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            dd($response);
+           // dd($response);
           
             if (!(isset($response['AirBookingResponse']))) {
                 return response()->json([
@@ -239,7 +239,7 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dd($response);
+             dd($response);
             // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
             // $amount = 0;
 
