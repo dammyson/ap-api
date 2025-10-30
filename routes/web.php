@@ -9,6 +9,6 @@ use App\Http\Controllers\Guest\GuestLoginController;
 use App\Http\Controllers\Test\AddWeightControllerTest;
 
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});

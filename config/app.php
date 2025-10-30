@@ -136,5 +136,13 @@ return [
         'url' => env('QUICK_TELLER_URL')
     ],
 
+    'paystack' => [
+        'bearer_key' => env('PAYSTACK_BEARER')
+    ],
+
+    'flutterwave' => [
+        'bearer_key' => env('FLUTTER_BEARER')
+    ],
+
 
 ];
