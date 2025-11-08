@@ -173,28 +173,29 @@ class BookingController extends Controller
             $passengerName = $request->input('surname');
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
-            $booking = Booking::where('booking_id', $bookingId)->where('is_cancelled', false)->first();
+            // $booking = Booking::where('booking_id', $bookingId)->where('is_cancelled', false)->first();
 
             
-            // dd($booking);
-            if (!$booking) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'PNR not found'
-                ], 500);
-            }
+            // // dd($booking);
+            // if (!$booking) {
+            //     return response()->json([
+            //         'error' => true,
+            //         'message' => 'PNR not found'
+            //     ], 500);
+            // }
 
             $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
 
-            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-
-
+            
+            
             $response = $this->craneOTASoapService->run($function, $xml);
-
-           
-
+            
+            
+            
             // dd($response);
-
+            
+            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
+           
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
                 $this->checkArray->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
                     // dd('I ran');

@@ -3,137 +3,10 @@
 namespace App\Services\Soap;
 
 class CreateBookingBuilder
-{
-    public function createBookingRT(
-        $CreateBookOriginDestinationOptionList,
-        $airTravelerList,
-        $requestPurpose,
-        $capturePayment,
-        $paymentCode,
-        $threeDomainSecurityEligible,
-        $MCONumber,
-        $paymentAmountCurrencyCode,
-        $paymentType,
-        $primaryPayment
-    ) {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>      
-         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
-            <soapenv:Header/>
-            <soapenv:Body>
-            <impl:CreateBooking>
-            <AirBookingRequest>
-            <clientInformation>
-            <clientIP>129.0.0.1</clientIP>
-            <member>false</member>
-            <password>SCINTILLA</password>
-            <userName>SCINTILLA</userName>
-            <preferredCurrency>NGN</preferredCurrency>
-            </clientInformation>
-            <airItinerary>
-               <adviceCodeSegmentExist/>
-
-               <bookOriginDestinationOptions>' .
-            $this->CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList) .
-            '</bookOriginDestinationOptions>
-
-            </airItinerary>' .
-            $this->airTravelerList(
-                $airTravelerList
-            )
-            .  ' <infantWithSeatCount/>
-            <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
-            
-            </AirBookingRequest>
-            </impl:CreateBooking>
-            </soapenv:Body>
-         </soapenv:Envelope>';
-        return  $xml;
-    }
-
-    public function createBookingOW(
-        $CreateBookOriginDestinationOptionList,
-        $airTravelerList,
-        $requestPurpose,
-        $airTravelerSequence,
-        $flightSegmentSequence,
-        $allowedQuantityPerPassenger,
-        $bundleRelatedSsr,
-        $code,
-        $codeContext,
-        $exchangeable,
-        $explanation,
-        $extraBaggage,
-        $SSRFree,
-        $freeTextInRequest,
-        $groupCode,
-        $groupCodeExplanation,
-        $iciAllowed,
-        $refundable,
-        $showOnItinerary,
-        $unitOfMeasureExist,
-        $serviceQuantity,
-        $status
-       
-    ) {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
-        <soapenv:Header/>
-            <soapenv:Body>
-                <impl:CreateBooking>
-                    <AirBookingRequest>
-                    <clientInformation>
-                    <clientIP>129.0.0.1</clientIP>
-                    <member>false</member>
-                    <password>SCINTILLA</password>
-                    <userName>SCINTILLA</userName>
-                    <preferredCurrency>NGN</preferredCurrency>
-                    </clientInformation>
-                    <airItinerary>
-                        <adviceCodeSegmentExist/>
-                        <bookOriginDestinationOptions>' .
-                            $this->CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList) .
-                        '</bookOriginDestinationOptions>
-                    </airItinerary>' .
-                    $this->airTravelerList( $airTravelerList) .
-                    '<infantWithSeatCount/>
-                    <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
-                    <specialRequestDetails>
-                        <specialServiceRequestList>
-                            <airTravelerSequence>' . htmlspecialchars($airTravelerSequence, ENT_XML1, 'UTF-8') . '</airTravelerSequence>
-                            <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequence, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                            <SSR>
-                                <allowedQuantityPerPassenger/>
-                                <bundleRelatedSsr/>
-                                <code>' . htmlspecialchars($code, ENT_XML1, 'UTF-8') . '</code>
-                                <explanation>' . htmlspecialchars($explanation, ENT_XML1, 'UTF-8') . '</explanation>
-                                <groupCode>' . htmlspecialchars($groupCode, ENT_XML1, 'UTF-8') . '</groupCode>
-                                <extraBaggage/>
-                                <free/>
-                                <iciAllowed/>
-                                <refundable/>
-                                <showOnItinerary/>
-                                <unitOfMeasureExist/>
-                            </SSR>
-                            <serviceQuantity>' . htmlspecialchars($serviceQuantity, ENT_XML1, 'UTF-8') . '</serviceQuantity>
-                            <status>' . htmlspecialchars($status, ENT_XML1, 'UTF-8') . '</status>
-                            <ticketed/>
-                        </specialServiceRequestList>
-                    </specialRequestDetails>                    
-                    </AirBookingRequest>
-                </impl:CreateBooking>
-        </soapenv:Body>
-        </soapenv:Envelope>';
-        return $xml;
-    }
-
-
-
-
-
+{  
 
     public function CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList)
     {
-        //dd($CreateBookOriginDestinationOptionList[0]['flightSegmeneSequence'] );
 
         $xml = '';
 
@@ -292,25 +165,19 @@ class CreateBookingBuilder
             foreach ($airTravelerChildList as $string) {
                 $xml .= '
                     <airTravelerList>
+                        <accompaniedByInfant>false</accompaniedByInfant>
                         <gender>' . htmlspecialchars($string['airTravelerListGenderChild'], ENT_XML1, 'UTF-8') . '</gender>
-                        <accompaniedByInfant/>
                         <birthDate>' . htmlspecialchars($string['airTravelerListBirthDateChild'], ENT_XML1, 'UTF-8') . '</birthDate>
-                        <hasStrecher/>
                         <parentSequence/>
-                        <passengerTypeCode>' . htmlspecialchars($string['passengerTypeCodeChild'], ENT_XML1, 'UTF-8') . '</passengerTypeCode>
+                        <passengerTypeCode>CHLD</passengerTypeCode>
                         <personName>
                             <givenName>' . htmlspecialchars($string['personNameGivenNameChild'], ENT_XML1, 'UTF-8') . '</givenName>
-                            <shareMarketInd/>
                             <surname>' . htmlspecialchars($string['personNameSurnameChild'], ENT_XML1, 'UTF-8') . '</surname>
                         </personName>
-                        <contactPerson>
-                            <shareContactInfo>' . htmlspecialchars($string['contactPersonShareContactInfoChild'], ENT_XML1, 'UTF-8') . '</shareContactInfo>
-                            <shareMarketInd/>
-                            <useForInvoicing/>
-                        </contactPerson>
                         <requestedSeatCount>' . htmlspecialchars($string['requestedSeatCountChild'], ENT_XML1, 'UTF-8') . '</requestedSeatCount>
-                        <shareMarketInd/>
-                        <unaccompaniedMinor/>
+                        <unaccompaniedMinor/>'.
+                            $this->documentInfoList($string)
+                        .'
                     </airTravelerList>';
     
             }
@@ -338,6 +205,8 @@ class CreateBookingBuilder
                     <shareMarketInd/>
                     <surname>' . htmlspecialchars($string['airTravelerListSurname'], ENT_XML1, 'UTF-8') . '</surname>
                 </personName>
+
+                
                 <birthDate>' . htmlspecialchars($string['airTravelerBirthDate'], ENT_XML1, 'UTF-8') . '</birthDate>
                 <accompaniedByInfant/>
                 <contactPerson>
@@ -345,7 +214,6 @@ class CreateBookingBuilder
                         <email>' . htmlspecialchars($string['contactPersonEmail'], ENT_XML1, 'UTF-8') . '</email>
                         <markedForSendingRezInfo/>
                         <preferred/>
-                        <shareMarketInd>' . htmlspecialchars($string['contactPersonShareMarketInd'], ENT_XML1, 'UTF-8') . '</shareMarketInd>
                     </email>
                     <markedForSendingRezInfo>' . htmlspecialchars($string['contactPersonMarkedForSendingRezInfo'], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
                     <personName>
@@ -368,25 +236,54 @@ class CreateBookingBuilder
                 </contactPerson>
                 <requestedSeatCount>' . htmlspecialchars($string['requestedSeatCount'], ENT_XML1, 'UTF-8') . '</requestedSeatCount>
                 <shareMarketInd/>
-                <unaccompaniedMinor/>
-            </airTravelerList>';
+                <nationality>
+                    <locationCode>' . htmlspecialchars($string['nationalityLocationCode'], ENT_XML1, 'UTF-8') . '</locationCode>
+                </nationality>
+                <personAcceptedLegalText>kabul ediyorum</personAcceptedLegalText>
+                <unaccompaniedMinor>false</unaccompaniedMinor>'.
+                $this->documentInfoList($string)
+            .'</airTravelerList>';
         }
 
         return $xml;
     }
 
+    private function documentInfoList($document) {
+
+        if(isset($document['documentInfoList'])) {
+            $xml = '';
+            foreach($document['documentInfoList'] as $string) {
+                $xml = '<documentInfoList>
+                    <birthDate>' . htmlspecialchars($string['birthDate'], ENT_XML1, 'UTF-8') . '</birthDate>
+                    <docExpireDate>' . htmlspecialchars($string['docExpireDate'], ENT_XML1, 'UTF-8') . '</docExpireDate>
+                    <docHolderFormattedName>
+                        <givenName>' . htmlspecialchars($string['givenName'], ENT_XML1, 'UTF-8') . '</givenName>
+                        <shareMarketInd>' . htmlspecialchars($string['shareMarketInd'], ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                        <surname>' . htmlspecialchars($string['surname'], ENT_XML1, 'UTF-8') . '</surname>
+                    </docHolderFormattedName>
+                    <docHolderNationality>' . htmlspecialchars($string['docHolderNationality'], ENT_XML1, 'UTF-8') . '</docHolderNationality>
+                    <docID>' . htmlspecialchars($string['docID'], ENT_XML1, 'UTF-8') . '</docID>
+                    <docType>' . htmlspecialchars($string['docType'], ENT_XML1, 'UTF-8') . '</docType>
+                    <gender>M</gender>
+                </documentInfoList>';
+            }
+
+            return $xml;
+        }
+    }
 
 
-
-    public function createBookingTwoA(
+    public function createBooking(
         $preferredCurrency,
         $CreateBookOriginDestinationOptionList,
         $airTravelerList,
         $airTravelerChildList,
         $requestPurpose,
+        $otherServiceInformationList,
         $specialServiceRequestList
        
     ) {
+
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
         <soapenv:Header/>
@@ -394,11 +291,12 @@ class CreateBookingBuilder
            <impl:CreateBooking>
               <AirBookingRequest>
               <clientInformation>
-                 <clientIP>129.0.0.1</clientIP>
-                 <member>false</member>
-                 <password>SCINTILLA</password>
-                 <userName>SCINTILLA</userName>
-                 <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
+                <clientIP>129.0.0.1</clientIP>
+                <member>false</member>
+                <password>SCINTILLA</password>
+                <userName>SCINTILLA</userName>
+                <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
+
               </clientInformation>
               <airItinerary>
                  <adviceCodeSegmentExist/>
@@ -417,11 +315,15 @@ class CreateBookingBuilder
             
               <infantWithSeatCount/>
               <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
-              <specialRequestDetails>
+              '.
+                $this->contactInfoListRequest(true)
+              .'<specialRequestDetails>
                 '. 
-                 $this->specialServiceRequestList($specialServiceRequestList)
-                .'
-              </specialRequestDetails>
+                    $this->otherServiceInformationList($otherServiceInformationList)
+                 .''.
+                    $this->specialServiceRequestList($specialServiceRequestList)
+                
+              .'</specialRequestDetails>
               </AirBookingRequest>
            </impl:CreateBooking>
         </soapenv:Body>
@@ -453,7 +355,7 @@ class CreateBookingBuilder
                             <refundable/>
                             <showOnItinerary/>
                             <unitOfMeasureExist/>
-                        </SSR>
+                        </SSR>                        
                         <serviceQuantity>' . htmlspecialchars($string['ticketedServiceQuantity'], ENT_XML1, 'UTF-8') . '</serviceQuantity>
                         <status>' . htmlspecialchars($string['ticketedStatus'], ENT_XML1, 'UTF-8') . '</status>
                         <ticketed/>
@@ -463,5 +365,89 @@ class CreateBookingBuilder
 
             return $xml;
         }
+    }
+    public function contactInfoListRequest($specialServiceRequestList) {
+        if($specialServiceRequestList)
+        { 
+            $xml = '';
+        
+            // foreach($specialServiceRequestList as $string) {
+                $xml .= '<contactInfoList>
+                            <companyInfo>
+                                <companyFullName>Jay Jay test</companyFullName>
+                                <companyLegalName>Jay test</companyLegalName>
+                                <taxNumber>9999999999</taxNumber>
+                                <taxOffice>Zühtüpaşa</taxOffice>
+                            </companyInfo>
+                            <adress>
+                                <addressLineList>fener cad. filika sok.</addressLineList>
+                                <adressUseType>string</adressUseType>
+                                <bldgRoom>11</bldgRoom>
+                                <cityCode>IST</cityCode>
+                                <cityName>istanbu</cityName>
+                                <countryCode>FR</countryCode>
+                                <countryName>Fransa</countryName>
+                                <formatted>true</formatted>
+                                <postalCode>34256</postalCode>
+                                <preferred>false</preferred>
+                                <shareMarketInd>true</shareMarketInd>
+                                <stateProvince>marmara</stateProvince>
+                                <streetNumber>45</streetNumber>
+                            </adress>
+                        
+                            <email>
+                                <email>asd@asd.com</email>
+                                <markedForSendingRezInfo/>
+                                <preferred/>
+                                <shareMarketInd/>
+                            </email>
+                            <markedForSendingRezInfo>false</markedForSendingRezInfo>
+                            <personName>
+                                <givenName>Sharon</givenName>
+                                <shareMarketInd/>
+                                <surname>Edwards</surname>
+                            </personName>
+                            <phoneNumber>
+                                <areaCode>538</areaCode>
+                                <countryCode>+90</countryCode>
+                                <markedForSendingRezInfo>false</markedForSendingRezInfo>
+                                <phoneUseType>H</phoneUseType>
+                                <preferred/>
+                                <shareMarketInd/>
+                                <subscriberNumber>2051817</subscriberNumber>
+                            </phoneNumber>
+                        <shareContactInfo/>
+                        <shareMarketInd/>
+                        <socialSecurityNumber>11111111110</socialSecurityNumber>
+                        <useForInvoicing>true</useForInvoicing>
+                    </contactInfoList>';
+            // }
+
+            return $xml;
+        }
+    }
+
+    public function otherServiceInformationList($otherServiceInformationList) {
+        if (isset($otherServiceInformationList)) {
+             $xml = '<otherServiceInformationList>';
+
+            foreach($otherServiceInformationList as $string) {
+                $xml .= '
+                    <otherServiceInformationList>
+                        <airTravelerSequence/>
+                        <code>' . htmlspecialchars($string['code'], ENT_XML1, 'UTF-8') . '</code>
+                        <explanation>' . htmlspecialchars($string['explanation'], ENT_XML1, 'UTF-8') . '</explanation>
+                        <flightSegmentSequence/>
+                    </otherServiceInformationList>';
+            }
+            $xml .= '</otherServiceInformationList>';
+
+            // dd($xml);
+            
+            return $xml;
+        }
+       
+                
+
     }
 }

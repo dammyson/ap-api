@@ -87,7 +87,7 @@ class SoapRequestBuilder
                        </originDestinationInformationList>
                         <travelerInformation>' .
          $this->passengerTypeQuantityList($travelerInformation)
-         . '</travelerInformation>v
+         . '</travelerInformation>
                        <tripType>' . htmlspecialchars($tripType, ENT_XML1, 'UTF-8') . '</tripType>
                     </AirAvailabilityRequest>
                  </impl:GetAvailability>

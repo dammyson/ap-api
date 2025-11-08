@@ -222,6 +222,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
             Route::group(["prefix" => "create-booking"], function() {
                 Route::post('two-a', [CreateBookingController::class, 'createBooking']);
+                Route::post('/', [CreateBookingController::class, 'createBooking']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
                 Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
@@ -242,12 +243,9 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
             Route::post('get-availability-two-a', [GetAvailabilityController::class, 'getAvailabilityTwoA']);
         });
 
-        Route::group(["prefix" => "get-air-extra-charges-and-products"], function() {
-            Route::post('rt', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductRT']);
-            Route::post('md', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductMD']);
-            Route::post('two-a', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductTwoA']);
-            Route::post('ow', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProductOW']);
-        });
+        
+        Route::post('get-air-extra-charges-and-products', [GetAirExtraChargesAndProductsController::class, 'getAirExtraChargesAndProduct']);
+       
 
         Route::group(['prefix' => 'reissue-ticket-pnr'], function() {
             Route::post('preview/{invoiceId}', [ReissuePNRController::class, 'reissueTicketPNR']);

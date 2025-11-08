@@ -3,26 +3,22 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Device;
 use App\Models\Flight;
 use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Models\BookingRecord;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Test\Booking\CreateBookingRequest;
 use App\Services\Utility\CheckArray;
-use Illuminate\Support\Facades\Date;
 use App\Services\Utility\GetPointService;
 use App\Services\Soap\CreateBookingBuilder;
 use App\Services\Wallet\VerificationService;
 use App\Services\Wallet\FlutterVerificationService;
 use App\Services\Soap\TicketReservationRequestBuilder;
-use App\Http\Requests\Test\Booking\CreateBookingTwoARequest;
-use App\Models\Passenger;
 
 class CreateBookingController extends Controller
 {
@@ -43,7 +39,8 @@ class CreateBookingController extends Controller
         $this->getPointService = $getPointService;
     }
 
-    public function createBooking(CreateBookingTwoARequest $request){
+
+    public function createBooking(CreateBookingRequest $request){
         // dd(auth()->user()->id);
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
@@ -51,27 +48,29 @@ class CreateBookingController extends Controller
         $airTravelerListChild = $validated['airTravelerChildList']; 
         $requestPurpose = $request->input('requestPurpose');
         $specialServiceRequestList = $validated['specialServiceRequestList'];
+        $otherServiceInformationList = $validated['otherServiceInformationList'];
         $tripType = $request->input('trip_type');
         $preferredCurrency = $request->input('preferred_currency');
         
-
-        $xml = $this->createBookingBuilder->createBookingTwoA(
+        // dd($CreateBookOriginDestinationOptionList);
+        $xml = $this->createBookingBuilder->createBooking(
             $preferredCurrency,
             $CreateBookOriginDestinationOptionList,
             $airTravelerList,
             $airTravelerListChild,
             $requestPurpose,
+            $otherServiceInformationList,
             $specialServiceRequestList
         );
 
-      //  dd($xml);
+    //    dd($xml);
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-             //  dd($response);
+            //   dd($response);
 
             if (!array_key_exists('AirBookingResponse', $response)) {
                 Log::error($response);
@@ -176,12 +175,12 @@ class CreateBookingController extends Controller
                     $passengerType = $ticketItemList['airTraveler']['passengerTypeCode'];              
                    
           
-                    Passenger::create([
-                        "user_id" => $user->id,
-                        "passenger_name" => $passengerName,
-                        "passenger_surname" => $passengerSurname,
-                        "passenger_type" => $passengerName,
-                    ]);
+                    // Passenger::create([
+                    //     "user_id" => $user->id,
+                    //     "passenger_name" => $passengerName,
+                    //     "passenger_surname" => $passengerSurname,
+                    //     "passenger_type" => $passengerName,
+                    // ]);
 
                     ///
                     $ticketCount += 1;
@@ -196,12 +195,12 @@ class CreateBookingController extends Controller
                         $passengerSurname = $ticketItem['airTraveler']["personName"]["surname"]; 
                         $passengerType = $ticketItem['airTraveler']['passengerTypeCode']; 
 
-                        Passenger::create([
-                            "user_id" => $user->id,
-                            "passenger_name" => $passengerName,
-                            "passenger_surname" => $passengerSurname,
-                            "passenger_type" => $passengerName,
-                        ]);
+                        // Passenger::create([
+                        //     "user_id" => $user->id,
+                        //     "passenger_name" => $passengerName,
+                        //     "passenger_surname" => $passengerSurname,
+                        //     "passenger_type" => $passengerName,
+                        // ]);
                         
 
                         $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
@@ -236,12 +235,12 @@ class CreateBookingController extends Controller
                         $passengerSurname = $ticketItemList['airTraveler']["personName"]["surname"];
                         $passengerType = $ticketItemList['airTraveler']['passengerTypeCode'];
 
-                        Passenger::create([
-                            "user_id" => $user->id,
-                            "passenger_name" => $passengerName,
-                            "passenger_surname" => $passengerSurname,
-                            "passenger_type" => $passengerName,
-                        ]);
+                        // Passenger::create([
+                        //     "user_id" => $user->id,
+                        //     "passenger_name" => $passengerName,
+                        //     "passenger_surname" => $passengerSurname,
+                        //     "passenger_type" => $passengerName,
+                        // ]);
 
 
                         Flight::firstOrCreate([   
@@ -297,12 +296,12 @@ class CreateBookingController extends Controller
                             $passengerSurname = $ticketItem['airTraveler']["personName"]["surname"];
                             $passengerType = $ticketItem['airTraveler']['passengerTypeCode'];
 
-                            Passenger::create([
-                                "user_id" => $user->id,
-                                "passenger_name" => $passengerName,
-                                "passenger_surname" => $passengerSurname,
-                                "passenger_type" => $passengerName,
-                            ]);
+                                // Passenger::create([
+                                //     "user_id" => $user->id,
+                                //     "passenger_name" => $passengerName,
+                                //     "passenger_surname" => $passengerSurname,
+                                //     "passenger_type" => $passengerName,
+                                // ]);
                             
 
                             Flight::firstOrCreate([

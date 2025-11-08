@@ -65,6 +65,8 @@ class RegisterController extends Controller
             
             ]);
 
+            // dd($us)
+
             if ($deviceType) {
                 Device::create([
                     'user_id' => $create->id,
