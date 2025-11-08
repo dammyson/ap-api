@@ -46,7 +46,8 @@ class VerificationService implements BaseServiceInterface
         
         if (array_key_exists('data', $result) && array_key_exists('status', $result['data']) && ($result['data']['status'] === 'success')) {
             return $result;
-        }else{
+        } 
+        else{
             return $result;
         }
        

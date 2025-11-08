@@ -28,15 +28,20 @@ class FlutterVerificationService implements BaseServiceInterface
     { 
         // dd("verify ran");
         $result = array();
+        // dd($this->ref_number);
+
+        
+        $bearer = config('app.flutterwave.bearer_key');
         //The parameter after verify/ is the transaction reference to be verified
         $url = 'https://api.flutterwave.com/v3/transactions/'. $this->ref_number .'/verify';
         
+        // dump($bearer);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt(
           $ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer FLWSECK_TEST-25575cadfe6302277a58f1ad237051a0-X']
+            'Authorization: Bearer ' . $bearer]
         );
         $request = curl_exec($ch);
         if(curl_error($ch)){
@@ -44,15 +49,18 @@ class FlutterVerificationService implements BaseServiceInterface
         }
         curl_close($ch);
 
+
        
         if ($request) {
           $result = json_decode($request, true);
         
         }
+
         // dd($result);
         
         if (array_key_exists('data', $result) && array_key_exists('status', $result['data']) && ($result['data']['status'] === 'successful')) {
             return $result;
         }
+        return $result;
     }
 }
