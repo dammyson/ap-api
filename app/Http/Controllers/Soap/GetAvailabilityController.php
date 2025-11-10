@@ -42,6 +42,42 @@ class GetAvailabilityController extends Controller
             ], 500);
         }  
     }
+
+
+    
+    public function getAvailabilityOW(GetAvailabilityOWRequest $request) {
+        $originDateOffset = $request->input('originDateOffset'); 
+        $departureDateTime = $request->input('departureDateTime'); 
+        $destinationLocationCode = $request->input('destinationLocationCode');
+        $flexibleFareOnly = $request->input('flexibleFareOnly'); 
+        $includeInterlineFlights = $request->input('includeInterlineFlights'); 
+        $openFlight = $request->input('openFlight');
+        $originLocationCode = $request->input('originLocationCode'); 
+        $passengerTypeCode = $request->input('passengerTypeCode'); 
+        $passengerQuantity = $request->input('passengerQuantity'); 
+        $tripType = $request->input('tripType');
+
+        $xml = $this->getAvailabilityBuilder->getAvailabilityOW(
+            $originDateOffset, 
+            $departureDateTime, 
+            $destinationLocationCode,
+            $flexibleFareOnly, 
+            $includeInterlineFlights, 
+            $openFlight,
+            $originLocationCode, 
+            $passengerTypeCode, 
+            $passengerQuantity, 
+            $tripType
+        );
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
+
+
+        $response = $this->craneOTASoapService->run($function, $xml);
+        dd($response);
+    }
+
+
     public function getAvailabilityRT(GetAvailabilityRTRequest $request) {
         $originDateOffsetOne = $request->input('originDateOffsetOne'); 
         $originDepartureDateTimeOne = $request->input('originDateOffsetOne'); 
@@ -84,33 +120,6 @@ class GetAvailabilityController extends Controller
         dd($xml);
     }
 
-    public function getAvailabilityOW(GetAvailabilityOWRequest $request) {
-        $originDateOffset = $request->input('originDateOffset'); 
-        $departureDateTime = $request->input('departureDateTime'); 
-        $destinationLocationCode = $request->input('destinationLocationCode');
-        $flexibleFareOnly = $request->input('flexibleFareOnly'); 
-        $includeInterlineFlights = $request->input('includeInterlineFlights'); 
-        $openFlight = $request->input('openFlight');
-        $originLocationCode = $request->input('originLocationCode'); 
-        $passengerTypeCode = $request->input('passengerTypeCode'); 
-        $passengerQuantity = $request->input('passengerQuantity'); 
-        $tripType = $request->input('tripType');
-
-        $xml = $this->getAvailabilityBuilder->getAvailabilityOW(
-            $originDateOffset, 
-            $departureDateTime, 
-            $destinationLocationCode,
-            $flexibleFareOnly, 
-            $includeInterlineFlights, 
-            $openFlight,
-            $originLocationCode, 
-            $passengerTypeCode, 
-            $passengerQuantity, 
-            $tripType
-        );
-
-        dd($xml);
-    }
 
     public function getAvailabilityMD(GetAvailabilityMDRequest $request) {
         $originDataOffsetOne = $request->input('originDataOffsetOne'); 

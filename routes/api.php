@@ -238,7 +238,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
         Route::group(["prefix" => "get-availability"], function() {
             Route::post('general-parameters', [GetAvailabilityController::class, 'getAvailabilityGeneralParameters']);
             Route::post('get-availability-rt', [GetAvailabilityController::class, 'getAvailabilityRT']);
-            Route::post('get-availability-ow', [GetAvailabilityController::class, 'getAvailabilityOW']);
+            Route::post('/', [GetAvailabilityController::class, 'getAvailabilityOW']);
             Route::post('get-availability-md', [GetAvailabilityController::class, 'getAvailabilityMD']);
             Route::post('get-availability-two-a', [GetAvailabilityController::class, 'getAvailabilityTwoA']);
         });

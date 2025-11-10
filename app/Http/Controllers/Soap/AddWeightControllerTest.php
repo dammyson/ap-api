@@ -123,7 +123,10 @@ class AddWeightControllerTest extends Controller
         $peaceId = $request->input('peaceId');
 
         // dd("i ran");
+
+        
         $user = $request->user();
+        // dd($user->peace_id);
         
         if ($user->is_guest) {
 
@@ -152,6 +155,7 @@ class AddWeightControllerTest extends Controller
             }
         }
 
+        
         // dump("i ran");
 
         $xml = $this->addWeightBuilderTest->addWeightTest(
@@ -239,7 +243,7 @@ class AddWeightControllerTest extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dd($response);
+            // dump($response);
             // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
             // $amount = 0;
 
@@ -334,19 +338,7 @@ class AddWeightControllerTest extends Controller
                 $message = "Baggages added successfully";
 
             }
-
-                
-            if ($amount == $invoice->amount) {
-                // set invoice as true (since weight was not added)
-                $invoice->is_paid = true;
-                $invoice->save();
-
-                return response()->json([
-                    "error" => true,
-                    "message" => "unable to add baggage try again later"
-                ], 500);
-            }
-            
+      
             // set invoice as false if baggages was added
             $invoice->is_paid = false;
             $invoice->save();

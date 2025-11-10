@@ -276,6 +276,7 @@ class CreateBookingBuilder
     public function createBooking(
         $preferredCurrency,
         $CreateBookOriginDestinationOptionList,
+        $contactInfoList,
         $airTravelerList,
         $airTravelerChildList,
         $requestPurpose,
@@ -316,7 +317,7 @@ class CreateBookingBuilder
               <infantWithSeatCount/>
               <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
               '.
-                $this->contactInfoListRequest(true)
+                $this->contactInfoListRequest($contactInfoList)
               .'<specialRequestDetails>
                 '. 
                     $this->otherServiceInformationList($otherServiceInformationList)
@@ -366,62 +367,64 @@ class CreateBookingBuilder
             return $xml;
         }
     }
-    public function contactInfoListRequest($specialServiceRequestList) {
-        if($specialServiceRequestList)
-        { 
+    public function contactInfoListRequest($contactInfoList) {
+        // dump("test");
+        if($contactInfoList)
+        {   
+            // dd(" iran");
             $xml = '';
         
-            // foreach($specialServiceRequestList as $string) {
+            foreach($contactInfoList as $string) {
                 $xml .= '<contactInfoList>
                             <companyInfo>
-                                <companyFullName>Jay Jay test</companyFullName>
-                                <companyLegalName>Jay test</companyLegalName>
-                                <taxNumber>9999999999</taxNumber>
-                                <taxOffice>Zühtüpaşa</taxOffice>
+                                <companyFullName>' . htmlspecialchars($string['companyFullName'], ENT_XML1, 'UTF-8') . '</companyFullName>
+                                <companyLegalName>' . htmlspecialchars($string['companyLegalName'], ENT_XML1, 'UTF-8') . '</companyLegalName>
+                                <taxNumber>' . htmlspecialchars($string['taxNumber'], ENT_XML1, 'UTF-8') . '</taxNumber>
+                                <taxOffice>' . htmlspecialchars($string['taxOffice'], ENT_XML1, 'UTF-8') . '</taxOffice>
                             </companyInfo>
                             <adress>
-                                <addressLineList>fener cad. filika sok.</addressLineList>
-                                <adressUseType>string</adressUseType>
-                                <bldgRoom>11</bldgRoom>
-                                <cityCode>IST</cityCode>
-                                <cityName>istanbu</cityName>
-                                <countryCode>FR</countryCode>
-                                <countryName>Fransa</countryName>
-                                <formatted>true</formatted>
-                                <postalCode>34256</postalCode>
-                                <preferred>false</preferred>
-                                <shareMarketInd>true</shareMarketInd>
-                                <stateProvince>marmara</stateProvince>
-                                <streetNumber>45</streetNumber>
+                                <addressLineList>' . htmlspecialchars($string['addressLineList'], ENT_XML1, 'UTF-8') . '</addressLineList>
+                                <adressUseType>' . htmlspecialchars($string['adressUseType'], ENT_XML1, 'UTF-8') . '</adressUseType>
+                                <bldgRoom>' . htmlspecialchars($string['bldgRoom'], ENT_XML1, 'UTF-8') . '</bldgRoom>
+                                <cityCode>' . htmlspecialchars($string['cityCode'], ENT_XML1, 'UTF-8') . '</cityCode>
+                                <cityName>' . htmlspecialchars($string['cityName'], ENT_XML1, 'UTF-8') . '</cityName>
+                                <countryCode>' . htmlspecialchars($string['countryCode'], ENT_XML1, 'UTF-8') . '</countryCode>
+                                <countryName>' . htmlspecialchars($string['countryName'], ENT_XML1, 'UTF-8') . '</countryName>
+                                <formatted>' . htmlspecialchars($string['formatted'], ENT_XML1, 'UTF-8') . '</formatted>
+                                <postalCode>' . htmlspecialchars($string['postalCode'], ENT_XML1, 'UTF-8') . '</postalCode>
+                                <preferred>' . htmlspecialchars($string['preferred'], ENT_XML1, 'UTF-8') . '</preferred>
+                                <shareMarketInd>' . htmlspecialchars($string['shareMarketInd'], ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                                <stateProvince>' . htmlspecialchars($string['stateProvince'], ENT_XML1, 'UTF-8') . '</stateProvince>
+                                <streetNumber>' . htmlspecialchars($string['streetNumber'], ENT_XML1, 'UTF-8') . '</streetNumber>
                             </adress>
                         
                             <email>
-                                <email>asd@asd.com</email>
+                                <email>' . htmlspecialchars($string['email'], ENT_XML1, 'UTF-8') . '</email>
                                 <markedForSendingRezInfo/>
                                 <preferred/>
                                 <shareMarketInd/>
                             </email>
-                            <markedForSendingRezInfo>false</markedForSendingRezInfo>
+                            <markedForSendingRezInfo>' . htmlspecialchars($string['markedForSendingRezInfo'], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
                             <personName>
-                                <givenName>Sharon</givenName>
+                                <givenName>' . htmlspecialchars($string['givenName'], ENT_XML1, 'UTF-8') . '</givenName>
                                 <shareMarketInd/>
-                                <surname>Edwards</surname>
+                                <surname>' . htmlspecialchars($string['surname'], ENT_XML1, 'UTF-8') . '</surname>
                             </personName>
                             <phoneNumber>
-                                <areaCode>538</areaCode>
-                                <countryCode>+90</countryCode>
-                                <markedForSendingRezInfo>false</markedForSendingRezInfo>
-                                <phoneUseType>H</phoneUseType>
+                                <areaCode>' . htmlspecialchars($string['areaCode'], ENT_XML1, 'UTF-8') . '</areaCode>
+                                <countryCode>' . htmlspecialchars($string['phoneNumberCountryCode'], ENT_XML1, 'UTF-8') . '</countryCode>
+                                <markedForSendingRezInfo>' . htmlspecialchars($string['phoneNumberMarkedForSendingRezInfo'], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
+                                <phoneUseType>' . htmlspecialchars($string['phoneUseType'], ENT_XML1, 'UTF-8') . '</phoneUseType>
                                 <preferred/>
                                 <shareMarketInd/>
-                                <subscriberNumber>2051817</subscriberNumber>
+                                <subscriberNumber>' . htmlspecialchars($string['subscriberNumber'], ENT_XML1, 'UTF-8') . '</subscriberNumber>
                             </phoneNumber>
                         <shareContactInfo/>
                         <shareMarketInd/>
-                        <socialSecurityNumber>11111111110</socialSecurityNumber>
-                        <useForInvoicing>true</useForInvoicing>
+                        <socialSecurityNumber>' . htmlspecialchars($string['socialSecurityNumber'], ENT_XML1, 'UTF-8') . '</socialSecurityNumber>
+                        <useForInvoicing>' . htmlspecialchars($string['useForInvoicing'], ENT_XML1, 'UTF-8') . '</useForInvoicing>
                     </contactInfoList>';
-            // }
+            }
 
             return $xml;
         }
