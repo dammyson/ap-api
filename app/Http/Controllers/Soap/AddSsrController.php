@@ -96,27 +96,18 @@ class AddSsrController extends Controller
 
     public function addSsr(AddSsrRequest $request, Invoice $invoice) {        
         $preferredCurrency = $request->input('preferredCurrency');
-
-        $ancillaryRequestList = $request->input('ancillaryRequestList');     
-        
-        
+        $ancillaryRequestList = $request->input('ancillaryRequestList');
         $bookingId = $request->input('bookingReferenceIDID');
         $passengerName = $request->input('passengerName');
         $peaceId = $request->input('peaceId');
-
-        // dd("i ran");
         $ssrType = $request->query('ssrType');
-
-        
         $user = $request->user();
-        // dd($user->peace_id);
         
         if ($user->is_guest) {
 
             
             $response = $this->handleGuestUser($bookingId, $passengerName);
-           // dd($response);
-          
+
             if (!(isset($response['AirBookingResponse']))) {
                 return $this->unauthorizedResponse();
             }
@@ -137,13 +128,11 @@ class AddSsrController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
         try {
-            // dd($ssrType);
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
             // dd($response);
 
            
             if ($ssrType == "select_seat") {
-                // dd(" iran");
                 if (array_key_exists("detail", $response)) {
                     if (array_key_exists("CraneFault", $response["detail"])){
                         if (array_key_exists("code", $response["detail"]["CraneFault"])){
@@ -185,8 +174,6 @@ class AddSsrController extends Controller
                     "amount" => $invoice->amount
                 ], 200);
 
-                
-
             }
 
            $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
@@ -194,16 +181,11 @@ class AddSsrController extends Controller
            [$amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
 
 
-
             // if user has not paid set the new invoice balance else generate a new invoice
             
             [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $amount, $preferredCurrency, $bookingId);
             
           
-
-            // Use preg_match to extract the number
-           
-
             $message = "";
 
             if ($ssrType == "insurance") {
@@ -254,8 +236,6 @@ class AddSsrController extends Controller
     
                 }
                 $message = "Baggages added successfully";
-
-
             }
       
            
