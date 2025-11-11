@@ -5,27 +5,23 @@ namespace App\Http\Controllers\Soap;
 use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SSR\AddSsrRequest;
-use App\Services\Soap\AddWeightBuilderTest;
-use App\Http\Requests\Test\addWeightRequest;
-use App\Http\Requests\Test\AddWeightRequestTest;
-use App\Services\Soap\AddWeightBuilder;
+use App\Http\Requests\Test\AddSsrRequest;
+use App\Services\Soap\AddSsrBuilder;
 use App\Services\Soap\BookingBuilder;
 use App\Services\Utility\CheckArray;
 
-class AddWeightController extends Controller
+class AddSsrController extends Controller
 {
-    protected $addWeightBuilder;
+    protected $addSsrBuilder;
     protected $craneAncillaryOTASoapService;
     protected $craneOTASoapService;
     protected $bookingBuilder;
     protected $checkArray;
 
-    public function __construct(AddWeightBuilder $addWeightBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray) {
-        $this->addWeightBuilder = $addWeightBuilder;
+    public function __construct(AddSsrBuilder $addSsrBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray) {
+        $this->addSsrBuilder = $addSsrBuilder;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->craneOTASoapService = app("CraneOTASoapService");
         $this->bookingBuilder = $bookingBuilder;
@@ -33,7 +29,7 @@ class AddWeightController extends Controller
         
     }
 
-    public function addWeightOrInsurance(addWeightRequest $request, Invoice $invoice) {        
+    public function addSsr(AddSsrRequest $request, Invoice $invoice) {        
         $preferredCurrency = $request->input('preferredCurrency');
 
         $ancillaryRequestList = $request->input('ancillaryRequestList');     
@@ -79,7 +75,7 @@ class AddWeightController extends Controller
         }
 
 
-        $xml = $this->addWeightBuilder->addWeight(
+        $xml = $this->addSsrBuilder->addSsr(
             $request
         );
         // dd($xml);
@@ -88,7 +84,7 @@ class AddWeightController extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dd($response);
+            // dd($response);
 
             $specialServiceRequestList = $response['AddSsrResponse']['airBookingList']["airReservation"]["specialRequestDetails"]["specialServiceRequestList"];
            
@@ -106,24 +102,33 @@ class AddWeightController extends Controller
                             }
                         }
                     }
+
+                    return response()->json([
+                        "error" => true,            
+                        "message" => "unable to select seat"
+                    ], 400);
                 }
 
-                foreach ($specialServiceRequestList as $specialServiceRequest) {
-                    if ($specialServiceRequest["SSR"]["code"] == "SEAT") {
-                        return response()->json([
-                                "error" => false,
-                                "message" => "Seat Selected Successfully",
-                                'invoice_id' => $invoice->id,
-                                "amount" => $invoice->amount
-                        ], 200);
-                    }
+                // foreach ($specialServiceRequestList as $specialServiceRequest) {
+                //     if ($specialServiceRequest["SSR"]["code"] == "SEAT") {
+                //         return response()->json([
+                //                 "error" => false,
+                //                 "message" => "Seat Selected Successfully",
+                //                 'invoice_id' => $invoice->id,
+                //                 "amount" => $invoice->amount
+                //         ], 200);
+                //     }
 
-                }
+                // }
 
                 return response()->json([
-                    "error" => true,            
-                    "message" => "unable to select seat"
-                ], 400);
+                    "error" => false,
+                    "message" => "Seat select successfully",
+                    'invoice_id' => $invoice->id,
+                    "amount" => $invoice->amount
+                ], 200);
+
+                
 
             }
 
@@ -260,8 +265,4 @@ class AddWeightController extends Controller
             ], 500);
         }
     }
-    
-    
-   
-    
 }
