@@ -57,6 +57,7 @@ use App\Http\Controllers\Admin\ChangePasswordAdminController;
 use App\Http\Controllers\Admin\ForgetPasswordAdminController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OnepipeController;
+use App\Http\Controllers\Soap\AddSsrController;
 use App\Http\Controllers\Soap\Booking\CancelBookingController;
 use App\Http\Controllers\Soap\Booking\BookingController;
 use App\Http\Controllers\Soap\GetAirExtraChargesAndProductController;
@@ -267,8 +268,8 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
             Route::post('rt', [AvailableSpecialController::class, 'AvailableSpecialServiceRT']);
         });
         
-        Route::post('/add-weight-bag-ow/invoice/{invoiceId}/{ssrType}', [AddWeightController::class, 'addWeightOrInsurance']);
-        Route::post('/select-seat', [AddSeatController::class, 'selectSeat']);
+        Route::post('/add-ssr/invoice/{invoice}', [AddSsrController::class, 'addSsr']);
+        // Route::post('/select-seat', [AddSeatController::class, 'selectSeat']);
         
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
         Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
