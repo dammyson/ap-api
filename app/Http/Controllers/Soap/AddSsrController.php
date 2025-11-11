@@ -41,7 +41,7 @@ class AddSsrController extends Controller
         $peaceId = $request->input('peaceId');
 
         // dd("i ran");
-        $ssrType = $request->query('ssr_type');
+        $ssrType = $request->query('ssrType');
 
         
         $user = $request->user();
@@ -83,12 +83,13 @@ class AddSsrController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
         try {
+            // dd($ssrType);
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
             // dd($response);
 
-            $specialServiceRequestList = $response['AddSsrResponse']['airBookingList']["airReservation"]["specialRequestDetails"]["specialServiceRequestList"];
            
             if ($ssrType == "select_seat") {
+                // dd(" iran");
                 if (array_key_exists("detail", $response)) {
                     if (array_key_exists("CraneFault", $response["detail"])){
                         if (array_key_exists("code", $response["detail"]["CraneFault"])){
@@ -103,11 +104,15 @@ class AddSsrController extends Controller
                         }
                     }
 
+
+
                     return response()->json([
                         "error" => true,            
                         "message" => "unable to select seat"
                     ], 400);
                 }
+                
+                //    $specialServiceRequestList = $response['AddSsrResponse']['airBookingList']["airReservation"]["specialRequestDetails"]["specialServiceRequestList"];
 
                 // foreach ($specialServiceRequestList as $specialServiceRequest) {
                 //     if ($specialServiceRequest["SSR"]["code"] == "SEAT") {
@@ -259,7 +264,7 @@ class AddSsrController extends Controller
 
             return response()->json([
                 'error' => true,
-                "message" => $message,
+                "message" => "something went wrong",
                 "actual_message" => $th->getMessage()
         
             ], 500);
