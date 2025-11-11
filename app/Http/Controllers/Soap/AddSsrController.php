@@ -29,14 +29,78 @@ class AddSsrController extends Controller
         
     }
 
+    private function unauthorizedResponse() {
+        return response()->json([
+            "error" => true,
+            "message" => "you are not authorized to carry out this action"
+        ], 401);
+    }
+
+    private function handleGuestUser($bookingId, $passengerName) {
+        $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+        $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
+        // dd($xml);
+
+        return $this->craneOTASoapService->run($function, $xml);
+    }
+
+    private function parseAmountFromResponse($ticketInfo) {
+        $amount = 0;
+        if (array_key_exists('totalAmount', $ticketInfo)) {
+            $amount = data_get($ticketInfo, "totalAmount.value");    
+            $preferredCurrency = data_get($ticketInfo, 'totalAmount.currency.code');    
+          
+        } else {
+            $ticketItemList = $ticketInfo['ticketItemList'];
+            if (!$this->checkArray->isAssociativeArray($ticketItemList)) {
+            
+                foreach($ticketItemList as $ticketItem) {
+                    $preferredCurrency = $preferredCurrency ?? data_get($ticketItem, 'pricingOverview.totalAmount.currency.code');
+                    $amount += data_get($ticketItem, 'pricingOverview.totalAmount.value', 0);                    
+                }
+            } else  {
+                  $preferredCurrency = data_get($ticketItemList, 'pricingOverview.totalAmount.currency.code');
+                    $amount = data_get($ticketItemList, 'pricingOverview.totalAmount.value', 0);
+            }
+        }
+
+        return [$amount, $preferredCurrency];
+
+    }
+
+    private function updateOrCreateInvoice(Invoice $invoice, $amount, $preferredCurrency, $bookingId) {
+        $addedPrice = 0;
+            // dd($invoice);
+           
+        if (!$invoice->is_paid) {
+            $addedPrice = $invoice->amount - $amount;
+            $addedPrice = abs($addedPrice);
+
+            $invoice->update(['amount' => $amount, 'is_paid' => false]);
+            
+        } else { 
+            $invoice = Invoice::create([
+                'amount' => $amount,
+                'booking_id' => $bookingId,
+                'currency' => $preferredCurrency,
+                'is_paid' => false
+            ]);
+            $addedPrice = $amount;
+        }
+
+
+        return [$invoice, $addedPrice];
+    }
+
+    
+
     public function addSsr(AddSsrRequest $request, Invoice $invoice) {        
         $preferredCurrency = $request->input('preferredCurrency');
 
         $ancillaryRequestList = $request->input('ancillaryRequestList');     
         
         
-        $bookingReferenceIDID = $request->input('bookingReferenceIDID');
-        $bookingReferenceID = $request->input('bookingReferenceID');
+        $bookingId = $request->input('bookingReferenceIDID');
         $passengerName = $request->input('passengerName');
         $peaceId = $request->input('peaceId');
 
@@ -49,28 +113,18 @@ class AddSsrController extends Controller
         
         if ($user->is_guest) {
 
-            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
-            $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
-           // dd($xml);
-    
-            $response = $this->craneOTASoapService->run($function, $xml);
-
+            
+            $response = $this->handleGuestUser($bookingId, $passengerName);
            // dd($response);
           
             if (!(isset($response['AirBookingResponse']))) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "you are not authorized to carry out this action"
-                ], 401);
+                return $this->unauthorizedResponse();
             }
 
         } else {
-            $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $peaceId)->first();
+            $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
             if (!$booking) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "you are not authorized to carry out this action"
-                ], 401);
+               return $this->unauthorizedResponse();
             }
         }
 
@@ -104,8 +158,6 @@ class AddSsrController extends Controller
                         }
                     }
 
-
-
                     return response()->json([
                         "error" => true,            
                         "message" => "unable to select seat"
@@ -137,50 +189,15 @@ class AddSsrController extends Controller
 
             }
 
-            $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
-            $amount = 0;
-            $preferredCurrency = null;
+           $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
 
-            if (array_key_exists('totalAmount', $ticketInfo)) {
-                $amount = $ticketInfo["totalAmount"]["value"];
-                $preferredCurrency = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["currency"]["code"];
+           [$amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
 
-            } else {
-                $ticketItemList = $ticketInfo['ticketItemList'];
-                if (!$this->checkArray->isAssociativeArray($ticketItemList)) {
-                
-                    foreach($ticketItemList as $ticketItem) {
-                      $preferredCurrency = $preferredCurrency ?? $ticketItem['pricingOverview']['totalAmount']['currency']['code'];
-                      $amount += $ticketItem['pricingOverview']['totalAmount']['value'];                        
-                    }
-                } else  {
-                  
-                    $preferredCurrency = $ticketItemList['pricingOverview']['totalAmount']['currency']['code'];
-                    $amount = $ticketItemList['pricingOverview']['totalAmount']['value'];   
-                }
-            }
-
-            $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
 
 
             // if user has not paid set the new invoice balance else generate a new invoice
             
-            $addedPrice = 0;
-            // dd($invoice);
-           
-            if (!$invoice->is_paid) {
-                $addedPrice = $invoice->amount - $amount;
-                $addedPrice = abs($addedPrice);
-                $invoice->amount = $amount;
-                
-            } else { 
-                $invoice = Invoice::create([
-                    'amount' => $amount,
-                    'booking_id' => $bookingId,
-                    'currency' => $preferredCurrency
-                ]);
-                $addedPrice = $amount;
-            }
+            [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $amount, $preferredCurrency, $bookingId);
             
           
 
@@ -192,7 +209,7 @@ class AddSsrController extends Controller
             if ($ssrType == "insurance") {
                 $numberOfInsurance = count($ancillaryRequestList);
                 InvoiceItem::create([
-                    'invoice_id' => $invoice->id,
+                    'invoice_id' => $updatedInvoice->id,
                     'product' => 'Insurance', // baggages or ticket shopping
                     'quantity' => $numberOfInsurance,
                     // total_passengers => $totalPassengers  // this field would be removed
@@ -200,9 +217,6 @@ class AddSsrController extends Controller
                 ]);
                 $message = "Insurance added successfully";
                 
-                // set invoice as false if invoice was added
-                $invoice->is_paid = false;
-                $invoice->save();
             
             
             } else if ($ssrType == "baggages") {                
@@ -215,9 +229,7 @@ class AddSsrController extends Controller
                                 $message = "Requested baggage weight {$response["detail"]["CraneFault"]["args"][0]} exceeds baggage limit {$response["detail"]["CraneFault"]["args"][1]}. Current baggage weight {$response["detail"]["CraneFault"]["args"][2]}";
                             }
                         }
-                    }
-                    Log::error($th->getMessage());
-        
+                    }        
                     return response()->json([
                         'error' => true,
                         "message" => $message
@@ -233,7 +245,7 @@ class AddSsrController extends Controller
                     $quantity = $matches[0];
     
                     InvoiceItem::create([
-                        'invoice_id' => $invoice->id,
+                        'invoice_id' => $updatedInvoice->id,
                         'product' => 'Baggages', // baggages or ticket shopping
                         'quantity' => $quantity,
                         // total_passengers => $totalPassengers  // this field would be removed
@@ -243,9 +255,6 @@ class AddSsrController extends Controller
                 }
                 $message = "Baggages added successfully";
 
-                // set invoice as false if baggages was added
-                $invoice->is_paid = false;
-                $invoice->save();
 
             }
       
@@ -254,7 +263,7 @@ class AddSsrController extends Controller
             return response()->json([
                 "error" => false,
                 "message" => $message,
-                'invoice_id' => $invoice->id,
+                'invoice_id' => $updatedInvoice->id,
                 "amount" => $amount
             ], 200);
 
