@@ -174,6 +174,9 @@ class CreateBookingBuilder
                             <givenName>' . htmlspecialchars($string['personNameGivenNameChild'], ENT_XML1, 'UTF-8') . '</givenName>
                             <surname>' . htmlspecialchars($string['personNameSurnameChild'], ENT_XML1, 'UTF-8') . '</surname>
                         </personName>
+                        <nationality>
+                            <locationCode>' . htmlspecialchars($string['nationalityLocationCode'], ENT_XML1, 'UTF-8') . '</locationCode>
+                        </nationality>
                         <requestedSeatCount>' . htmlspecialchars($string['requestedSeatCountChild'], ENT_XML1, 'UTF-8') . '</requestedSeatCount>
                         <unaccompaniedMinor/>'.
                             $this->documentInfoList($string)
@@ -437,7 +440,7 @@ class CreateBookingBuilder
             foreach($otherServiceInformationList as $string) {
                 $xml .= '
                     <otherServiceInformationList>
-                        <airTravelerSequence/>
+                        <airTravelerSequence>' . htmlspecialchars($string['airTravelerSequence'], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
                         <code>' . htmlspecialchars($string['code'], ENT_XML1, 'UTF-8') . '</code>
                         <explanation>' . htmlspecialchars($string['explanation'], ENT_XML1, 'UTF-8') . '</explanation>
                         <flightSegmentSequence/>

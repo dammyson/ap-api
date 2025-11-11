@@ -6,31 +6,34 @@ use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
-use App\Models\InvoiceRecord;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Services\Soap\AddWeightBuilder;
+use App\Http\Requests\SSR\AddSsrRequest;
+use App\Services\Soap\AddWeightBuilderTest;
 use App\Http\Requests\Test\addWeightRequest;
+use App\Http\Requests\Test\AddWeightRequestTest;
+use App\Services\Soap\AddWeightBuilder;
 use App\Services\Soap\BookingBuilder;
+use App\Services\Utility\CheckArray;
 
 class AddWeightController extends Controller
 {
     protected $addWeightBuilder;
     protected $craneAncillaryOTASoapService;
-    protected $bookingBuilder;
     protected $craneOTASoapService;
+    protected $bookingBuilder;
+    protected $checkArray;
 
-    public function __construct(AddWeightBuilder $addWeightBuilder, BookingBuilder $bookingBuilder)
-    {
+    public function __construct(AddWeightBuilder $addWeightBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray) {
         $this->addWeightBuilder = $addWeightBuilder;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->craneOTASoapService = app("CraneOTASoapService");
         $this->bookingBuilder = $bookingBuilder;
+        $this->checkArray = $checkArray;
+        
     }
 
-  
-    public function selectSeat(addWeightRequest $request) {
-
+    public function addWeightOrInsurance(addWeightRequest $request, $invoiceId, $ssrType) {
         $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
         $bookFlightSegmentListActionCode = $request->input('bookFlightSegmentListActionCode');
         $bookFlightAddOnSegment = $request->input('bookFlightAddOnSegment');
@@ -103,73 +106,39 @@ class AddWeightController extends Controller
         $responseCode = $request->input('responseCode');
         $sequenceNumber = $request->input('sequenceNumber');
         $status = $request->input('status');
-        $accompaniedByInfant = $request->input('accompaniedByInfant');
-        $airTravelerbirthDate = $request->input('airTravelerbirthDate');
-        $contactPersonEmail = $request->input('contactPersonEmail');
-        $airTravelerListEmailMarkedForSendingRezInfo = $request->input('airTravelerListEmailMarkedForSendingRezInfo');
-        $emailPreferred = $request->input('emailPreferred');
-        $emailSharedMarketInd = $request->input('emailSharedMarketInd');
-        $airTravelerListPersonNameGivenName = $request->input('airTravelerListPersonNameGivenName');
-        $airTravelerListpersonNameShareMarketInd = $request->input('airTravelerListpersonNameShareMarketInd');
-        $airTravelerListPersonNameSurname = $request->input('airTravelerListPersonNameSurname');
-        $phoneNumberAreaCode = $request->input('phoneNumberAreaCode');
-        $phoneCountryCode = $request->input('phoneCountryCode');
-        $phoneNumberEmailMarkedForSendingRezInfo = $request->input('phoneNumberEmailMarkedForSendingRezInfo');
-        $phoneNumberPreferred = $request->input('phoneNumberPreferred');
-        $phoneNumberShareMarketInd = $request->input('phoneNumberShareMarketInd');
-        $phoneNumberSubscriberNumber = $request->input('phoneNumberSubscriberNumber');
-        $airTravelerShareContactInfo = $request->input('airTravelerShareContactInfo');
-        $airTravelerShareMarketInd = $request->input('airTravelerShareMarketInd');
-        $useForInvoicing = $request->input('useForInvoicing');
-        $documentInfoBirthDate = $request->input('documentInfoBirthDate');
-        $documentHolderFormattedGivenName = $request->input('documentHolderFormattedGivenName');
-        $documentHolderFormattedShareMarketInd = $request->input('documentHolderFormattedShareMarketInd');
-        $documentHolderFormattedSurname = $request->input('documentHolderFormattedSurname');
-        $documentHolderFormattedGender = $request->input('documentHolderFormattedGender');
-        $emergencyContactInfoshareMarketInd = $request->input('emergencyContactInfoshareMarketInd');
-        $decline = $request->input('decline');
-        $emergencyContactMarkedForSendingRezInfo = $request->input('emergencyContactMarkedForSendingRezInfo');
-        $emergencyContactPreferred = $request->input('emergencyContactPreferred');
-        $emergencyContactShareMarketInd = $request->input('emergencyContactShareMarketInd');
-        $shareContactInfo = $request->input('shareContactInfo');
-        $airTravelerGender = $request->input('airTravelerGender');
-        $airTravelerHasStrecher = $request->input('airTravelerHasStrecher');
-        $parentSequence = $request->input('parentSequence');
-        $passengerTypeCode = $request->input('passengerTypeCode');
-        $personNameGivenName = $request->input('personNameGivenName');
-        $personNameTitle = $request->input('personNameTitle');
-        $personNameshareMarketInd = $request->input('personNameshareMarketInd');
-        $personNameSurname = $request->input('personNameSurname');
-        $personNameENGivenName = $request->input('personNameENGivenName');
-        $personNameENTitle = $request->input('personNameENTitle');
-        $personNameENShareMarketInd = $request->input('personNameENShareMarketInd');
-        $personNameENShareMarketSurname = $request->input('personNameENShareMarketSurname');
-        $requestedSeatCount = $request->input('requestedSeatCount');
-        $shareMarketInd = $request->input('shareMarketInd');
-        $travelerReferenceID = $request->input('travelerReferenceID');
-        $airTravelUnaccompaniedMinor = $request->input('airTravelUnaccompaniedMinor');
-        $airTravelerSequence = $request->input('airTravelerSequence');
-        $flightSegmentSequence = $request->input('flightSegmentSequence');
-        $airTravelerSsrCode = $request->input('airTravelerSsrCode');
-        $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
-        $ssrExplanation = $request->input('ssrExplanation');        
+        $airTravelerList = $request->input('airTravelerList');
+        $preferredCurrency = $request->input('preferredCurrency');
+
+        $ancillaryRequestList = $request->input('ancillaryRequestList');
+        
+        // $airTravelerSequence = $request->input('airTravelerSequence');
+        // $flightSegmentSequence = $request->input('flightSegmentSequence');
+        // $airTravelerSsrCode = $request->input('airTravelerSsrCode');
+        // $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
+        // $ssrExplanation = $request->input('ssrExplanation');      
+        
+        
         $bookingReferenceIDID = $request->input('bookingReferenceIDID');
         $bookingReferenceID = $request->input('bookingReferenceID');
-        $preferredCurrency = $request->input('preferredCurrency');
-        $passengerName = $request->input("passengerName");
-        $peaceId =  $request->input('peaceId');
+        $passengerName = $request->input('passengerName');
+        $peaceId = $request->input('peaceId');
 
+        // dd("i ran");
 
+        
         $user = $request->user();
+        // dd($user->peace_id);
         
         if ($user->is_guest) {
 
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
             $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
-    
+           // dd($xml);
     
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
+
+           // dd($response);
+          
             if (!(isset($response['AirBookingResponse']))) {
                 return response()->json([
                     "error" => true,
@@ -186,10 +155,9 @@ class AddWeightController extends Controller
                 ], 401);
             }
         }
+
         
-        
-        // dd($booking);
-        
+        // dump("i ran");
 
         $xml = $this->addWeightBuilder->addWeight(
             $preferredCurrency,
@@ -265,99 +233,146 @@ class AddWeightController extends Controller
             $responseCode,
             $sequenceNumber,
             $status,
-            $accompaniedByInfant,
-            $airTravelerbirthDate,
-            $contactPersonEmail,
-            $airTravelerListEmailMarkedForSendingRezInfo,
-            $emailPreferred,
-            $emailSharedMarketInd,
-            $airTravelerListPersonNameGivenName,
-            $airTravelerListpersonNameShareMarketInd,
-            $airTravelerListPersonNameSurname,
-            $phoneNumberAreaCode,
-            $phoneCountryCode,
-            $phoneNumberEmailMarkedForSendingRezInfo,
-            $phoneNumberPreferred,
-            $phoneNumberShareMarketInd,
-            $phoneNumberSubscriberNumber,
-            $airTravelerShareContactInfo,
-            $airTravelerShareMarketInd,
-            $useForInvoicing,
-            $documentInfoBirthDate,
-            $documentHolderFormattedGivenName,
-            $documentHolderFormattedShareMarketInd,
-            $documentHolderFormattedSurname,
-            $documentHolderFormattedGender,
-            $emergencyContactInfoshareMarketInd,
-            $decline,
-            $emergencyContactMarkedForSendingRezInfo,
-            $emergencyContactPreferred,
-            $emergencyContactShareMarketInd,
-            $shareContactInfo,
-            $airTravelerGender,
-            $airTravelerHasStrecher,
-            $parentSequence,
-            $passengerTypeCode,
-            $personNameGivenName,
-            $personNameTitle,
-            $personNameshareMarketInd,
-            $personNameSurname,
-            $personNameENGivenName,
-            $personNameENTitle,
-            $personNameENShareMarketInd,
-            $personNameENShareMarketSurname,
-            $requestedSeatCount,
-            $shareMarketInd,
-            $travelerReferenceID,
-            $airTravelUnaccompaniedMinor,
-            $airTravelerSequence,
-            $flightSegmentSequence,
-            $airTravelerSsrCode,
-            $airTravelerSsrGroup,
-            $ssrExplanation,
+            $airTravelerList,
+            $ancillaryRequestList,
             $bookingReferenceIDID,
             $bookingReferenceID
         );
+        // dd($xml);
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            // dump($response);
+            // $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
+            // $amount = 0;
+
+            // if (!array_key_exists('totalAmount', $ticketInfo)) {
+            //     $amount = str_replace(['NGN', ',', ' '], '', $ticketInfo['totalAmountText']);
+            // }else {
+            //     $amount = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+
+            // }            
+            // dd($amount);
+
+            $ticketInfo = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"];
+            $amount = 0;
+            $preferredCurrency = null;
+
+            if (array_key_exists('totalAmount', $ticketInfo)) {
+                $amount = $ticketInfo["totalAmount"]["value"];
+                $preferredCurrency = $response["AddSsrResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["currency"]["code"];
+
+            } else {
+                $ticketItemList = $ticketInfo['ticketItemList'];
+                if (!$this->checkArray->isAssociativeArray($ticketItemList)) {
+                
+                    foreach($ticketItemList as $ticketItem) {
+                      $preferredCurrency = $preferredCurrency ?? $ticketItem['pricingOverview']['totalAmount']['currency']['code'];
+                      $amount += $ticketItem['pricingOverview']['totalAmount']['value'];                        
+                    }
+                } else  {
+                  
+                    $preferredCurrency = $ticketItemList['pricingOverview']['totalAmount']['currency']['code'];
+                    $amount = $ticketItemList['pricingOverview']['totalAmount']['value'];   
+                }
+            }
+
+            $bookingId = $response["AddSsrResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
+            $invoice = Invoice::find($invoiceId);
+
+
+            // if user has not paid set the new invoice balance else generate a new invoice
             
+            $addedPrice = 0;
+            // dd($invoice);
+           
+            if (!$invoice->is_paid) {
+                $addedPrice = $invoice->amount - $amount;
+                $addedPrice = abs($addedPrice);
+                $invoice->amount = $amount;
+                
+            } else { 
+                $invoice = Invoice::create([
+                    'amount' => $amount,
+                    'booking_id' => $bookingId,
+                    'currency' => $preferredCurrency
+                ]);
+                $addedPrice = $amount;
+            }
+            
+          
+
+            // Use preg_match to extract the number
+           
+
+            $message = "";
+
+            if ($ssrType == "insurance") {
+                $numberOfInsurance = count($ancillaryRequestList);
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'product' => 'Insurance', // baggages or ticket shopping
+                    'quantity' => $numberOfInsurance,
+                    // total_passengers => $totalPassengers  // this field would be removed
+                    'price' => $addedPrice
+                ]);
+                $message = "Insurance added successfully";
+            } else {
+                foreach ($ancillaryRequestList as $ancillaryRequest) {
+                    $ssrExplanation = $ancillaryRequest['ssrExplanation'];
+                    preg_match('/\d+/', $ssrExplanation, $matches);
+        
+                    // $matches[0] will contain the number
+                    $quantity = $matches[0];
+    
+                    InvoiceItem::create([
+                        'invoice_id' => $invoice->id,
+                        'product' => 'Baggages', // baggages or ticket shopping
+                        'quantity' => $quantity,
+                        // total_passengers => $totalPassengers  // this field would be removed
+                        'price' => $addedPrice
+                    ]);
+    
+                }
+                $message = "Baggages added successfully";
+
+            }
+      
+            // set invoice as false if baggages was added
+            $invoice->is_paid = false;
+            $invoice->save();
+
+            return response()->json([
+                "error" => false,
+                "message" => $message,
+                'invoice_id' => $invoice->id,
+                "amount" => $amount
+            ], 200);
+
+        } catch (\Throwable $th) {
+            $message = "Something went wrong";
             if (array_key_exists("detail", $response)) {
                 if (array_key_exists("CraneFault", $response["detail"])){
                     if (array_key_exists("code", $response["detail"]["CraneFault"])){
-                        if ($response["detail"]["CraneFault"]["code"] == "ASR_ADDING_SEAT_NOT_ALLOWED") {
-                            $message = "You are not allowed to add more seat for this passenger";
-                            return response()->json([
-                                "error" => true,            
-                                "message" => $message
-                            ], 400);
-                        
+                        if ($response["detail"]["CraneFault"]["code"] == "BAGGAGE_LIMIT_ERROR") {
+                            $message = "Requested baggage weight {$response["detail"]["CraneFault"]["args"][0]} exceeds baggage limit {$response["detail"]["CraneFault"]["args"][1]}. Current baggage weight {$response["detail"]["CraneFault"]["args"][2]}";
                         }
                     }
                 }
             }
-
-            return response()->json([
-                "error" => false,
-                "data" => $response
-            ]);
-        
-        } catch (\Throwable $th) {
-           
             Log::error($th->getMessage());
 
-            $message = "something went wrong";
-
-    
             return response()->json([
-                "error" => true,            
+                'error' => true,
                 "message" => $message,
-                "actual_message" => $th->getMessage()
+                "actual_error" => $th->getMessage()
+        
             ], 500);
-        }  
+        }
     }
+    
     
    
     

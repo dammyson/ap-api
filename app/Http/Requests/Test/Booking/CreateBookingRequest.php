@@ -136,6 +136,7 @@ class CreateBookingRequest extends FormRequest
             "airTravelerChildList.*.passengerTypeCodeChild" => "required|string",
             "airTravelerChildList.*.personNameGivenNameChild" => "required|string",
             "airTravelerChildList.*.personNameSurnameChild" => "required|string",
+            "airTravelerChildList.*.nationalityLocationCode" => "required|string",
             "airTravelerChildList.*.contactPersonShareContactInfoChild" => "required|boolean",
             "airTravelerChildList.*.requestedSeatCountChild" => "required|string",
             
@@ -189,6 +190,7 @@ class CreateBookingRequest extends FormRequest
             "specialServiceRequestList.*.ticketedStatus" => "required|string",
             
             "otherServiceInformationList" => 'sometimes|array',
+            "otherServiceInformationList.*.airTravelerSequence" => "required|string",
             "otherServiceInformationList.*.code" => "required|string",
             "otherServiceInformationList.*.explanation" => "required|string",
             
