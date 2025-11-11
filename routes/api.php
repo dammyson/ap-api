@@ -267,10 +267,8 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
             Route::post('rt', [AvailableSpecialController::class, 'AvailableSpecialServiceRT']);
         });
         
-        Route::post('/add-seat-ssr', [AddSeatController::class, 'addSeat']);
-        Route::post('/add-weight-bag-ow/invoice-test/{invoiceId}/{ssrType}', [AddWeightControllerTest::class, 'addWeightTest']);
-        Route::post('/select-seat-test', [AddWeightControllerTest::class, 'selectSeatTest']);
-        Route::post('/select-seat', [AddWeightController::class, 'selectSeat']);
+        Route::post('/add-weight-bag-ow/invoice/{invoiceId}/{ssrType}', [AddWeightController::class, 'addWeightOrInsurance']);
+        Route::post('/select-seat', [AddSeatController::class, 'selectSeat']);
         
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
         Route::post('/seat-map', [SeatMapController::class, 'seatMap']);

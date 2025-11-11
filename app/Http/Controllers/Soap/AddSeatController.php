@@ -2,283 +2,361 @@
 
 namespace App\Http\Controllers\Soap;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Test\AddSeatRequest;
-use App\Services\Soap\AddSeatBuilder;
+
+use App\Models\Booking;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
+use App\Models\InvoiceRecord;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Services\Soap\AddWeightBuilder;
+use App\Http\Requests\Test\addWeightRequest;
+use App\Services\Soap\BookingBuilder;
 
 class AddSeatController extends Controller
 {
-    protected $addSeatBuilder; 
+    protected $addWeightBuilder;
     protected $craneAncillaryOTASoapService;
-   
-    public function __construct(AddSeatBuilder $addSeatBuilder)
-    {
-        $this->addSeatBuilder = $addSeatBuilder;
-        $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
-    }
+    protected $bookingBuilder;
+    protected $craneOTASoapService;
     
-    public function addSeat(AddSeatRequest $request) {
-        $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist'); 
-        $actionCode = $request->input('actionCode'); 
-        $addOnSegment = $request->input('addOnSegment'); 
-        $cabin = $request->input('cabin'); 
-        $resBookDesigCode = $request->input('resBookDesigCode'); 
-        $resBookDesigQuantity = $request->input('resBookDesigQuantity');
-        $fareInfoCabin = $request->input('fareInfoCabin'); 
-        $cabinClassCode = $request->input('cabinClassCode'); 
-        $allowanceType = $request->input('allowanceType'); 
-        $maxAllowedPieces = $request->input('maxAllowedPieces'); 
-        $unitOfMeasureCode = $request->input('unitOfMeasureCode'); 
-        $weight = $request->input('weight'); 
-        $fareGroupName = $request->input('fareGroupName'); 
-        $fareReferenceCode = $request->input('fareReferenceCode'); 
-        $fareReferenceID = $request->input('fareReferenceID'); 
-        $fareReferenceName = $request->input('fareReferenceName'); 
-        $flightSegmentSequence = $request->input('flightSegmentSequence');
-        $flightSegmentResBookDesigCode = $request->input('flightSegmentResBookDesigCode'); 
-        $airlineCode = $request->input('airlineCode'); 
-        $airlineCodeContext = $request->input('airlineCodeContext');
-        $arrivalAirportCityLocationCode = $request->input('arrivalAirportCityLocationCode'); 
-        $arrivalAirportCityLocationName = $request->input('arrivalAirportCityLocationName'); 
-        $arrivalAirportCityLocationNameLanguage = $request->input('arrivalAirportCityLocationNameLanguage'); 
+    public function __construct(AddWeightBuilder $addWeightBuilder, BookingBuilder $bookingBuilder)
+        {
+            $this->addWeightBuilder = $addWeightBuilder;
+            $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
+            $this->craneOTASoapService = app("CraneOTASoapService");
+            $this->bookingBuilder = $bookingBuilder;
+        }
+
+  
+    public function selectSeat(addWeightRequest $request) {
+
+        $adviceCodeSegmentExist = $request->input('adviceCodeSegmentExist');
+        $bookFlightSegmentListActionCode = $request->input('bookFlightSegmentListActionCode');
+        $bookFlightAddOnSegment = $request->input('bookFlightAddOnSegment');
+        $bookingClassCabin = $request->input('bookingClassCabin');
+        $bookingClassResBookDesigCode = $request->input('bookingClassResBookDesigCode');
+        $resBookDesignQuantity = $request->input('resBookDesignQuantity');
+        $fareInfoCabin = $request->input('fareInfoCabin');
+        $fareInfoCabinClassCode = $request->input('fareInfoCabinClassCode');
+        $fareBaggageAllowanceType = $request->input('fareBaggageAllowanceType');
+        $fareBaggageMaxAllowedPieces = $request->input('fareBaggageMaxAllowedPieces');
+        $unitOfMeasureCode = $request->input('unitOfMeasureCode');
+        $fareBaggageAllowanceWeight = $request->input('fareBaggageAllowanceWeight');
+        $fareGroupName = $request->input('fareGroupName');
+        $fareReferenceCode = $request->input('fareReferenceCode');
+        $fareReferenceID = $request->input('fareReferenceID');
+        $fareReferenceName = $request->input('fareReferenceName');
+        $bookFlightSegmentSequence = $request->input('bookFlightSegmentSequence');
+        $resBookDesigCode = $request->input('resBookDesigCode');
+        $flightSegmentCode = $request->input('flightSegmentCode');
+        $flightSegmentCodeContext = $request->input('flightSegmentCodeContext');
+        $arrivalAirportCityLocationCode = $request->input('arrivalAirportCityLocationCode');
+        $arrivalAirportCityLocationName = $request->input('arrivalAirportCityLocationName');
+        $arrivalAirportCityLocationNameLanguage = $request->input('arrivalAirportCityLocationNameLanguage');
         $arrivalAirportCountryLocationCode = $request->input('arrivalAirportCountryLocationCode');
-        $arrivalAirportCountryLocationName = $request->input('arrivalAirportCountryLocationName'); 
-        $arrivalAirportCountryLocationNameLanguage = $request->input('arrivalAirportCountryLocationNameLanguage'); 
-        $arrivalAirportCurrencyCode = $request->input('arrivalAirportCurrencyCode'); 
-        $arrivalAirportCodeContext = $request->input('arrivalAirportCodeContext'); 
-        $arrivalAirportLanguage = $request->input('arrivalAirportLanguage'); 
-        $arrivalAirportLocationCode = $request->input('arrivalAirportLocationCode'); 
-        $arrivalAirportLocationName = $request->input('arrivalAirportLocationName'); 
-        $arrivalAirportTerminal = $request->input('arrivalAirportTerminal'); 
-        $arrivalAirportTimeZoneInfo = $request->input('arrivalAirportTimeZoneInfo'); 
-        $arrivalAirportDateTime = $request->input('arrivalAirportDateTime'); 
-        $arrivalAirportDateTimeUTC = $request->input('arrivalAirportDateTimeUTC'); 
-        $departureAirportCityLocationCode = $request->input('departureAirportCityLocationCode'); 
-        $departureAirportCityLocationName = $request->input('departureAirportCityLocationName'); 
-        $departureAirportCityLocationNameLanguage = $request->input('departureAirportCityLocationNameLanguage'); 
-        $departureAirportCountryLocationCode = $request->input('departureAirportCountryLocationCode'); 
-        $departureAirportCountryLocationName = $request->input('departureAirportCountryLocationName'); 
-        $departureAirportCountryLocationNameLanguage = $request->input('departureAirportCountryLocationNameLanguage'); 
-        $departureAirportCurrencyCode = $request->input('departureAirportCurrencyCode'); 
-        $departureAirportCodeContext = $request->input('departureAirportCodeContext'); 
-        $departureAirportLanguage = $request->input('departureAirportLanguage'); 
-        $departureAirportLocationCode = $request->input('departureAirportLocationCode'); 
-        $departureAirportLocationName = $request->input('departureAirportLocationName'); 
-        $departureAirportTimeZoneInfo = $request->input('departureAirportTimeZoneInfo'); 
-        $departureDateTime = $request->input('departureDateTime'); 
-        $departureDateTimeUTC = $request->input('departureDateTimeUTC'); 
-        $flightNumber = $request->input('flightNumber'); 
-        $flightSegmentID = $request->input('flightSegmentID'); 
-        $ondControlled = $request->input('ondControlled'); 
-        $bookFlightSegmentSector = $request->input('bookFlightSegmentSector'); 
-        $bookFlightSegmentCodeShare = $request->input('bookFlightSegmentCodeShare'); 
-        $bookFlightSegmentDistance = $request->input('bookFlightSegmentDistance'); 
-        $airEquipType = $request->input('airEquipType'); 
-        $changeOfGauge = $request->input('changeOfGauge'); 
-        $flightNotes = $request->input('flightNotes');        
-        $flownMileageQty = $request->input('flownMileageQty'); 
-        $iatciFlight = $request->input('iatciFlight'); 
-        $journeyDuration = $request->input('journeyDuration'); 
-        $onTimeRate = $request->input('onTimeRate'); 
-        $remark = $request->input('remark'); 
-        $secureFlightDataRequired = $request->input('secureFlightDataRequired'); 
-        $segmentStatusByFirstLeg = $request->input('segmentStatusByFirstLeg'); 
-        $stopQuantity = $request->input('stopQuantity'); 
-        $involuntaryPermissionGiven = $request->input('involuntaryPermissionGiven'); 
-        $bookingLegStatus = $request->input('bookingLegStatus'); 
-        $bookingReferenceID = $request->input('bookingReferenceID'); 
-        $bookingResponseCode = $request->input('bookingResponseCode'); 
-        $bookingSequenceNumber = $request->input('bookingSequenceNumber'); 
-        $bookingFlightStatus = $request->input('bookingFlightStatus'); 
-        $accompaniedByInfant = $request->input('accompaniedByInfant'); 
-        $airTravelerListbirthDate = $request->input('airTravelerListbirthDate'); 
-        $contactPersonEmail = $request->input('contactPersonEmail'); 
-        $emailMarkedForSendingRezInfo = $request->input('emailMarkedForSendingRezInfo'); 
-        $emailPreferred = $request->input('emailPreferred'); 
-        $emailSharedMarketInd = $request->input('emailSharedMarketInd'); 
-        $contactPersonGivenName = $request->input('contactPersonGivenName'); 
-        $contactPersonShareMarketIndOne = $request->input('contactPersonShareMarketIndOne'); 
-        $personNameSurname = $request->input('personNameSurname'); 
-        $phoneNumberAreaCode = $request->input('phoneNumberAreaCode'); 
-        $phoneNumberCountryCode = $request->input('phoneNumberCountryCode'); 
-        $phoneNumberMarkedForSendingRezInfo = $request->input('phoneNumberMarkedForSendingRezInfo'); 
-        $phoneNumberPreferred = $request->input('phoneNumberPreferred'); 
-        $phoneNumberShareMarketInd = $request->input('phoneNumberShareMarketInd'); 
-        $phoneNumberSubscriberNumber = $request->input('phoneNumberSubscriberNumber'); 
-        $contactPersonShareContactInfo = $request->input('contactPersonShareContactInfo');
-        $contactPersonShareMarketIndTwo = $request->input('contactPersonShareMarketIndTwo'); 
-        $contactPersonUseForInvoicing = $request->input('contactPersonUseForInvoicing'); 
-        $documentInfoListBirthDate = $request->input('documentInfoListBirthDate'); 
-        $documentInfoListGivenName = $request->input('documentInfoListGivenName'); 
-        $documentInfoListShareMarketInd = $request->input('documentInfoListShareMarketInd'); 
-        $documentInfoSurname = $request->input('documentInfoSurname'); 
-        $documentInfoListGender = $request->input('documentInfoListGender'); 
-        $emergencyContactInfoShareMarketInd = $request->input('emergencyContactInfoShareMarketInd'); 
-        $emergencyContactInfoDecline = $request->input('emergencyContactInfoDecline'); 
-        $emergencyContactMarkedForSendingRezInfo = $request->input('emergencyContactMarkedForSendingRezInfo'); 
-        $emergencyContactPreferred = $request->input('emergencyContactPreferred'); 
-        $emergencyContactShareMarketInd = $request->input('emergencyContactShareMarketInd'); 
-        $emergencyContactShareContactInfo = $request->input('emergencyContactShareContactInfo'); 
-        $contactPersonGender = $request->input('contactPersonGender'); 
-        $contactPersonHasStrecher = $request->input('contactPersonHasStrecher'); 
-        $contactPersonParentSequence = $request->input('contactPersonParentSequence'); 
-        $contactPersonPassengerTypeCode = $request->input('contactPersonPassengerTypeCode'); 
-        $personNameGivenName = $request->input('personNameGivenName'); 
-        $personNameNameTitle = $request->input('personNameNameTitle'); 
-        $personNameShareMarketInd = $request->input('personNameShareMarketInd'); 
-        $personNameNameSurname = $request->input('personNameSurname');
-        $personNameENGivenName = $request->input('personNameENGivenName'); 
-        $personNameENNameTitle = $request->input('personNameENNameTitle'); 
-        $personNameENShareMarketInd = $request->input('personNameENShareMarketInd'); 
-        $personNameENSurname = $request->input('personNameENSurname'); 
-        $requestedSeatCount = $request->input('requestedSeatCount'); 
-        $airTravelerListShareMarketInd = $request->input('airTravelerListShareMarketInd'); 
-        $travelerReferenceID = $request->input('travelerReferenceID'); 
-        $unaccompaniedMinor = $request->input('unaccompaniedMinor'); 
-        $airTravelerSequence = $request->input('airTravelerSequence'); 
-        $ancillaryRequestListFlightSegmentSequence = $request->input('ancillaryRequestListFlightSegmentSequence'); 
-        $ssrCode = $request->input('ssrCode');
-        $ssrGroup = $request->input('ssrGroup');
-        $ssrExplanation = $request->input('ssrExplanation'); 
-        $bookingReferenceIDID = $request->input('bookingReferenceIDID'); 
+        $arrivalAirportCountryLocationName = $request->input('arrivalAirportCountryLocationName');
+        $arrivalAirportCountryLocationNameLanguage = $request->input('arrivalAirportCountryLocationNameLanguage');
+        $arrivalAirportCountryCurrencyCode = $request->input('arrivalAirportCountryCurrencyCode');
+        $arrivalAirportCodeContext = $request->input('arrivalAirportCodeContext');
+        $arrivalAirportLanguage = $request->input('arrivalAirportLanguage');
+        $arrivalAirportLocationCode = $request->input('arrivalAirportLocationCode');
+        $arrivalAirportLocationName = $request->input('arrivalAirportLocationName');
+        $arrivalAirportTerminal = $request->input('arrivalAirportTerminal');
+        $arrivalAirportTimeZoneInfo = $request->input('arrivalAirportTimeZoneInfo');
+        $arrivalDateTime = $request->input('arrivalDateTime');
+        $arrivalDateTimeUTC = $request->input('arrivalDateTimeUTC');
+        $departureAirportCitytLocationCode = $request->input('departureAirportCitytLocationCode');
+        $departureAirportCityLocationName = $request->input('departureAirportCityLocationName');
+        $departureAirportCityLocationNameLanguage = $request->input('departureAirportCityLocationNameLanguage');
+        $departureAirportCountryLocationCode = $request->input('departureAirportCountryLocationCode');
+        $departureAirportCountryLocationName = $request->input('departureAirportCountryLocationName');
+        $departureCountryLocationNameLanguage = $request->input('departureCountryLocationNameLanguage');
+        $departureCountryCurrencyCode = $request->input('departureCountryCurrencyCode');
+        $departureAirportCodeContext = $request->input('departureAirportCodeContext');
+        $departureAirportLanguage = $request->input('departureAirportLanguage');
+        $departureAirportLocationCode = $request->input('departureAirportLocationCode');
+        $departureAirportLocationName = $request->input('departureAirportLocationName');
+        $departureAirportTimeZoneInfo = $request->input('departureAirportTimeZoneInfo');
+        $departureDateTime = $request->input('departureDateTime');
+        $departureDateTimeUTC = $request->input('departureDateTimeUTC');
+        $flightNumber = $request->input('flightNumber');
+        $flightSegmentID = $request->input('flightSegmentID');
+        $ondControlled = $request->input('ondControlled');
+        $departureAirportSector = $request->input('departureAirportSector');
+        $departureFlightCodeShare = $request->input('departureFlightCodeShare');
+        $departureFlightDistance = $request->input('departureFlightDistance');
+        $equipmentAirEquipType = $request->input('equipmentAirEquipType');
+        $equipmentChangeOfGauge = $request->input('equipmentChangeOfGauge');
+        $flightNotes = $request->input('flightNotes');     
+        $flownMileageQty = $request->input('flownMileageQty');
+        $iatciFlight = $request->input('iatciFlight');
+        $journeyDuration = $request->input('journeyDuration');
+        $onTimeRate = $request->input('onTimeRate');
+        $remark = $request->input('remark');
+        $secureFlightDataRequired = $request->input('secureFlightDataRequired');
+        $segmentStatusByFirstLeg = $request->input('segmentStatusByFirstLeg');
+        $stopQuantity = $request->input('stopQuantity');
+        $involuntaryPermissionGiven = $request->input('involuntaryPermissionGiven');
+        $legStatus = $request->input('legStatus');
         $referenceID = $request->input('referenceID');
+        $responseCode = $request->input('responseCode');
+        $sequenceNumber = $request->input('sequenceNumber');
+        $status = $request->input('status');
+        $accompaniedByInfant = $request->input('accompaniedByInfant');
+        $airTravelerbirthDate = $request->input('airTravelerbirthDate');
+        $contactPersonEmail = $request->input('contactPersonEmail');
+        $airTravelerListEmailMarkedForSendingRezInfo = $request->input('airTravelerListEmailMarkedForSendingRezInfo');
+        $emailPreferred = $request->input('emailPreferred');
+        $emailSharedMarketInd = $request->input('emailSharedMarketInd');
+        $airTravelerListPersonNameGivenName = $request->input('airTravelerListPersonNameGivenName');
+        $airTravelerListpersonNameShareMarketInd = $request->input('airTravelerListpersonNameShareMarketInd');
+        $airTravelerListPersonNameSurname = $request->input('airTravelerListPersonNameSurname');
+        $phoneNumberAreaCode = $request->input('phoneNumberAreaCode');
+        $phoneCountryCode = $request->input('phoneCountryCode');
+        $phoneNumberEmailMarkedForSendingRezInfo = $request->input('phoneNumberEmailMarkedForSendingRezInfo');
+        $phoneNumberPreferred = $request->input('phoneNumberPreferred');
+        $phoneNumberShareMarketInd = $request->input('phoneNumberShareMarketInd');
+        $phoneNumberSubscriberNumber = $request->input('phoneNumberSubscriberNumber');
+        $airTravelerShareContactInfo = $request->input('airTravelerShareContactInfo');
+        $airTravelerShareMarketInd = $request->input('airTravelerShareMarketInd');
+        $useForInvoicing = $request->input('useForInvoicing');
+        $documentInfoBirthDate = $request->input('documentInfoBirthDate');
+        $documentHolderFormattedGivenName = $request->input('documentHolderFormattedGivenName');
+        $documentHolderFormattedShareMarketInd = $request->input('documentHolderFormattedShareMarketInd');
+        $documentHolderFormattedSurname = $request->input('documentHolderFormattedSurname');
+        $documentHolderFormattedGender = $request->input('documentHolderFormattedGender');
+        $emergencyContactInfoshareMarketInd = $request->input('emergencyContactInfoshareMarketInd');
+        $decline = $request->input('decline');
+        $emergencyContactMarkedForSendingRezInfo = $request->input('emergencyContactMarkedForSendingRezInfo');
+        $emergencyContactPreferred = $request->input('emergencyContactPreferred');
+        $emergencyContactShareMarketInd = $request->input('emergencyContactShareMarketInd');
+        $shareContactInfo = $request->input('shareContactInfo');
+        $airTravelerGender = $request->input('airTravelerGender');
+        $airTravelerHasStrecher = $request->input('airTravelerHasStrecher');
+        $parentSequence = $request->input('parentSequence');
+        $passengerTypeCode = $request->input('passengerTypeCode');
+        $personNameGivenName = $request->input('personNameGivenName');
+        $personNameTitle = $request->input('personNameTitle');
+        $personNameshareMarketInd = $request->input('personNameshareMarketInd');
+        $personNameSurname = $request->input('personNameSurname');
+        $personNameENGivenName = $request->input('personNameENGivenName');
+        $personNameENTitle = $request->input('personNameENTitle');
+        $personNameENShareMarketInd = $request->input('personNameENShareMarketInd');
+        $personNameENShareMarketSurname = $request->input('personNameENShareMarketSurname');
+        $requestedSeatCount = $request->input('requestedSeatCount');
+        $shareMarketInd = $request->input('shareMarketInd');
+        $travelerReferenceID = $request->input('travelerReferenceID');
+        $airTravelUnaccompaniedMinor = $request->input('airTravelUnaccompaniedMinor');
+        $airTravelerSequence = $request->input('airTravelerSequence');
+        $flightSegmentSequence = $request->input('flightSegmentSequence');
+        $airTravelerSsrCode = $request->input('airTravelerSsrCode');
+        $airTravelerSsrGroup = $request->input('airTravelerSsrGroup');
+        $ssrExplanation = $request->input('ssrExplanation');        
+        $bookingReferenceIDID = $request->input('bookingReferenceIDID');
+        $bookingReferenceID = $request->input('bookingReferenceID');
+        $preferredCurrency = $request->input('preferredCurrency');
+        $passengerName = $request->input("passengerName");
+        $peaceId =  $request->input('peaceId');
+
+
+        $user = $request->user();
         
-        $xml = $this->addSeatBuilder->addSeat(
-            $adviceCodeSegmentExist, 
-            $actionCode, 
-            $addOnSegment, 
-            $cabin, 
-            $resBookDesigCode, 
-            $resBookDesigQuantity,
-            $fareInfoCabin, 
-            $cabinClassCode, 
-            $allowanceType, 
-            $maxAllowedPieces, 
-            $unitOfMeasureCode, 
-            $weight, 
-            $fareGroupName, 
-            $fareReferenceCode, 
-            $fareReferenceID, 
-            $fareReferenceName, 
-            $flightSegmentSequence,
-            $flightSegmentResBookDesigCode, 
-            $airlineCode, 
-            $airlineCodeContext,
-            $arrivalAirportCityLocationCode, 
-            $arrivalAirportCityLocationName, 
-            $arrivalAirportCityLocationNameLanguage, 
+        if ($user->is_guest) {
+
+            $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+            $xml = $this->bookingBuilder->readBooking($bookingReferenceIDID, $passengerName);
+    
+    
+            $response = $this->craneOTASoapService->run($function, $xml);
+            // dd($response);
+            if (!(isset($response['AirBookingResponse']))) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorized to carry out this action"
+                ], 401);
+            }
+            // dd($response);
+        } else {
+            $booking = Booking::where('booking_id', $bookingReferenceIDID)->where('peace_id', $peaceId)->first();
+            if (!$booking) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "you are not authorized to carry out this action"
+                ], 401);
+            }
+        }
+        
+        
+        // dd($booking);
+        
+
+        $xml = $this->addWeightBuilder->addWeight(
+            $preferredCurrency,
+            $adviceCodeSegmentExist,
+            $bookFlightSegmentListActionCode,
+            $bookFlightAddOnSegment,
+            $bookingClassCabin,
+            $bookingClassResBookDesigCode,
+            $resBookDesignQuantity,
+            $fareInfoCabin,
+            $fareInfoCabinClassCode,
+            $fareBaggageAllowanceType,
+            $fareBaggageMaxAllowedPieces,
+            $unitOfMeasureCode,
+            $fareBaggageAllowanceWeight,
+            $fareGroupName,
+            $fareReferenceCode,
+            $fareReferenceID,
+            $fareReferenceName,
+            $bookFlightSegmentSequence,
+            $resBookDesigCode,
+            $flightSegmentCode,
+            $flightSegmentCodeContext,
+            $arrivalAirportCityLocationCode,
+            $arrivalAirportCityLocationName,
+            $arrivalAirportCityLocationNameLanguage,
             $arrivalAirportCountryLocationCode,
-            $arrivalAirportCountryLocationName, 
-            $arrivalAirportCountryLocationNameLanguage, 
-            $arrivalAirportCurrencyCode, 
-            $arrivalAirportCodeContext, 
-            $arrivalAirportLanguage, 
-            $arrivalAirportLocationCode, 
-            $arrivalAirportLocationName, 
-            $arrivalAirportTerminal, 
-            $arrivalAirportTimeZoneInfo, 
-            $arrivalAirportDateTime, 
-            $arrivalAirportDateTimeUTC, 
-            $departureAirportCityLocationCode, 
-            $departureAirportCityLocationName, 
-            $departureAirportCityLocationNameLanguage, 
-            $departureAirportCountryLocationCode, 
-            $departureAirportCountryLocationName, 
-            $departureAirportCountryLocationNameLanguage, 
-            $departureAirportCurrencyCode, 
-            $departureAirportCodeContext, 
-            $departureAirportLanguage, 
-            $departureAirportLocationCode, 
-            $departureAirportLocationName, 
-            $departureAirportTimeZoneInfo, 
-            $departureDateTime, 
-            $departureDateTimeUTC, 
-            $flightNumber, 
-            $flightSegmentID, 
-            $ondControlled, 
-            $bookFlightSegmentSector, 
-            $bookFlightSegmentCodeShare, 
-            $bookFlightSegmentDistance, 
-            $airEquipType, 
-            $changeOfGauge, 
+            $arrivalAirportCountryLocationName,
+            $arrivalAirportCountryLocationNameLanguage,
+            $arrivalAirportCountryCurrencyCode,
+            $arrivalAirportCodeContext,
+            $arrivalAirportLanguage,
+            $arrivalAirportLocationCode,
+            $arrivalAirportLocationName,
+            $arrivalAirportTerminal,
+            $arrivalAirportTimeZoneInfo,
+            $arrivalDateTime,
+            $arrivalDateTimeUTC,
+            $departureAirportCitytLocationCode,
+            $departureAirportCityLocationName,
+            $departureAirportCityLocationNameLanguage,
+            $departureAirportCountryLocationCode,
+            $departureAirportCountryLocationName,
+            $departureCountryLocationNameLanguage,
+            $departureCountryCurrencyCode,
+            $departureAirportCodeContext,
+            $departureAirportLanguage,
+            $departureAirportLocationCode,
+            $departureAirportLocationName,
+            $departureAirportTimeZoneInfo,
+            $departureDateTime,
+            $departureDateTimeUTC,
+            $flightNumber,
+            $flightSegmentID,
+            $ondControlled,
+            $departureAirportSector,
+            $departureFlightCodeShare,
+            $departureFlightDistance,
+            $equipmentAirEquipType,
+            $equipmentChangeOfGauge,
             $flightNotes,
-            $flownMileageQty, 
-            $iatciFlight, 
-            $journeyDuration, 
-            $onTimeRate, 
-            $remark, 
-            $secureFlightDataRequired, 
-            $segmentStatusByFirstLeg, 
-            $stopQuantity, 
-            $involuntaryPermissionGiven, 
-            $bookingLegStatus, 
-            $bookingReferenceID, 
-            $bookingResponseCode, 
-            $bookingSequenceNumber, 
-            $bookingFlightStatus, 
-            $accompaniedByInfant, 
-            $airTravelerListbirthDate, 
-            $contactPersonEmail, 
-            $emailMarkedForSendingRezInfo, 
-            $emailPreferred, 
-            $emailSharedMarketInd, 
-            $contactPersonGivenName, 
-            $contactPersonShareMarketIndOne, 
-            $personNameSurname, 
-            $phoneNumberAreaCode, 
-            $phoneNumberCountryCode, 
-            $phoneNumberMarkedForSendingRezInfo, 
-            $phoneNumberPreferred, 
-            $phoneNumberShareMarketInd, 
-            $phoneNumberSubscriberNumber, 
-            $contactPersonShareContactInfo,
-            $contactPersonShareMarketIndTwo, 
-            $contactPersonUseForInvoicing, 
-            $documentInfoListBirthDate, 
-            $documentInfoListGivenName, 
-            $documentInfoListShareMarketInd, 
-            $documentInfoSurname, 
-            $documentInfoListGender, 
-            $emergencyContactInfoShareMarketInd, 
-            $emergencyContactInfoDecline, 
-            $emergencyContactMarkedForSendingRezInfo, 
-            $emergencyContactPreferred, 
-            $emergencyContactShareMarketInd, 
-            $emergencyContactShareContactInfo, 
-            $contactPersonGender, 
-            $contactPersonHasStrecher, 
-            $contactPersonParentSequence, 
-            $contactPersonPassengerTypeCode, 
-            $personNameGivenName, 
-            $personNameNameTitle, 
-            $personNameShareMarketInd,
-            $personNameNameSurname, 
-            $personNameENGivenName, 
-            $personNameENNameTitle, 
-            $personNameENShareMarketInd, 
-            $personNameENSurname, 
-            $requestedSeatCount, 
-            $airTravelerListShareMarketInd, 
-            $travelerReferenceID, 
-            $unaccompaniedMinor, 
-            $airTravelerSequence, 
-            $ancillaryRequestListFlightSegmentSequence, 
-            $ssrCode,
-            $ssrGroup,
-            $ssrExplanation, 
-            $bookingReferenceIDID, 
-            $referenceID
+            $flownMileageQty,
+            $iatciFlight,
+            $journeyDuration,
+            $onTimeRate,
+            $remark,
+            $secureFlightDataRequired,
+            $segmentStatusByFirstLeg,
+            $stopQuantity,
+            $involuntaryPermissionGiven,
+            $legStatus,
+            $referenceID,
+            $responseCode,
+            $sequenceNumber,
+            $status,
+            $accompaniedByInfant,
+            $airTravelerbirthDate,
+            $contactPersonEmail,
+            $airTravelerListEmailMarkedForSendingRezInfo,
+            $emailPreferred,
+            $emailSharedMarketInd,
+            $airTravelerListPersonNameGivenName,
+            $airTravelerListpersonNameShareMarketInd,
+            $airTravelerListPersonNameSurname,
+            $phoneNumberAreaCode,
+            $phoneCountryCode,
+            $phoneNumberEmailMarkedForSendingRezInfo,
+            $phoneNumberPreferred,
+            $phoneNumberShareMarketInd,
+            $phoneNumberSubscriberNumber,
+            $airTravelerShareContactInfo,
+            $airTravelerShareMarketInd,
+            $useForInvoicing,
+            $documentInfoBirthDate,
+            $documentHolderFormattedGivenName,
+            $documentHolderFormattedShareMarketInd,
+            $documentHolderFormattedSurname,
+            $documentHolderFormattedGender,
+            $emergencyContactInfoshareMarketInd,
+            $decline,
+            $emergencyContactMarkedForSendingRezInfo,
+            $emergencyContactPreferred,
+            $emergencyContactShareMarketInd,
+            $shareContactInfo,
+            $airTravelerGender,
+            $airTravelerHasStrecher,
+            $parentSequence,
+            $passengerTypeCode,
+            $personNameGivenName,
+            $personNameTitle,
+            $personNameshareMarketInd,
+            $personNameSurname,
+            $personNameENGivenName,
+            $personNameENTitle,
+            $personNameENShareMarketInd,
+            $personNameENShareMarketSurname,
+            $requestedSeatCount,
+            $shareMarketInd,
+            $travelerReferenceID,
+            $airTravelUnaccompaniedMinor,
+            $airTravelerSequence,
+            $flightSegmentSequence,
+            $airTravelerSsrCode,
+            $airTravelerSsrGroup,
+            $ssrExplanation,
+            $bookingReferenceIDID,
+            $bookingReferenceID
         );
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
-        // dd($xml);
+
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            dd($response);
+            
+            if (array_key_exists("detail", $response)) {
+                if (array_key_exists("CraneFault", $response["detail"])){
+                    if (array_key_exists("code", $response["detail"]["CraneFault"])){
+                        if ($response["detail"]["CraneFault"]["code"] == "ASR_ADDING_SEAT_NOT_ALLOWED") {
+                            $message = "You are not allowed to add more seat for this passenger";
+                            return response()->json([
+                                "error" => true,            
+                                "message" => $message
+                            ], 400);
+                        
+                        }
+                    }
+                }
+            }
 
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+            return response()->json([
+                "error" => false,
+                "data" => $response
+            ]);
+        
+        } catch (\Throwable $th) {
+           
+            Log::error($th->getMessage());
+
+            $message = "something went wrong";
+
+    
+            return response()->json([
+                "error" => true,            
+                "message" => $message,
+                "actual_message" => $th->getMessage()
+            ], 500);
+        }  
     }
 }
