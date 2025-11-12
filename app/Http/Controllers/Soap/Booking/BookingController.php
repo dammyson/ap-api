@@ -173,16 +173,16 @@ class BookingController extends Controller
             $passengerName = $request->input('surname');
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
-            // $booking = Booking::where('booking_id', $bookingId)->where('is_cancelled', false)->first();
+            $booking = Booking::where('booking_id', $bookingId)->where('is_cancelled', false)->first();
 
             
-            // // dd($booking);
-            // if (!$booking) {
-            //     return response()->json([
-            //         'error' => true,
-            //         'message' => 'PNR not found'
-            //     ], 500);
-            // }
+            // dd($booking);
+            if (!$booking) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'PNR not found'
+                ], 500);
+            }
 
             $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
 
