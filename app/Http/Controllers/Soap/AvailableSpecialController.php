@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Soap;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Test\AvailableSpecial\AvailableSpecialServiceOWRequest;
+use App\Http\Requests\Test\AvailableSpecial\AvailableSpecialServiceRequest;
 use App\Http\Requests\Test\AvailableSpecial\AvailableSpecialServiceRTRequest;
 use App\Http\Requests\Test\AvailableSpecial\AvailableSpecialServiceTwoARequest;
 use App\Services\Soap\AvailableSpecialServiceBuilder;
@@ -19,29 +20,12 @@ class AvailableSpecialController extends Controller
         
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
     }
+   
 
-    public function AvailableSpecialServiceTwoA (AvailableSpecialServiceTwoARequest $request) {
-        $ID = $request->input("ID"); 
-        $referenceID = $request->input("referenceID");
+    public function AvailableSpecialService(AvailableSpecialServiceRequest $request) {
 
-        $xml = $this->availableSpecialServiceBuilder->AvailableSpecialServiceTwoA(
-            $ID, 
-            $referenceID
-        );
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
-
-        $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
-        return $response;
-    }
-
-    public function AvailableSpecialServiceOW(AvailableSpecialServiceOWRequest $request) {
-        $ID = $request->input('ID'); 
-        $referenceID = $request->input('referenceID');   
-
-        $xml = $this->availableSpecialServiceBuilder->AvailableSpecialServiceOW(
-            $ID, 
-            $referenceID
+        $xml = $this->availableSpecialServiceBuilder->AvailableSpecialService(
+          $request
         );
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
@@ -62,18 +46,5 @@ class AvailableSpecialController extends Controller
         // return $baggageData;
     }
 
-    public function AvailableSpecialServiceRT(AvailableSpecialServiceRTRequest $request) {
-        $ID = $request->input('ID'); 
-        $referenceID = $request->input('referenceID');
-
-        $xml = $this->availableSpecialServiceBuilder->AvailableSpecialServiceRT(
-            $ID, 
-            $referenceID
-        );
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
-
-        $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
-        return $response;
-    }
+  
 }
