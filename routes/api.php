@@ -262,11 +262,9 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
             Route::post('view-only', [CancelBookingController::class, 'cancelBookingViewOnly']);
         });
 
-        Route::group(["prefix" => "available-special-service"], function() {
-            Route::post('two-a', [AvailableSpecialController::class, 'AvailableSpecialServiceTwoA']);
-            Route::post('ow', [AvailableSpecialController::class, 'AvailableSpecialServiceOW']);
-            Route::post('rt', [AvailableSpecialController::class, 'AvailableSpecialServiceRT']);
-        });
+       
+        Route::post('available-special-service', [AvailableSpecialController::class, 'AvailableSpecialService']);
+          
         
         Route::post('/add-ssr/invoice/{invoice}', [AddSsrController::class, 'addSsr']);
         // Route::post('/select-seat', [AddSeatController::class, 'selectSeat']);
