@@ -92,7 +92,7 @@ class SegmentBaseAvailableSpecialServicesRequest extends FormRequest
             "secureFlightDataRequired" => 'required|boolean',
             "stopQuantity" => 'required|string',
             "ticketType" => 'required|string',
-            "ssrGroupCode" => 'sometimes|string'
+            "ssrGroupCode" => 'sometimes'
         ];
     }
 }
