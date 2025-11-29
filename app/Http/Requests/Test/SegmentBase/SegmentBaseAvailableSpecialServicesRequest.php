@@ -77,15 +77,13 @@ class SegmentBaseAvailableSpecialServicesRequest extends FormRequest
             "distance" => 'required|string',
             "airEquipType" => 'required|string',
             "changeOfGauge" => 'required|string',
-            "flightNotesDeiCodeOne" => 'required|string',
-            "flightNotesExplanationOne" => 'required|string',
-            "flightNotesNoteOne" => 'required|string',
-            "flightNotesDeiCodeTwo" => 'required|string',
-            "flightNotesExplanationTwo" => 'required|string',
-            "flightNotesNoteTwo" => 'required|string',
-            "flightNotesDeiCodeThree" => 'required|string',
-            "flightNotesExplanationThree" => 'required|string',
-            "flightNotesNoteThree" => 'required|string',
+
+            'flightNotes' => 'required|array',
+            'flightNotes.*.deiCode' => 'required|string',
+            'flightNotes.*.explanation' => 'required|string',
+            'flightNotes.*.note' => 'required|string',
+
+
             "flownMileageQty" => 'required|string',
             "iatciFlight" => 'required|boolean',
             "journeyDuration" => 'required|string',
@@ -93,7 +91,8 @@ class SegmentBaseAvailableSpecialServicesRequest extends FormRequest
             "remark" => 'required|string',
             "secureFlightDataRequired" => 'required|boolean',
             "stopQuantity" => 'required|string',
-            "ticketType" => 'required|string'
+            "ticketType" => 'required|string',
+            "ssrGroupCode" => 'sometimes|string'
         ];
     }
 }
