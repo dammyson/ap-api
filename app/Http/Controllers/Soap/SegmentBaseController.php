@@ -26,6 +26,8 @@ class SegmentBaseController extends Controller
         $xml = $this->segmentBaseRequestBuilder->segmentBaseAvailableSpecialServices(
             $request
         );
+
+        // dd($xml);
          
 
         try {
