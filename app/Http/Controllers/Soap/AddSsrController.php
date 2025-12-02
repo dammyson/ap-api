@@ -131,6 +131,7 @@ class AddSsrController extends Controller
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
             // dd($response);
 
+
            
             if ($ssrType == "select_seat") {
                 if (array_key_exists("detail", $response)) {
@@ -176,19 +177,35 @@ class AddSsrController extends Controller
 
             }
 
-           $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
-
-           [$amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
-
-
-            // if user has not paid set the new invoice balance else generate a new invoice
-            
-            [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $amount, $preferredCurrency, $bookingId);
-            
           
             $message = "";
 
             if ($ssrType == "insurance") {
+                if (array_key_exists("detail", $response)) {
+                    if (array_key_exists("CraneFault", $response["detail"])){
+                        if (array_key_exists("code", $response["detail"]["CraneFault"])){
+                            if ($response["detail"]["CraneFault"]["code"] == "CHECK_PAX_SSR_COUNT") {
+                            
+                                return response()->json([
+                                    "error" => true,            
+                                    "message" => "Passenger already has an insurance added"
+                                ], 400);
+                            
+                            }
+                        }  
+                    } 
+                }
+
+                $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
+
+                [$amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
+
+
+                // if user has not paid set the new invoice balance else generate a new invoice
+                
+                [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $amount, $preferredCurrency, $bookingId);
+            
+          
                 $numberOfInsurance = count($ancillaryRequestList);
                 InvoiceItem::create([
                     'invoice_id' => $updatedInvoice->id,
@@ -200,9 +217,8 @@ class AddSsrController extends Controller
                 $message = "Insurance added successfully";
                 
             
-            
-            } else if ($ssrType == "baggages") {                
-                $message = "Something went wrong";
+                
+            } else if ($ssrType == "baggages") {   
 
                 if (array_key_exists("detail", $response)) {
                     if (array_key_exists("CraneFault", $response["detail"])){
@@ -219,6 +235,16 @@ class AddSsrController extends Controller
                     ], 500);
                 }
 
+                $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
+
+                [$amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
+
+
+                    // if user has not paid set the new invoice balance else generate a new invoice
+                    
+                [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $amount, $preferredCurrency, $bookingId);
+                    
+                
                 foreach ($ancillaryRequestList as $ancillaryRequest) {
                     $ssrExplanation = $ancillaryRequest['ssrExplanation'];
                     preg_match('/\d+/', $ssrExplanation, $matches);
