@@ -175,8 +175,6 @@ class BookingController extends Controller
 
             $booking = Booking::where('booking_id', $bookingId)->where('is_cancelled', false)->first();
 
-            
-            // dd($booking);
             if (!$booking) {
                 return response()->json([
                     'error' => true,
@@ -185,12 +183,8 @@ class BookingController extends Controller
             }
 
             $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
-
-            
             
             $response = $this->craneOTASoapService->run($function, $xml);
-            
-            
             
             // dd($response);
             

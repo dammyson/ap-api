@@ -105,7 +105,7 @@ class TicketReservationRequestBuilder
                               <primaryPayment>true</primaryPayment>
                            </paymentDetailList>
                            </paymentDetails>
-                           </fullfillment>
+                        </fullfillment>
                         <requestPurpose>COMMIT</requestPurpose>
                      </AirTicketReservationRequest>
                   </impl:TicketReservation>

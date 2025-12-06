@@ -243,6 +243,30 @@ class OnepipeController extends Controller
 
     }
 
+    
+    public function getInterswitchToken() {
+        $getTokenUrl = "https://passport.k8.isw.la/passport/oauth/token?grant_type=client_credentials";
+        $getToken = env('INTERSWITCH_AUTH_KEY');
+        // $token = "SUtJQUIyM0E0RTI3NTY2MDVDMUFCQzMzQ0UzQzI4N0UyNzI2N0Y2NjBENjE6c2VjcmV0";
+        $merchantId = 'IKIAB23A4E2756605C1ABC33CE3C287E27267F660D61';
+        $merchantSecret = 'secret';
+
+        $token = base64_encode($merchantId . ':' . $merchantSecret);
+
+        // dd($token);
+
+        $response = Http::asForm()->withHeaders([
+                    'Authorization' => 'Basic '. $token,
+                ])->post($getTokenUrl, [
+                    'grant_type' => 'client_credentials',
+                ]);
+
+        // dd( $response->json()['access_token']);
+        return $response->json()['access_token'];
+        
+        // return $response;
+    }
+
     public function verifyQuickTeller(Request $request) {
 
         try {
@@ -253,9 +277,10 @@ class OnepipeController extends Controller
             $bookingId = $request->input('booking_id');
             $deviceType = $request->input('device_type');
 
-            $bearer = config('app.quick_teller.bearer_key');
+            // $bearer = config('app.quick_teller.bearer_key');
             $url = config('app.quick_teller.url');
-
+            $bearer = $this->getInterswitchToken();
+            // return $bearer;
             // dump($bearer);
             // dd($url);
 
@@ -272,7 +297,7 @@ class OnepipeController extends Controller
             //convert amount to kobo
             $amount = $amount * 100;
 
-            $bearer = config('app.quick_teller.bearer_key');
+            // $bearer = config('app.quick_teller.bearer_key');
             $url = config('app.quick_teller.url');
 
             $response = Http::withHeaders([

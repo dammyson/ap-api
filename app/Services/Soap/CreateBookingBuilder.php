@@ -235,7 +235,7 @@ class CreateBookingBuilder
                     <shareMarketInd>' . htmlspecialchars($string['shareMarketInd'], ENT_XML1, 'UTF-8') . '</shareMarketInd>
                     <socialSecurityNumber>' . htmlspecialchars($string['contactPersonSocialSecurityNumber'], ENT_XML1, 'UTF-8') . '</socialSecurityNumber>
                     <useForInvoicing/>
-                    <shareContactInfo>' . htmlspecialchars($string['shareContactInfo'], ENT_XML1, 'UTF-8') . '</shareContactInfo>
+                    <shareContactInfo>' . htmlspecialchars($string['shareContactInfo'], ENT_XML1, 'UTF-8') . '</shareContactInfo>                
                 </contactPerson>
                 <requestedSeatCount>' . htmlspecialchars($string['requestedSeatCount'], ENT_XML1, 'UTF-8') . '</requestedSeatCount>
                 <shareMarketInd/>
@@ -243,7 +243,56 @@ class CreateBookingBuilder
                     <locationCode>' . htmlspecialchars($string['nationalityLocationCode'], ENT_XML1, 'UTF-8') . '</locationCode>
                 </nationality>
                 <personAcceptedLegalText>kabul ediyorum</personAcceptedLegalText>
-                <unaccompaniedMinor>false</unaccompaniedMinor>'.
+                <unaccompaniedMinor>false</unaccompaniedMinor>
+                <contactInfoList>
+                    <companyInfo>
+                    <companyFullName>Jay Jay test</companyFullName>
+                    <companyLegalName>Jay test</companyLegalName>
+                    <taxNumber>9999999999</taxNumber>
+                    <taxOffice>Zühtüpaşa</taxOffice>
+                    </companyInfo>
+                    <adress>
+                    <addressLineList>fener cad. filika sok.</addressLineList>
+                    <adressUseType>string</adressUseType>
+                    <bldgRoom>11</bldgRoom>
+                    <cityCode>IST</cityCode>
+                    <cityName>istanbu</cityName>
+                    <countryCode>FR</countryCode>
+                    <countryName>Fransa</countryName>
+                    <formatted>true</formatted>
+                    <postalCode>34256</postalCode>
+                    <preferred>false</preferred>
+                    <shareMarketInd>true</shareMarketInd>
+                    <stateProvince>marmara</stateProvince>
+                    <streetNumber>45</streetNumber>
+                    </adress>
+                    <email>
+                    <email>asd@asd.com</email>
+                    <markedForSendingRezInfo/>
+                    <preferred/>
+                    <shareMarketInd/>
+                    </email>
+                    <markedForSendingRezInfo>false</markedForSendingRezInfo>
+                    <personName>
+                    <givenName>Sharon</givenName>
+                    <shareMarketInd/>
+                    <surname>Edwards</surname>
+                    </personName>
+                    <phoneNumber>
+                    <areaCode>538</areaCode>
+                    <countryCode>+90</countryCode>
+                    <markedForSendingRezInfo>false</markedForSendingRezInfo>
+                    <phoneUseType>H</phoneUseType>
+                    <preferred/>
+                    <shareMarketInd/>
+                    <subscriberNumber>2051817</subscriberNumber>
+                    </phoneNumber>
+                    <shareContactInfo/>
+                    <shareMarketInd/>
+                    <socialSecurityNumber>11111111110</socialSecurityNumber>
+                    <useForInvoicing>true</useForInvoicing>
+                </contactInfoList>
+                '.
                 $this->documentInfoList($string)
             .'</airTravelerList>';
         }
@@ -374,6 +423,58 @@ class CreateBookingBuilder
         // dump("test");
         if($contactInfoList)
         {   
+
+            // dump("i ran");
+            // $xml = '<contactInfoList>
+            //             <companyInfo>
+            //             <companyFullName>Jay Jay test</companyFullName>
+            //             <companyLegalName>Jay test</companyLegalName>
+            //             <taxNumber>9999999999</taxNumber>
+            //             <taxOffice>Zühtüpaşa</taxOffice>
+            //             </companyInfo>
+            //             <adress>
+            //             <addressLineList>fener cad. filika sok.</addressLineList>
+            //             <adressUseType>string</adressUseType>
+            //             <bldgRoom>11</bldgRoom>
+            //             <cityCode>IST</cityCode>
+            //             <cityName>istanbu</cityName>
+            //             <countryCode>FR</countryCode>
+            //             <countryName>Fransa</countryName>
+            //             <formatted>true</formatted>
+            //             <postalCode>34256</postalCode>
+            //             <preferred>false</preferred>
+            //             <shareMarketInd>true</shareMarketInd>
+            //             <stateProvince>marmara</stateProvince>
+            //             <streetNumber>45</streetNumber>
+            //             </adress>
+            //             <email>
+            //             <email>asd@asd.com</email>
+            //             <markedForSendingRezInfo/>
+            //             <preferred/>
+            //             <shareMarketInd/>
+            //             </email>
+            //             <markedForSendingRezInfo>false</markedForSendingRezInfo>
+            //             <personName>
+            //             <givenName>Sharon</givenName>
+            //             <shareMarketInd/>
+            //             <surname>Edwards</surname>
+            //             </personName>
+            //             <phoneNumber>
+            //             <areaCode>538</areaCode>
+            //             <countryCode>+90</countryCode>
+            //             <markedForSendingRezInfo>false</markedForSendingRezInfo>
+            //             <phoneUseType>H</phoneUseType>
+            //             <preferred/>
+            //             <shareMarketInd/>
+            //             <subscriberNumber>2051817</subscriberNumber>
+            //             </phoneNumber>
+            //             <shareContactInfo/>
+            //             <shareMarketInd/>
+            //             <socialSecurityNumber>11111111110</socialSecurityNumber>
+            //             <useForInvoicing>true</useForInvoicing>
+            //         </contactInfoList>';
+
+            // return $xml;
             // dd(" iran");
             $xml = '';
         
@@ -440,7 +541,7 @@ class CreateBookingBuilder
             foreach($otherServiceInformationList as $string) {
                 $xml .= '
                     <otherServiceInformationList>
-                        <airTravelerSequence>' . htmlspecialchars($string['airTravelerSequence'], ENT_XML1, 'UTF-8') . '</airTravelerSequence>
+                        <airTravelerSequence/>
                         <code>' . htmlspecialchars($string['code'], ENT_XML1, 'UTF-8') . '</code>
                         <explanation>' . htmlspecialchars($string['explanation'], ENT_XML1, 'UTF-8') . '</explanation>
                         <flightSegmentSequence/>
