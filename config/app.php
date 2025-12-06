@@ -133,7 +133,9 @@ return [
 
     'quick_teller' => [
         'bearer_key' => env('QUICK_TELLER_BEARER'),
-        'url' => env('QUICK_TELLER_URL')
+        'url' => env('QUICK_TELLER_URL'),
+        'merchant_id' => env('MERCHANT_ID'),
+        'merchant_secret' => env('MERCHANT_SECRET')
     ],
 
     'paystack' => [

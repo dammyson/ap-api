@@ -1075,7 +1075,7 @@ class ReissuePNRController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
 
         $response = $this->craneReissuePnrOTAService->run($function, $xml);
-        dd($response);
+        return $response;
     }
 
     public function reissuePnrAddFlightCommit(Request $request) {
@@ -1219,7 +1219,7 @@ class ReissuePNRController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
 
         $response = $this->craneReissuePnrOTAService->run($function, $xml);
-        dd($response);
+        return $response;
     }
 
     public function reissuePnrCancelFlightPreview(Request $request ) {
@@ -1376,7 +1376,8 @@ class ReissuePNRController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
 
         $response = $this->craneReissuePnrOTAService->run($function, $xml);
-        dd($response);
+        
+        return $response;
 
 
         
@@ -1537,7 +1538,7 @@ class ReissuePNRController extends Controller
         $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrCommit';
 
         $response = $this->craneReissuePnrOTAService->run($function, $xml);
-        dd($response);
+        return $response;
 
 
         
