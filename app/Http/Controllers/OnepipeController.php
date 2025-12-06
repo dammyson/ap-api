@@ -246,10 +246,9 @@ class OnepipeController extends Controller
     
     public function getInterswitchToken() {
         $getTokenUrl = "https://passport.k8.isw.la/passport/oauth/token?grant_type=client_credentials";
-        $getToken = env('INTERSWITCH_AUTH_KEY');
-        // $token = "SUtJQUIyM0E0RTI3NTY2MDVDMUFCQzMzQ0UzQzI4N0UyNzI2N0Y2NjBENjE6c2VjcmV0";
-        $merchantId = 'IKIAB23A4E2756605C1ABC33CE3C287E27267F660D61';
-        $merchantSecret = 'secret';
+        
+        $merchantId = config('app.quick_teller.merchant_id');
+        $merchantSecret = config('app.quick_teller.merchant_secret');
 
         $token = base64_encode($merchantId . ':' . $merchantSecret);
 
