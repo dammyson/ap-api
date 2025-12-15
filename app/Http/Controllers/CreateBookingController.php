@@ -77,7 +77,7 @@ class CreateBookingController extends Controller
             if (!array_key_exists('AirBookingResponse', $response)) {
                 Log::error($response);
 
-                $stringResponse = json_encode($response, JSON_PRETTY_PRINT);
+                // $stringResponse = json_encode($response, JSON_PRETTY_PRINT);
 
                 return response()->json([
                     "error" => true,
