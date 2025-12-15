@@ -81,8 +81,8 @@ class CreateBookingController extends Controller
 
                 return response()->json([
                     "error" => true,
-                    // "message" => "booking is no longer available for this flight",
-                    "message" =>  "error {$stringResponse}",
+                    "message" => "booking is no longer available for this flight",
+                    // "message" =>  "error {$stringResponse}",
                    
                 ], 404);
 
