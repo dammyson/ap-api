@@ -22,17 +22,12 @@ class ReissuePNRController extends Controller
 {
     protected $craneReissuePnrOTAService;
     protected $reissusePNRBuilder;
-    protected $checkArray;
-    protected $bookingBuilder;
-    protected $craneOTASoapService;
-
-    
+    protected $checkArray;    
     
 
-    public function __construct(ReissuePnrTestBuilder $reissusePNRBuilder, BookingBuilder $bookingBuilder,  CheckArray $checkArray) {
+    public function __construct(ReissuePnrTestBuilder $reissusePNRBuilder,   CheckArray $checkArray) {
         $this->craneReissuePnrOTAService = app('CraneReissuePnrOTAService');
         // app('CraneFareRulesService');
-        $this->craneOTASoapService = app("CraneOTASoapService");
         $this->reissusePNRBuilder = $reissusePNRBuilder;
         $this->checkArray = $checkArray;
     } 
@@ -62,20 +57,13 @@ class ReissuePNRController extends Controller
     }
 
     
-    private function unauthorizedResponse() {
-        return response()->json([
-            "error" => true,
-            "message" => "you are not authorized to carry out this action"
-        ], 401);
-    }
+    // private function unauthorizedResponse() {
+    //     return response()->json([
+    //         "error" => true,
+    //         "message" => "you are not authorized to carry out this action"
+    //     ], 401);
+    // }
 
-    private function handleGuestUser($bookingId, $passengerName) {
-        $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
-        $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
-        // dd($xml);
-
-        return $this->craneOTASoapService->run($function, $xml);
-    }
 
     public function reissueTicketPNR(ReissuePnrPreviewRequest $request, $invoiceId = null) {
         try{
@@ -218,34 +206,7 @@ class ReissuePNRController extends Controller
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
             $statusTwo = $request->input('statusTwo');
             $preferredCurrency = $request->input('preferredCurrency');
-            $passengerName = $request->input('passengerName');
-
-            // dd($preferredCurrency);
-
-            $user = $request->user();
-            if ($user->is_guest) {            
-                $response = $this->handleGuestUser($ID, $passengerName);
-
-                if (!(isset($response['AirBookingResponse']))) {
-                    return $this->unauthorizedResponse();
-                }
-
-            } else {
-                $booking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->first();
-                if (!$booking) {
-                    return $this->unauthorizedResponse();
-                }
-            }
-                
-            // if (!$booking) {
-            //     return response()->json([
-            //         "error" => true,
-            //         "message" => "you are not authorised to carry out this action"
-            //     ], 401);
-            // }
-                
-
-            // dd("stopped here");
+           
 
             $xml = $this->reissusePNRBuilder->reissuePnr(
                 $preferredCurrency,
@@ -653,15 +614,6 @@ class ReissuePNRController extends Controller
 
             $user = $request->user();
 
-            // $booking = $user ? Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->first()
-            // : Booking::where('booking_id', $ID)->where('last_name', $request->input('last_name'))->first();
-
-            // if (!$booking) {
-            //     return response()->json([
-            //         "error" => true,
-            //         "message" => "you are not authorized to carry out this action"
-            //     ], 401);
-            // }
 
             $paymentRef = $request->input('payment_ref');
             $invoiceId = $request->input('invoiceId');
