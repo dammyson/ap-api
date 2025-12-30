@@ -154,49 +154,65 @@ class LoginController extends Controller
     }
 
     public function googleVerify(Request $request)
-    {         
-        $deviceType = $request->input('device_type');
-        $screenResolution = $request->input('screen_resolution');
+    {    
+        try {    
+            $deviceType = $request->input('device_type');
+            $screenResolution = $request->input('screen_resolution');
+            
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                $peace_id = (new GenerateRandom())->generateUniquePeaceId();
+                // dd($peace_id);
+                $tier = Tier::where('rank', 1)->first();
+                $user = User::create([
+                    'first_name' => $request->input('first_name'),
+                    'last_name' => $request->input('last_name'),
+                    'email' => $request->input('email'),
+                    'phone_number' => "000000000",
+                    'peace_id' => $peace_id,
+                    // 'peace_id' => $peace_id,
+                    'password' => Hash::make(Str::random(16)),
+                    // 'status' => $request->input('status') ?? null,
+                    'status' => 'active',
+                    'device_type' => $deviceType,
+                    'points' => 50, // allocate appropriate pointts once decided
+                    "firebase_token" => $request->firebase_token,
+                    'tier_id' => $tier->id,
+                    'last_login' => now()->setTimezone('Africa/Lagos')
+                ]);
+
+            }
+
+            
+            $tokenResult = $user->createToken('Nova');
+            $data['token'] = $tokenResult->accessToken;
+            $data['user'] = $user;
+            
+            $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
         
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            $peace_id = (new GenerateRandom())->generateUniquePeaceId();
-            // dd($peace_id);
-            $tier = Tier::where('rank', 1)->first();
-            $user = User::create([
-                'first_name' => $request->input('first_name'),
-                'last_name' => $request->input('last_name'),
-                'email' => $request->input('email'),
-                'phone_number' => "000000000",
-                'peace_id' => $peace_id,
-                // 'peace_id' => $peace_id,
-                'password' => Hash::make(Str::random(16)),
-                // 'status' => $request->input('status') ?? null,
-                'status' => 'active',
-                'device_type' => $deviceType,
-                'points' => 50, // allocate appropriate pointts once decided
-                "firebase_token" => $request->firebase_token,
-                'tier_id' => $tier->id,
-                'last_login' => now()->setTimezone('Africa/Lagos')
+
+            return response()->json([
+                'is_correct' => true,
+                'message' => 'Login Successful',
+                // 'deviceType' => $deviceType,
+                // 'screenResolution' => $screenResolution,
+                'data' => $data
+            ], 200);
+
+        } catch (\Throwable $e) {
+
+            // Log full error for developers
+            Log::error('Google signup failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
+            // Return safe message to user
+            return response()->json([
+                'is_correct' => false,
+                'message' => 'Unable to complete login at the moment. Please try again.'
+            ], 500);
         }
-
-        
-        $tokenResult = $user->createToken('Nova');
-        $data['token'] = $tokenResult->accessToken;
-        $data['user'] = $user;
-        
-        $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
-      
-
-         return response()->json([
-            'is_correct' => true,
-            'message' => 'Login Successful',
-            // 'deviceType' => $deviceType,
-            // 'screenResolution' => $screenResolution,
-            'data' => $data
-        ], 200);
     }
 
           
