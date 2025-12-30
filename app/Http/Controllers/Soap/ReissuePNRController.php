@@ -201,7 +201,7 @@ class ReissuePNRController extends Controller
             $user = $request->user();
 
 
-            $booking = Booking::where('booking_id', $ID)->Where('peace_id', $user->peace_id)->first();
+            $booking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->first();
             
             // dd($booking);
 
