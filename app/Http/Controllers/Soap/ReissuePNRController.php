@@ -16,16 +16,23 @@ use App\Services\Soap\ReissuePnrTestBuilder;
 use App\Services\Wallet\VerificationService;
 use App\Services\Wallet\FlutterVerificationService;
 use App\Http\Requests\Reissue\ReissuePnrPreviewRequest;
+use App\Services\Soap\BookingBuilder;
 
 class ReissuePNRController extends Controller
 {
     protected $craneReissuePnrOTAService;
     protected $reissusePNRBuilder;
     protected $checkArray;
+    protected $bookingBuilder;
+    protected $craneOTASoapService;
 
-    public function __construct(ReissuePnrTestBuilder $reissusePNRBuilder, CheckArray $checkArray) {
+    
+    
+
+    public function __construct(ReissuePnrTestBuilder $reissusePNRBuilder, BookingBuilder $bookingBuilder,  CheckArray $checkArray) {
         $this->craneReissuePnrOTAService = app('CraneReissuePnrOTAService');
         // app('CraneFareRulesService');
+        $this->craneOTASoapService = app("CraneOTASoapService");
         $this->reissusePNRBuilder = $reissusePNRBuilder;
         $this->checkArray = $checkArray;
     } 
@@ -52,6 +59,22 @@ class ReissuePNRController extends Controller
         }
 
         return $totalHours;
+    }
+
+    
+    private function unauthorizedResponse() {
+        return response()->json([
+            "error" => true,
+            "message" => "you are not authorized to carry out this action"
+        ], 401);
+    }
+
+    private function handleGuestUser($bookingId, $passengerName) {
+        $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+        $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
+        // dd($xml);
+
+        return $this->craneOTASoapService->run($function, $xml);
     }
 
     public function reissueTicketPNR(ReissuePnrPreviewRequest $request, $invoiceId = null) {
@@ -195,23 +218,31 @@ class ReissuePNRController extends Controller
             $sequenceNumberTwo = $request->input('sequenceNumberTwo');
             $statusTwo = $request->input('statusTwo');
             $preferredCurrency = $request->input('preferredCurrency');
+            $passengerName = $request->input('passengerName');
 
             // dd($preferredCurrency);
 
             $user = $request->user();
+            if ($user->is_guest) {            
+                $response = $this->handleGuestUser($ID, $passengerName);
 
+                if (!(isset($response['AirBookingResponse']))) {
+                    return $this->unauthorizedResponse();
+                }
 
-            $booking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->first();
-            
-            // dd($booking);
-
-                
-            if (!$booking) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "you are not authorised to carry out this action"
-                ], 401);
+            } else {
+                $booking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->first();
+                if (!$booking) {
+                    return $this->unauthorizedResponse();
+                }
             }
+                
+            // if (!$booking) {
+            //     return response()->json([
+            //         "error" => true,
+            //         "message" => "you are not authorised to carry out this action"
+            //     ], 401);
+            // }
                 
 
             // dd("stopped here");
