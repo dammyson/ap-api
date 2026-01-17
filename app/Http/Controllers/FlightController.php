@@ -88,10 +88,6 @@ class FlightController extends Controller
                 }
 
                 $originDestinationOptionList = $response['Availability']['availabilityResultList']['availabilityRouteList']['availabilityByDateList']['originDestinationOptionList'];
-                
-                // if (!$this->checkArray->isAssociativeArray($originDestinationOptionList)) {
-                //     $originDestinationOptionList = [$originDestinationOptionList];
-                // }
 
                 $result0 = $this->groupFaresByCabin($originDestinationOptionList, $quantity, $travelerInformation_count);
                 $rt = new \stdClass();
