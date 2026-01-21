@@ -244,54 +244,7 @@ class CreateBookingBuilder
                 </nationality>
                 <personAcceptedLegalText>kabul ediyorum</personAcceptedLegalText>
                 <unaccompaniedMinor>false</unaccompaniedMinor>
-                <contactInfoList>
-                    <companyInfo>
-                    <companyFullName>Jay Jay test</companyFullName>
-                    <companyLegalName>Jay test</companyLegalName>
-                    <taxNumber>9999999999</taxNumber>
-                    <taxOffice>Zühtüpaşa</taxOffice>
-                    </companyInfo>
-                    <adress>
-                    <addressLineList>fener cad. filika sok.</addressLineList>
-                    <adressUseType>string</adressUseType>
-                    <bldgRoom>11</bldgRoom>
-                    <cityCode>IST</cityCode>
-                    <cityName>istanbu</cityName>
-                    <countryCode>FR</countryCode>
-                    <countryName>Fransa</countryName>
-                    <formatted>true</formatted>
-                    <postalCode>34256</postalCode>
-                    <preferred>false</preferred>
-                    <shareMarketInd>true</shareMarketInd>
-                    <stateProvince>marmara</stateProvince>
-                    <streetNumber>45</streetNumber>
-                    </adress>
-                    <email>
-                    <email>asd@asd.com</email>
-                    <markedForSendingRezInfo/>
-                    <preferred/>
-                    <shareMarketInd/>
-                    </email>
-                    <markedForSendingRezInfo>false</markedForSendingRezInfo>
-                    <personName>
-                    <givenName>Sharon</givenName>
-                    <shareMarketInd/>
-                    <surname>Edwards</surname>
-                    </personName>
-                    <phoneNumber>
-                    <areaCode>538</areaCode>
-                    <countryCode>+90</countryCode>
-                    <markedForSendingRezInfo>false</markedForSendingRezInfo>
-                    <phoneUseType>H</phoneUseType>
-                    <preferred/>
-                    <shareMarketInd/>
-                    <subscriberNumber>2051817</subscriberNumber>
-                    </phoneNumber>
-                    <shareContactInfo/>
-                    <shareMarketInd/>
-                    <socialSecurityNumber>11111111110</socialSecurityNumber>
-                    <useForInvoicing>true</useForInvoicing>
-                </contactInfoList>
+               
                 '.
                 $this->documentInfoList($string)
             .'</airTravelerList>';
@@ -367,7 +320,6 @@ class CreateBookingBuilder
 
             
               <infantWithSeatCount/>
-              <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
               '.
                 $this->contactInfoListRequest($contactInfoList)
               .'<specialRequestDetails>
@@ -377,6 +329,7 @@ class CreateBookingBuilder
                     $this->specialServiceRequestList($specialServiceRequestList)
                 
               .'</specialRequestDetails>
+                <requestPurpose>' . htmlspecialchars($requestPurpose, ENT_XML1, 'UTF-8') . '</requestPurpose>
               </AirBookingRequest>
            </impl:CreateBooking>
         </soapenv:Body>
