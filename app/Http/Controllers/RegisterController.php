@@ -181,14 +181,16 @@ class RegisterController extends Controller
 
         try {
             
-            $user = User::where('email', $request->input("email"))->first();
+            $existingUser = User::where('email', $request->input("email"))->first();
             
-            if (!$user) {
-                    return response()->json([
-                            "error" => "true",
-                            "message" => "user not found"
-                        ], 404);
-                    }
+            if (!$existingUser) {
+                return response()->json([
+                    "error" => "true",
+                    "message" => "user not found"
+                ], 404);
+            }
+
+            $user = $request->user();
     
             if (!Hash::check($request->input("current_password"), $user->password)) {
                 return response()->json(['error' => true, 'message' => 'Invalid password'], 500);
