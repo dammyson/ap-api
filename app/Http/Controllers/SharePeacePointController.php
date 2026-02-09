@@ -67,19 +67,19 @@ class SharePeacePointController extends Controller
         
     }
 
-    public function increasePeacePoint(Request $request) {
-        $points = $request->input('points');
+    // public function increasePeacePoint(Request $request) {
+    //     $points = $request->input('points');
 
-        $user = $request->user();
+    //     $user = $request->user();
 
-        $user->points += $points;
+    //     $user->points += $points;
         
-        $user->save();
+    //     $user->save();
 
-        return response()->json([
-            'error' => false,
-            'message' => "point allocated successfullly",
-            'user_point' => $user
-        ]);
-    }
+    //     return response()->json([
+    //         'error' => false,
+    //         'message' => "point allocated successfullly",
+    //         'user_point' => $user
+    //     ]);
+    // }
 }

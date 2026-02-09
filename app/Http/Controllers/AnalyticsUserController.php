@@ -278,8 +278,7 @@ class AnalyticsUserController extends Controller
             return response()->json([
                 "error" => false,
                 "upcoming_trip" => $upComingTrip,
-                // "paid_upcoming_trip" => $paidUpcomingTrips,
-                // "unpaid_upcoming_trip" => $unPaidUpcomingTrips
+                
             ], 200);
 
         } catch (\Throwable $th) {

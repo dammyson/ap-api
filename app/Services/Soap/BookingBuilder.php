@@ -3,6 +3,13 @@
 namespace App\Services\Soap;
 
 class BookingBuilder {
+   protected $craneUsername;
+   protected $cranePassword;
+
+   public function __construct() {
+		$this->craneUsername = config('app.crane.username');		
+		$this->cranePassword = config('app.crane.password');
+	}
 
     public function readBooking($ID, $passengerSurname) {
        $xml =  '<?xml version="1.0" encoding="UTF-8"?>
@@ -14,8 +21,8 @@ class BookingBuilder {
                     <clientInformation>
                     <clientIP>129.0.0.1</clientIP>
                     <member>false</member>
-                    <password>SCINTILLA</password>
-                    <userName>SCINTILLA</userName>
+                    <password>' . $this->cranePassword . '</password>
+                    <userName>' . $this->craneUsername . '</userName>
                     <preferredCurrency>NGN</preferredCurrency>
                     </clientInformation>
                     <bookingReferenceID>
@@ -45,8 +52,8 @@ class BookingBuilder {
                     <clientInformation>
                     <clientIP>129.0.0.1</clientIP>
                     <member>false</member>
-                    <password>SCINTILLA</password>
-                    <userName>SCINTILLA</userName>
+                    <password>'. $this->cranePassword .'</password>
+                    <userName>'. $this->craneUsername .'</userName>
                     <preferredCurrency>NGN</preferredCurrency>
                     </clientInformation>
                     <bookingReferenceID>
@@ -81,8 +88,8 @@ class BookingBuilder {
                   <clientInformation>
                      <clientIP>129.0.0.1</clientIP>
                      <member>false</member>
-                     <password>SCINTILLA</password>
-                     <userName>SCINTILLA</userName>
+                     <password>'. $this->cranePassword .'</password>
+                     <userName>'. $this->craneUsername .'</userName>
                      <preferredCurrency>NGN</preferredCurrency>
                   </clientInformation>
                     <bookingReferenceId>' . htmlspecialchars($bookingReferenceID, ENT_XML1, 'UTF-8') . '</bookingReferenceId>
@@ -105,8 +112,8 @@ class BookingBuilder {
                         <clientInformation>
                         <clientIP>129.0.0.1</clientIP>
                         <member>false</member>
-                        <password>SCINTILLA</password>
-                        <userName>SCINTILLA</userName>
+                        <password>'. $this->cranePassword .'</password>
+                        <userName>'. $this->craneUsername .'</userName>
                         <preferredCurrency>NGN</preferredCurrency>
                         </clientInformation>
                         <!-- Optional: -->

@@ -8,9 +8,15 @@ use App\Services\Utility\FlightNotes;
 
 class AddSsrBuilder {
 
+
    protected $flightNotes;
+   protected $craneUsername;
+   protected $cranePassword;
+
    public function __construct(FlightNotes $flightNote) {
       $this->flightNotes = $flightNote;
+      $this->craneUsername = config('app.crane.username');		
+		$this->cranePassword = config('app.crane.password');
 
    }
 
@@ -24,8 +30,8 @@ class AddSsrBuilder {
                <clientInformation>
                <clientIP>129.0.0.1</clientIP>
                <member>false</member>
-               <password>SCINTILLA</password>
-               <userName>SCINTILLA</userName>
+               <password>' . $this->cranePassword . '</password>
+               <userName>' . $this->craneUsername . '</userName>
                <preferredCurrency>' . htmlspecialchars($request->input('preferredCurrency'), ENT_XML1, 'UTF-8') . '</preferredCurrency>
                </clientInformation>
                   <airItinerary>

@@ -80,12 +80,15 @@ class PaymentController extends Controller
     public function verifyTierRef(Request $request) {
         try {
             $request->validate([
-                'ref_id' => 'required|string'
+                'ref_id' => 'required|string',
+                'payment_method' => 'required|string',
+                'payment_channel' => 'required|string',
+                'preferred_currency' => 'required|string'
             ]);
             $preferredCurrency = $request->input('preferred_currency');
             $ref = $request->input('ref_id');
-            $paymentMethod = $request->input('payment_method') ?? 'flutterwave';
-            $paymentChannel = $request->input('payment_channel') ?? 'flutterwave';
+            $paymentMethod = $request->input('payment_method');
+            $paymentChannel = $request->input('payment_channel');
             // $deviceType = $request->input('device_type');
             $user = $request->user();
             $userId = $user->id;

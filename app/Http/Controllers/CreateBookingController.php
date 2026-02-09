@@ -177,18 +177,10 @@ class CreateBookingController extends Controller
 
                 if ($this->checkArray->isAssociativeArray($ticketItemList)) {    
                     $passengerName = $ticketItemList['airTraveler']["personName"]["givenName"]; 
-                    $passengerSurname = $ticketItemList['airTraveler']["personName"]["surname"];  
                     $passengerType = $ticketItemList['airTraveler']['passengerTypeCode'];              
                    
           
-                    // Passenger::create([
-                    //     "user_id" => $user->id,
-                    //     "passenger_name" => $passengerName,
-                    //     "passenger_surname" => $passengerSurname,
-                    //     "passenger_type" => $passengerName,
-                    // ]);
-
-                    ///
+                   
                     $ticketCount += 1;
                     $surname = $ticketItemList['airTraveler']["personName"]["surname"];
 
@@ -198,16 +190,7 @@ class CreateBookingController extends Controller
                 } else {
                     foreach($ticketItemList as $ticketItem) {
                         $passengerName = $ticketItem['airTraveler']["personName"]["givenName"];  
-                        $passengerSurname = $ticketItem['airTraveler']["personName"]["surname"]; 
-                        $passengerType = $ticketItem['airTraveler']['passengerTypeCode']; 
-
-                        // Passenger::create([
-                        //     "user_id" => $user->id,
-                        //     "passenger_name" => $passengerName,
-                        //     "passenger_surname" => $passengerSurname,
-                        //     "passenger_type" => $passengerName,
-                        // ]);
-                        
+                        $passengerType = $ticketItem['airTraveler']['passengerTypeCode'];                      
 
                         $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
                         event(new UserActivityLogEvent($user, "Booking", $description));
@@ -402,21 +385,16 @@ class CreateBookingController extends Controller
         try {
             $preferredCurrency = $request->input('preferred_currency');
             $routes = $request->input('routes');
-            $class = $request->input('class');
-            $type  = $request->input('type'); // domestic, regional, international
+           // domestic, regional, international
             $noOfPassengers = $request->input('passenger_length');
             // we should be able to retrieve the booking id and reference using the Booking model
             $bookingId = $request->input('booking_id');
             $bookingReferenceID = $request->input('booking_reference_id');
-            $currency = $request->input('preferred_currency');
+          
     
             $user = $request->user();
     
-            // dd($routes);
-            
-            // return $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
-    
-            // [$class, $points] = $this->getPointService->getFlightRedemptionPoints($route, $class, $type);
+          
             // add a forloop here incase of multiple route
             $redemptionPoint = 0;
             foreach($routes as $route) {
@@ -600,7 +578,6 @@ class CreateBookingController extends Controller
             $invoice->save();
 
 
-            ///////////////////////
             
             // get the list of all the tickets 
             $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
@@ -611,15 +588,10 @@ class CreateBookingController extends Controller
            
             // if (array_key_exists('couponInfoList', $ticketItemList)) {
             if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-                $paymentReferenceID = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
                 $invoice_number = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                $paymentType = $ticketItemList['paymentDetails']['paymentDetailList']['paymentType'];
-                $amount = $ticketItemList['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                $orderID = $ticketItemList['paymentDetails']['paymentDetailList']['orderID'];
-                $ticketId = $ticketItemList['ticketDocumentNbr'];
+               
                 
                 if (!array_key_exists('asvcSsr', $ticketItemList['couponInfoList'])) {                    
-                    $reasonForIssuance = $ticketItemList['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
                      
                     Transaction::firstOrCreate([
                         "invoice_number" => $invoice_number,                        
@@ -637,7 +609,6 @@ class CreateBookingController extends Controller
                     ]);                    
                 
                 } else { 
-                    $reasonForIssuance = $ticketItemList['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
                                            
                     Transaction::firstOrCreate([
                         "invoice_number" => $invoice_number,                        
@@ -661,19 +632,11 @@ class CreateBookingController extends Controller
             } else {
 
                 foreach($ticketItemList as $ticketItem) {
-                    // if ($ticketItem["status"] == "OK") {
-                        // dump($user->first_name);
-                    $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
                     $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                    $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
-                    $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                    $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
-                    $ticketId = $ticketItem['ticketDocumentNbr'];
+                  
                     if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
                         // dump('non asvcSsr ran');
-                       
-                        $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
-                           
+                                                  
                         Transaction::firstOrCreate([
                             "invoice_number" => $invoice_number,                            
                         ], [
@@ -691,7 +654,6 @@ class CreateBookingController extends Controller
                     
                     }
                     else {      
-                        $reasonForIssuance = $ticketItem['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
                                                     
                         Transaction::firstOrCreate([
                             "invoice_number" => $invoice_number,                            

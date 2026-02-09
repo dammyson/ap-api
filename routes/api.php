@@ -101,19 +101,19 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::get('recent-table', [DashboardAdminController::class, 'recentActivitiesTable']);
             
         });
-        
+
         Route::group(['prefix' => 'customer'], function() {
             Route::get('customer-information', [CustomerAdminController::class, 'customerInformation']);
             Route::group(['prefix' => '{user}'], function() {
                 Route::put('award-point-manually', [CustomerAdminController::class, 'awardPointManually']);
                 Route::get('user-revenue/charts/{filter}', [CustomerAdminController::class, 'userRevenueChart']);
                 Route::get('revenue-sources/charts', [CustomerAdminController::class, 'revenueCustomerChart']);
-                Route::get('active-loyal-points', [CustomerAdminController::class, 'activeLoyalPoints']);
+                // Route::get('active-loyal-points', [CustomerAdminController::class, 'activeLoyalPoints']);
                 Route::get('users-information', [CustomerAdminController::class, 'userInformation']);
-                Route::get('total-loyal-points', [CustomerAdminController::class, 'totalLoyalPoint']);
-                Route::get('total-flight-flown', [CustomerAdminController::class, 'totalFlightFlown']);
-                Route::get('referrals', [CustomerAdminController::class, 'frequentFlyerMiles']);
-                Route::get('revenue-sources', [CustomerAdminController::class, 'revenueSource']);
+                // Route::get('total-loyal-points', [CustomerAdminController::class, 'totalLoyalPoint']);
+                // Route::get('total-flight-flown', [CustomerAdminController::class, 'totalFlightFlown']);
+                // Route::get('referrals', [CustomerAdminController::class, 'frequentFlyerMiles']);
+                // Route::get('revenue-sources', [CustomerAdminController::class, 'revenueSource']);
                 Route::get('activity-log', [CustomerAdminController::class, 'activityLog']);
             });            
         });
@@ -142,8 +142,6 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::get('survey-result', [SurveyController::class, 'getSurveyResults']);
                 Route::get('survey-result-gender', [SurveyController::class, 'getSurveyResultByGender']);
                 Route::put('allocate-points/{participant_id}', [SurveyController::class, 'allocatePointToParticipant']);
-                Route::delete('delete', [SurveyController::class, 'deleteSurvey']);
-                Route::delete('questions/{question}', [SurveyController::class, 'deleteQuestion']);
                 Route::delete('questions/{question}', [SurveyController::class, 'deleteQuestion']);
                 Route::delete('questions/{question}/options/{option}', [SurveyController::class, 'deleteOption']);
 
@@ -174,7 +172,7 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::get('team-members', [TeamMembersAdminController::class, 'teamMembers']);
             Route::post('add-team-member', [RegisterAdminController::class, 'registerAdmin']);
             Route::delete('team-member/{teamMemberId}/delete', [TeamMembersAdminController::class , 'deleteTeamMembers']);
-            Route::patch('profile/change-password', [ChangePasswordAdminController::class, 'ChangeAdminPassword']);
+            Route::patch('profile/change-password', [ChangePasswordAdminController::class, 'changeAdminPassword']);
         });
 
         Route::post('featured-trip', [TripController::class, 'featuredTrip']);
@@ -192,10 +190,10 @@ Route::group(['prefix' => 'admin/'], function () {
 
 Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
     Route::group(['prefix' => "soap/"], function () {
-        Route::group(["prefix" => "void-ticket"], function() {
-            Route::post('/pricing', [VoidTicketController::class, 'voidTicketPricing']);
-            Route::post('/commit', [VoidTicketController::class, 'voidTicketCommit']);
-        });
+        // Route::group(["prefix" => "void-ticket"], function() {
+        //     Route::post('/pricing', [VoidTicketController::class, 'voidTicketPricing']);
+        //     Route::post('/commit', [VoidTicketController::class, 'voidTicketCommit']);
+        // });
 
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
@@ -208,13 +206,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
                 Route::post('retrieve-ticket-history', [BookingController::class, 'retrieveTicketHistory']);
             });
 
-            // Route::group(["prefix" => "read-booking"], function() {
-            //     Route::post('read-booking-tk', [BookingController::class, 'readBookingTK']);
-            //     Route::get('read-booking/{ID}/{referenceID}', [TicketReservationController::class, 'ticketReservationViewOnly']);
-            //     Route::post('read-booking/surname', [BookingController::class, 'readBookingWithSurname']);
-            //     Route::get('read-booking/{ID}/{referenceID}', [BookingController::class, 'readBooking']);
-            // });
-
             Route::group(["prefix" => "read-booking"], function() {
                 Route::post('tk', [BookingController::class, 'readBookingTk']);
                 Route::post('surname', [BookingController::class, 'readBookingWithSurname']);
@@ -222,7 +213,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
             });
 
             Route::group(["prefix" => "create-booking"], function() {
-                Route::post('two-a', [CreateBookingController::class, 'createBooking']);
                 Route::post('/', [CreateBookingController::class, 'createBooking']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
                 Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
@@ -238,10 +228,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
  
         Route::group(["prefix" => "get-availability"], function() {
             Route::post('general-parameters', [GetAvailabilityController::class, 'getAvailabilityGeneralParameters']);
-            Route::post('get-availability-rt', [GetAvailabilityController::class, 'getAvailabilityRT']);
-            Route::post('/', [GetAvailabilityController::class, 'getAvailabilityOW']);
-            Route::post('get-availability-md', [GetAvailabilityController::class, 'getAvailabilityMD']);
-            Route::post('get-availability-two-a', [GetAvailabilityController::class, 'getAvailabilityTwoA']);
         });
 
         
@@ -267,7 +253,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
           
         
         Route::post('/add-ssr/invoice/{invoice}', [AddSsrController::class, 'addSsr']);
-        // Route::post('/select-seat', [AddSeatController::class, 'selectSeat']);
         
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
         Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
@@ -282,11 +267,10 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
-        Route::get('allocate-points', [ProfileController::class, 'allocatePoint']);
         Route::post('profile/edit', [ProfileController::class, 'editProfile']);
         Route::post('profile/change-profile-image', [ProfileController::class, 'changeProfileImage']);
         Route::post('share-peace-point', [SharePeacePointController::class, 'sharePeacePoint']);
-        Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
+        // Route::patch('test/increase-peace-point', [SharePeacePointController::class, 'increasePeacePoint']);
         Route::post('user-logout', [RegisterController::class, 'logoutUser']);
         Route::post('create-wallet', [WalletController::class, 'createWallet']);
         Route::get('trip-history', [AnalyticsUserController::class, 'tripHistory']);
@@ -301,7 +285,6 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
         Route::post('/ref-quick-teller', [OnepipeController::class, 'verifyQuickTeller']);
     });
 
-    Route::post('/upgrade-tier', [TierController::class, 'upgradeTier']);
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']); 
     

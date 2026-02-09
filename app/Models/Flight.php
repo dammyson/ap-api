@@ -16,8 +16,6 @@ class Flight extends Model
         'departure_time',
         'peace_id', 
         'guest_session_token',
-        // 'passenger_name',
-        // 'passenger_type',
         'trip_type',
         'booking_id',
         'origin_city',
