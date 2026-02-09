@@ -104,7 +104,7 @@ class ProfileAdminController extends Controller
            
 
            $admin->user_name = $request->user_name ?? $admin->user_name;
-           $admin->email = $request->email ?? $admin->email;
+        //    $admin->email = $request->email ?? $admin->email;
            $admin->phone_number = $request->phone_number ?? $admin->phone_number;
 
           
@@ -165,16 +165,7 @@ class ProfileAdminController extends Controller
         try {
 
             Gate::authorize('is-admin');
-
-            // if ($request->user('admin')->role !== "Admin") {
-            //     return response()->json([
-            //         "error" => true,
-            //         "message" => "You do not have permission to view team members.
-            //             Please contact your system administrator if you believe this is an error"
-            //     ], 403);
-    
-            // }
-    
+  
             $admin = Admin::where('email', $email)->first();
 
             if ($admin) {

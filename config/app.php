@@ -146,5 +146,10 @@ return [
         'bearer_key' => env('FLUTTER_BEARER')
     ],
 
+    'crane' => [
+        'username' => env('CRANE_USERNAME'),
+        'password' => env('CRANE_PASSWORD')
+    ],
+
 
 ];

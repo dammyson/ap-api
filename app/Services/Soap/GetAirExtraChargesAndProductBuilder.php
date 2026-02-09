@@ -5,6 +5,13 @@ namespace App\Services\Soap;
 use App\Services\Utility\FlightNotes;
 
 class GetAirExtraChargesAndProductBuilder {
+   protected $craneUsername;
+   protected $cranePassword;
+
+   public function __construct() {
+      $this->craneUsername = config('app.crane.username');		
+      $this->cranePassword = config('app.crane.password');
+   }
 
 	private function passengerTypeQuantityList($passengerList) {
 		$xml = '';
@@ -165,9 +172,9 @@ class GetAirExtraChargesAndProductBuilder {
 				<clientInformation>
 					<clientIP>129.0.0.1</clientIP>
 					<member>false</member>
-					<password>SCINTILLA</password>
-					<userName>SCINTILLA</userName>
-					<preferredCurrency>'.$preferredCurrency .'</preferredCurrency>
+					<password>' . htmlspecialchars($this->cranePassword, ENT_XML1, 'UTF-8') . '</password>
+					<userName>' . htmlspecialchars($this->craneUsername, ENT_XML1, 'UTF-8') . '</userName>
+					<preferredCurrency>'. htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') .'</preferredCurrency>
 				</clientInformation>'. 
 
                  	$this->bookFlightSegmentList($bookFlightSegmentList)
@@ -190,12 +197,6 @@ class GetAirExtraChargesAndProductBuilder {
 
         return $xml;
     }
-
-	
-   
-   
-   
-
 }
 
 

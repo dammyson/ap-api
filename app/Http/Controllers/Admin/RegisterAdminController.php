@@ -34,6 +34,7 @@ class RegisterAdminController extends Controller
             // generate temporary password
             $username = $request->input('user_name');
             $email = $request->input('email');
+            $role = $request->input('role');
             
             $temporaryPassword = $this->generateRandom->generateTemporaryPassword();
             // dump($temporaryPassword);
@@ -59,7 +60,7 @@ class RegisterAdminController extends Controller
                     'user_name' => $username, 
                     'email' => $email, 
                     'password' => Hash::make($temporaryPassword), 
-                    'role' => $request->input('role')
+                    'role' => $role
                 ]);
             }
 
@@ -84,7 +85,6 @@ class RegisterAdminController extends Controller
 
         return response()->json(['error' => false, 
             'message' => 'Client registration successful. Verification code sent to your email.',
-            'temporary_password' => $temporaryPassword,
             'data' => $data
         ], 201);
 

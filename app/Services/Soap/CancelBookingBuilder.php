@@ -3,6 +3,15 @@
 namespace App\Services\Soap;
 
 class CancelBookingBuilder  {
+
+   protected $craneUsername;
+   protected $cranePassword;
+
+   public function __construct() {
+			$this->craneUsername = config('app.crane.username');		
+			$this->cranePassword = config('app.crane.password');
+	}
+
    public function cancelBookingCommit(
       $ID, 
       $referenceID, 
@@ -19,8 +28,8 @@ class CancelBookingBuilder  {
             <clientInformation>
             <clientIP>129.0.0.1</clientIP>
             <member>false</member>
-            <password>SCINTILLA</password>
-            <userName>SCINTILLA</userName>
+            <password>' . $this->cranePassword . '</password>
+            <userName>' . $this->craneUsername . '</userName>
             <preferredCurrency>NGN</preferredCurrency>
             </clientInformation>
             <!-- Optional: -->

@@ -101,16 +101,17 @@ class ForgetPasswordAdminController extends Controller
 
    public function resetPassword(ResetAdminPasswordRequest $request) {
        try {
-            
-           $admin = Admin::where('email', $request->email)->first();
 
+            $admin = $request->user('admin');
+            
+            $email = $request->input('email');
            
-           if (!$admin) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "admin not found"
-                ], 404);
-            }
+            if ($email !== $admin->email) {
+                    return response()->json([
+                        "error" => true,
+                        "message" => "admin not found"
+                    ], 404);
+                }
 
             $otp_expiration = Carbon::parse($admin->otp_expires_at);
 

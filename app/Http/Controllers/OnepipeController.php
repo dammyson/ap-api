@@ -270,18 +270,15 @@ class OnepipeController extends Controller
 
         try {
 
-            $merchantCode = $request->input('merchant_code');
+            // $merchantCode = $request->input('merchant_code');
             $transactionReference = $request->input('transaction_reference');
             $amount = $request->input('amount');
             $bookingId = $request->input('booking_id');
             $deviceType = $request->input('device_type');
 
-            // $bearer = config('app.quick_teller.bearer_key');
             $url = config('app.quick_teller.url');
             $bearer = $this->getInterswitchToken();
-            // return $bearer;
-            // dump($bearer);
-            // dd($url);
+          
 
             $booking = Booking::where('booking_id', $bookingId)->first();
 
@@ -306,9 +303,7 @@ class OnepipeController extends Controller
             ])->get("{$url}&transactionreference={$transactionReference}&amount={$amount}");
             
         
-            // dd($response->body());
             $responseCode = $response["ResponseCode"];
-            // dd($responseCode);
 
             // if ($responseCode == "S0" ) {
             //     $currency = "NGN";
@@ -324,9 +319,7 @@ class OnepipeController extends Controller
 
             if ($responseCode == "00" ) {
                 $currency = "NGN";
-                $pnr = $booking->booking_id;
-                // $amount = $response['Amount'];
-                // $amount = $response['Amount'];
+                $pnr = $booking->booking_id;                
                 $deviceType = $request['device_type'];
         
                 // convert to naira (from kobo)

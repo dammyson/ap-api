@@ -4,6 +4,13 @@ namespace App\Services\Soap;
 
 class CreateBookingBuilder
 {  
+    protected $craneUsername;
+    protected $cranePassword;
+
+    public function __construct() {
+			$this->craneUsername = config('app.crane.username');		
+			$this->cranePassword = config('app.crane.password');
+	}
 
     public function CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList)
     {
@@ -299,8 +306,8 @@ class CreateBookingBuilder
               <clientInformation>
                 <clientIP>129.0.0.1</clientIP>
                 <member>false</member>
-                <password>SCINTILLA</password>
-                <userName>SCINTILLA</userName>
+                <password>' . $this->cranePassword . '</password>
+                <userName>' . $this->craneUsername . '</userName>
                 <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
 
               </clientInformation>
@@ -373,62 +380,8 @@ class CreateBookingBuilder
         }
     }
     public function contactInfoListRequest($contactInfoList) {
-        // dump("test");
         if($contactInfoList)
         {   
-
-            // dump("i ran");
-            // $xml = '<contactInfoList>
-            //             <companyInfo>
-            //             <companyFullName>Jay Jay test</companyFullName>
-            //             <companyLegalName>Jay test</companyLegalName>
-            //             <taxNumber>9999999999</taxNumber>
-            //             <taxOffice>Zühtüpaşa</taxOffice>
-            //             </companyInfo>
-            //             <adress>
-            //             <addressLineList>fener cad. filika sok.</addressLineList>
-            //             <adressUseType>string</adressUseType>
-            //             <bldgRoom>11</bldgRoom>
-            //             <cityCode>IST</cityCode>
-            //             <cityName>istanbu</cityName>
-            //             <countryCode>FR</countryCode>
-            //             <countryName>Fransa</countryName>
-            //             <formatted>true</formatted>
-            //             <postalCode>34256</postalCode>
-            //             <preferred>false</preferred>
-            //             <shareMarketInd>true</shareMarketInd>
-            //             <stateProvince>marmara</stateProvince>
-            //             <streetNumber>45</streetNumber>
-            //             </adress>
-            //             <email>
-            //             <email>asd@asd.com</email>
-            //             <markedForSendingRezInfo/>
-            //             <preferred/>
-            //             <shareMarketInd/>
-            //             </email>
-            //             <markedForSendingRezInfo>false</markedForSendingRezInfo>
-            //             <personName>
-            //             <givenName>Sharon</givenName>
-            //             <shareMarketInd/>
-            //             <surname>Edwards</surname>
-            //             </personName>
-            //             <phoneNumber>
-            //             <areaCode>538</areaCode>
-            //             <countryCode>+90</countryCode>
-            //             <markedForSendingRezInfo>false</markedForSendingRezInfo>
-            //             <phoneUseType>H</phoneUseType>
-            //             <preferred/>
-            //             <shareMarketInd/>
-            //             <subscriberNumber>2051817</subscriberNumber>
-            //             </phoneNumber>
-            //             <shareContactInfo/>
-            //             <shareMarketInd/>
-            //             <socialSecurityNumber>11111111110</socialSecurityNumber>
-            //             <useForInvoicing>true</useForInvoicing>
-            //         </contactInfoList>';
-
-            // return $xml;
-            // dd(" iran");
             $xml = '';
         
             foreach($contactInfoList as $string) {
@@ -501,13 +454,7 @@ class CreateBookingBuilder
                     </otherServiceInformationList>';
             }
             $xml .= '</otherServiceInformationList>';
-
-            // dd($xml);
-            
             return $xml;
         }
-       
-                
-
     }
 }

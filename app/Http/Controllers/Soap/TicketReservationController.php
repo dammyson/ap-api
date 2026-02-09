@@ -181,15 +181,9 @@ class TicketReservationController extends Controller
            
             // if (array_key_exists('couponInfoList', $ticketItemList)) {
             if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-                $paymentReferenceID = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
-                $invoice_number = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                $paymentType = $ticketItemList['paymentDetails']['paymentDetailList']['paymentType'];
-                $amount = $ticketItemList['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                $orderID = $ticketItemList['paymentDetails']['paymentDetailList']['orderID'];
-                $ticketId = $ticketItemList['ticketDocumentNbr'];
+                $invoice_number = $ticketItemList['paymentDetails']['paymentDetailList']['invType']['invNumber'];              
                 
                 if (!array_key_exists('asvcSsr', $ticketItemList['couponInfoList'])) {                    
-                    $reasonForIssuance = $ticketItemList['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
                      
                     Transaction::firstOrCreate([
                         "invoice_number" => $invoice_number,                        
@@ -209,7 +203,6 @@ class TicketReservationController extends Controller
                     ]);                    
                 
                 } else { 
-                    $reasonForIssuance = $ticketItemList['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
                                            
                     Transaction::firstOrCreate([
                         "invoice_number" => $invoice_number,                        
@@ -238,17 +231,11 @@ class TicketReservationController extends Controller
                 foreach($ticketItemList as $ticketItem) {
                     // if ($ticketItem["status"] == "OK") {
                         // dump($user->first_name);
-                    $paymentReferenceID = $ticketItem['paymentDetails']['paymentDetailList']['invType']['paymentReferenceID'];
                     $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                    $paymentType = $ticketItem['paymentDetails']['paymentDetailList']['paymentType'];
-                    $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-                    $orderID = $ticketItem['paymentDetails']['paymentDetailList']['orderID'];
-                    $ticketId = $ticketItem['ticketDocumentNbr'];
+                  
                     if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
                         // dump('non asvcSsr ran');
                        
-                        $reasonForIssuance = $ticketItem['reasonForIssuance']; // meant to be an array but an empty string when nothing is found;
-                           
                         Transaction::firstOrCreate([
                             "invoice_number" => $invoice_number,                            
                         ], [
@@ -269,7 +256,6 @@ class TicketReservationController extends Controller
                     
                     }
                     else {      
-                        $reasonForIssuance = $ticketItem['reasonForIssuance']['explanation']; // meant to be an array but an empty string when nothing is found;
                                                     
                         Transaction::firstOrCreate([
                             "invoice_number" => $invoice_number,                            
@@ -294,7 +280,6 @@ class TicketReservationController extends Controller
             $description = "made for a payment of {$paidAmount} for flight with booking id {$bookingId}";
             event(new UserActivityLogEvent($user, "ticket payment", $description));
 
-            $guest = "Guest";
            
             RecentActivity::create([
                 "title" => "Ticket Payment",
@@ -321,8 +306,8 @@ class TicketReservationController extends Controller
                 "points" => (!$user->is_guest) ? $totalPoint : 0,
                 "amount" => $paidAmount,
                 "message" => "transaction successfully recorded"
-            ], 200);           
-            // }   
+            ], 200); 
+            
         } catch (\Throwable $th) {
             
             Log::error($th->getMessage());

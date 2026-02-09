@@ -52,13 +52,11 @@ class ProfileController extends Controller
        
     }
 
-    // public function changeProfileImage(ChangeProfileImageRequest $request) {
+
     public function changeProfileImage(ChangeProfileImageRequest $request) {
         $user = $request->user(); 
         
         try {
-
-            // dd(storage_path('app'), storage_path('public'));
         
             if ($request->file('image_url')) {
                
@@ -184,15 +182,6 @@ class ProfileController extends Controller
         
     }
 
-    public function allocatePoint(Request $request) {
-        $user = $request->user();  
-
-        $user->points += 100000;
-        $user->save();
-        return response()->json([
-            "error" => false,
-            "points" => $user->points
-        ]);
-    }  
+   
     
 }

@@ -402,11 +402,11 @@ class DashboardAdminController extends Controller
         
     }
 
-    public function screenResolution(Request $request) {
+    public function screenResolution() {
         try {
             $screenResolutions = ScreenResolution::select('screen_resolution', DB::raw('count(*) as count'))
-            ->groupBy('screen_resolution')
-            ->get();
+                ->groupBy('screen_resolution')
+                ->get();
 
             $screenResolutions = $screenResolutions->map(function($screenResolution) {
                 return [

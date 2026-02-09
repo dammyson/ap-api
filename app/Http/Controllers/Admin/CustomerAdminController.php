@@ -274,12 +274,12 @@ class CustomerAdminController extends Controller
         
         return response()->json([
             "error" => false,
-            "total_flight_amount" => $flightBookingAmount,
-            "flight_booking" => $flightBooking,
-            "app_purchase_amount" => $appPurchaseAmount,
-            "app_purchase" => $appPurchase,
-            "total_revenue_amount" => $totalRevenueAmount,
-            "total_revenue" => $totalRevenue
+                "total_flight_amount" => $flightBookingAmount,
+                "flight_booking" => $flightBooking,
+                "app_purchase_amount" => $appPurchaseAmount,
+                "app_purchase" => $appPurchase,
+                "total_revenue_amount" => $totalRevenueAmount,
+                "total_revenue" => $totalRevenue
 
         ], 200);
 
@@ -316,8 +316,6 @@ class CustomerAdminController extends Controller
             $admin = $request->user('admin');
             $points = $request->input('points');
             $reason = $request->input('reason');
-
-            $message = "reason {$reason}";
         
             $user->points += $points;
             $user->save();
