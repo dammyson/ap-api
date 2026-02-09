@@ -30,8 +30,8 @@ class AddSsrBuilder {
                <clientInformation>
                <clientIP>129.0.0.1</clientIP>
                <member>false</member>
-               <password>' . $this->cranePassword . '</password>
-               <userName>' . $this->craneUsername . '</userName>
+               <password>' . htmlspecialchars($this->cranePassword, ENT_XML1, 'UTF-8') . '</password>
+               <userName>' . htmlspecialchars($this->craneUsername, ENT_XML1, 'UTF-8') . '</userName>
                <preferredCurrency>' . htmlspecialchars($request->input('preferredCurrency'), ENT_XML1, 'UTF-8') . '</preferredCurrency>
                </clientInformation>
                   <airItinerary>
