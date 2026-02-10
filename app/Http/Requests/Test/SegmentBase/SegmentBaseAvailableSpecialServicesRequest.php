@@ -72,9 +72,9 @@ class SegmentBaseAvailableSpecialServicesRequest extends FormRequest
             "bookingFlightSegmentList.*.departureDateTimeUTC" => 'required|string',
             "bookingFlightSegmentList.*.flightNumber" => 'required|string',
             "bookingFlightSegmentList.*.flightSegmentID" => 'required|string',
-            "bookingFlightSegmentList.*.ondControlled" => 'required|boolean',
+            "bookingFlightSegmentList.*.ondControlled" => 'required|string',
             "bookingFlightSegmentList.*.sector" => 'required|string',
-            "bookingFlightSegmentList.*.codeShare" => 'required|boolean',
+            "bookingFlightSegmentList.*.codeShare" => 'required|string',
             "bookingFlightSegmentList.*.distance" => 'required|string',
             "bookingFlightSegmentList.*.airEquipType" => 'required|string',
             "bookingFlightSegmentList.*.changeOfGauge" => 'required|string',
@@ -86,11 +86,11 @@ class SegmentBaseAvailableSpecialServicesRequest extends FormRequest
 
 
             "bookingFlightSegmentList.*.flownMileageQty" => 'required|string',
-            "bookingFlightSegmentList.*.iatciFlight" => 'required|boolean',
+            "bookingFlightSegmentList.*.iatciFlight" => 'required|string',
             "bookingFlightSegmentList.*.journeyDuration" => 'required|string',
             "bookingFlightSegmentList.*.onTimeRate" => 'required|string',
             "bookingFlightSegmentList.*.remark" => 'sometimes',
-            "bookingFlightSegmentList.*.secureFlightDataRequired" => 'required|boolean',
+            "bookingFlightSegmentList.*.secureFlightDataRequired" => 'required|string',
             "bookingFlightSegmentList.*.stopQuantity" => 'required|string',
             "bookingFlightSegmentList.*.ticketType" => 'required|string',
             "ssrGroupCode" => 'sometimes'
