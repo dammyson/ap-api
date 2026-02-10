@@ -30,14 +30,14 @@ class TicketReservationCommitTwoARequest extends FormRequest
             "countryCode" => "required|string",
             "ID" => "required|string",
             "referenceID" => "required|string",
-            "capturePaymentToolNumber" => "required|boolean",
+            "capturePaymentToolNumber" => "required|string",
             "paymentCode" => "required|string",
-            "threeDomainSecurityEligible" => "required|boolean",
+            "threeDomainSecurityEligible" => "required|string",
             "MCONumber" => "required|string",
             "paymentAmountCurrencyCode" => "required|string",
             "paymentAmountValue" => "required|string",
             "paymentType" => "required|string",
-            "primaryPayment" => "required|boolean",
+            "primaryPayment" => "required|string",
             "requestPurpose" => "required|string"
         ];
     }
