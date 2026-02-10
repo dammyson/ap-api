@@ -305,39 +305,27 @@ class OnepipeController extends Controller
         
             $responseCode = $response["ResponseCode"];
 
-            // if ($responseCode == "S0" ) {
-            //     $currency = "NGN";
-            //     $pnr = $booking->booking_id;
-            //     $amount = $response['amount'];
-            // }
-
-            // if ($responseCode == "T0" ) {
-            //     $currency = "NGN";
-            //     $pnr = $booking->booking_id;
-            //     $amount = $response['amount'];
-            // }
+            
 
             if ($responseCode == "00" ) {
                 $currency = "NGN";
                 $pnr = $booking->booking_id;                
-                $deviceType = $request['device_type'];
-        
+                $deviceType = $request['device_type'];        
                 // convert to naira (from kobo)
                 $amount = $amount / 100;
         
-                // dd(["currecny" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
-                                    
-                return  $this->ticketReservationController->ticketReservationCommit("bank transfer", "Quick teller" , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
-            
+                
+            } else { 
+                $currency = $response["data"]["provider_response"]["meta"]["account"]["currency_code"];
+                $pnr = $response["data"]["provider_response"]["meta"]["pnr"];
+                $amount = $response["data"]["provider_response"]["meta"]["booking_amount"];
+                $deviceType = $request['device_type'];
+
+                // convert to naira (from kobo)
+                $amount = $amount / 100;
             }
 
-            $currency = $response["data"]["provider_response"]["meta"]["account"]["currency_code"];
-            $pnr = $response["data"]["provider_response"]["meta"]["pnr"];
-            $amount = $response["data"]["provider_response"]["meta"]["booking_amount"];
-            $deviceType = $request['device_type'];
-
-            // convert to naira (from kobo)
-            $amount = $amount / 100;
+         
 
             // dd(["currency" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
                                 
