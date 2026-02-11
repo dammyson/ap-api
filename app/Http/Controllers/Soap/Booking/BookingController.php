@@ -13,11 +13,9 @@ use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
 use App\Services\Soap\BookingBuilder;
 use App\Services\Utility\GetPointService;
-use App\Http\Requests\Test\Booking\ReadBookingRequest;
 use App\Services\Soap\TicketReservationRequestBuilder;
-use App\Http\Requests\Test\Booking\ReadBookingTkRequest;
-use App\Http\Requests\Test\Booking\RetrievePNRHistoryRequest;
-use App\Http\Requests\Test\Booking\RetrieveTicketHistoryRequest;
+use App\Http\Requests\Soap\Booking\RetrievePNRHistoryRequest;
+use App\Http\Requests\Soap\Booking\RetrieveTicketHistoryRequest;
 
 class BookingController extends Controller
 {

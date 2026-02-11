@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Soap;
 
-use Carbon\Carbon;
 use App\Models\Flight;
 use App\Models\Booking;
 use App\Models\Invoice;
@@ -15,8 +14,7 @@ use App\Services\Utility\CheckArray;
 use App\Services\Soap\ReissuePnrTestBuilder;
 use App\Services\Wallet\VerificationService;
 use App\Services\Wallet\FlutterVerificationService;
-use App\Http\Requests\Reissue\ReissuePnrPreviewRequest;
-use App\Services\Soap\BookingBuilder;
+use App\Http\Requests\Soap\Reissue\ReissuePnrPreviewRequest;
 
 class ReissuePNRController extends Controller
 {

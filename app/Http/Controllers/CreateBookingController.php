@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Test\Booking\CreateBookingRequest;
+use App\Http\Requests\Soap\Booking\CreateBookingRequest;
 use App\Services\Utility\CheckArray;
 use App\Services\Utility\GetPointService;
 use App\Services\Soap\CreateBookingBuilder;

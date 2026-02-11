@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Ticket;
+namespace App\Http\Requests\Soap\Booking;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class VoidTicketCommitRequest extends FormRequest
+class ReadBookingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,13 +22,8 @@ class VoidTicketCommitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "booking_id" => "required|string", 
-            "booking_reference_id" => "required|string", 
-            "parent_booking_id" => "required|string",
-            "parent_booking_reference_id" => "required|string",
+            "ID" => "required|string", 
+            "passengerSurname" => "required|string"
         ];
-
-
-      
     }
 }

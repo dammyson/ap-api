@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Reissue;
+namespace App\Http\Requests\Soap\Reissue;
 
 use Illuminate\Foundation\Http\FormRequest;
 

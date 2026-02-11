@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\PenaltyRulesBuilder;
-use App\Http\Requests\Test\Penalty\PenaltyRulesRequest;
+use App\Http\Requests\Soap\Penalty\PenaltyRulesRequest;
 
 class PenaltyRulesController extends Controller
 {

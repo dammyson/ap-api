@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Soap;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\SegmentBaseRequestBuilder;
-use App\Http\Requests\Test\SegmentBase\SegmentBaseAvailableSpecialServicesRequest;
+use App\Http\Requests\Soap\SegmentBase\SegmentBaseAvailableSpecialServicesRequest;
 
 class SegmentBaseController extends Controller
 {

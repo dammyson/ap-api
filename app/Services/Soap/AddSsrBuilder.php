@@ -2,8 +2,7 @@
 
 namespace App\Services\Soap;
 
-use App\Http\Requests\Test\AddSsrRequest;
-use App\Http\Requests\Test\addWeightRequest;
+use App\Http\Requests\Soap\AddSsrRequest;
 use App\Services\Utility\FlightNotes;
 
 class AddSsrBuilder {

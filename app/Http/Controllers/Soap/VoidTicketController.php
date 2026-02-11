@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Soap;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\VoidTicketRequestBuilder;
-use App\Http\Requests\Ticket\VoidTicketCommitRequest;
-use App\Http\Requests\Ticket\VoidTicketPricingRequest;
+use App\Http\Requests\Soap\Ticket\VoidTicketCommitRequest;
+use App\Http\Requests\Soap\Ticket\VoidTicketPricingRequest;
 
 class VoidTicketController extends Controller
 {

@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
 use App\Services\Soap\CancelBookingBuilder;
-use App\Http\Requests\Test\Booking\CancelBooking\CancelBookingCommitRequest;
-use App\Http\Requests\Test\Booking\CancelBooking\CancelBookingViewOnlyRequest;
+use App\Http\Requests\Soap\Booking\CancelBooking\CancelBookingCommitRequest;
+use App\Http\Requests\Soap\Booking\CancelBooking\CancelBookingViewOnlyRequest;
 
 class CancelBookingController extends Controller
 {
