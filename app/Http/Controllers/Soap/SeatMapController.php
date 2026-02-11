@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Soap;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\SeatMapBuilder;
-use App\Http\Requests\Test\seatMapRequest;
+use App\Http\Requests\Soap\SeatMapRequest;
 
 class SeatMapController extends Controller
 {   
@@ -19,7 +18,7 @@ class SeatMapController extends Controller
         $this->craneAncillaryOTASoapService = app("CraneAncillaryOTASoapService");
     }
 
-    public function seatMap(seatMapRequest $request) {
+    public function seatMap(SeatMapRequest $request) {
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/GetSeatMap';
 

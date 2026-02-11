@@ -2,7 +2,7 @@
 
 namespace App\Services\Soap;
 
-use App\Http\Requests\Test\seatMapRequest;
+use App\Http\Requests\Soap\seatMapRequest;
 
 class SeatMapBuilder {
    protected $craneUsername;

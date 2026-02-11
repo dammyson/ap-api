@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers\Soap;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\GetAvailabilityBuilder;
-use App\Http\Requests\Test\GetAvailability\GetAvailabilityMDRequest;
-use App\Http\Requests\Test\GetAvailability\GetAvailabilityOWRequest;
-use App\Http\Requests\Test\GetAvailability\GetAvailabilityRTRequest;
-use App\Http\Requests\Test\GetAvailability\GetAvailabilityTwoARequest;
 
 class GetAvailabilityController extends Controller
 {
@@ -29,7 +24,8 @@ class GetAvailabilityController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            dd($response);
+            // dd($response);
+            return $response;
            
 
         } catch (\Throwable $th) {

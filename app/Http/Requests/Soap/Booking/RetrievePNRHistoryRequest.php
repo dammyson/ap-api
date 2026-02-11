@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Ticket;
+namespace App\Http\Requests\Soap\Booking;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TicketReservationViewOnlyRTRequest extends FormRequest
+class RetrievePNRHistoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class TicketReservationViewOnlyRTRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "ID" => "required|string"
         ];
     }
 }

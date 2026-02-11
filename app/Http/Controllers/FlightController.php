@@ -2,17 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Passenger\SearchFlightRequest;
-use App\Models\Airport;
-use App\Models\Flight;
-use App\Models\FlightTicketType;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use App\Services\Http\SoapClientService;
+use App\Http\Requests\Soap\SearchFlightRequest;
 use App\Services\Soap\SoapRequestBuilder;
 use App\Services\Utility\CheckArray;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Collection;
 
 class FlightController extends Controller
 {

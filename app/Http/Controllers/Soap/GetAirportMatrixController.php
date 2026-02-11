@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Soap;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\GetAirportMatrixBuilder;

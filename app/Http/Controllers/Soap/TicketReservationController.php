@@ -2,13 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Device;
 use App\Models\Flight;
-use App\Models\Wallet;
-use App\Models\Booking;
-// use Illuminate\Support\Facades\Request;
 use App\Models\Invoice;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -17,12 +11,10 @@ use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
 use App\Services\Utility\CheckArray;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Session;
 use App\Services\Utility\GetPointService;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Controllers\Soap\Booking\BookingController;
-use App\Http\Requests\Test\Ticket\TicketReservationViewOnlyRequest;
+use App\Http\Requests\Soap\Ticket\TicketReservationViewOnlyRequest;
 
 class TicketReservationController extends Controller
 {
@@ -61,7 +53,7 @@ class TicketReservationController extends Controller
             
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            dd($response);
+            return $response;
 
             
             

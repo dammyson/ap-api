@@ -5,12 +5,7 @@ namespace App\Http\Controllers\Soap;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\GetAirExtraChargesAndProductBuilder;
-use App\Http\Requests\Test\GetExtraChargesAndProductMDRequest;
-use App\Http\Requests\Test\GetExtraChargesAndProductOWRequest;
-use App\Http\Requests\Test\GetExtraChargesAndProductRtRequest;
-use App\Http\Requests\Test\GetExtraChargesAndProductTwoARequest;
-use App\Http\Requests\Test\GetAvailability\GetAvailabilityOWRequest;
-
+use App\Http\Requests\Soap\GetExtraChargesAndProductRequest;
 class GetAirExtraChargesAndProductsController extends Controller
 {
     protected $getAirExtraChargesAndProductBuilder;
@@ -25,7 +20,7 @@ class GetAirExtraChargesAndProductsController extends Controller
     }
 
     
-    public function getAirExtraChargesAndProduct(GetExtraChargesAndProductTwoARequest $request) {
+    public function getAirExtraChargesAndProduct(GetExtraChargesAndProductRequest $request) {
 
         $preferredCurrency = $request->input('preferredCurrency');
         $bookFlightSegmentList = $request->input('bookFlightSegmentList');       

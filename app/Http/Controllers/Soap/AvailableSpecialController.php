@@ -3,12 +3,8 @@
 namespace App\Http\Controllers\Soap;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Test\AvailableSpecial\AvailableSpecialServiceOWRequest;
-use App\Http\Requests\Test\AvailableSpecial\AvailableSpecialServiceRequest;
-use App\Http\Requests\Test\AvailableSpecial\AvailableSpecialServiceRTRequest;
-use App\Http\Requests\Test\AvailableSpecial\AvailableSpecialServiceTwoARequest;
+use App\Http\Requests\Soap\AvailableSpecial\AvailableSpecialServiceRequest;
 use App\Services\Soap\AvailableSpecialServiceBuilder;
-use Illuminate\Http\Request;
 
 class AvailableSpecialController extends Controller
 {

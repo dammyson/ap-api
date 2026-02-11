@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Soap;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\DividePNRBuilder;
-use App\Http\Requests\Test\DividePNR\DividePNRRequest;
+use App\Http\Requests\Soap\DividePNR\DividePNRRequest;
 
 class DividePNRController extends Controller
 {
