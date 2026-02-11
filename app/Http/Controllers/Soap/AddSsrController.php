@@ -129,54 +129,6 @@ class AddSsrController extends Controller
 
         try {
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dd($response);
-
-
-           
-            if ($ssrType == "select_seat") {
-                if (array_key_exists("detail", $response)) {
-                    if (array_key_exists("CraneFault", $response["detail"])){
-                        if (array_key_exists("code", $response["detail"]["CraneFault"])){
-                            if ($response["detail"]["CraneFault"]["code"] == "ASR_ADDING_SEAT_NOT_ALLOWED") {
-                                $message = "You are not allowed to add more seat for this passenger";
-                                return response()->json([
-                                    "error" => true,            
-                                    "message" => $message
-                                ], 400);
-                            
-                            }
-                        }
-                    }
-
-                    return response()->json([
-                        "error" => true,            
-                        "message" => "unable to select seat"
-                    ], 400);
-                }
-                
-                //    $specialServiceRequestList = $response['AddSsrResponse']['airBookingList']["airReservation"]["specialRequestDetails"]["specialServiceRequestList"];
-
-                // foreach ($specialServiceRequestList as $specialServiceRequest) {
-                //     if ($specialServiceRequest["SSR"]["code"] == "SEAT") {
-                //         return response()->json([
-                //                 "error" => false,
-                //                 "message" => "Seat Selected Successfully",
-                //                 'invoice_id' => $invoice->id,
-                //                 "amount" => $invoice->amount
-                //         ], 200);
-                //     }
-
-                // }
-
-                return response()->json([
-                    "error" => false,
-                    "message" => "Seat select successfully",
-                    'invoice_id' => $invoice->id,
-                    "amount" => $invoice->amount
-                ], 200);
-
-            }
-
           
             $message = "";
 
@@ -285,4 +237,66 @@ class AddSsrController extends Controller
             ], 500);
         }
     }
+
+    public function selectSeat(AddSsrRequest $request) {
+        $bookingId = $request->input('bookingReferenceIDID');
+        $passengerName = $request->input('passengerName');
+        $peaceId = $request->input('peaceId');
+        $user = $request->user();
+        
+        if ($user->is_guest) {            
+            $response = $this->handleGuestUser($bookingId, $passengerName);
+
+            if (!(isset($response['AirBookingResponse']))) {
+                return $this->unauthorizedResponse();
+            }
+
+        } else {
+            $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
+            if (!$booking) {
+               return $this->unauthorizedResponse();
+            }
+        }
+
+
+        $xml = $this->addSsrBuilder->addSsr(
+            $request
+        );
+        // dd($xml);
+
+        $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
+
+        $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            // dd($response);
+
+        if (array_key_exists("detail", $response)) {
+            if (array_key_exists("CraneFault", $response["detail"])){
+                if (array_key_exists("code", $response["detail"]["CraneFault"])){
+                    if ($response["detail"]["CraneFault"]["code"] == "ASR_ADDING_SEAT_NOT_ALLOWED") {
+                        $message = "You are not allowed to add more seat for this passenger";
+                        return response()->json([
+                            "error" => true,            
+                            "message" => $message
+                        ], 400);
+                    
+                    }
+                }
+            }
+
+            return response()->json([
+                "error" => true,            
+                "message" => "unable to select seat"
+            ], 400);
+        }
+                
+        
+
+        return response()->json([
+            "error" => false,
+            "message" => "Seat select successfully"
+           
+        ], 200);
+
+    }
+    
 }
