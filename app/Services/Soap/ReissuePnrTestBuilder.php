@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Soap;
 
+use App\Http\Requests\Soap\Reissue\ReissuePnrPreviewRequest;
 use App\Services\Utility\FlightNotes;
 
 class ReissuePnrTestBuilder {
@@ -16,145 +17,7 @@ class ReissuePnrTestBuilder {
     }
 
     public function reissuePnr(
-        $preferredCurrency,
-        $ID, 
-        $referenceID, 
-        $bookingClassCabinOne, 
-        $bookingClassResBookDesigCodeOne, 
-        $bookingClassResBookDesigQuantityOne, 
-        $bookignClassResBookDesigStatusCodeOne, 
-        $fareInfoCabinOne, 
-        $fareInfocabinClassCodeOne,
-        $fareInfoCabinAllowanceTypeOne,
-        $maxAllowedPiecesOne,
-        $unitOfMeasureCodeOne,
-        $weightOne,
-        $fareGroupNameOne,
-        $fareReferenceCodeOne,
-        $fareReferenceIDOne,
-        $fareReferenceNameOne,
-        $flightSegmentSequenceOne,
-        $portTaxOne,
-        $resBookDesigCodeOne,
-        $airlineCodeOne,
-        $airlinecompanyFullNameOne,
-        $arrivalAirportCityLocationCodeOne,
-        $arrivalAirportCityLocationNameOne,
-        $arrivalAirportLocationNameLanguageOne,
-        $arrivalAirportCountryLocationCodeOne,
-        $arrivalAirportCountryLocationNameOne,
-        $arrivalAirportCountryLocationNameLanguageOne,
-        $arrivalAirportCountryCurrencyCodeOne,
-        $arrivalAirportCodeContextOne,
-        $arrivalAirportLanguageOne,
-        $arrivalAirportLocationCodeOne,
-        $arrivalAirportLocationNameOne,
-        $arrivalAirportTimeZoneInfoOne,
-        $arrivalDateTimeOne,
-        $arrivalDateTimeUTCOne,
-        $departureAirportCityLocationCodeOne,
-        $departureAirportCityLocationNameOne,
-        $departureAirportCityLocationNameLanguage,
-        $departureAirportCountryLocationCodeOne,
-        $departureAirportCountryLocationNameOne,
-        $departureAirportCountryLocationNameLanguageOne,
-        $departureAirportCountryCodeOne,
-        $departureAirportCodeContextOne,
-        $departureAirportLanguageOne,
-        $departureAirportLocationCodeOne,
-        $departureAirportLocationNameOne,
-        $departureTimeZoneInfoOne,
-        $departureDateTimeOne,
-        $departureDateTimeUTCOne,
-        $flightNumberOne,
-        $flightSegmentIDOne,
-        $ondControlledOne,
-        $sectorOne,
-        $codeShareOne,
-        $distanceOne,
-        $equipmentAirEquipTypeOne,
-        $equipmentChangeOfGaugeOne,
-        $flightNotesOne,
-        $flownMileageQtyOne,
-        $iatciFlightOne,
-        $journeyDurationOne,
-        $onTimeRateOne,
-        $remarkOne,
-        $secureFlightDataRequiredOne,
-        $stopQuantityOne,
-        $ticketTypeOne,
-        $actionCodeTwo,
-        $addOnSegmentTwo,
-        $bookingClassCabinTwo,
-        $bookingCabinResBookDesigCodeTwo,
-        $bookingCabinResBookDesigQuantityTwo,
-        $fareInfoCabinTwo,
-        $fareInfoCabinClassCodeTwo,
-        $allowanceTypeTwo,
-        $maxAllowedPiecesTwo,
-        $unitOfMeasureCodeTwo,
-        $weightTwo,
-        $fareGroupNameTwo,
-        $fareReferenceCodeTwo,
-        $fareReferenceIDTwo,
-        $fareReferenceNameTwo,
-        $flightSegmentSequenceTwo,
-        $resBookDesigCodeTwo,
-        $airlineCodeTwo,
-        $airlineCodeContextTwo,
-        $arrivalAirportCityLocationCodeTwo,
-        $arrivalAirportCityLocationNameTwo,
-        $arrivalAirportCityLocationNameLanguageTwo,
-        $arrivalAirportCountryLocationCodeTwo,
-        $arrivalAirportCountryLocationNameTwo,
-        $arrivalAirportLocationNameLanguageTwo,
-        $arrivalAirportCountryCodeTwo,
-        $arrivalAirportCodeContextTwo,
-        $arrivalAirportLanguageTwo,
-        $arrivalAirportLocationCodeTwo,
-        $arrivalAirportLocationNameTwo,
-        $arrivalAirportTerminalTwo,
-        $arrivalAirportTimeZoneInfoTwo,
-        $arrivalDateTimeTwo,
-        $arrivalDateTimeUTCTwo,
-        $departureAirportCityLocationCodeTwo,
-        $departureAirportCityLocationNameTwo,
-        $departureAirportCityLocationNameLanguageTwo,
-        $departureAirportCountryLocationCodeTwo,
-        $departureAirportCountryLocationNameTwo,
-        $departureAirportLocationNameLanguageTwo,
-        $departureAirportCountryCurrencyCodeTwo,
-        $departureAirportCodeContextTwo,
-        $departureAirportLanguageTwo,
-        $departureAirportLocationCodeTwo,
-        $departureAirportLocationNameTwo,
-        $departureAirportTimeZoneInfoTwo,
-        $departureDateTimeTwo,
-        $departureDateTimeUTCTwo,
-        $flightNumberTwo,
-        $flightSegmentIDTwo,
-        $ondControlledTwo,
-        $sectorTwo,
-        $codeShareTwo,
-        $distanceTwo,
-        $equipmentAirEquipTypeTwo,
-        $equipmentChangeOfGaugeTwo,
-        $flightNotesTwo,
-        $flownMileageQtyTwo,
-        $iatciFlightTwo,
-        $journeyDurationTwo,
-        $onTimeRateTwo,
-        $remarkTwo,
-        $secureFlightDataRequiredTwo,
-        $segmentStatusByFirstLegTwo,
-        $stopQuantityTwo,
-        $involuntaryPermissionGivenTwo,
-        $legStatusTwo,
-        $referenceIDTwo,
-        $responseCodeTwo,
-        $sequenceNumberTwo,
-        $statusTwo
-
+        ReissuePnrPreviewRequest $request
     ) {
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -167,7 +30,7 @@ class ReissuePnrTestBuilder {
                         <member>false</member>
                         <password>'. htmlspecialchars($this->cranePassword, ENT_XML1, 'UTF-8') .'</password>
                         <userName>'. htmlspecialchars($this->craneUsername, ENT_XML1, 'UTF-8') .'</userName>
-                        <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
+                        <preferredCurrency>' . htmlspecialchars($request->input('preferredCurrency'), ENT_XML1, 'UTF-8') . '</preferredCurrency>
                     </clientInformation>
                     <bookingReferenceID>
                         <companyName>
@@ -178,111 +41,111 @@ class ReissuePnrTestBuilder {
                             <companyShortName>SCINTILLA</companyShortName>
                             <countryCode>NG</countryCode>
                         </companyName> 
-                        <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
-                        <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
+                        <ID>' . htmlspecialchars($request->input('ID'), ENT_XML1, 'UTF-8') . '</ID>
+                        <referenceID>' . htmlspecialchars($request->input('referenceID'), ENT_XML1, 'UTF-8') . '</referenceID>
                     </bookingReferenceID>
                     <newSegments>
                         <bookFlightSegment>
                             <addOnSegment/>
                             <bookingClass> 
-                                <cabin>' . htmlspecialchars($bookingClassCabinOne, ENT_XML1, 'UTF-8') . '</cabin>
-                                <resBookDesigCode>' . htmlspecialchars($bookingClassResBookDesigCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
-                                <resBookDesigQuantity>' . htmlspecialchars($bookingClassResBookDesigQuantityOne, ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
-                                <resBookDesigStatusCode>' . htmlspecialchars($bookignClassResBookDesigStatusCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigStatusCode>
+                                <cabin>' . htmlspecialchars($request->input('bookingClassCabinOne'), ENT_XML1, 'UTF-8') . '</cabin>
+                                <resBookDesigCode>' . htmlspecialchars($request->input('bookingClassResBookDesigCodeOne'), ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                                <resBookDesigQuantity>' . htmlspecialchars($request->input('bookingClassResBookDesigQuantityOne'), ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
+                                <resBookDesigStatusCode>' . htmlspecialchars($request->input('bookignClassResBookDesigStatusCodeOne'), ENT_XML1, 'UTF-8') . '</resBookDesigStatusCode>
                             </bookingClass>
                             <fareInfo> 
-                                <cabin>' . htmlspecialchars($fareInfoCabinOne, ENT_XML1, 'UTF-8') . '</cabin>
-                                <cabinClassCode>' . htmlspecialchars($fareInfocabinClassCodeOne, ENT_XML1, 'UTF-8') . '</cabinClassCode>
+                                <cabin>' . htmlspecialchars($request->input('fareInfoCabinOne'), ENT_XML1, 'UTF-8') . '</cabin>
+                                <cabinClassCode>' . htmlspecialchars($request->input('fareInfocabinClassCodeOne'), ENT_XML1, 'UTF-8') . '</cabinClassCode>
                                 <fareBaggageAllowance> 
-                                    <allowanceType>' . htmlspecialchars($fareInfoCabinAllowanceTypeOne, ENT_XML1, 'UTF-8') . '</allowanceType>
-                                    <maxAllowedPieces>' . htmlspecialchars($maxAllowedPiecesOne, ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
+                                    <allowanceType>' . htmlspecialchars($request->input('fareInfoCabinAllowanceTypeOne'), ENT_XML1, 'UTF-8') . '</allowanceType>
+                                    <maxAllowedPieces>' . htmlspecialchars($request->input('maxAllowedPiecesOne'), ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
                                     <maxAllowedWeight>
-                                        <unitOfMeasureCode>' . htmlspecialchars($unitOfMeasureCodeOne, ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
-                                        <weight>' . htmlspecialchars($weightOne, ENT_XML1, 'UTF-8') . '</weight>
+                                        <unitOfMeasureCode>' . htmlspecialchars($request->input('unitOfMeasureCodeOne'), ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
+                                        <weight>' . htmlspecialchars($request->input('weightOne'), ENT_XML1, 'UTF-8') . '</weight>
                                     </maxAllowedWeight>
                                 </fareBaggageAllowance>
-                                <fareGroupName>' . htmlspecialchars($fareGroupNameOne, ENT_XML1, 'UTF-8') . '</fareGroupName>
-                                <fareReferenceCode>' . htmlspecialchars($fareReferenceCodeOne, ENT_XML1, 'UTF-8') . '</fareReferenceCode>
-                                <fareReferenceID>' . htmlspecialchars($fareReferenceIDOne, ENT_XML1, 'UTF-8') . '</fareReferenceID>
-                                <fareReferenceName>' . htmlspecialchars($fareReferenceNameOne, ENT_XML1, 'UTF-8') . '</fareReferenceName>
-                                <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceOne, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                                <portTax>' . htmlspecialchars($portTaxOne, ENT_XML1, 'UTF-8') . '</portTax>
-                                <resBookDesigCode>' . htmlspecialchars($resBookDesigCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                                <fareGroupName>' . htmlspecialchars($request->input('fareGroupNameOne'), ENT_XML1, 'UTF-8') . '</fareGroupName>
+                                <fareReferenceCode>' . htmlspecialchars($request->input('fareReferenceCodeOne'), ENT_XML1, 'UTF-8') . '</fareReferenceCode>
+                                <fareReferenceID>' . htmlspecialchars($request->input('fareReferenceIDOne'), ENT_XML1, 'UTF-8') . '</fareReferenceID>
+                                <fareReferenceName>' . htmlspecialchars($request->input('fareReferenceNameOne'), ENT_XML1, 'UTF-8') . '</fareReferenceName>
+                                <flightSegmentSequence>' . htmlspecialchars($request->input('flightSegmentSequenceOne'), ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                                <portTax>' . htmlspecialchars($request->input('portTaxOne'), ENT_XML1, 'UTF-8') . '</portTax>
+                                <resBookDesigCode>' . htmlspecialchars($request->input('resBookDesigCodeOne'), ENT_XML1, 'UTF-8') . '</resBookDesigCode>
                             </fareInfo>
                             <flightSegment>
                                 <airline>
-                                    <code>' . htmlspecialchars($airlineCodeOne, ENT_XML1, 'UTF-8') . '</code>
-                                    <companyFullName>' . htmlspecialchars($airlinecompanyFullNameOne, ENT_XML1, 'UTF-8') . '</companyFullName>
+                                    <code>' . htmlspecialchars($request->input('airlineCodeOne'), ENT_XML1, 'UTF-8') . '</code>
+                                    <companyFullName>' . htmlspecialchars($request->input('airlinecompanyFullNameOne'), ENT_XML1, 'UTF-8') . '</companyFullName>
                                 </airline>
                                 <arrivalAirport>
                                     <cityInfo>
                                         <city>
-                                            <locationCode>' . htmlspecialchars($arrivalAirportCityLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($arrivalAirportCityLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($arrivalAirportLocationNameLanguageOne, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('arrivalAirportCityLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('arrivalAirportCityLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('arrivalAirportLocationNameLanguageOne'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                         </city>
                                         <country>
-                                            <locationCode>' . htmlspecialchars($arrivalAirportCountryLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($arrivalAirportCountryLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($arrivalAirportCountryLocationNameLanguageOne, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('arrivalAirportCountryLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('arrivalAirportCountryLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('arrivalAirportCountryLocationNameLanguageOne'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                             <currency>
-                                                <code>' . htmlspecialchars($arrivalAirportCountryCurrencyCodeOne, ENT_XML1, 'UTF-8') . '</code>
+                                                <code>' . htmlspecialchars($request->input('arrivalAirportCountryCurrencyCodeOne'), ENT_XML1, 'UTF-8') . '</code>
                                             </currency>
                                         </country>
                                     </cityInfo>
-                                    <codeContext>' . htmlspecialchars($arrivalAirportCodeContextOne, ENT_XML1, 'UTF-8') . '</codeContext>
-                                    <language>' . htmlspecialchars($arrivalAirportLanguageOne, ENT_XML1, 'UTF-8') . '</language>
-                                    <locationCode>' . htmlspecialchars($arrivalAirportLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                    <locationName>' . htmlspecialchars($arrivalAirportLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                    <timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfoOne, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                    <codeContext>' . htmlspecialchars($request->input('arrivalAirportCodeContextOne'), ENT_XML1, 'UTF-8') . '</codeContext>
+                                    <language>' . htmlspecialchars($request->input('arrivalAirportLanguageOne'), ENT_XML1, 'UTF-8') . '</language>
+                                    <locationCode>' . htmlspecialchars($request->input('arrivalAirportLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                    <locationName>' . htmlspecialchars($request->input('arrivalAirportLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                    <timeZoneInfo>' . htmlspecialchars($request->input('arrivalAirportTimeZoneInfoOne'), ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                                 </arrivalAirport>
-                                <arrivalDateTime>' . htmlspecialchars($arrivalDateTimeOne, ENT_XML1, 'UTF-8') . '</arrivalDateTime>
-                                <arrivalDateTimeUTC>' . htmlspecialchars($arrivalDateTimeUTCOne, ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
+                                <arrivalDateTime>' . htmlspecialchars($request->input('arrivalDateTimeOne'), ENT_XML1, 'UTF-8') . '</arrivalDateTime>
+                                <arrivalDateTimeUTC>' . htmlspecialchars($request->input('arrivalDateTimeUTCOne'), ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
                                 <departureAirport>
                                     <cityInfo>
                                         <city>
-                                            <locationCode>' . htmlspecialchars($departureAirportCityLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($departureAirportCityLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($departureAirportCityLocationNameLanguage, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('departureAirportCityLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('departureAirportCityLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('departureAirportCityLocationNameLanguage'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                         </city>
                                         <country>
-                                            <locationCode>' . htmlspecialchars($departureAirportCountryLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($departureAirportCountryLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($departureAirportCountryLocationNameLanguageOne, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('departureAirportCountryLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('departureAirportCountryLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('departureAirportCountryLocationNameLanguageOne'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                             <currency>
-                                            <code>' . htmlspecialchars($departureAirportCountryCodeOne, ENT_XML1, 'UTF-8') . '</code>
+                                            <code>' . htmlspecialchars($request->input('departureAirportCountryCodeOne'), ENT_XML1, 'UTF-8') . '</code>
                                             </currency>
                                         </country>
                                     </cityInfo>
-                                    <codeContext>' . htmlspecialchars($departureAirportCodeContextOne, ENT_XML1, 'UTF-8') . '</codeContext>
-                                    <language>' . htmlspecialchars($departureAirportLanguageOne, ENT_XML1, 'UTF-8') . '</language>
-                                    <locationCode>' . htmlspecialchars($departureAirportLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                    <locationName>' . htmlspecialchars($departureAirportLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                    <timeZoneInfo>' . htmlspecialchars($departureTimeZoneInfoOne, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                    <codeContext>' . htmlspecialchars($request->input('departureAirportCodeContextOne'), ENT_XML1, 'UTF-8') . '</codeContext>
+                                    <language>' . htmlspecialchars($request->input('departureAirportLanguageOne'), ENT_XML1, 'UTF-8') . '</language>
+                                    <locationCode>' . htmlspecialchars($request->input('departureAirportLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                    <locationName>' . htmlspecialchars($request->input('departureAirportLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                    <timeZoneInfo>' . htmlspecialchars($request->input('departureTimeZoneInfoOne'), ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                                 </departureAirport>
-                                <departureDateTime>' . htmlspecialchars($departureDateTimeOne, ENT_XML1, 'UTF-8') . '</departureDateTime>
-                                <departureDateTimeUTC>' . htmlspecialchars($departureDateTimeUTCOne, ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
-                                <flightNumber>' . htmlspecialchars($flightNumberOne, ENT_XML1, 'UTF-8') . '</flightNumber>
-                                <flightSegmentID>' . htmlspecialchars($flightSegmentIDOne, ENT_XML1, 'UTF-8') . '</flightSegmentID>
-                                <ondControlled>' . htmlspecialchars($ondControlledOne, ENT_XML1, 'UTF-8') . '</ondControlled>
-                                <sector>' . htmlspecialchars($sectorOne, ENT_XML1, 'UTF-8') . '</sector>
-                                <codeshare>' . htmlspecialchars($codeShareOne, ENT_XML1, 'UTF-8') . '</codeshare>
-                                <distance>' . htmlspecialchars($distanceOne, ENT_XML1, 'UTF-8') . '</distance>
+                                <departureDateTime>' . htmlspecialchars($request->input('departureDateTimeOne'), ENT_XML1, 'UTF-8') . '</departureDateTime>
+                                <departureDateTimeUTC>' . htmlspecialchars($request->input('departureDateTimeUTCOne'), ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
+                                <flightNumber>' . htmlspecialchars($request->input('flightNumberOne'), ENT_XML1, 'UTF-8') . '</flightNumber>
+                                <flightSegmentID>' . htmlspecialchars($request->input('flightSegmentIDOne'), ENT_XML1, 'UTF-8') . '</flightSegmentID>
+                                <ondControlled>' . htmlspecialchars($request->input('ondControlledOne'), ENT_XML1, 'UTF-8') . '</ondControlled>
+                                <sector>' . htmlspecialchars($request->input('sectorOne'), ENT_XML1, 'UTF-8') . '</sector>
+                                <codeshare>' . htmlspecialchars($request->input('codeShareOne'), ENT_XML1, 'UTF-8') . '</codeshare>
+                                <distance>' . htmlspecialchars($request->input('distanceOne'), ENT_XML1, 'UTF-8') . '</distance>
                                 <equipment>
-                                    <airEquipType>' . htmlspecialchars($equipmentAirEquipTypeOne, ENT_XML1, 'UTF-8') . '</airEquipType>
-                                    <changeofGauge>' . htmlspecialchars($equipmentChangeOfGaugeOne, ENT_XML1, 'UTF-8') . '</changeofGauge>
+                                    <airEquipType>' . htmlspecialchars($request->input('equipmentAirEquipTypeOne'), ENT_XML1, 'UTF-8') . '</airEquipType>
+                                    <changeofGauge>' . htmlspecialchars($request->input('equipmentChangeOfGaugeOne'), ENT_XML1, 'UTF-8') . '</changeofGauge>
                                 </equipment>'.
                                 
-                                $this->flightNotes->flightNotesArray($flightNotesOne)
+                                $this->flightNotes->flightNotesArray($request->input('flightNotesOne'))
 
-                                .'<flownMileageQty>' . htmlspecialchars($flownMileageQtyOne, ENT_XML1, 'UTF-8') . '</flownMileageQty>
-                                <iatciFlight>' . htmlspecialchars($iatciFlightOne, ENT_XML1, 'UTF-8') . '</iatciFlight>
-                                <journeyDuration>' . htmlspecialchars($journeyDurationOne, ENT_XML1, 'UTF-8') . '</journeyDuration>
-                                <onTimeRate>' . htmlspecialchars($onTimeRateOne, ENT_XML1, 'UTF-8') . '</onTimeRate>
-                                <remark>' . htmlspecialchars($remarkOne, ENT_XML1, 'UTF-8') . '</remark>
-                                <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequiredOne, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
-                                <stopQuantity>' . htmlspecialchars($stopQuantityOne, ENT_XML1, 'UTF-8') . '</stopQuantity>
-                                <ticketType>' . htmlspecialchars($ticketTypeOne, ENT_XML1, 'UTF-8') . '</ticketType>
+                                .'<flownMileageQty>' . htmlspecialchars($request->input('flownMileageQtyOne'), ENT_XML1, 'UTF-8') . '</flownMileageQty>
+                                <iatciFlight>' . htmlspecialchars($request->input('iatciFlightOne'), ENT_XML1, 'UTF-8') . '</iatciFlight>
+                                <journeyDuration>' . htmlspecialchars($request->input('journeyDurationOne'), ENT_XML1, 'UTF-8') . '</journeyDuration>
+                                <onTimeRate>' . htmlspecialchars($request->input('onTimeRateOne'), ENT_XML1, 'UTF-8') . '</onTimeRate>
+                                <remark>' . htmlspecialchars($request->input('remarkOne'), ENT_XML1, 'UTF-8') . '</remark>
+                                <secureFlightDataRequired>' . htmlspecialchars($request->input('secureFlightDataRequiredOne'), ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
+                                <stopQuantity>' . htmlspecialchars($request->input('stopQuantityOne'), ENT_XML1, 'UTF-8') . '</stopQuantity>
+                                <ticketType>' . htmlspecialchars($request->input('ticketTypeOne'), ENT_XML1, 'UTF-8') . '</ticketType>
                             </flightSegment>
                             <involuntaryPermissionGiven/>
                             <sequenceNumber/>
@@ -291,113 +154,113 @@ class ReissuePnrTestBuilder {
                     <oldSegments>
                         <!-- Zero or more repetitions: -->
                         <bookFlightSegment>
-                            <actionCode>' . htmlspecialchars($actionCodeTwo, ENT_XML1, 'UTF-8') . '</actionCode>
-                            <addOnSegment>' . htmlspecialchars($addOnSegmentTwo, ENT_XML1, 'UTF-8') . '</addOnSegment>
+                            <actionCode>' . htmlspecialchars($request->input('actionCodeTwo'), ENT_XML1, 'UTF-8') . '</actionCode>
+                            <addOnSegment>' . htmlspecialchars($request->input('addOnSegmentTwo'), ENT_XML1, 'UTF-8') . '</addOnSegment>
                             <bookingClass>
-                                <cabin>' . htmlspecialchars($bookingClassCabinTwo, ENT_XML1, 'UTF-8') . '</cabin>
-                                <resBookDesigCode>' . htmlspecialchars($bookingCabinResBookDesigCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
-                                <resBookDesigQuantity>' . htmlspecialchars($bookingCabinResBookDesigQuantityTwo, ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
+                                <cabin>' . htmlspecialchars($request->input('bookingClassCabinTwo'), ENT_XML1, 'UTF-8') . '</cabin>
+                                <resBookDesigCode>' . htmlspecialchars($request->input('bookingCabinResBookDesigCodeTwo'), ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                                <resBookDesigQuantity>' . htmlspecialchars($request->input('bookingCabinResBookDesigQuantityTwo'), ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
                             </bookingClass>
                             <fareInfo>
-                                <cabin>' . htmlspecialchars($fareInfoCabinTwo, ENT_XML1, 'UTF-8') . '</cabin>
-                                <cabinClassCode>' . htmlspecialchars($fareInfoCabinClassCodeTwo, ENT_XML1, 'UTF-8') . '</cabinClassCode>
+                                <cabin>' . htmlspecialchars($request->input('fareInfoCabinTwo'), ENT_XML1, 'UTF-8') . '</cabin>
+                                <cabinClassCode>' . htmlspecialchars($request->input('fareInfoCabinClassCodeTwo'), ENT_XML1, 'UTF-8') . '</cabinClassCode>
                                 <fareBaggageAllowance>
-                                    <allowanceType>' . htmlspecialchars($allowanceTypeTwo, ENT_XML1, 'UTF-8') . '</allowanceType>
-                                    <maxAllowedPieces>' . htmlspecialchars($maxAllowedPiecesTwo, ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
+                                    <allowanceType>' . htmlspecialchars($request->input('allowanceTypeTwo'), ENT_XML1, 'UTF-8') . '</allowanceType>
+                                    <maxAllowedPieces>' . htmlspecialchars($request->input('maxAllowedPiecesTwo'), ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
                                     <maxAllowedWeight>
-                                        <unitOfMeasureCode>' . htmlspecialchars($unitOfMeasureCodeTwo, ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
-                                        <weight>' . htmlspecialchars($weightTwo, ENT_XML1, 'UTF-8') . '</weight>
+                                        <unitOfMeasureCode>' . htmlspecialchars($request->input('unitOfMeasureCodeTwo'), ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
+                                        <weight>' . htmlspecialchars($request->input('weightTwo'), ENT_XML1, 'UTF-8') . '</weight>
                                     </maxAllowedWeight>
                                 </fareBaggageAllowance>
-                                <fareGroupName>' . htmlspecialchars($fareGroupNameTwo, ENT_XML1, 'UTF-8') . '</fareGroupName>
-                                <fareReferenceCode>' . htmlspecialchars($fareReferenceCodeTwo, ENT_XML1, 'UTF-8') . '</fareReferenceCode>
-                                <fareReferenceID>' . htmlspecialchars($fareReferenceIDTwo, ENT_XML1, 'UTF-8') . '</fareReferenceID>
-                                <fareReferenceName>' . htmlspecialchars($fareReferenceNameTwo, ENT_XML1, 'UTF-8') . '</fareReferenceName>
-                                <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceTwo, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                                <resBookDesigCode>' . htmlspecialchars($resBookDesigCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                                <fareGroupName>' . htmlspecialchars($request->input('fareGroupNameTwo'), ENT_XML1, 'UTF-8') . '</fareGroupName>
+                                <fareReferenceCode>' . htmlspecialchars($request->input('fareReferenceCodeTwo'), ENT_XML1, 'UTF-8') . '</fareReferenceCode>
+                                <fareReferenceID>' . htmlspecialchars($request->input('fareReferenceIDTwo'), ENT_XML1, 'UTF-8') . '</fareReferenceID>
+                                <fareReferenceName>' . htmlspecialchars($request->input('fareReferenceNameTwo'), ENT_XML1, 'UTF-8') . '</fareReferenceName>
+                                <flightSegmentSequence>' . htmlspecialchars($request->input('flightSegmentSequenceTwo'), ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                                <resBookDesigCode>' . htmlspecialchars($request->input('resBookDesigCodeTwo'), ENT_XML1, 'UTF-8') . '</resBookDesigCode>
                             </fareInfo>
                             <flightSegment>
                                 <airline>
-                                    <code>' . htmlspecialchars($airlineCodeTwo, ENT_XML1, 'UTF-8') . '</code>
-                                    <codeContext>' . htmlspecialchars($airlineCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
+                                    <code>' . htmlspecialchars($request->input('airlineCodeTwo'), ENT_XML1, 'UTF-8') . '</code>
+                                    <codeContext>' . htmlspecialchars($request->input('airlineCodeContextTwo'), ENT_XML1, 'UTF-8') . '</codeContext>
                                 </airline>
                                 <arrivalAirport>
                                     <cityInfo>
                                         <city>
-                                            <locationCode>' . htmlspecialchars($arrivalAirportCityLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($arrivalAirportCityLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($arrivalAirportCityLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('arrivalAirportCityLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('arrivalAirportCityLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('arrivalAirportCityLocationNameLanguageTwo'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                         </city>
                                         <country>
-                                            <locationCode>' . htmlspecialchars($arrivalAirportCountryLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($arrivalAirportCountryLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($arrivalAirportLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('arrivalAirportCountryLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('arrivalAirportCountryLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('arrivalAirportLocationNameLanguageTwo'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                             <currency>
-                                            <code>' . htmlspecialchars($arrivalAirportCountryCodeTwo, ENT_XML1, 'UTF-8') . '</code>
+                                            <code>' . htmlspecialchars($request->input('arrivalAirportCountryCodeTwo'), ENT_XML1, 'UTF-8') . '</code>
                                             </currency>
                                         </country>
                                     </cityInfo>
-                                    <codeContext>' . htmlspecialchars($arrivalAirportCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
-                                    <language>' . htmlspecialchars($arrivalAirportLanguageTwo, ENT_XML1, 'UTF-8') . '</language>
-                                    <locationCode>' . htmlspecialchars($arrivalAirportLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                    <locationName>' . htmlspecialchars($arrivalAirportLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                    <terminal>' . htmlspecialchars($arrivalAirportTerminalTwo, ENT_XML1, 'UTF-8') . '</terminal>
-                                    <timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfoTwo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                    <codeContext>' . htmlspecialchars($request->input('arrivalAirportCodeContextTwo'), ENT_XML1, 'UTF-8') . '</codeContext>
+                                    <language>' . htmlspecialchars($request->input('arrivalAirportLanguageTwo'), ENT_XML1, 'UTF-8') . '</language>
+                                    <locationCode>' . htmlspecialchars($request->input('arrivalAirportLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                    <locationName>' . htmlspecialchars($request->input('arrivalAirportLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                    <terminal>' . htmlspecialchars($request->input('arrivalAirportTerminalTwo'), ENT_XML1, 'UTF-8') . '</terminal>
+                                    <timeZoneInfo>' . htmlspecialchars($request->input('arrivalAirportTimeZoneInfoTwo'), ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                                 </arrivalAirport>
-                                <arrivalDateTime>' . htmlspecialchars($arrivalDateTimeTwo, ENT_XML1, 'UTF-8') . '</arrivalDateTime>
-                                <arrivalDateTimeUTC>' . htmlspecialchars($arrivalDateTimeUTCTwo, ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
+                                <arrivalDateTime>' . htmlspecialchars($request->input('arrivalDateTimeTwo'), ENT_XML1, 'UTF-8') . '</arrivalDateTime>
+                                <arrivalDateTimeUTC>' . htmlspecialchars($request->input('arrivalDateTimeUTCTwo'), ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
                                 <departureAirport>
                                     <cityInfo>
                                         <city>
-                                            <locationCode>' . htmlspecialchars($departureAirportCityLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($departureAirportCityLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($departureAirportCityLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('departureAirportCityLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('departureAirportCityLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('departureAirportCityLocationNameLanguageTwo'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                         </city>
                                         <country>
-                                            <locationCode>' . htmlspecialchars($departureAirportCountryLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($departureAirportCountryLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($departureAirportLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('departureAirportCountryLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('departureAirportCountryLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('departureAirportLocationNameLanguageTwo'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                             <currency>
-                                                <code>' . htmlspecialchars($departureAirportCountryCurrencyCodeTwo, ENT_XML1, 'UTF-8') . '</code>
+                                                <code>' . htmlspecialchars($request->input('departureAirportCountryCurrencyCodeTwo'), ENT_XML1, 'UTF-8') . '</code>
                                             </currency>
                                         </country>
                                     </cityInfo>
-                                    <codeContext>' . htmlspecialchars($departureAirportCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
-                                    <language>' . htmlspecialchars($departureAirportLanguageTwo, ENT_XML1, 'UTF-8') . '</language>
-                                    <locationCode>' . htmlspecialchars($departureAirportLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                    <locationName>' . htmlspecialchars($departureAirportLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                    <timeZoneInfo>' . htmlspecialchars($departureAirportTimeZoneInfoTwo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                    <codeContext>' . htmlspecialchars($request->input('departureAirportCodeContextTwo'), ENT_XML1, 'UTF-8') . '</codeContext>
+                                    <language>' . htmlspecialchars($request->input('departureAirportLanguageTwo'), ENT_XML1, 'UTF-8') . '</language>
+                                    <locationCode>' . htmlspecialchars($request->input('departureAirportLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                    <locationName>' . htmlspecialchars($request->input('departureAirportLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                    <timeZoneInfo>' . htmlspecialchars($request->input('departureAirportTimeZoneInfoTwo'), ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                                 </departureAirport>
-                                <departureDateTime>' . htmlspecialchars($departureDateTimeTwo, ENT_XML1, 'UTF-8') . '</departureDateTime>
-                                <departureDateTimeUTC>' . htmlspecialchars($departureDateTimeUTCTwo, ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
-                                <flightNumber>' . htmlspecialchars($flightNumberTwo, ENT_XML1, 'UTF-8') . '</flightNumber>
-                                <flightSegmentID>' . htmlspecialchars($flightSegmentIDTwo, ENT_XML1, 'UTF-8') . '</flightSegmentID>
-                                <ondControlled>' . htmlspecialchars($ondControlledTwo, ENT_XML1, 'UTF-8') . '</ondControlled>
-                                <sector>' . htmlspecialchars($sectorTwo, ENT_XML1, 'UTF-8') . '</sector>
-                                <codeshare>' . htmlspecialchars($codeShareTwo, ENT_XML1, 'UTF-8') . '</codeshare>
-                                <distance>' . htmlspecialchars($distanceTwo, ENT_XML1, 'UTF-8') . '</distance>
+                                <departureDateTime>' . htmlspecialchars($request->input('departureDateTimeTwo'), ENT_XML1, 'UTF-8') . '</departureDateTime>
+                                <departureDateTimeUTC>' . htmlspecialchars($request->input('departureDateTimeUTCTwo'), ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
+                                <flightNumber>' . htmlspecialchars($request->input('flightNumberTwo'), ENT_XML1, 'UTF-8') . '</flightNumber>
+                                <flightSegmentID>' . htmlspecialchars($request->input('flightSegmentIDTwo'), ENT_XML1, 'UTF-8') . '</flightSegmentID>
+                                <ondControlled>' . htmlspecialchars($request->input('ondControlledTwo'), ENT_XML1, 'UTF-8') . '</ondControlled>
+                                <sector>' . htmlspecialchars($request->input('sectorTwo'), ENT_XML1, 'UTF-8') . '</sector>
+                                <codeshare>' . htmlspecialchars($request->input('codeShareTwo'), ENT_XML1, 'UTF-8') . '</codeshare>
+                                <distance>' . htmlspecialchars($request->input('distanceTwo'), ENT_XML1, 'UTF-8') . '</distance>
                                 <equipment>
-                                    <airEquipType>' . htmlspecialchars($equipmentAirEquipTypeTwo, ENT_XML1, 'UTF-8') . '</airEquipType>
-                                    <changeofGauge>' . htmlspecialchars($equipmentChangeOfGaugeTwo, ENT_XML1, 'UTF-8') . '</changeofGauge>
+                                    <airEquipType>' . htmlspecialchars($request->input('equipmentAirEquipTypeTwo'), ENT_XML1, 'UTF-8') . '</airEquipType>
+                                    <changeofGauge>' . htmlspecialchars($request->input('equipmentChangeOfGaugeTwo'), ENT_XML1, 'UTF-8') . '</changeofGauge>
                                 </equipment>'.
                                     
-                                    $this->flightNotes->flightNotesArray($flightNotesTwo)
+                                    $this->flightNotes->flightNotesArray($request->input('flightNotesTwo'))
 
-                                .'<flownMileageQty>' . htmlspecialchars($flownMileageQtyTwo, ENT_XML1, 'UTF-8') . '</flownMileageQty>
-                                <iatciFlight>' . htmlspecialchars($iatciFlightTwo, ENT_XML1, 'UTF-8') . '</iatciFlight>
-                                <journeyDuration>' . htmlspecialchars($journeyDurationTwo, ENT_XML1, 'UTF-8') . '</journeyDuration>
-                                <onTimeRate>' . htmlspecialchars($onTimeRateTwo, ENT_XML1, 'UTF-8') . '</onTimeRate>
-                                <remark>' . htmlspecialchars($remarkTwo, ENT_XML1, 'UTF-8') . '</remark>
-                                <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequiredTwo, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
-                                <segmentStatusByFirstLeg>' . htmlspecialchars($segmentStatusByFirstLegTwo, ENT_XML1, 'UTF-8') . '</segmentStatusByFirstLeg>
-                                <stopQuantity>' . htmlspecialchars($stopQuantityTwo, ENT_XML1, 'UTF-8') . '</stopQuantity>
+                                .'<flownMileageQty>' . htmlspecialchars($request->input('flownMileageQtyTwo'), ENT_XML1, 'UTF-8') . '</flownMileageQty>
+                                <iatciFlight>' . htmlspecialchars($request->input('iatciFlightTwo'), ENT_XML1, 'UTF-8') . '</iatciFlight>
+                                <journeyDuration>' . htmlspecialchars($request->input('journeyDurationTwo'), ENT_XML1, 'UTF-8') . '</journeyDuration>
+                                <onTimeRate>' . htmlspecialchars($request->input('onTimeRateTwo'), ENT_XML1, 'UTF-8') . '</onTimeRate>
+                                <remark>' . htmlspecialchars($request->input('remarkTwo'), ENT_XML1, 'UTF-8') . '</remark>
+                                <secureFlightDataRequired>' . htmlspecialchars($request->input('secureFlightDataRequiredTwo'), ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
+                                <segmentStatusByFirstLeg>' . htmlspecialchars($request->input('segmentStatusByFirstLegTwo'), ENT_XML1, 'UTF-8') . '</segmentStatusByFirstLeg>
+                                <stopQuantity>' . htmlspecialchars($request->input('stopQuantityTwo'), ENT_XML1, 'UTF-8') . '</stopQuantity>
                             </flightSegment>
-                            <involuntaryPermissionGiven>' . htmlspecialchars($involuntaryPermissionGivenTwo, ENT_XML1, 'UTF-8') . '</involuntaryPermissionGiven>
-                            <legStatus>' . htmlspecialchars($legStatusTwo, ENT_XML1, 'UTF-8') . '</legStatus>
-                            <referenceID>' . htmlspecialchars($referenceIDTwo, ENT_XML1, 'UTF-8') . '</referenceID>
-                            <responseCode>' . htmlspecialchars($responseCodeTwo, ENT_XML1, 'UTF-8') . '</responseCode>
-                            <sequenceNumber>' . htmlspecialchars($sequenceNumberTwo, ENT_XML1, 'UTF-8') . '</sequenceNumber>
-                            <status>' . htmlspecialchars($statusTwo, ENT_XML1, 'UTF-8') . '</status>
+                            <involuntaryPermissionGiven>' . htmlspecialchars($request->input('involuntaryPermissionGivenTwo'), ENT_XML1, 'UTF-8') . '</involuntaryPermissionGiven>
+                            <legStatus>' . htmlspecialchars($request->input('legStatusTwo'), ENT_XML1, 'UTF-8') . '</legStatus>
+                            <referenceID>' . htmlspecialchars($request->input('referenceIDTwo'), ENT_XML1, 'UTF-8') . '</referenceID>
+                            <responseCode>' . htmlspecialchars($request->input('responseCodeTwo'), ENT_XML1, 'UTF-8') . '</responseCode>
+                            <sequenceNumber>' . htmlspecialchars($request->input('sequenceNumberTwo'), ENT_XML1, 'UTF-8') . '</sequenceNumber>
+                            <status>' . htmlspecialchars($request->input('statusTwo'), ENT_XML1, 'UTF-8') . '</status>
                         </bookFlightSegment>
                     </oldSegments>
                 </ReissuePnrPreviewRequest>
@@ -587,146 +450,22 @@ class ReissuePnrTestBuilder {
     }
     */
 
+    public function checkCurrency($preferredCurrency) {
+         if ($preferredCurrency == "NGN") {
+            return '<MCONumber>4010026732</MCONumber>';
+         }
+         else if ($preferredCurrency == "USD") {
+            return '<MCONumber>4010026733</MCONumber>';
+         }
+         else if ($preferredCurrency == "GBP") {
+            return '<MCONumber>4010026734</MCONumber>';
+         }
+      }
+
     public function reissuePnrCommit (
-        $preferredCurrency,
-        $paidAmount,
-        $ID, 
-        $referenceID, 
-        $bookingClassCabinOne, 
-        $bookingClassResBookDesigCodeOne, 
-        $bookingClassResBookDesigQuantityOne, 
-        $bookignClassResBookDesigStatusCodeOne, 
-        $fareInfoCabinOne, 
-        $fareInfocabinClassCodeOne,
-        $fareInfoCabinAllowanceTypeOne,
-        $maxAllowedPiecesOne,
-        $unitOfMeasureCodeOne,
-        $weightOne,
-        $fareGroupNameOne,
-        $fareReferenceCodeOne,
-        $fareReferenceIDOne,
-        $fareReferenceNameOne,
-        $flightSegmentSequenceOne,
-        $portTaxOne,
-        $resBookDesigCodeOne,
-        $airlineCodeOne,
-        $airlinecompanyFullNameOne,
-        $arrivalAirportCityLocationCodeOne,
-        $arrivalAirportCityLocationNameOne,
-        $arrivalAirportLocationNameLanguageOne,
-        $arrivalAirportCountryLocationCodeOne,
-        $arrivalAirportCountryLocationNameOne,
-        $arrivalAirportCountryLocationNameLanguageOne,
-        $arrivalAirportCountryCurrencyCodeOne,
-        $arrivalAirportCodeContextOne,
-        $arrivalAirportLanguageOne,
-        $arrivalAirportLocationCodeOne,
-        $arrivalAirportLocationNameOne,
-        $arrivalAirportTimeZoneInfoOne,
-        $arrivalDateTimeOne,
-        $arrivalDateTimeUTCOne,
-        $departureAirportCityLocationCodeOne,
-        $departureAirportCityLocationNameOne,
-        $departureAirportCityLocationNameLanguage,
-        $departureAirportCountryLocationCodeOne,
-        $departureAirportCountryLocationNameOne,
-        $departureAirportCountryLocationNameLanguageOne,
-        $departureAirportCountryCodeOne,
-        $departureAirportCodeContextOne,
-        $departureAirportLanguageOne,
-        $departureAirportLocationCodeOne,
-        $departureAirportLocationNameOne,
-        $departureTimeZoneInfoOne,
-        $departureDateTimeOne,
-        $departureDateTimeUTCOne,
-        $flightNumberOne,
-        $flightSegmentIDOne,
-        $ondControlledOne,
-        $sectorOne,
-        $codeShareOne,
-        $distanceOne,
-        $equipmentAirEquipTypeOne,
-        $equipmentChangeOfGaugeOne,
-        $flightNotesOne,
-        $flownMileageQtyOne,
-        $iatciFlightOne,
-        $journeyDurationOne,
-        $onTimeRateOne,
-        $remarkOne,
-        $secureFlightDataRequiredOne,
-        $stopQuantityOne,
-        $ticketTypeOne,
-        $actionCodeTwo,
-        $addOnSegmentTwo,
-        $bookingClassCabinTwo,
-        $bookingCabinResBookDesigCodeTwo,
-        $bookingCabinResBookDesigQuantityTwo,
-        $fareInfoCabinTwo,
-        $fareInfoCabinClassCodeTwo,
-        $allowanceTypeTwo,
-        $maxAllowedPiecesTwo,
-        $unitOfMeasureCodeTwo,
-        $weightTwo,
-        $fareGroupNameTwo,
-        $fareReferenceCodeTwo,
-        $fareReferenceIDTwo,
-        $fareReferenceNameTwo,
-        $flightSegmentSequenceTwo,
-        $resBookDesigCodeTwo,
-        $airlineCodeTwo,
-        $airlineCodeContextTwo,
-        $arrivalAirportCityLocationCodeTwo,
-        $arrivalAirportCityLocationNameTwo,
-        $arrivalAirportCityLocationNameLanguageTwo,
-        $arrivalAirportCountryLocationCodeTwo,
-        $arrivalAirportCountryLocationNameTwo,
-        $arrivalAirportLocationNameLanguageTwo,
-        $arrivalAirportCountryCodeTwo,
-        $arrivalAirportCodeContextTwo,
-        $arrivalAirportLanguageTwo,
-        $arrivalAirportLocationCodeTwo,
-        $arrivalAirportLocationNameTwo,
-        $arrivalAirportTerminalTwo,
-        $arrivalAirportTimeZoneInfoTwo,
-        $arrivalDateTimeTwo,
-        $arrivalDateTimeUTCTwo,
-        $departureAirportCityLocationCodeTwo,
-        $departureAirportCityLocationNameTwo,
-        $departureAirportCityLocationNameLanguageTwo,
-        $departureAirportCountryLocationCodeTwo,
-        $departureAirportCountryLocationNameTwo,
-        $departureAirportLocationNameLanguageTwo,
-        $departureAirportCountryCurrencyCodeTwo,
-        $departureAirportCodeContextTwo,
-        $departureAirportLanguageTwo,
-        $departureAirportLocationCodeTwo,
-        $departureAirportLocationNameTwo,
-        $departureAirportTimeZoneInfoTwo,
-        $departureDateTimeTwo,
-        $departureDateTimeUTCTwo,
-        $flightNumberTwo,
-        $flightSegmentIDTwo,
-        $ondControlledTwo,
-        $sectorTwo,
-        $codeShareTwo,
-        $distanceTwo,
-        $equipmentAirEquipTypeTwo,
-        $equipmentChangeOfGaugeTwo,
-        $flightNotesTwo,
-        $flownMileageQtyTwo,
-        $iatciFlightTwo,
-        $journeyDurationTwo,
-        $onTimeRateTwo,
-        $remarkTwo,
-        $secureFlightDataRequiredTwo,
-        $segmentStatusByFirstLegTwo,
-        $stopQuantityTwo,
-        $involuntaryPermissionGivenTwo,
-        $legStatusTwo,
-        $referenceIDTwo,
-        $responseCodeTwo,
-        $sequenceNumberTwo,
-        $statusTwo
+       ReissuePnrPreviewRequest $request,
+       $paidAmount,
+       $preferredCurrency
     ) {
         
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>
@@ -752,8 +491,8 @@ class ReissuePnrTestBuilder {
                             <companyShortName>SCINTILLA</companyShortName>
                             <countryCode>NG</countryCode>
                         </companyName> 
-                        <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
-                        <referenceID>' . htmlspecialchars($referenceID, ENT_XML1, 'UTF-8') . '</referenceID>
+                        <ID>' . htmlspecialchars($request->input('ID'), ENT_XML1, 'UTF-8') . '</ID>
+                        <referenceID>' . htmlspecialchars($request->input('referenceID'), ENT_XML1, 'UTF-8') . '</referenceID>
                     </bookingReferenceID>
                     <fullfillment>
                         <paymentDetails>
@@ -763,8 +502,9 @@ class ReissuePnrTestBuilder {
                                     <capturePaymentToolNumber>false</capturePaymentToolNumber>
                                     <paymentCode>INV</paymentCode>
                                     <threeDomainSecurityEligible>false</threeDomainSecurityEligible>
-                                    <transactionFeeApplies/>
-                                    <MCONumber>4010026732</MCONumber>
+                                    <transactionFeeApplies/>'.
+                                 $this->checkCurrency($preferredCurrency)
+                              .'
                                 </miscChargeOrder>
                                 <payLater/>
                                 <paymentAmount>
@@ -783,104 +523,104 @@ class ReissuePnrTestBuilder {
                         <bookFlightSegment>
                             <addOnSegment/>
                             <bookingClass> 
-                                <cabin>' . htmlspecialchars($bookingClassCabinOne, ENT_XML1, 'UTF-8') . '</cabin>
-                                <resBookDesigCode>' . htmlspecialchars($bookingClassResBookDesigCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
-                                <resBookDesigQuantity>' . htmlspecialchars($bookingClassResBookDesigQuantityOne, ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
-                                <resBookDesigStatusCode>' . htmlspecialchars($bookignClassResBookDesigStatusCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigStatusCode>
+                                <cabin>' . htmlspecialchars($request->input('bookingClassCabinOne'), ENT_XML1, 'UTF-8') . '</cabin>
+                                <resBookDesigCode>' . htmlspecialchars($request->input('bookingClassResBookDesigCodeOne'), ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                                <resBookDesigQuantity>' . htmlspecialchars($request->input('bookingClassResBookDesigQuantityOne'), ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
+                                <resBookDesigStatusCode>' . htmlspecialchars($request->input('bookignClassResBookDesigStatusCodeOne'), ENT_XML1, 'UTF-8') . '</resBookDesigStatusCode>
                             </bookingClass>
                             <fareInfo> 
-                                <cabin>' . htmlspecialchars($fareInfoCabinOne, ENT_XML1, 'UTF-8') . '</cabin>
-                                <cabinClassCode>' . htmlspecialchars($fareInfocabinClassCodeOne, ENT_XML1, 'UTF-8') . '</cabinClassCode>
+                                <cabin>' . htmlspecialchars($request->input('fareInfoCabinOne'), ENT_XML1, 'UTF-8') . '</cabin>
+                                <cabinClassCode>' . htmlspecialchars($request->input('fareInfocabinClassCodeOne'), ENT_XML1, 'UTF-8') . '</cabinClassCode>
                                 <fareBaggageAllowance> 
-                                    <allowanceType>' . htmlspecialchars($fareInfoCabinAllowanceTypeOne, ENT_XML1, 'UTF-8') . '</allowanceType>
-                                    <maxAllowedPieces>' . htmlspecialchars($maxAllowedPiecesOne, ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
+                                    <allowanceType>' . htmlspecialchars($request->input('fareInfoCabinAllowanceTypeOne'), ENT_XML1, 'UTF-8') . '</allowanceType>
+                                    <maxAllowedPieces>' . htmlspecialchars($request->input('maxAllowedPiecesOne'), ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
                                     <maxAllowedWeight>
-                                        <unitOfMeasureCode>' . htmlspecialchars($unitOfMeasureCodeOne, ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
-                                        <weight>' . htmlspecialchars($weightOne, ENT_XML1, 'UTF-8') . '</weight>
+                                        <unitOfMeasureCode>' . htmlspecialchars($request->input('unitOfMeasureCodeOne'), ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
+                                        <weight>' . htmlspecialchars($request->input('weightOne'), ENT_XML1, 'UTF-8') . '</weight>
                                     </maxAllowedWeight>
                                 </fareBaggageAllowance>
-                                <fareGroupName>' . htmlspecialchars($fareGroupNameOne, ENT_XML1, 'UTF-8') . '</fareGroupName>
-                                <fareReferenceCode>' . htmlspecialchars($fareReferenceCodeOne, ENT_XML1, 'UTF-8') . '</fareReferenceCode>
-                                <fareReferenceID>' . htmlspecialchars($fareReferenceIDOne, ENT_XML1, 'UTF-8') . '</fareReferenceID>
-                                <fareReferenceName>' . htmlspecialchars($fareReferenceNameOne, ENT_XML1, 'UTF-8') . '</fareReferenceName>
-                                <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceOne, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                                <portTax>' . htmlspecialchars($portTaxOne, ENT_XML1, 'UTF-8') . '</portTax>
-                                <resBookDesigCode>' . htmlspecialchars($resBookDesigCodeOne, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                                <fareGroupName>' . htmlspecialchars($request->input('fareGroupNameOne'), ENT_XML1, 'UTF-8') . '</fareGroupName>
+                                <fareReferenceCode>' . htmlspecialchars($request->input('fareReferenceCodeOne'), ENT_XML1, 'UTF-8') . '</fareReferenceCode>
+                                <fareReferenceID>' . htmlspecialchars($request->input('fareReferenceIDOne'), ENT_XML1, 'UTF-8') . '</fareReferenceID>
+                                <fareReferenceName>' . htmlspecialchars($request->input('fareReferenceNameOne'), ENT_XML1, 'UTF-8') . '</fareReferenceName>
+                                <flightSegmentSequence>' . htmlspecialchars($request->input('flightSegmentSequenceOne'), ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                                <portTax>' . htmlspecialchars($request->input('portTaxOne'), ENT_XML1, 'UTF-8') . '</portTax>
+                                <resBookDesigCode>' . htmlspecialchars($request->input('resBookDesigCodeOne'), ENT_XML1, 'UTF-8') . '</resBookDesigCode>
                             </fareInfo>
                             <flightSegment>
                                 <airline>
-                                    <code>' . htmlspecialchars($airlineCodeOne, ENT_XML1, 'UTF-8') . '</code>
-                                    <companyFullName>' . htmlspecialchars($airlinecompanyFullNameOne, ENT_XML1, 'UTF-8') . '</companyFullName>
+                                    <code>' . htmlspecialchars($request->input('airlineCodeOne'), ENT_XML1, 'UTF-8') . '</code>
+                                    <companyFullName>' . htmlspecialchars($request->input('airlinecompanyFullNameOne'), ENT_XML1, 'UTF-8') . '</companyFullName>
                                 </airline>
                                 <arrivalAirport>
                                     <cityInfo>
                                         <city>
-                                            <locationCode>' . htmlspecialchars($arrivalAirportCityLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($arrivalAirportCityLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($arrivalAirportLocationNameLanguageOne, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('arrivalAirportCityLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('arrivalAirportCityLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('arrivalAirportLocationNameLanguageOne'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                         </city>
                                         <country>
-                                            <locationCode>' . htmlspecialchars($arrivalAirportCountryLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($arrivalAirportCountryLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($arrivalAirportCountryLocationNameLanguageOne, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('arrivalAirportCountryLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('arrivalAirportCountryLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('arrivalAirportCountryLocationNameLanguageOne'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                             <currency>
-                                                <code>' . htmlspecialchars($arrivalAirportCountryCurrencyCodeOne, ENT_XML1, 'UTF-8') . '</code>
+                                                <code>' . htmlspecialchars($request->input('arrivalAirportCountryCurrencyCodeOne'), ENT_XML1, 'UTF-8') . '</code>
                                             </currency>
                                         </country>
                                     </cityInfo>
-                                    <codeContext>' . htmlspecialchars($arrivalAirportCodeContextOne, ENT_XML1, 'UTF-8') . '</codeContext>
-                                    <language>' . htmlspecialchars($arrivalAirportLanguageOne, ENT_XML1, 'UTF-8') . '</language>
-                                    <locationCode>' . htmlspecialchars($arrivalAirportLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                    <locationName>' . htmlspecialchars($arrivalAirportLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                    <timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfoOne, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                    <codeContext>' . htmlspecialchars($request->input('arrivalAirportCodeContextOne'), ENT_XML1, 'UTF-8') . '</codeContext>
+                                    <language>' . htmlspecialchars($request->input('arrivalAirportLanguageOne'), ENT_XML1, 'UTF-8') . '</language>
+                                    <locationCode>' . htmlspecialchars($request->input('arrivalAirportLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                    <locationName>' . htmlspecialchars($request->input('arrivalAirportLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                    <timeZoneInfo>' . htmlspecialchars($request->input('arrivalAirportTimeZoneInfoOne'), ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                                 </arrivalAirport>
-                                <arrivalDateTime>' . htmlspecialchars($arrivalDateTimeOne, ENT_XML1, 'UTF-8') . '</arrivalDateTime>
-                                <arrivalDateTimeUTC>' . htmlspecialchars($arrivalDateTimeUTCOne, ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
+                                <arrivalDateTime>' . htmlspecialchars($request->input('arrivalDateTimeOne'), ENT_XML1, 'UTF-8') . '</arrivalDateTime>
+                                <arrivalDateTimeUTC>' . htmlspecialchars($request->input('arrivalDateTimeUTCOne'), ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
                                 <departureAirport>
                                     <cityInfo>
                                         <city>
-                                            <locationCode>' . htmlspecialchars($departureAirportCityLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($departureAirportCityLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($departureAirportCityLocationNameLanguage, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('departureAirportCityLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('departureAirportCityLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('departureAirportCityLocationNameLanguage'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                         </city>
                                         <country>
-                                            <locationCode>' . htmlspecialchars($departureAirportCountryLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                            <locationName>' . htmlspecialchars($departureAirportCountryLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                            <locationNameLanguage>' . htmlspecialchars($departureAirportCountryLocationNameLanguageOne, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                            <locationCode>' . htmlspecialchars($request->input('departureAirportCountryLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                            <locationName>' . htmlspecialchars($request->input('departureAirportCountryLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                            <locationNameLanguage>' . htmlspecialchars($request->input('departureAirportCountryLocationNameLanguageOne'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                             <currency>
-                                            <code>' . htmlspecialchars($departureAirportCountryCodeOne, ENT_XML1, 'UTF-8') . '</code>
+                                            <code>' . htmlspecialchars($request->input('departureAirportCountryCodeOne'), ENT_XML1, 'UTF-8') . '</code>
                                             </currency>
                                         </country>
                                     </cityInfo>
-                                    <codeContext>' . htmlspecialchars($departureAirportCodeContextOne, ENT_XML1, 'UTF-8') . '</codeContext>
-                                    <language>' . htmlspecialchars($departureAirportLanguageOne, ENT_XML1, 'UTF-8') . '</language>
-                                    <locationCode>' . htmlspecialchars($departureAirportLocationCodeOne, ENT_XML1, 'UTF-8') . '</locationCode>
-                                    <locationName>' . htmlspecialchars($departureAirportLocationNameOne, ENT_XML1, 'UTF-8') . '</locationName>
-                                    <timeZoneInfo>' . htmlspecialchars($departureTimeZoneInfoOne, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                    <codeContext>' . htmlspecialchars($request->input('departureAirportCodeContextOne'), ENT_XML1, 'UTF-8') . '</codeContext>
+                                    <language>' . htmlspecialchars($request->input('departureAirportLanguageOne'), ENT_XML1, 'UTF-8') . '</language>
+                                    <locationCode>' . htmlspecialchars($request->input('departureAirportLocationCodeOne'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                    <locationName>' . htmlspecialchars($request->input('departureAirportLocationNameOne'), ENT_XML1, 'UTF-8') . '</locationName>
+                                    <timeZoneInfo>' . htmlspecialchars($request->input('departureTimeZoneInfoOne'), ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                                 </departureAirport>
-                                <departureDateTime>' . htmlspecialchars($departureDateTimeOne, ENT_XML1, 'UTF-8') . '</departureDateTime>
-                                <departureDateTimeUTC>' . htmlspecialchars($departureDateTimeUTCOne, ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
-                                <flightNumber>' . htmlspecialchars($flightNumberOne, ENT_XML1, 'UTF-8') . '</flightNumber>
-                                <flightSegmentID>' . htmlspecialchars($flightSegmentIDOne, ENT_XML1, 'UTF-8') . '</flightSegmentID>
-                                <ondControlled>' . htmlspecialchars($ondControlledOne, ENT_XML1, 'UTF-8') . '</ondControlled>
-                                <sector>' . htmlspecialchars($sectorOne, ENT_XML1, 'UTF-8') . '</sector>
-                                <codeshare>' . htmlspecialchars($codeShareOne, ENT_XML1, 'UTF-8') . '</codeshare>
-                                <distance>' . htmlspecialchars($distanceOne, ENT_XML1, 'UTF-8') . '</distance>
+                                <departureDateTime>' . htmlspecialchars($request->input('departureDateTimeOne'), ENT_XML1, 'UTF-8') . '</departureDateTime>
+                                <departureDateTimeUTC>' . htmlspecialchars($request->input('departureDateTimeUTCOne'), ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
+                                <flightNumber>' . htmlspecialchars($request->input('flightNumberOne'), ENT_XML1, 'UTF-8') . '</flightNumber>
+                                <flightSegmentID>' . htmlspecialchars($request->input('flightSegmentIDOne'), ENT_XML1, 'UTF-8') . '</flightSegmentID>
+                                <ondControlled>' . htmlspecialchars($request->input('ondControlledOne'), ENT_XML1, 'UTF-8') . '</ondControlled>
+                                <sector>' . htmlspecialchars($request->input('sectorOne'), ENT_XML1, 'UTF-8') . '</sector>
+                                <codeshare>' . htmlspecialchars($request->input('codeShareOne'), ENT_XML1, 'UTF-8') . '</codeshare>
+                                <distance>' . htmlspecialchars($request->input('distanceOne'), ENT_XML1, 'UTF-8') . '</distance>
                                 <equipment>
-                                    <airEquipType>' . htmlspecialchars($equipmentAirEquipTypeOne, ENT_XML1, 'UTF-8') . '</airEquipType>
-                                    <changeofGauge>' . htmlspecialchars($equipmentChangeOfGaugeOne, ENT_XML1, 'UTF-8') . '</changeofGauge>
+                                    <airEquipType>' . htmlspecialchars($request->input('equipmentAirEquipTypeOne'), ENT_XML1, 'UTF-8') . '</airEquipType>
+                                    <changeofGauge>' . htmlspecialchars($request->input('equipmentChangeOfGaugeOne'), ENT_XML1, 'UTF-8') . '</changeofGauge>
                                 </equipment>'.
                                 
-                                $this->flightNotes->flightNotesArray($flightNotesOne)
+                                $this->flightNotes->flightNotesArray($request->input('flightNotesOne'))
 
-                                .'<flownMileageQty>' . htmlspecialchars($flownMileageQtyOne, ENT_XML1, 'UTF-8') . '</flownMileageQty>
-                                <iatciFlight>' . htmlspecialchars($iatciFlightOne, ENT_XML1, 'UTF-8') . '</iatciFlight>
-                                <journeyDuration>' . htmlspecialchars($journeyDurationOne, ENT_XML1, 'UTF-8') . '</journeyDuration>
-                                <onTimeRate>' . htmlspecialchars($onTimeRateOne, ENT_XML1, 'UTF-8') . '</onTimeRate>
-                                <remark>' . htmlspecialchars($remarkOne, ENT_XML1, 'UTF-8') . '</remark>
-                                <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequiredOne, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
-                                <stopQuantity>' . htmlspecialchars($stopQuantityOne, ENT_XML1, 'UTF-8') . '</stopQuantity>
-                                <ticketType>' . htmlspecialchars($ticketTypeOne, ENT_XML1, 'UTF-8') . '</ticketType>
+                                .'<flownMileageQty>' . htmlspecialchars($request->input('flownMileageQtyOne'), ENT_XML1, 'UTF-8') . '</flownMileageQty>
+                                <iatciFlight>' . htmlspecialchars($request->input('iatciFlightOne'), ENT_XML1, 'UTF-8') . '</iatciFlight>
+                                <journeyDuration>' . htmlspecialchars($request->input('journeyDurationOne'), ENT_XML1, 'UTF-8') . '</journeyDuration>
+                                <onTimeRate>' . htmlspecialchars($request->input('onTimeRateOne'), ENT_XML1, 'UTF-8') . '</onTimeRate>
+                                <remark>' . htmlspecialchars($request->input('remarkOne'), ENT_XML1, 'UTF-8') . '</remark>
+                                <secureFlightDataRequired>' . htmlspecialchars($request->input('secureFlightDataRequiredOne'), ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
+                                <stopQuantity>' . htmlspecialchars($request->input('stopQuantityOne'), ENT_XML1, 'UTF-8') . '</stopQuantity>
+                                <ticketType>' . htmlspecialchars($request->input('ticketTypeOne'), ENT_XML1, 'UTF-8') . '</ticketType>
                             </flightSegment>
                             <involuntaryPermissionGiven/>
                             <sequenceNumber/>
@@ -889,113 +629,113 @@ class ReissuePnrTestBuilder {
                     <oldSegments>
                     <!-- Zero or more repetitions: -->
                     <bookFlightSegment>
-                        <actionCode>' . htmlspecialchars($actionCodeTwo, ENT_XML1, 'UTF-8') . '</actionCode>
-                        <addOnSegment>' . htmlspecialchars($addOnSegmentTwo, ENT_XML1, 'UTF-8') . '</addOnSegment>
+                        <actionCode>' . htmlspecialchars($request->input('actionCodeTwo'), ENT_XML1, 'UTF-8') . '</actionCode>
+                        <addOnSegment>' . htmlspecialchars($request->input('addOnSegmentTwo'), ENT_XML1, 'UTF-8') . '</addOnSegment>
                         <bookingClass>
-                            <cabin>' . htmlspecialchars($bookingClassCabinTwo, ENT_XML1, 'UTF-8') . '</cabin>
-                            <resBookDesigCode>' . htmlspecialchars($bookingCabinResBookDesigCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
-                            <resBookDesigQuantity>' . htmlspecialchars($bookingCabinResBookDesigQuantityTwo, ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
+                            <cabin>' . htmlspecialchars($request->input('bookingClassCabinTwo'), ENT_XML1, 'UTF-8') . '</cabin>
+                            <resBookDesigCode>' . htmlspecialchars($request->input('bookingCabinResBookDesigCodeTwo'), ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                            <resBookDesigQuantity>' . htmlspecialchars($request->input('bookingCabinResBookDesigQuantityTwo'), ENT_XML1, 'UTF-8') . '</resBookDesigQuantity>
                         </bookingClass>
                         <fareInfo>
-                            <cabin>' . htmlspecialchars($fareInfoCabinTwo, ENT_XML1, 'UTF-8') . '</cabin>
-                            <cabinClassCode>' . htmlspecialchars($fareInfoCabinClassCodeTwo, ENT_XML1, 'UTF-8') . '</cabinClassCode>
+                            <cabin>' . htmlspecialchars($request->input('fareInfoCabinTwo'), ENT_XML1, 'UTF-8') . '</cabin>
+                            <cabinClassCode>' . htmlspecialchars($request->input('fareInfoCabinClassCodeTwo'), ENT_XML1, 'UTF-8') . '</cabinClassCode>
                             <fareBaggageAllowance>
-                                <allowanceType>' . htmlspecialchars($allowanceTypeTwo, ENT_XML1, 'UTF-8') . '</allowanceType>
-                                <maxAllowedPieces>' . htmlspecialchars($maxAllowedPiecesTwo, ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
+                                <allowanceType>' . htmlspecialchars($request->input('allowanceTypeTwo'), ENT_XML1, 'UTF-8') . '</allowanceType>
+                                <maxAllowedPieces>' . htmlspecialchars($request->input('maxAllowedPiecesTwo'), ENT_XML1, 'UTF-8') . '</maxAllowedPieces>
                                 <maxAllowedWeight>
-                                    <unitOfMeasureCode>' . htmlspecialchars($unitOfMeasureCodeTwo, ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
-                                    <weight>' . htmlspecialchars($weightTwo, ENT_XML1, 'UTF-8') . '</weight>
+                                    <unitOfMeasureCode>' . htmlspecialchars($request->input('unitOfMeasureCodeTwo'), ENT_XML1, 'UTF-8') . '</unitOfMeasureCode>
+                                    <weight>' . htmlspecialchars($request->input('weightTwo'), ENT_XML1, 'UTF-8') . '</weight>
                                 </maxAllowedWeight>
                             </fareBaggageAllowance>
-                            <fareGroupName>' . htmlspecialchars($fareGroupNameTwo, ENT_XML1, 'UTF-8') . '</fareGroupName>
-                            <fareReferenceCode>' . htmlspecialchars($fareReferenceCodeTwo, ENT_XML1, 'UTF-8') . '</fareReferenceCode>
-                            <fareReferenceID>' . htmlspecialchars($fareReferenceIDTwo, ENT_XML1, 'UTF-8') . '</fareReferenceID>
-                            <fareReferenceName>' . htmlspecialchars($fareReferenceNameTwo, ENT_XML1, 'UTF-8') . '</fareReferenceName>
-                            <flightSegmentSequence>' . htmlspecialchars($flightSegmentSequenceTwo, ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
-                            <resBookDesigCode>' . htmlspecialchars($resBookDesigCodeTwo, ENT_XML1, 'UTF-8') . '</resBookDesigCode>
+                            <fareGroupName>' . htmlspecialchars($request->input('fareGroupNameTwo'), ENT_XML1, 'UTF-8') . '</fareGroupName>
+                            <fareReferenceCode>' . htmlspecialchars($request->input('fareReferenceCodeTwo'), ENT_XML1, 'UTF-8') . '</fareReferenceCode>
+                            <fareReferenceID>' . htmlspecialchars($request->input('fareReferenceIDTwo'), ENT_XML1, 'UTF-8') . '</fareReferenceID>
+                            <fareReferenceName>' . htmlspecialchars($request->input('fareReferenceNameTwo'), ENT_XML1, 'UTF-8') . '</fareReferenceName>
+                            <flightSegmentSequence>' . htmlspecialchars($request->input('flightSegmentSequenceTwo'), ENT_XML1, 'UTF-8') . '</flightSegmentSequence>
+                            <resBookDesigCode>' . htmlspecialchars($request->input('resBookDesigCodeTwo'), ENT_XML1, 'UTF-8') . '</resBookDesigCode>
                         </fareInfo>
                         <flightSegment>
                             <airline>
-                                <code>' . htmlspecialchars($airlineCodeTwo, ENT_XML1, 'UTF-8') . '</code>
-                                <codeContext>' . htmlspecialchars($airlineCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
+                                <code>' . htmlspecialchars($request->input('airlineCodeTwo'), ENT_XML1, 'UTF-8') . '</code>
+                                <codeContext>' . htmlspecialchars($request->input('airlineCodeContextTwo'), ENT_XML1, 'UTF-8') . '</codeContext>
                             </airline>
                             <arrivalAirport>
                                 <cityInfo>
                                     <city>
-                                        <locationCode>' . htmlspecialchars($arrivalAirportCityLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                        <locationName>' . htmlspecialchars($arrivalAirportCityLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                        <locationNameLanguage>' . htmlspecialchars($arrivalAirportCityLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                        <locationCode>' . htmlspecialchars($request->input('arrivalAirportCityLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                        <locationName>' . htmlspecialchars($request->input('arrivalAirportCityLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                        <locationNameLanguage>' . htmlspecialchars($request->input('arrivalAirportCityLocationNameLanguageTwo'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                     </city>
                                     <country>
-                                        <locationCode>' . htmlspecialchars($arrivalAirportCountryLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                        <locationName>' . htmlspecialchars($arrivalAirportCountryLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                        <locationNameLanguage>' . htmlspecialchars($arrivalAirportLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                        <locationCode>' . htmlspecialchars($request->input('arrivalAirportCountryLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                        <locationName>' . htmlspecialchars($request->input('arrivalAirportCountryLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                        <locationNameLanguage>' . htmlspecialchars($request->input('arrivalAirportLocationNameLanguageTwo'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                         <currency>
-                                        <code>' . htmlspecialchars($arrivalAirportCountryCodeTwo, ENT_XML1, 'UTF-8') . '</code>
+                                        <code>' . htmlspecialchars($request->input('arrivalAirportCountryCodeTwo'), ENT_XML1, 'UTF-8') . '</code>
                                         </currency>
                                     </country>
                                 </cityInfo>
-                                <codeContext>' . htmlspecialchars($arrivalAirportCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
-                                <language>' . htmlspecialchars($arrivalAirportLanguageTwo, ENT_XML1, 'UTF-8') . '</language>
-                                <locationCode>' . htmlspecialchars($arrivalAirportLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                <locationName>' . htmlspecialchars($arrivalAirportLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                <terminal>' . htmlspecialchars($arrivalAirportTerminalTwo, ENT_XML1, 'UTF-8') . '</terminal>
-                                <timeZoneInfo>' . htmlspecialchars($arrivalAirportTimeZoneInfoTwo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                <codeContext>' . htmlspecialchars($request->input('arrivalAirportCodeContextTwo'), ENT_XML1, 'UTF-8') . '</codeContext>
+                                <language>' . htmlspecialchars($request->input('arrivalAirportLanguageTwo'), ENT_XML1, 'UTF-8') . '</language>
+                                <locationCode>' . htmlspecialchars($request->input('arrivalAirportLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                <locationName>' . htmlspecialchars($request->input('arrivalAirportLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                <terminal>' . htmlspecialchars($request->input('arrivalAirportTerminalTwo'), ENT_XML1, 'UTF-8') . '</terminal>
+                                <timeZoneInfo>' . htmlspecialchars($request->input('arrivalAirportTimeZoneInfoTwo'), ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                             </arrivalAirport>
-                            <arrivalDateTime>' . htmlspecialchars($arrivalDateTimeTwo, ENT_XML1, 'UTF-8') . '</arrivalDateTime>
-                            <arrivalDateTimeUTC>' . htmlspecialchars($arrivalDateTimeUTCTwo, ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
+                            <arrivalDateTime>' . htmlspecialchars($request->input('arrivalDateTimeTwo'), ENT_XML1, 'UTF-8') . '</arrivalDateTime>
+                            <arrivalDateTimeUTC>' . htmlspecialchars($request->input('arrivalDateTimeUTCTwo'), ENT_XML1, 'UTF-8') . '</arrivalDateTimeUTC>
                             <departureAirport>
                                 <cityInfo>
                                 <city>
-                                    <locationCode>' . htmlspecialchars($departureAirportCityLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                    <locationName>' . htmlspecialchars($departureAirportCityLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                    <locationNameLanguage>' . htmlspecialchars($departureAirportCityLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                    <locationCode>' . htmlspecialchars($request->input('departureAirportCityLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                    <locationName>' . htmlspecialchars($request->input('departureAirportCityLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                    <locationNameLanguage>' . htmlspecialchars($request->input('departureAirportCityLocationNameLanguageTwo'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                 </city>
                                 <country>
-                                    <locationCode>' . htmlspecialchars($departureAirportCountryLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                    <locationName>' . htmlspecialchars($departureAirportCountryLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                    <locationNameLanguage>' . htmlspecialchars($departureAirportLocationNameLanguageTwo, ENT_XML1, 'UTF-8') . '</locationNameLanguage>
+                                    <locationCode>' . htmlspecialchars($request->input('departureAirportCountryLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                    <locationName>' . htmlspecialchars($request->input('departureAirportCountryLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                    <locationNameLanguage>' . htmlspecialchars($request->input('departureAirportLocationNameLanguageTwo'), ENT_XML1, 'UTF-8') . '</locationNameLanguage>
                                     <currency>
-                                        <code>' . htmlspecialchars($departureAirportCountryCurrencyCodeTwo, ENT_XML1, 'UTF-8') . '</code>
+                                        <code>' . htmlspecialchars($request->input('departureAirportCountryCurrencyCodeTwo'), ENT_XML1, 'UTF-8') . '</code>
                                     </currency>
                                 </country>
                                 </cityInfo>
-                                <codeContext>' . htmlspecialchars($departureAirportCodeContextTwo, ENT_XML1, 'UTF-8') . '</codeContext>
-                                <language>' . htmlspecialchars($departureAirportLanguageTwo, ENT_XML1, 'UTF-8') . '</language>
-                                <locationCode>' . htmlspecialchars($departureAirportLocationCodeTwo, ENT_XML1, 'UTF-8') . '</locationCode>
-                                <locationName>' . htmlspecialchars($departureAirportLocationNameTwo, ENT_XML1, 'UTF-8') . '</locationName>
-                                <timeZoneInfo>' . htmlspecialchars($departureAirportTimeZoneInfoTwo, ENT_XML1, 'UTF-8') . '</timeZoneInfo>
+                                <codeContext>' . htmlspecialchars($request->input('departureAirportCodeContextTwo'), ENT_XML1, 'UTF-8') . '</codeContext>
+                                <language>' . htmlspecialchars($request->input('departureAirportLanguageTwo'), ENT_XML1, 'UTF-8') . '</language>
+                                <locationCode>' . htmlspecialchars($request->input('departureAirportLocationCodeTwo'), ENT_XML1, 'UTF-8') . '</locationCode>
+                                <locationName>' . htmlspecialchars($request->input('departureAirportLocationNameTwo'), ENT_XML1, 'UTF-8') . '</locationName>
+                                <timeZoneInfo>' . htmlspecialchars($request->input('departureAirportTimeZoneInfoTwo'), ENT_XML1, 'UTF-8') . '</timeZoneInfo>
                             </departureAirport>
-                            <departureDateTime>' . htmlspecialchars($departureDateTimeTwo, ENT_XML1, 'UTF-8') . '</departureDateTime>
-                            <departureDateTimeUTC>' . htmlspecialchars($departureDateTimeUTCTwo, ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
-                            <flightNumber>' . htmlspecialchars($flightNumberTwo, ENT_XML1, 'UTF-8') . '</flightNumber>
-                            <flightSegmentID>' . htmlspecialchars($flightSegmentIDTwo, ENT_XML1, 'UTF-8') . '</flightSegmentID>
-                            <ondControlled>' . htmlspecialchars($ondControlledTwo, ENT_XML1, 'UTF-8') . '</ondControlled>
-                            <sector>' . htmlspecialchars($sectorTwo, ENT_XML1, 'UTF-8') . '</sector>
-                            <codeshare>' . htmlspecialchars($codeShareTwo, ENT_XML1, 'UTF-8') . '</codeshare>
-                            <distance>' . htmlspecialchars($distanceTwo, ENT_XML1, 'UTF-8') . '</distance>
+                            <departureDateTime>' . htmlspecialchars($request->input('departureDateTimeTwo'), ENT_XML1, 'UTF-8') . '</departureDateTime>
+                            <departureDateTimeUTC>' . htmlspecialchars($request->input('departureDateTimeUTCTwo'), ENT_XML1, 'UTF-8') . '</departureDateTimeUTC>
+                            <flightNumber>' . htmlspecialchars($request->input('flightNumberTwo'), ENT_XML1, 'UTF-8') . '</flightNumber>
+                            <flightSegmentID>' . htmlspecialchars($request->input('flightSegmentIDTwo'), ENT_XML1, 'UTF-8') . '</flightSegmentID>
+                            <ondControlled>' . htmlspecialchars($request->input('ondControlledTwo'), ENT_XML1, 'UTF-8') . '</ondControlled>
+                            <sector>' . htmlspecialchars($request->input('sectorTwo'), ENT_XML1, 'UTF-8') . '</sector>
+                            <codeshare>' . htmlspecialchars($request->input('codeShareTwo'), ENT_XML1, 'UTF-8') . '</codeshare>
+                            <distance>' . htmlspecialchars($request->input('distanceTwo'), ENT_XML1, 'UTF-8') . '</distance>
                             <equipment>
-                                <airEquipType>' . htmlspecialchars($equipmentAirEquipTypeTwo, ENT_XML1, 'UTF-8') . '</airEquipType>
-                                <changeofGauge>' . htmlspecialchars($equipmentChangeOfGaugeTwo, ENT_XML1, 'UTF-8') . '</changeofGauge>
+                                <airEquipType>' . htmlspecialchars($request->input('equipmentAirEquipTypeTwo'), ENT_XML1, 'UTF-8') . '</airEquipType>
+                                <changeofGauge>' . htmlspecialchars($request->input('equipmentChangeOfGaugeTwo'), ENT_XML1, 'UTF-8') . '</changeofGauge>
                             </equipment>'.
                                 
-                                $this->flightNotes->flightNotesArray($flightNotesTwo)
+                                $this->flightNotes->flightNotesArray($request->input('flightNotesTwo'))
 
-                            .'<flownMileageQty>' . htmlspecialchars($flownMileageQtyTwo, ENT_XML1, 'UTF-8') . '</flownMileageQty>
-                            <iatciFlight>' . htmlspecialchars($iatciFlightTwo, ENT_XML1, 'UTF-8') . '</iatciFlight>
-                            <journeyDuration>' . htmlspecialchars($journeyDurationTwo, ENT_XML1, 'UTF-8') . '</journeyDuration>
-                            <onTimeRate>' . htmlspecialchars($onTimeRateTwo, ENT_XML1, 'UTF-8') . '</onTimeRate>
-                            <remark>' . htmlspecialchars($remarkTwo, ENT_XML1, 'UTF-8') . '</remark>
-                            <secureFlightDataRequired>' . htmlspecialchars($secureFlightDataRequiredTwo, ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
-                            <segmentStatusByFirstLeg>' . htmlspecialchars($segmentStatusByFirstLegTwo, ENT_XML1, 'UTF-8') . '</segmentStatusByFirstLeg>
-                            <stopQuantity>' . htmlspecialchars($stopQuantityTwo, ENT_XML1, 'UTF-8') . '</stopQuantity>
+                            .'<flownMileageQty>' . htmlspecialchars($request->input('flownMileageQtyTwo'), ENT_XML1, 'UTF-8') . '</flownMileageQty>
+                            <iatciFlight>' . htmlspecialchars($request->input('iatciFlightTwo'), ENT_XML1, 'UTF-8') . '</iatciFlight>
+                            <journeyDuration>' . htmlspecialchars($request->input('journeyDurationTwo'), ENT_XML1, 'UTF-8') . '</journeyDuration>
+                            <onTimeRate>' . htmlspecialchars($request->input('onTimeRateTwo'), ENT_XML1, 'UTF-8') . '</onTimeRate>
+                            <remark>' . htmlspecialchars($request->input('remarkTwo'), ENT_XML1, 'UTF-8') . '</remark>
+                            <secureFlightDataRequired>' . htmlspecialchars($request->input('secureFlightDataRequiredTwo'), ENT_XML1, 'UTF-8') . '</secureFlightDataRequired>
+                            <segmentStatusByFirstLeg>' . htmlspecialchars($request->input('segmentStatusByFirstLegTwo'), ENT_XML1, 'UTF-8') . '</segmentStatusByFirstLeg>
+                            <stopQuantity>' . htmlspecialchars($request->input('stopQuantityTwo'), ENT_XML1, 'UTF-8') . '</stopQuantity>
                         </flightSegment>
-                        <involuntaryPermissionGiven>' . htmlspecialchars($involuntaryPermissionGivenTwo, ENT_XML1, 'UTF-8') . '</involuntaryPermissionGiven>
-                        <legStatus>' . htmlspecialchars($legStatusTwo, ENT_XML1, 'UTF-8') . '</legStatus>
-                        <referenceID>' . htmlspecialchars($referenceIDTwo, ENT_XML1, 'UTF-8') . '</referenceID>
-                        <responseCode>' . htmlspecialchars($responseCodeTwo, ENT_XML1, 'UTF-8') . '</responseCode>
-                        <sequenceNumber>' . htmlspecialchars($sequenceNumberTwo, ENT_XML1, 'UTF-8') . '</sequenceNumber>
-                        <status>' . htmlspecialchars($statusTwo, ENT_XML1, 'UTF-8') . '</status>
+                        <involuntaryPermissionGiven>' . htmlspecialchars($request->input('involuntaryPermissionGivenTwo'), ENT_XML1, 'UTF-8') . '</involuntaryPermissionGiven>
+                        <legStatus>' . htmlspecialchars($request->input('legStatusTwo'), ENT_XML1, 'UTF-8') . '</legStatus>
+                        <referenceID>' . htmlspecialchars($request->input('referenceIDTwo'), ENT_XML1, 'UTF-8') . '</referenceID>
+                        <responseCode>' . htmlspecialchars($request->input('responseCodeTwo'), ENT_XML1, 'UTF-8') . '</responseCode>
+                        <sequenceNumber>' . htmlspecialchars($request->input('sequenceNumberTwo'), ENT_XML1, 'UTF-8') . '</sequenceNumber>
+                        <status>' . htmlspecialchars($request->input('statusTwo'), ENT_XML1, 'UTF-8') . '</status>
                     </bookFlightSegment>
                     </oldSegments>
                 </ReissuePnrCommitRequest>

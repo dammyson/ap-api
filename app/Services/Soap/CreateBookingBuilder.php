@@ -222,8 +222,8 @@ class CreateBookingBuilder
                 <contactPerson>
                     <email>
                         <email>' . htmlspecialchars($string['contactPersonEmail'], ENT_XML1, 'UTF-8') . '</email>
-                        <markedForSendingRezInfo/>
-                        <preferred/>
+                        <markedForSendingRezInfo>true</markedForSendingRezInfo>
+                        <preferred>true</preferred>
                     </email>
                     <markedForSendingRezInfo>' . htmlspecialchars($string['contactPersonMarkedForSendingRezInfo'], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
                     <personName>
@@ -410,9 +410,9 @@ class CreateBookingBuilder
                         
                             <email>
                                 <email>' . htmlspecialchars($string['email'], ENT_XML1, 'UTF-8') . '</email>
-                                <markedForSendingRezInfo/>
-                                <preferred/>
-                                <shareMarketInd/>
+                                <markedForSendingRezInfo>true</markedForSendingRezInfo>
+                                <preferred>true</preferred>
+                                <shareMarketInd>true</shareMarketInd>
                             </email>
                             <markedForSendingRezInfo>' . htmlspecialchars($string['markedForSendingRezInfo'], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
                             <personName>
