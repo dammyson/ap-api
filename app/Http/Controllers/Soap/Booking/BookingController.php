@@ -53,12 +53,18 @@ class BookingController extends Controller
 
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
     
-    
+            if (!$invoice) {
+                return response()->json([
+                    'error' => true,
+                    'message' => "Invoice is not found for the booking"
+                ]);
+            }
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
             $xml = $this->bookingBuilder->readBookingTK(
                 $bookingId, 
-                $booking->booking_reference_id
+                $booking->booking_reference_id,
+                $invoice->currency
                 // $booking->booking_reference_id
             );
 
@@ -180,7 +186,16 @@ class BookingController extends Controller
                 ], 500);
             }
 
-            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
+            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
+    
+            if (!$invoice) {
+                return response()->json([
+                    'error' => true,
+                    'message' => "Invoice is not found for the booking"
+                ]);
+            }
+
+            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $invoice->currency);
             
             $response = $this->craneOTASoapService->run($function, $xml);
             
@@ -257,10 +272,29 @@ class BookingController extends Controller
     public function readBooking($ID, $referenceID) {
         try {
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+
+            $booking = Booking::where('booking_id', $ID)->where('is_cancelled', false)->first();
+
+            if (!$booking) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'PNR not found'
+                ], 500);
+            }
+
+            $invoice = Invoice::where('booking_id', $ID)->orderBy('created_at', 'desc')->first();
+    
+            if (!$invoice) {
+                return response()->json([
+                    'error' => true,
+                    'message' => "Invoice is not found for the booking"
+                ]);
+            }
             
             $xml = $this->bookingBuilder->readBookingTK(
                 $ID, 
-                $referenceID
+                $referenceID,
+                $invoice->currency
             );
             
             
