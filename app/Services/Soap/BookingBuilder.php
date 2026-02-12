@@ -11,7 +11,7 @@ class BookingBuilder {
 		$this->cranePassword = config('app.crane.password');
 	}
 
-    public function readBooking($ID, $passengerSurname) {
+    public function readBooking($ID, $passengerSurname, $currency) {
        $xml =  '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
            <soapenv:Header/>
@@ -23,7 +23,7 @@ class BookingBuilder {
                     <member>false</member>
                     <password>' . htmlspecialchars($this->cranePassword, ENT_XML1, 'UTF-8') . '</password>
                     <userName>' . htmlspecialchars($this->craneUsername, ENT_XML1, 'UTF-8') . '</userName>
-                    <preferredCurrency>NGN</preferredCurrency>
+                    <preferredCurrency>' . htmlspecialchars($currency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
                     </clientInformation>
                     <bookingReferenceID>
                        <ID>' . htmlspecialchars($ID, ENT_XML1, 'UTF-8') . '</ID>
@@ -41,7 +41,8 @@ class BookingBuilder {
 
     public function readBookingTK(
         $ID, 
-        $referenceID
+        $referenceID,
+        $currency
     ) {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -52,9 +53,9 @@ class BookingBuilder {
                     <clientInformation>
                     <clientIP>129.0.0.1</clientIP>
                     <member>false</member>
-                    <password>' . htmlspecialchars($this->cranePassword, ENT_XML1, 'UTF-8') . '</password>
-                    <userName>' . htmlspecialchars($this->craneUsername, ENT_XML1, 'UTF-8') . '</userName>
-                    <preferredCurrency>NGN</preferredCurrency>
+                     <password>' . htmlspecialchars($this->cranePassword, ENT_XML1, 'UTF-8') . '</password>
+                     <userName>' . htmlspecialchars($this->craneUsername, ENT_XML1, 'UTF-8') . '</userName>
+                     <preferredCurrency>' . htmlspecialchars($currency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
                     </clientInformation>
                     <bookingReferenceID>
                        <companyName>
