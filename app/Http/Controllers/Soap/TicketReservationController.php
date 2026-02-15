@@ -15,6 +15,8 @@ use App\Services\Utility\GetPointService;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Controllers\Soap\Booking\BookingController;
 use App\Http\Requests\Soap\Ticket\TicketReservationViewOnlyRequest;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ReservationNotification;
 
 class TicketReservationController extends Controller
 {
@@ -34,14 +36,12 @@ class TicketReservationController extends Controller
         $this->getPointService = $getPointService;
     }
 
-    public function ticketReservationViewOnly(Request $request) {
+    public function ticketReservationViewOnly(TicketReservationViewOnlyRequest $request) {
         $bookingId = $request->input('ID');
         $bookingReferenceId = $request->input('referenceID');
         $preferredCurrency = $request->input('preferred_currency');
 
         try {
-
-           
     
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
     
@@ -74,6 +74,8 @@ class TicketReservationController extends Controller
         ]);
 
     }
+
+    
 
 
     public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType, $paymentMethod = null, $paymentChannel = null, $preferredCurrency = null) { 
@@ -127,7 +129,7 @@ class TicketReservationController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-
+           
             // dd($response);
             $totalDistance = 0;
 
@@ -230,6 +232,25 @@ class TicketReservationController extends Controller
                 "description" => $user ? " {$user->first_name} made payment for flight with booking id {$bookingId} " : "Guest made payment for fligth with booking Id {$bookingId}"
             ]);
 
+
+            $specialRequestDetails = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['specialRequestDetails'];
+            $airTravelerList = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'];
+          
+            if ($this->checkArray->isAssociativeArray($airTravelerList)) {
+                $airTravelerList = [$airTravelerList];
+            }
+            if ($this->checkArray->isAssociativeArray($specialRequestDetails)) {
+                $specialRequestDetails = [$specialRequestDetails];
+            }
+
+            // dd($ticketItemList);
+            
+            foreach($ticketItemList as $index => $ticketItem) {
+                if (isset($ticketItem['couponInfoList']) && $this->checkArray->isAssociativeArray($ticketItem['couponInfoList'])) {
+                    $ticketItemList[$index]['couponInfoList'] =  [$ticketItem['couponInfoList']];
+                }
+            }
+
             if (!$user->is_guest) {
                 $routes = $this->bookingController->readBooking($bookingId, $bookingReferenceId);
                 // dump($response);     
@@ -242,8 +263,22 @@ class TicketReservationController extends Controller
                 }
     
                 $user->addPoints($totalPoint, "point add for ticketing flight");
+                $user->notify(new ReservationNotification($bookOriginDestinationOptionLists, $airTravelerList, $specialRequestDetails, $ticketItemList));
 
+
+            } else {
+               $firstPassengerEmail = $airTravelerList[0]['contactPerson']['email']['email']; 
+                Notification::route('mail', $firstPassengerEmail)
+                        ->notify(new ReservationNotification($bookOriginDestinationOptionLists, $airTravelerList, $specialRequestDetails, $ticketItemList));
             }
+
+            
+
+            // dump($response);
+
+        // return $ticketItemList;
+
+
 
             return response()->json([
                 "error" => false,
