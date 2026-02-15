@@ -5,7 +5,7 @@
     <style>
         body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #000; padding: 6px; }
+        th, td { border: 1px solid #000; padding: 6px; },
         th { background: #f2f2f2; }
         h2 { margin-bottom: 10px; }
     </style>
@@ -18,9 +18,10 @@
 />
 <h2 style="margin-top:25px; margin-bottom:2px; color:#f54542; text-align:center">Airpeace Electronic Ticket Passenger Itinerary Receipt</h2>
 
-<div style="background-color:#4272f5; color:#FFFFFF; padding:5px">
-    <div><span>Booking Id :</span> <span>{{$bookingId}}</span></div>
-    <div><span>Booking Reference :</span> <span>{{$bookingReference}}</span></div>
+<h3 style="margin-top:20px margin-bottom:2px; color:#0A3D62; text-align:center">Booking Information</h3>
+<div style="background-color:#4272f5; color:#FFFFFF; padding:5px ">
+    <div><strong>Booking Id :</strong> <span>{{$bookingId}}</span></div>
+    <div><strong>Booking Reference :</strong> <span>{{$bookingReference}}</span></div>
 </div>
 {{-- FLIGHT SEGMENTS --}}
 @foreach($bookOriginDestinationOptionList as $index => $segment)
@@ -59,11 +60,11 @@ $fareInfo = $segment['bookFlightSegmentList']['fareInfo'];
         <th>Arrival</th>
     </tr>
     <tr>
-        <td>{{ $flight['departureAirport']['cityInfo']['city']['locationName'] }}</td>
-        <td>{{ $flight['arrivalAirport']['cityInfo']['city']['locationName'] }}</td>
-        <td>{{ $flight['flightNumber'] ?? '-' }}</td>
-        <td>{{ $flight['departureDateTime'] }}</td>
-        <td>{{ $flight['arrivalDateTime'] }}</td>
+        <td style="text-align: center">{{ $flight['departureAirport']['cityInfo']['city']['locationName'] }}</td>
+        <td style="text-align: center">{{ $flight['arrivalAirport']['cityInfo']['city']['locationName'] }}</td>
+        <td style="text-align: center" >{{ $flight['flightNumber'] ?? '-' }}</td>
+        <td style="text-align: center">{{ $flight['departureDateTime'] }}</td>
+        <td style="text-align: center">{{ $flight['arrivalDateTime'] }}</td>
     </tr>
 </table>
 
@@ -79,12 +80,12 @@ $fareInfo = $segment['bookFlightSegmentList']['fareInfo'];
         <th>journeyDuration(hours)</th> 
     </tr> 
     <tr> 
-        <td>{{$fareInfo['fareGroupName']}}</td> 
-        <td>{{$fareInfo['fareReferenceCode']}}</td> 
-        <td>{{$fareInfo['fareReferenceName']}}</td> 
-        <td>{{$flight['sector']}}</td>
-        <td>{{$flight['distance']}}</td> 
-        <td>{{getFlightHours($flight['journeyDuration'])}}</td>
+        <td style="text-align: center">{{$fareInfo['fareGroupName']}}</td> 
+        <td style="text-align: center">{{$fareInfo['fareReferenceCode']}}</td> 
+        <td style="text-align: center">{{$fareInfo['fareReferenceName']}}</td> 
+        <td style="text-align: center">{{$flight['sector']}}</td>
+        <td style="text-align: center">{{$flight['distance']}}</td> 
+        <td style="text-align: center">{{getFlightHours($flight['journeyDuration'])}}</td>
     </tr> 
 </table>
 @endforeach
