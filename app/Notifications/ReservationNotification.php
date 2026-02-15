@@ -69,7 +69,7 @@ class ReservationNotification extends Notification
             ->view('emails.reservation', [
                 'name' => $notifiable->first_name ?? "Guest User",
             ])
-            ->attachData($pdf->output(), 'ticket-reservation.pdf', [
+            ->attachData($pdf->output(), 'airpeace-ticket-reservation.pdf', [
                 'mime' => 'application/pdf',
             ]);
 
