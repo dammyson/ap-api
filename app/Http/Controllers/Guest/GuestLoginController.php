@@ -28,7 +28,7 @@ class GuestLoginController extends Controller
         $autogenerate = new GenerateRandom();
 
         $guestPassword = $autogenerate->generateTemporaryPassword();
-         $create = User::create([
+        $create = User::create([
              'first_name' => $autogenerate->generateName(),
              'last_name' => $autogenerate->generateName(),
              'email' => $autogenerate->generateUniqueEmail(),
@@ -76,7 +76,6 @@ class GuestLoginController extends Controller
     return response()->json([
         'error' => false, 
         'message' => 'Client registration successful. Verification code sent to your email.', 
-        'guest_password' => $guestPassword,
         'data' => $data,
         // 'device_type' => $deviceType,
         // 'screen_resolution' => $screenResolution
