@@ -36,9 +36,9 @@ class AddSsrController extends Controller
         ], 401);
     }
 
-    private function handleGuestUser($bookingId, $passengerName) {
+    private function handleGuestUser($bookingId, $passengerName, $preferredCurrency) {
         $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
-        $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName);
+        $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $preferredCurrency);
         // dd($xml);
 
         return $this->craneOTASoapService->run($function, $xml);
@@ -106,7 +106,7 @@ class AddSsrController extends Controller
         if ($user->is_guest) {
 
             
-            $response = $this->handleGuestUser($bookingId, $passengerName);
+            $response = $this->handleGuestUser($bookingId, $passengerName, $preferredCurrency);
 
             if (!(isset($response['AirBookingResponse']))) {
                 return $this->unauthorizedResponse();
@@ -216,8 +216,6 @@ class AddSsrController extends Controller
                 $message = "Baggages added successfully";
             }
       
-           
-
             return response()->json([
                 "error" => false,
                 "message" => $message,
@@ -245,7 +243,7 @@ class AddSsrController extends Controller
         $user = $request->user();
         
         if ($user->is_guest) {            
-            $response = $this->handleGuestUser($bookingId, $passengerName);
+            $response = $this->handleGuestUser($bookingId, $passengerName, "NGN");
 
             if (!(isset($response['AirBookingResponse']))) {
                 return $this->unauthorizedResponse();
