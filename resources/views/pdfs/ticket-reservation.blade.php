@@ -14,7 +14,7 @@
 
 <img
     src="{{ public_path('images/airpeace-logo.png') }}" 
-    style="width:100%; max-height:200px; display:block; margin:0 auto 10px auto;"
+    style="width:100%; max-height:300px; display:block; margin:0 auto 10px auto;"
 />
 <h2 style="margin-top:25px; margin-bottom:2px; color:#0A3D62; text-align:center">Airpeace Electronic Ticket Passenger Itinerary Receipt</h2>
 
