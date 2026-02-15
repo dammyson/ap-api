@@ -282,7 +282,7 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']); 
 
-    Route::post('contact-support', [SupportController::class, 'contactSupport']);
+    Route::post('contact-support',  [SupportController::class, 'contactSupport']);
 
     
     // Analytics
