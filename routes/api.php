@@ -54,6 +54,7 @@ use App\Http\Controllers\Soap\Booking\CancelBookingController;
 use App\Http\Controllers\Soap\Booking\BookingController;
 use App\Http\Controllers\Soap\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Soap\GetAirExtraChargesAndProductsController;
+use App\Http\Controllers\SupportController;
 use App\Http\Middleware\LastLogin;
 
 Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {        
@@ -280,6 +281,9 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
 
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']); 
+
+    Route::post('contact-support', [SupportController::class, 'contactSupport']);
+
     
     // Analytics
     Route::group(['prefix' => 'analytics'], function() { // 
