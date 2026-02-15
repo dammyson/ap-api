@@ -71,7 +71,7 @@ class ReservationNotification extends Notification
         //             ->line('Airpeace Team');
 
         return (new MailMessage)
-            ->subject('Airpeace Electronic Ticket Reservation Passenger Receipt 🕊')
+            ->subject('Airpeace Electronic Ticket Reservation Passenger Receipt ✈')
             ->view('emails.reservation', [
                 'name' => $notifiable->first_name ?? "Guest User",
             ])
