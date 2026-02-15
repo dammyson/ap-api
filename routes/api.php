@@ -12,7 +12,6 @@ use App\Http\Controllers\PlaneController;
 
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\RewardController;
-use App\Http\Controllers\TicketController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GamePlayController;
