@@ -19,9 +19,13 @@ class ReservationNotification extends Notification
     protected $airTravelerList;
     protected $specialRequestDetails;
     protected $ticketItemList;
+    protected $bookingId;
+    protected $bookingReferenceId;
 
-    public function __construct($bookOriginDestinationOptionList, $airTravelerList, $specialRequestDetails, $ticketItemList)
+    public function __construct($bookingId, $bookingReferenceId, $bookOriginDestinationOptionList, $airTravelerList, $specialRequestDetails, $ticketItemList)
     {
+        $this->bookingId = $bookingId;
+        $this->bookingReferenceId = $bookingReferenceId;
         $this->bookOriginDestinationOptionList = $bookOriginDestinationOptionList;
         $this->airTravelerList = $airTravelerList;
         $this->specialRequestDetails = $specialRequestDetails;
@@ -46,6 +50,8 @@ class ReservationNotification extends Notification
     {
 
     $pdf = Pdf::loadView('pdfs.ticket-reservation', [
+            'bookingId' => $this->bookingId,
+            'bookingReference' => $this->bookingReferenceId,
             'bookOriginDestinationOptionList' => $this->bookOriginDestinationOptionList,
             'airTravelerList' => $this->airTravelerList,
             'specialRequestDetails' => $this->specialRequestDetails,

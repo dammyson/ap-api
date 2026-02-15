@@ -263,13 +263,13 @@ class TicketReservationController extends Controller
                 }
     
                 $user->addPoints($totalPoint, "point add for ticketing flight");
-                $user->notify(new ReservationNotification($bookOriginDestinationOptionLists, $airTravelerList, $specialRequestDetails, $ticketItemList));
+                $user->notify(new ReservationNotification($bookingId, $bookingReferenceId,$bookOriginDestinationOptionLists, $airTravelerList, $specialRequestDetails, $ticketItemList));
 
 
             } else {
                $firstPassengerEmail = $airTravelerList[0]['contactPerson']['email']['email']; 
                 Notification::route('mail', $firstPassengerEmail)
-                        ->notify(new ReservationNotification($bookOriginDestinationOptionLists, $airTravelerList, $specialRequestDetails, $ticketItemList));
+                        ->notify(new ReservationNotification($bookingId, $bookingReferenceId, $bookOriginDestinationOptionLists, $airTravelerList, $specialRequestDetails, $ticketItemList));
             }
 
             

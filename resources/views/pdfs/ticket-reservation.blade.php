@@ -16,8 +16,12 @@
     src="{{ public_path('images/airpeace-logo.png') }}" 
     style="width:100%; max-height:300px; display:block; margin:0 auto 10px auto;"
 />
-<h2 style="margin-top:25px; margin-bottom:2px; color:#0A3D62; text-align:center">Airpeace Electronic Ticket Passenger Itinerary Receipt</h2>
+<h2 style="margin-top:25px; margin-bottom:2px; color:#f54542; text-align:center">Airpeace Electronic Ticket Passenger Itinerary Receipt</h2>
 
+<div style="background-color:#4272f5; color:#FFFFFF; padding:5px">
+    <div><span>Booking Id :</span> <span>{{$bookingId}}</span></div>
+    <div><span>Booking Reference :</span> <span>{{$bookingReference}}</span></div>
+</div>
 {{-- FLIGHT SEGMENTS --}}
 @foreach($bookOriginDestinationOptionList as $index => $segment)
 
@@ -98,7 +102,7 @@ $couponInfoList = $ticketItem['couponInfoList'] ?? [];
 @endphp
 
 <h3 style="margin-top:25px; margin-bottom:2px; color:#0A3D62; text-align:center">Passenger Info</h3>
-<div style="background-color:#292828; color:#FFFFFF; padding:5px">
+<div style="background-color:#4272f5; color:#FFFFFF; padding:5px">
     <div> <strong>Name</strong>  : {{$airTraveler['personName']['givenName']}} {{$airTraveler['personName']['surname']}} </div>
     <div> <strong>Gender</strong> : {{$airTraveler['gender']}}</div>
     <div> <strong>Nationality </strong> : {{$airTraveler['nationality']['locationCode']}}</div>
