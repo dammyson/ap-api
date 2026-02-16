@@ -16,11 +16,10 @@ class SupportController extends Controller
             Notification::route('mail', 'gilbertgenye4@gmail.com')
                             ->notify(new ContactSupport($details));
 
-            return [
+            return response()->json([
                 "error" => false,
-                "message" => "complaint sent to support successfully"
-            ];
-
+                "message" => "Complaint sent to support successfully"
+            ], 200);
 
         } catch(\Throwable $th) {
             return [
