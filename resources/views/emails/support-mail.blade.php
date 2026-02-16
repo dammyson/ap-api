@@ -9,7 +9,18 @@
 
     <h3>Issue Details</h3>
     <div>
-        email : {$this->details['email']}
+        <div>
+            <span style="font-size:16px; font-weight:bold">email : </span> <span style="color:#FFFFFF">{{$details['email'] ?? "Not Provided"}}</span>
+        </div>
+        <div>
+            <span style="font-size:16px; font-weight:bold">booking ref : </span>{{$details['booking_reference'] ?? "Not Provided"}}
+        </div>
+        <div>
+            <span style="font-size:16px; font-weight:bold">description :</span> {{$details['date_of_occurence'] ?? "Not Provided"}}
+        </div>
+        <div>
+           <span style="font-size:16px; font-weight:bold"> category : </span> {{$details['category'] ?? "Not Provided"}}
+        </div>
     </div>
 
 </body>

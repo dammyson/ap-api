@@ -36,13 +36,18 @@ class ContactSupport extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Support Mail')
-                    ->line('Issue Details')
-                    ->line("email : {$this->details['email']}")
-                    ->line("booking ref : {$this->details['booking_reference']}")
-                    ->line("name on ticket : {$this->details['name_on_ticket']}")
-                    ->line("description : {$this->details['date_of_occurence']}")
-                    ->line("category : {$this->details['category']}");
+             ->subject('Customer Complaint ✈')
+            ->view('emails.support-mail', [
+                'details' => $this->details,
+            ]);
+        // return (new MailMessage)
+        //             ->line('Support Mail')
+        //             ->line('Issue Details')
+        //             ->line("email : {$this->details['email']}")
+        //             ->line("booking ref : {$this->details['booking_reference']}")
+        //             ->line("name on ticket : {$this->details['name_on_ticket']}")
+        //             ->line("description : {$this->details['date_of_occurence']}")
+        //             ->line("category : {$this->details['category']}");
                 
     }
 
