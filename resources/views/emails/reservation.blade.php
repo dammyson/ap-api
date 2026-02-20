@@ -5,7 +5,7 @@
 </head>
 <body style="font-family: Arial, sans-serif;">
 
-    <p>Hi {{ $name }} 🕊</p>
+    <p>Hi {{ $name }} ✈</p>
 
     <p>Payment for your flight was successful.</p>
 
