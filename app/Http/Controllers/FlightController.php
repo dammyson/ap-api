@@ -66,7 +66,7 @@ class FlightController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
            
-
+            // dd($response);
             $result = "";
 
             if ($request->input('trip_type') == "ONE_WAY") {

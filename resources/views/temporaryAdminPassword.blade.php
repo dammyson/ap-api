@@ -10,6 +10,10 @@
     {{-- <div>
         Hello {{ $toName }}, {{ $message }}
     </div> --}}
+    <img
+        src="{{ public_path('images/airpeace-logo.png') }}" 
+        style="width:100%; max-height:300px; display:block; margin:0 auto 10px auto;"
+    />
 
     <div> Hello <strong>{{ $toName }}</strong> Welcome to the airpeace admin team. below is the temporary password to your account . Pls do well to change this password once you log in</div> 
 
