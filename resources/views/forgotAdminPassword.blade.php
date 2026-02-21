@@ -10,8 +10,8 @@
         src="{{ asset('images/airpeace-logo.png') }}"
         style="width:50%; max-height:400px; display:block; margin:0 auto 10px auto;"
     />
-    <div> Hello {{ $adminName}} ✈</div>
-    <div> Your otp is {{ $otp }}</div>
+    <div> Hello <strong>{{ $adminName }}</strong> ✈</div>
+    <div> Your otp is <strong>{{ $otp }}</strong></div>
     <div> Please note this otp expires after 10 minutes</div>
     <div> Safe travel,<br>
     <strong>Airpeace Team</strong></div>
