@@ -7,7 +7,7 @@
 </head>
 <body>
     <img
-        src="{{ public_path('images/airpeace-logo.png') }}" 
+        src="{{ asset('images/airpeace-logo.png') }}"
         style="width:100%; max-height:300px; display:block; margin:0 auto 10px auto;"
     />
     <div> Hello {{ $adminName}} ✈</div>
