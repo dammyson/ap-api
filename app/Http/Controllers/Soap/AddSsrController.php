@@ -8,6 +8,7 @@ use App\Models\InvoiceItem;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Soap\AddSsrRequest;
+use App\Models\Flight;
 use App\Services\Soap\AddSsrBuilder;
 use App\Services\Soap\BookingBuilder;
 use App\Services\Utility\CheckArray;
@@ -167,6 +168,15 @@ class AddSsrController extends Controller
                     'price' => $addedPrice
                 ]);
                 $message = "Insurance added successfully";
+
+                $flights = Flight::where('booking_id', $bookingId)->get();
+
+                foreach ($flights as $flight) {
+                    $flight->amount += $amount;
+                    $flight->currency = $preferredCurrency;
+                    $flight->is_paid = true;
+                    $flight->save();
+                }   
                 
             
                 
@@ -213,6 +223,15 @@ class AddSsrController extends Controller
                     ]);
     
                 }
+                $flights = Flight::where('booking_id', $bookingId)->get();
+
+                foreach ($flights as $flight) {
+                    $flight->amount += $amount;
+                    $flight->currency = $preferredCurrency;
+                    $flight->is_paid = true;
+                    $flight->save();
+                }   
+                
                 $message = "Baggages added successfully";
             }
       

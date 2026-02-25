@@ -27,7 +27,9 @@ class Flight extends Model
         'payment_expires_at',
         'invoice_id',
         'is_paid',
-        'booking_flight_reference_id'
+        'booking_flight_reference_id',
+        'amount',
+        'currency',
     ];
 
     public function user() 
