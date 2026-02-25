@@ -121,6 +121,13 @@ class CreateBookingController extends Controller
             $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
             $bookOriginDestinationOptionList = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
             // $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+
+            if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
+                $bookOriginDestinationOptionList = [$bookOriginDestinationOptionList];
+            }
+            if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+                $ticketItemList = [$ticketItemList];
+            }
         
             $ticketCount = 0;
 
@@ -132,97 +139,26 @@ class CreateBookingController extends Controller
                 'currency' => $currency
             ]);  
 
-            if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
+            
+            foreach($ticketItemList as $ticketItem) {                
+                foreach($bookOriginDestinationOptionList as $bookOriginDestinationOption) {
+                    $arrival_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
+                    $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
+                    $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
+                    $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
+                    $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
+                    $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
+                    $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
+                    $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
+                    $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];                            
+                    $flightSegmentId = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightSegmentID"];
+                    $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
+                    $totalHours = $this->getFlightHours($flightDuration);
+                    $bookingFlightReferenceId = $bookOriginDestinationOption['bookFlightSegmentList']['referenceID'];
 
-                $flightSegment = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment'];
-
-                $arrival_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
-                $departure_time = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-                $origin = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                $destination = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                // $arrivalAirportLocationCode = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
-                // $departureAirportLocationCode = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                $originCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                $destinationCity = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
-                $ticketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
-                $flightDistance = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["distance"];
-                $flightNumber = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["flightNumber"];                
-                $flightDuration = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["journeyDuration"];
-                
-                // $flightSegmentId = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']["flightSegmentID"];
-                $bookingFlightReferenceId = $bookOriginDestinationOptionList['bookFlightSegmentList']['referenceID'];
-
-                $totalHours = $this->getFlightHours($flightDuration);
-
-                Flight::create([
-                    'origin' => $origin, 
-                    'destination' => $destination, 
-                    'arrival_time' => $arrival_time, 
-                    'departure_time'=> $departure_time,
-                    'peace_id' => $user ? $user->peace_id : null, 
-                    'guest_session_token' => $guestToken,
-                    'trip_type' => $tripType,
-                    'booking_id' => $bookingId,                        
-                    'origin_city' => $originCity,
-                    'destination_city' => $destinationCity,
-                    'ticket_type' => $ticketType,
-                    'flight_number' => $flightNumber,
-                    'flight_distance' => $flightDistance,
-                    'flight_duration' => $totalHours,
-                    'payment_expires_at' => $timeLimit,
-                    'invoice_id' => $invoice->id,
-                    'booking_flight_reference_id' => $bookingFlightReferenceId,
-                ]); 
-
-
-                if ($this->checkArray->isAssociativeArray($ticketItemList)) {    
-                    $passengerName = $ticketItemList['airTraveler']["personName"]["givenName"]; 
-                    $passengerType = $ticketItemList['airTraveler']['passengerTypeCode'];              
-                   
-          
-                   
-                    $ticketCount += 1;
-                    $surname = $ticketItemList['airTraveler']["personName"]["surname"];
-
-                    $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
-                    event(new UserActivityLogEvent($user, "Booking", $description));
-
-                } else {
-                    foreach($ticketItemList as $ticketItem) {
-                        $passengerName = $ticketItem['airTraveler']["personName"]["givenName"];  
-                        $passengerType = $ticketItem['airTraveler']['passengerTypeCode'];                      
-
-                        $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
-                        event(new UserActivityLogEvent($user, "Booking", $description));
-                        
-                        $ticketCount += 1;
-                    }
-
-                    $surname = $ticketItemList[0]['airTraveler']["personName"]["surname"];
-                }
-
-            } else {
-
-                if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-                    
-                    foreach($bookOriginDestinationOptionList as $bookOriginDestinationOption) {
-                        $arrival_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
-                        $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-                        $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                        $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                        $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                        $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
-                        $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
-                        $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
-                        $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];
-                        $flightSegmentId = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightSegmentID"];
-                        $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
-                        $bookingFlightReferenceId = $bookOriginDestinationOption['bookFlightSegmentList']['referenceID'];
-
-                        $totalHours = $this->getFlightHours($flightDuration);
-                        $passengerName = $ticketItemList['airTraveler']["personName"]["givenName"];
-                        $passengerSurname = $ticketItemList['airTraveler']["personName"]["surname"];
-                        $passengerType = $ticketItemList['airTraveler']['passengerTypeCode'];
+                    $passengerName = $ticketItem['airTraveler']["personName"]["givenName"];
+                    $passengerSurname = $ticketItem['airTraveler']["personName"]["surname"];
+                    $passengerType = $ticketItem['airTraveler']['passengerTypeCode'];
 
                         // Passenger::create([
                         //     "user_id" => $user->id,
@@ -230,103 +166,44 @@ class CreateBookingController extends Controller
                         //     "passenger_surname" => $passengerSurname,
                         //     "passenger_type" => $passengerName,
                         // ]);
-
-
-                        Flight::firstOrCreate([   
-                            'booking_flight_reference_id' => $bookingFlightReferenceId,
-                        ],[
-                            'origin' => $origin, 
-                            'destination' => $destination,
-                            'arrival_time' => $arrival_time, 
-                            'departure_time'=> $departure_time,
-                            'invoice_id' => $invoice->id,
-                            'peace_id' => $user->peace_id,
-                            'guest_session_token' => $guestToken,
-                            'trip_type' => $tripType,
-                            'booking_id' => $bookingId,
-                            'origin_city' => $originCity,
-                            'destination_city' => $destinationCity,
-                            'ticket_type' => $ticketType,
-                            'flight_distance' => $flightDistance,
-                            'flight_number' => $flightNumber,
-                            'flight_duration' => $totalHours,
-                            'payment_expires_at' => $timeLimit,
-                        ]);  
-                        
-                        $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
-                        event(new UserActivityLogEvent($user, "Booking", $description));
-
-
-                        $ticketCount += 1;
                     
-                    }
-                    $surname = $ticketItemList['airTraveler']["personName"]["surname"];
 
-                    
-                } else {
-                    foreach($ticketItemList as $ticketItem) {
+                    Flight::firstOrCreate([
+                        'booking_flight_reference_id' => $bookingFlightReferenceId,
+                    ],
+                    [  
+                        'origin' => $origin, 
+                        'destination' => $destination,
+                        'arrival_time' => $arrival_time, 
+                        'departure_time'=> $departure_time,
+                        'flight_number' => $flightNumber,
+                        'peace_id' => $user->peace_id,
+                        'guest_session_token' => $guestToken, 
+                        'trip_type' => $tripType,
+                        'booking_id' => $bookingId,
+                        'origin_city' => $originCity,
+                        'destination_city' => $destinationCity,
+                        'ticket_type' => $ticketType,
+                        'flight_distance' => $flightDistance,
+                        'flight_duration' => $totalHours,
+                        'payment_expires_at' => $timeLimit,
+                        'amount' => $expectedAmount,
+                        'currency' => $currency,
+                        'invoice_id' => $invoice->id,  
                         
-                        foreach($bookOriginDestinationOptionList as $bookOriginDestinationOption) {
-                            $arrival_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalDateTime'];
-                            $departure_time = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureDateTime'];
-                            $origin = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationName'];
-                            $destination = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationName'];
-                            $originCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['departureAirport']['locationCode'];
-                            $destinationCity = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']['arrivalAirport']['locationCode'];
-                            $ticketType = $bookOriginDestinationOption["bookFlightSegmentList"]["bookingClass"]["cabin"];
-                            $flightDistance = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["distance"];
-                            $flightNumber = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightNumber"];                            
-                            $flightSegmentId = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["flightSegmentID"];
-                            $flightDuration = $bookOriginDestinationOption['bookFlightSegmentList']['flightSegment']["journeyDuration"];
-                            $totalHours = $this->getFlightHours($flightDuration);
-                            $bookingFlightReferenceId = $bookOriginDestinationOption['bookFlightSegmentList']['referenceID'];
-
-                            $passengerName = $ticketItem['airTraveler']["personName"]["givenName"];
-                            $passengerSurname = $ticketItem['airTraveler']["personName"]["surname"];
-                            $passengerType = $ticketItem['airTraveler']['passengerTypeCode'];
-
-                                // Passenger::create([
-                                //     "user_id" => $user->id,
-                                //     "passenger_name" => $passengerName,
-                                //     "passenger_surname" => $passengerSurname,
-                                //     "passenger_type" => $passengerName,
-                                // ]);
-                            
-
-                            Flight::firstOrCreate([
-                                'booking_flight_reference_id' => $bookingFlightReferenceId,
-                            ],
-                            [  
-                                'origin' => $origin, 
-                                'destination' => $destination,
-                                'arrival_time' => $arrival_time, 
-                                'departure_time'=> $departure_time,
-                                'flight_number' => $flightNumber,
-                                'peace_id' => $user->peace_id,
-                                'guest_session_token' => $guestToken, 
-                                'trip_type' => $tripType,
-                                'booking_id' => $bookingId,
-                                'origin_city' => $originCity,
-                                'destination_city' => $destinationCity,
-                                'ticket_type' => $ticketType,
-                                'flight_distance' => $flightDistance,
-                                'flight_duration' => $totalHours,
-                                'payment_expires_at' => $timeLimit,
-                                'invoice_id' => $invoice->id,  
-                              
-                            ]); 
-                            
-                            $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
-                            event(new UserActivityLogEvent($user, "Booking", $description));
-                            $ticketCount += 1;
-                        
-                        }
-                    }
+                    ]); 
                     
-                    $surname = $ticketItemList[0]['airTraveler']["personName"]["surname"];
+                    $description = "booked a flight from {$origin} to {$destination} for {$passengerName} {($passengerType)}";
+                    event(new UserActivityLogEvent($user, "Booking", $description));
+                    $ticketCount += 1;
+                
                 }
+            }
+            
+            $surname = $ticketItemList[0]['airTraveler']["personName"]["surname"];
+        
 
-            }    
+            // }    
 
             Booking::create([
                 'peace_id' => $user ? $user->peace_id : null,
@@ -335,9 +212,7 @@ class CreateBookingController extends Controller
                 'invoice_id' => $invoice->id,
                 'booking_reference_id' => $bookingReferenceID,
                 'guest_session_token' => $user ? null : $guestToken 
-            ]);
-            
-                      
+            ]); 
 
             // create invoice_items table
             InvoiceItem::create([
