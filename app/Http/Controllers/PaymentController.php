@@ -32,14 +32,28 @@ class PaymentController extends Controller
     {
             
         try {
-            $ref = $request->input('ref');
-            $preferredCurrency = $request->input('preferred_currency');
-            $bookingId = $request->input('bookingId');
-            $bookingReferenceID = $request->input('bookingReferenceID');
-            $invoiceId = $request->input('invoiceId');
-            $deviceType = $request->input('device_type');
-            $paymentMethod = $request->input('payment_method');
-            $paymentChannel = $request->input('payment_channel');
+
+            $validated = $request->validate([
+                'ref' => 'required|string',
+                'preferred_currency' => 'required|string|in:USD,NGN,GBP',
+                'bookingId' => 'required|string',
+                'bookingReferenceID' => 'required|string',
+                'invoiceId' => 'required|string',
+                'device_type' => 'required|string',
+                'payment_method' => 'required|string',
+                'payment_channel' => 'required|string|string|in:paystack,flutterwave'
+            ]);
+
+           
+
+            $ref = $validated['ref'];
+            $preferredCurrency = $validated['preferred_currency'];
+            $bookingId = $validated['bookingId'];
+            $bookingReferenceID = $validated['bookingReferenceID'];
+            $invoiceId = $validated['invoiceId'];
+            $deviceType = $validated['device_type'];
+            $paymentMethod = $validated['payment_method'];
+            $paymentChannel = $validated['payment_channel'];
             
             
             //validate verifiedRequest;
@@ -60,7 +74,6 @@ class PaymentController extends Controller
 
             // return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId);
             return  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType, $paymentMethod, $paymentChannel, $preferredCurrency );
-        
         } catch (\Throwable $th) {
             
             Log::error($th->getMessage());
