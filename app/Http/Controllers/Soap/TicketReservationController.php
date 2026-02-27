@@ -294,6 +294,7 @@ class TicketReservationController extends Controller
             return response()->json([
                 "error" => true,  
                 // "message" => "something went wrong",
+                "response" => $response,
                 "message" => $th->getMessage(),
                 
                 
