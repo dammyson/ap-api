@@ -163,6 +163,302 @@ class ReissuePNRController extends Controller
         }  
     }
 
+
+    public function newReissueTicketPNR(ReissuePnrPreviewRequest $request) {
+        try{
+            $ID = $request->input('ID');
+            
+            $preferredCurrency = $request->input('preferredCurrency');
+           
+
+            $xml = $this->reissusePNRBuilder->reissuePnr(
+                $request
+            );
+
+            // dd($xml);
+            $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
+
+            $response = $this->craneReissuePnrOTAService->run($function, $xml);
+            // dd($response);
+
+            $preferredCurrency = $response['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
+            // check if response is true
+            // check if invoice has been previously paid for
+          
+
+            $amount = $response["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+
+            
+            $bookOriginDestinationOptionLists = $response["ReissuePnrPreviewResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
+            
+            if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
+                $bookOriginDestinationOptionLists = [$bookOriginDestinationOptionLists];
+            }
+          
+            // foreach ($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+            //     $arrival_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["arrivalDateTime"];
+            //     $departure_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["departureDateTime"];
+            //     $newOrigin = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationName'];
+            //     $newDestination = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationName'];
+            //     $newTicketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
+                
+            //     $newOriginCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationCode'];
+                
+            //     $newDestinationCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationCode'];
+            //     $newFlightDistance = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["distance"];
+            //     $newFlightNumber = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["flightNumber"];
+            //     $newFlightDuration = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["journeyDuration"];
+                
+
+            //     $newTotalHours = $this->getFlightHours($newFlightDuration);
+
+            //     Flight::where('booking_id', $ID)->update([
+            //         "origin" => $newOrigin,
+            //         "destination" => $newDestination,
+            //         'arrival_time' => $arrival_time, 
+            //         'departure_time'=> $departure_time,
+            //         "origin_city" => $newOriginCity,
+            //         "destination_city" => $newDestinationCity,
+            //         'ticket_type' => $newTicketType,
+            //         "flight_number" => $newFlightNumber,
+            //         "flight_distance" => $newFlightDistance,
+            //         "flight_duration" => $newTotalHours
+            //     ]);
+            // }
+
+               
+
+            // $ticketCount = Flight::where('booking_id', $ID)->count();
+            // // create invoice_items table
+            // InvoiceItem::create([
+            //     'invoice_id' => $invoice->id,
+            //     'product' => 'Ticket', 
+            //     'quantity' => $ticketCount,
+            //     'price' => $amount
+            // ]);
+            
+            return response()->json([
+                "error" => false,
+                "amount" => $amount,
+                "response" => $response
+            ], 200);
+
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong",
+                "actual_error" => $th->getMessage()
+            ], 500);
+        }  
+    }
+
+    public function newReissueTicketCommit (ReissuePnrPreviewRequest $request) {
+        try {
+           
+            $transactionDescription = $request->input("transactionDescription");
+            $paymentMethod = $request->input('payment_method');
+            $paymentChannel = $request->input('payment_channel');
+            
+            $paymentRef = $request->input('payment_ref');
+            $invoiceId = $request->input('invoiceId') ?? null;
+            // $preferredCurrency = $request->input('preferredCurrency');                        
+
+            $user = $request->user();
+
+            // $invoice = Invoice::find($invoiceId);   
+            // dd($invoiceId);     
+            
+            //validate verifiedRequest;
+            if ($paymentChannel == "paystack") {
+                $new_top_request = new VerificationService($paymentRef);
+
+            } else if ($paymentChannel == "flutterwave") {
+                $new_top_request = new FlutterVerificationService($paymentRef);
+            }
+            $verified_request = $new_top_request->run();
+
+            // dd($verified_request);
+
+            $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+            // dd($paidAmount);
+            if (!$paidAmount) {
+                return response()->json([
+                    "error" => "true",
+                    "message" => "payment verification failed"
+                ], 400);
+            }
+            $preferredCurrency = $verified_request['data']['currency'];
+
+             
+            $xml = $this->reissusePNRBuilder->reissuePnr(
+                $request
+            );
+
+              // dd($xml);
+            $previewfunction = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
+
+            $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);
+            $preferredCurrency = $previewResponse['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
+            // check if response is true
+            // check if invoice has been previously paid for
+          
+
+            $expectedAmount = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+
+               
+            $invoice = Invoice::find($invoiceId);
+            if ($invoice->isPaid) {
+                // generate a new invoice if previous invoice has been paid for
+                $invoice = new Invoice();
+                $invoice->booking_id = $request->ID;
+                $invoice->amount = $paidAmount;
+                $invoice->currency = $preferredCurrency;
+                $invoice->is_paid = true;
+
+            } else {
+                $invoice->amount += $paidAmount;
+                $invoice->save();
+            }
+
+            if ($paidAmount < $expectedAmount) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
+
+                ], 400);
+            }
+
+            // dd($invoice->amount);
+            
+
+            $xml = $this->reissusePNRBuilder->reissuePnrCommit($request, $paidAmount, $preferredCurrency);        
+            $user = $request->user();
+
+            // if there is no authenticated user, get the guest device_type
+            $deviceType = $user ? $user->device_type : $request->input('device_type');
+        
+            // dd($xml);
+            $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrCommit';
+
+            $response = $this->craneReissuePnrOTAService->run($function, $xml);
+            // dump($response);
+            $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
+            // $preferredCurrency = $response['ReissuePnrCommitResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
+ 
+            if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+                $ticketItemList = [$ticketItemList];
+            }
+
+            $id = $response["ReissuePnrCommitResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
+            $referenceId = $response["ReissuePnrCommitResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["referenceID"];
+            $data = [];
+            $data["id"] = $id;
+            $data["reference_id"] = $referenceId;
+            
+            foreach($ticketItemList as $ticketItem) {
+                $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
+                $data["amount"][] = $soap_expected_amount; 
+
+                $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
+                $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+        
+                Transaction::firstOrCreate([
+                    "invoice_number" => $invoice_number,                        
+                    'amount' => $amount,
+                ], [
+                    'transaction_type' => $transactionDescription,
+                    'ticket_type' => 'ticket',
+                    'user_id' => $user->id,
+                    'invoice_id' => $invoice->id,
+                    // 'device_type' => $userDevice->device_type,
+                    'device_type' => $deviceType,
+                    'currency' => $preferredCurrency,
+                    "payment_method" => $paymentMethod,
+                    "payment_channel" => $paymentChannel,
+                    'is_flight' => true
+                ]);
+            }
+
+
+            $previewbookOriginDestinationOptionLists = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
+            
+            if ($this->checkArray->isAssociativeArray($previewbookOriginDestinationOptionLists)) {
+                $previewbookOriginDestinationOptionLists = [$previewbookOriginDestinationOptionLists];
+            }
+          
+            foreach ($previewbookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                $arrival_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["arrivalDateTime"];
+                $departure_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["departureDateTime"];
+                $newOrigin = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationName'];
+                $newDestination = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationName'];
+                $newTicketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
+                
+                $newOriginCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationCode'];
+                
+                $newDestinationCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationCode'];
+                $newFlightDistance = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["distance"];
+                $newFlightNumber = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["flightNumber"];
+                $newFlightDuration = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["journeyDuration"];
+                
+
+                $newTotalHours = $this->getFlightHours($newFlightDuration);
+
+                Flight::where('booking_id', $id)->update([
+                    "origin" => $newOrigin,
+                    "destination" => $newDestination,
+                    'arrival_time' => $arrival_time, 
+                    'departure_time'=> $departure_time,
+                    "origin_city" => $newOriginCity,
+                    "destination_city" => $newDestinationCity,
+                    'ticket_type' => $newTicketType,
+                    "flight_number" => $newFlightNumber,
+                    "flight_distance" => $newFlightDistance,
+                    "flight_duration" => $newTotalHours
+                ]);
+            }               
+
+            $ticketCount = Flight::where('booking_id', $id)->count();
+            // create invoice_items table
+            InvoiceItem::create([
+                'invoice_id' => $invoice->id,
+                'product' => 'Ticket', 
+                'quantity' => $ticketCount,
+                'price' => $amount
+            ]);
+
+            $flights = Flight::where('booking_id', $id)->get();
+
+            foreach ($flights as $flight) {
+                $flight->amount += $paidAmount;
+                $flight->currency = $preferredCurrency;
+                $flight->is_paid = true;
+                $flight->save();
+            }                        
+           
+            return response()->json([
+                "error" => false,
+                "booking_id" => $id,
+                "booking_reference" => $referenceId,
+                "data" => $data,
+                // "response" => $response
+            ], 200);
+            
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong",
+                "actual_message" => $th->getMessage()
+            ], 500);
+        }  
+    }
+
     public function reissueTicketCommit (ReissuePnrPreviewRequest $request) {
         try {
            
@@ -296,6 +592,7 @@ class ReissuePNRController extends Controller
             ], 500);
         }  
     }
+    
 
     public function reissuePnrAddFlightPreview(Request $request) {
         $ID = $request->input('ID');
