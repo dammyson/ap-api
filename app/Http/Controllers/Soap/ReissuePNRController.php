@@ -452,8 +452,8 @@ class ReissuePNRController extends Controller
             Log::error($th->getMessage());
     
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong",
+                "error" => true,    
+                "message" =>  $th->getMessage(),
                 "actual_message" => $th->getMessage()
             ], 500);
         }  
