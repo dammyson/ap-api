@@ -81,6 +81,8 @@ class TicketReservationController extends Controller
     public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType, $paymentMethod = null, $paymentChannel = null, $preferredCurrency = null) { 
         $user = auth()->user();
         // dd($user->id);
+
+        // dd($preferredCurrency);
         
         $invoice = Invoice::find($invoiceId);
 
@@ -119,6 +121,8 @@ class TicketReservationController extends Controller
           
         );
 
+        // dump($xml);
+
         try {
             
             // $user = auth()->user();
@@ -130,7 +134,7 @@ class TicketReservationController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
            
-            // dump($response);
+            // dd($response);
             $totalDistance = 0;
 
             $bookOriginDestinationOptionLists =  $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
@@ -263,14 +267,10 @@ class TicketReservationController extends Controller
                 }
     
                 $user->addPoints($totalPoint, "point add for ticketing flight");
-                $user->notify(new ReservationNotification($bookingId, $bookingReferenceId,$bookOriginDestinationOptionLists, $airTravelerList, $specialRequestDetails, $ticketItemList));
-
-
-            } else {
-               $firstPassengerEmail = $airTravelerList[0]['contactPerson']['email']['email']; 
-                Notification::route('mail', $firstPassengerEmail)
-                        ->notify(new ReservationNotification($bookingId, $bookingReferenceId, $bookOriginDestinationOptionLists, $airTravelerList, $specialRequestDetails, $ticketItemList));
-            }
+             
+            } 
+            
+            
 
             
 
