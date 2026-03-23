@@ -40,7 +40,7 @@ class ForgotPassword extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'forgotAdminPassword',
+            view: 'emails/forgotAdminPassword',
         );
     }
 
