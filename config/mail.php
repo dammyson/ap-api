@@ -108,14 +108,14 @@ return [
     |
     */
 
-    // 'from' => [
-    //     'address' => env('MAIL_FROM_ADDRESS', 'gilbertgenye4@gmail.com'),
-    //     'name' => env('MAIL_FROM_NAME', 'Airpeace'),
-    // ],
-
     'from' => [
-        'address' => 'gilbertgenye4@gmail.com',
-        'name' => 'MAIL_FROM_NAME', 'Airpeace',
-    ]
+        'address' => env('MAIL_FROM_ADDRESS', 'airpeaceuat@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Airpeace'),
+    ],
+
+    // 'from' => [
+    //     'address' => 'airpeaceuat@gmail.com',
+    //     'name' => 'MAIL_FROM_NAME', 'Airpeace',
+    // ]
 
 ];
