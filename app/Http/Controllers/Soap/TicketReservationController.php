@@ -269,16 +269,6 @@ class TicketReservationController extends Controller
                 $user->addPoints($totalPoint, "point add for ticketing flight");
              
             } 
-            
-            
-
-            
-
-            // dump($response);
-
-        // return $ticketItemList;
-
-
 
             return response()->json([
                 "error" => false,

@@ -35,6 +35,16 @@ class ForgotPassword extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+
+        return (new MailMessage)
+            ->subject('Forgot Password ✈')
+            ->view('emails.forgotpassword-mail', [
+                'details' => [
+                    "first_name" => $notifiable->first_name,
+                    "otp" => $this->otp
+                ]
+            ]);
+
         return (new MailMessage)
             ->line("Hello {$notifiable->first_name} ✈")
             // ->action('Good to see you again! Your trips, bookings, and rewards are just a tap away.', url('/'))

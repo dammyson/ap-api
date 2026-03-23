@@ -96,12 +96,12 @@ class TicketReservationRequestBuilder
                            <paymentDetailList>
                               <miscChargeOrder>
                                  <avsEnabled/>
-                                 <capturePaymentToolNumber>true</capturePaymentToolNumber>
+                                 <capturePaymentToolNumber>false</capturePaymentToolNumber>
                                  <paymentCode>INV</paymentCode>
                                  <threeDomainSecurityEligible>false</threeDomainSecurityEligible>
-                                 <transactionFeeApplies/>'.
-                                 $this->checkCurrency($preferredCurrency)
-                              .'</miscChargeOrder>
+                                 <transactionFeeApplies/>
+                                 <MCONumber>' . $this->checkCurrency($preferredCurrency) . '</MCONumber>
+                              </miscChargeOrder>
                               <payLater/>
                               <paymentAmount>
                                  <currency>
@@ -126,13 +126,13 @@ class TicketReservationRequestBuilder
 
       public function checkCurrency($preferredCurrency) {
          if ($preferredCurrency == "NGN") {
-            return '<MCONumber>4010026732</MCONumber>';
+            return '4010026732';
          }
          else if ($preferredCurrency == "USD") {
-            return '<MCONumber>4010026733</MCONumber>';
+            return '4010026733';
          }
          else if ($preferredCurrency == "GBP") {
-            return '<MCONumber>4010026734</MCONumber>';
+            return '4010026734';
          }
       }
 
