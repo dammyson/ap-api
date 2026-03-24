@@ -172,7 +172,7 @@ Route::group(['prefix' => 'admin/'], function () {
         Route::post('special-deals', [TripController::class, 'specialDeals']);
         Route::post('favorite-cities-event', [TripController::class, 'favoriteCitiesEvent']);
 
-        Route::post('admin-logout', [RegisterAdminController::class, 'logoutAdmin']);
+        Route::post('logout', [RegisterAdminController::class, 'logoutAdmin']);
 
         Route::post('game-categories', [GameCategoryController::class, 'store']);
         Route::post('games', [GameController::class, 'store']);
