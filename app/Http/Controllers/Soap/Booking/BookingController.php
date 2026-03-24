@@ -43,7 +43,7 @@ class BookingController extends Controller
         try {
 
             $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
-
+            // dd($booking);
             if (!$booking) {
                 return response()->json([
                     'error' => true,
@@ -52,7 +52,7 @@ class BookingController extends Controller
             }
 
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-    
+            dd($invoice);
             if (!$invoice) {
                 return response()->json([
                     'error' => true,
@@ -138,6 +138,7 @@ class BookingController extends Controller
         return response()->json([
             'error' => false,
             'invoice_id' => $invoice->id,
+            "invoice_cuurency" => $invoice->currency,
             'is_paid' => $invoice->is_paid,
             'booking_data' => $response
         ]);
@@ -187,7 +188,9 @@ class BookingController extends Controller
             }
 
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-    
+
+            //  dd($invoice->currency);
+
             if (!$invoice) {
                 return response()->json([
                     'error' => true,
@@ -196,10 +199,9 @@ class BookingController extends Controller
             }
 
             $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $invoice->currency);
-            
+            // dd($xml);  
             $response = $this->craneOTASoapService->run($function, $xml);
             
-            // dd($response);
             
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
            
@@ -253,6 +255,7 @@ class BookingController extends Controller
         return response()->json([
             'error' => false,
             'invoice_id' => $invoice->id,
+            "invoice_cuurency" => $invoice->currency,
             'is_paid' => $invoice->is_paid,
             'booking_data' => $response
         ]);
