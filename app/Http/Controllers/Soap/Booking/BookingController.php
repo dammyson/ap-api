@@ -52,7 +52,7 @@ class BookingController extends Controller
             }
 
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-            dd($invoice);
+            // dd($invoice);
             if (!$invoice) {
                 return response()->json([
                     'error' => true,
