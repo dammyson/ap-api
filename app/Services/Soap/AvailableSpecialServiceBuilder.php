@@ -26,7 +26,7 @@ class AvailableSpecialServiceBuilder {
                     <member>false</member>
                     <password>' . htmlspecialchars($this->cranePassword, ENT_XML1, 'UTF-8') . '</password>
                     <userName>' . htmlspecialchars($this->craneUsername, ENT_XML1, 'UTF-8') . '</userName>
-                    <preferredCurrency>NGN</preferredCurrency>
+                    <preferredCurrency>' . htmlspecialchars($request->input('prefferedCurrency'), ENT_XML1, 'UTF-8') . '</preferredCurrency>
                  </clientInformation>
                  <bookingReferenceID>
                      <companyName>

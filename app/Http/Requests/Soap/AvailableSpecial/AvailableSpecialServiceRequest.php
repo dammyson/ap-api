@@ -24,7 +24,8 @@ class AvailableSpecialServiceRequest extends FormRequest
         return [
             "ID" => "required|string", 
             "referenceID" => "required|string",
-            "ssrGroupCode" => "sometimes"
+            "ssrGroupCode" => "sometimes",
+            "prefferedCurrency" => "required|string"
         ];
     }
 }
