@@ -6,6 +6,7 @@ use App\Http\Requests\Support\ContactSupportRequest;
 use App\Notifications\ContactSupport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Log;
 
 class SupportController extends Controller
 {
@@ -13,7 +14,8 @@ class SupportController extends Controller
         try {
             
             $details = $request->validated();
-            Notification::route('mail', 'gilbertgenye4@gmail.com')
+            $email = config('app.airpeace.email');
+            Notification::route('mail', $email)
                             ->notify(new ContactSupport($details));
 
             return response()->json([
@@ -22,9 +24,9 @@ class SupportController extends Controller
             ], 200);
 
         } catch(\Throwable $th) {
+            Log::error($th);
             return [
                 "error" => true,
-                "actual_message" => $th->getMessage(),
                 "message" => "Something went wrong"
             ];
         }
