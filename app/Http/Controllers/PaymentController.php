@@ -97,7 +97,7 @@ class PaymentController extends Controller
                 
             ]);
 
-            return Transaction::where('booking_id', $validated['bookingId'])->get();           
+            return Transaction::with('invoice')->where('booking_id', $validated['bookingId'])->get();           
 
             
             } catch (\Throwable $th) {
