@@ -30,7 +30,6 @@ class PaymentController extends Controller
    
     public function verifyTicketRef(Request $request)
     {
-            
         try {
 
             $validated = $request->validate([
@@ -43,8 +42,6 @@ class PaymentController extends Controller
                 'payment_method' => 'required|string',
                 'payment_channel' => 'required|string|string|in:paystack,flutterwave'
             ]);
-
-           
 
             $ref = $validated['ref'];
             $preferredCurrency = $validated['preferred_currency'];

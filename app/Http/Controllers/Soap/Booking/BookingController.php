@@ -189,7 +189,7 @@ class BookingController extends Controller
 
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
 
-            //  dd($invoice->currency);
+       
 
             if (!$invoice) {
                 return response()->json([
@@ -198,10 +198,12 @@ class BookingController extends Controller
                 ]);
             }
 
-            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $invoice->currency);
+            // $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $invoice->currency);
+            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, "USD");
             // dd($xml);  
             $response = $this->craneOTASoapService->run($function, $xml);
             
+            // dd($response);
             
             $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
            

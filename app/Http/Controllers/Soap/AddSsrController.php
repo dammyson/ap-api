@@ -7,11 +7,15 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Soap\AddSeatSelectSsrRequest;
 use App\Http\Requests\Soap\AddSsrRequest;
 use App\Models\Flight;
+use App\Models\Transaction;
 use App\Services\Soap\AddSsrBuilder;
 use App\Services\Soap\BookingBuilder;
 use App\Services\Utility\CheckArray;
+use App\Services\Wallet\FlutterVerificationService;
+use App\Services\Wallet\VerificationService;
 
 class AddSsrController extends Controller
 {
@@ -95,7 +99,10 @@ class AddSsrController extends Controller
 
     
 
-    public function addSsr(AddSsrRequest $request, Invoice $invoice) {        
+    public function addSsr(AddSsrRequest $request, Invoice $invoice) {
+        
+        // dd($request->user()->peace_id);
+
         $preferredCurrency = $request->input('preferredCurrency');
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         $bookingId = $request->input('bookingReferenceIDID');
@@ -103,7 +110,24 @@ class AddSsrController extends Controller
         $peaceId = $request->input('peaceId');
         $ssrType = $request->query('ssrType');
         $user = $request->user();
+
+        $request->validate([
+            "ref" => "required|string",
+            "payment_method" => "required|string",
+            "payment_channel" => "required|string",
+            "device_type" => "required|string"
+        ]);
         
+        $ref = $request->input('ref');
+        $paymentMethod = $request->input('payment_method');
+        $paymentChannel = $request->input('payment_channel');
+        $preferredCurrency = $request->input('preferred_currency');
+        $deviceType = $request->input('device_type');
+
+        
+        
+
+       
         if ($user->is_guest) {
 
             
@@ -126,12 +150,53 @@ class AddSsrController extends Controller
         );
         // dd($xml);
 
-        $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
-
         try {
+
+            //validate verifiedRequest;
+            if ($paymentChannel == "paystack") {
+                $new_top_request = new VerificationService($ref);
+
+            } else if ($paymentChannel == "flutterwave") {
+                $new_top_request = new FlutterVerificationService($ref);
+
+            }
+
+            $verified_request = $new_top_request->run();
+            // dd($verified_request);
+            $paidAmount = $verified_request["data"]["amount"];
+
+            // convert to naira (from kobo)
+
+            if ($paymentChannel == "paystack") {
+                $paidAmount = $paidAmount / 100;
+            
+            } else if ($paymentChannel == "flutterwave") {
+                $paidAmount = $paidAmount;
+            
+            }
+
+            $paidAmount = (float) $paidAmount;
+
+            
+
+            $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
+
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-          
+            // dump($response);
             $message = "";
+
+            $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
+
+            [$expectedAmount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
+
+            if (  $paidAmount != $expectedAmount) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "amount paid does not match amount from crane response",
+                    "amount_paid" => $paidAmount,
+                    "amount_expected" => $expectedAmount
+                ], 400);
+            }
 
             if ($ssrType == "insurance") {
                 if (array_key_exists("detail", $response)) {
@@ -148,15 +213,15 @@ class AddSsrController extends Controller
                         }  
                     } 
                 }
+                
+                // $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
 
-                $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
-
-                [$amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
+                // [ $amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
 
 
                 // if user has not paid set the new invoice balance else generate a new invoice
                 
-                [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $amount, $preferredCurrency, $bookingId);
+                [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $expectedAmount, $preferredCurrency, $bookingId);
             
           
                 $numberOfInsurance = count($ancillaryRequestList);
@@ -172,7 +237,7 @@ class AddSsrController extends Controller
                 $flights = Flight::where('booking_id', $bookingId)->get();
 
                 foreach ($flights as $flight) {
-                    $flight->amount += $amount;
+                    $flight->amount += $expectedAmount;
                     $flight->currency = $preferredCurrency;
                     $flight->is_paid = true;
                     $flight->save();
@@ -197,14 +262,9 @@ class AddSsrController extends Controller
                     ], 500);
                 }
 
-                $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
-
-                [$amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
-
-
-                    // if user has not paid set the new invoice balance else generate a new invoice
+                // if user has not paid set the new invoice balance else generate a new invoice
                     
-                [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $amount, $preferredCurrency, $bookingId);
+                [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $expectedAmount, $preferredCurrency, $bookingId);
                     
                 
                 foreach ($ancillaryRequestList as $ancillaryRequest) {
@@ -226,7 +286,7 @@ class AddSsrController extends Controller
                 $flights = Flight::where('booking_id', $bookingId)->get();
 
                 foreach ($flights as $flight) {
-                    $flight->amount += $amount;
+                    $flight->amount += $expectedAmount;
                     $flight->currency = $preferredCurrency;
                     $flight->is_paid = true;
                     $flight->save();
@@ -234,22 +294,38 @@ class AddSsrController extends Controller
                 
                 $message = "Baggages added successfully";
             }
+
+            Transaction::create([
+                "invoice_number" => $updatedInvoice->id,                            
+                'amount' => $paidAmount,
+                'transaction_type' => "add_ssr",
+                'booking_id' => $bookingId,
+                'ticket_type' => 'add_ssr',
+                'user_id' =>  $user->id,
+                'invoice_id' => $updatedInvoice->id,
+                'device_type' => $deviceType,
+                'is_flight' => true,                             
+                "payment_method" => $paymentMethod ?? "not applicable",
+                "payment_channel" => $paymentChannel ?? "not applicable",
+                'currency' => $preferredCurrency
+
+            ]);  
       
             return response()->json([
                 "error" => false,
                 "message" => $message,
                 'invoice_id' => $updatedInvoice->id,
-                "amount" => $amount
+                "amount" => $expectedAmount
             ], 200);
 
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
            
-            Log::error($th->getMessage());
+            Log::error($e->getMessage());
 
             return response()->json([
                 'error' => true,
                 "message" => "something went wrong",
-                "actual_message" => $th->getMessage()
+                "actual_message" => $e->getMessage()
         
             ], 500);
         }
