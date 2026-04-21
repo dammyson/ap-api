@@ -27,7 +27,8 @@ class SupportController extends Controller
             Log::error($th);
             return [
                 "error" => true,
-                "message" => "Something went wrong"
+                "message" => "Something went wrong",
+                "error_details" => $th->getMessage()
             ];
         }
     }

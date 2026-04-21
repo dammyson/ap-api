@@ -27,7 +27,8 @@ class ContactSupportRequest extends FormRequest
             'name_on_ticket' => 'sometimes|string',
             'date_of_occurence' => 'sometimes|date',
             'description' => 'sometimes|string',
-            'category' => 'sometimes|in:refund,reversal,other'
+            'category' => 'sometimes|in:refund,reversal,other',
+            'refund_type' => 'required_if:category,refund|in:flight_interference,voluntary'
         ];
     }
 }

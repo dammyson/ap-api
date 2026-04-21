@@ -25,6 +25,18 @@
         <div>
            <span style="font-size:16px; font-weight:bold"> category : </span> {{$details['category'] ?? "Not Provided"}}
         </div>
+        @php
+            $refundType = $details['refund_type'] ?? null;
+        @endphp
+        <div>
+            @if ($refundType)
+                <span style="font-size:16px; font-weight:bold">refund type : 
+                    
+                </span> 
+                {{$details['refund_type'] == "flight_interference" ? 'Flight Interference' : ($details['refund_type'] == "voluntary" ? 'Voluntary' : "Not Provided")}}
+                
+            @endif
+        </div>
     </div>
 
 </body>
