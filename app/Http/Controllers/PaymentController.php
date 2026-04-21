@@ -86,6 +86,32 @@ class PaymentController extends Controller
             ], 500);
         }  
     }
+   
+    public function transactionList(Request $request)
+    {
+            
+        try {
+
+            $validated = $request->validate([               
+                'bookingId' => 'required|string',
+                
+            ]);
+
+            return Transaction::where('booking_id', $validated['bookingId'])->get();           
+
+            
+            } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true,   
+                "message" => "something went wrong",
+                "actual_message" => $th->getMessage()
+             
+            ], 500);
+        }  
+    }
 
     // public function verifyFlutterwave(Request $request) 
     // {   
