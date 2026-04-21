@@ -48,7 +48,7 @@ class VerificationService implements BaseServiceInterface
             return $result;
         } 
         else{
-            return $result;
+            throw new \Exception("Payment verification failed");
         }
        
     }
