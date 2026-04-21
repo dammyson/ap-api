@@ -276,6 +276,7 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
 
     Route::prefix('verify-payment')->group(function () {
         Route::post('/ref', [PaymentController::class, 'verifyTicketRef']);
+        Route::post('/transaction-list', [PaymentController::class, 'transactionList']);
         Route::post('/tier-ref', [PaymentController::class, 'verifyTierRef']);
         // Route::post('/ref-quick-teller', [PaymentController::class, 'verifyQuickTeller']);
         Route::post('/ref-quick-teller', [OnepipeController::class, 'verifyQuickTeller']);
