@@ -17,6 +17,7 @@ use App\Services\Wallet\TopUpService;
 use App\Services\Wallet\VerificationService;
 use App\Services\Wallet\FlutterVerificationService;
 use App\Http\Controllers\Soap\TicketReservationController;
+use App\Models\RecentActivity;
 
 class PaymentController extends Controller
 {   
@@ -93,7 +94,7 @@ class PaymentController extends Controller
                 'bookingId' => 'required|string',
                 
             ]);
-
+            // return RecentActivity::orderBy('created_at', 'desc')->get();
             return Transaction::with('invoice')->where('booking_id', $validated['bookingId'])->get();           
 
             

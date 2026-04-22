@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
+use App\Events\UserActivityLogEvent;
 use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
@@ -10,12 +11,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Soap\AddSeatSelectSsrRequest;
 use App\Http\Requests\Soap\AddSsrRequest;
 use App\Models\Flight;
+use App\Models\RecentActivity;
 use App\Models\Transaction;
 use App\Services\Soap\AddSsrBuilder;
 use App\Services\Soap\BookingBuilder;
 use App\Services\Utility\CheckArray;
 use App\Services\Wallet\FlutterVerificationService;
 use App\Services\Wallet\VerificationService;
+use App\Services\Soap\TicketReservationRequestBuilder;
 
 class AddSsrController extends Controller
 {
@@ -24,8 +27,10 @@ class AddSsrController extends Controller
     protected $craneOTASoapService;
     protected $bookingBuilder;
     protected $checkArray;
+    protected $ticketReservationRequestBuilder;    
 
-    public function __construct(AddSsrBuilder $addSsrBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray) {
+    public function __construct(AddSsrBuilder $addSsrBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray, TicketReservationRequestBuilder $ticketReservationRequestBuilder) {
+        $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->addSsrBuilder = $addSsrBuilder;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->craneOTASoapService = app("CraneOTASoapService");
@@ -100,16 +105,15 @@ class AddSsrController extends Controller
     
 
     public function addSsr(AddSsrRequest $request, Invoice $invoice) {
-        
-        // dd($request->user()->peace_id);
 
         $preferredCurrency = $request->input('preferredCurrency');
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         $bookingId = $request->input('bookingReferenceIDID');
-        $passengerName = $request->input('passengerName');
+         $passengerName = $request->input('passengerName');
         $peaceId = $request->input('peaceId');
         $ssrType = $request->query('ssrType');
         $user = $request->user();
+        // dd($user->peace_id);
 
         $request->validate([
             "ref" => "required|string",
@@ -124,9 +128,7 @@ class AddSsrController extends Controller
         $preferredCurrency = $request->input('preferred_currency');
         $deviceType = $request->input('device_type');
 
-        
-        
-
+        $bookingReferenceId = "";
        
         if ($user->is_guest) {
 
@@ -137,8 +139,11 @@ class AddSsrController extends Controller
                 return $this->unauthorizedResponse();
             }
 
+            $bookingReferenceId = data_get($response, 'AirBookingResponse.airBookingList.bookingReferenceIDList.referenceID', '');
+
         } else {
             $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
+            $bookingReferenceId = $booking->booking_reference_id;
             if (!$booking) {
                return $this->unauthorizedResponse();
             }
@@ -295,21 +300,10 @@ class AddSsrController extends Controller
                 $message = "Baggages added successfully";
             }
 
-            Transaction::create([
-                "invoice_number" => $updatedInvoice->id,                            
-                'amount' => $paidAmount,
-                'transaction_type' => "add_ssr",
-                'booking_id' => $bookingId,
-                'ticket_type' => 'add_ssr',
-                'user_id' =>  $user->id,
-                'invoice_id' => $updatedInvoice->id,
-                'device_type' => $deviceType,
-                'is_flight' => true,                             
-                "payment_method" => $paymentMethod ?? "not applicable",
-                "payment_channel" => $paymentChannel ?? "not applicable",
-                'currency' => $preferredCurrency
+            // commit the ssr
+            $this->handleTicketingSsr($preferredCurrency, $bookingId, $bookingReferenceId, $ssrType, $expectedAmount, $deviceType, $paymentMethod, $paymentChannel, $updatedInvoice->id);
 
-            ]);  
+           
       
             return response()->json([
                 "error" => false,
@@ -329,6 +323,120 @@ class AddSsrController extends Controller
         
             ], 500);
         }
+    }
+
+    private function handleTicketingSsr($preferredCurrency, $bookingId, $bookingReferenceId, $ssr, $amount, $deviceType, $paymentMethod, $paymentChannel, $invoiceId) {
+        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
+            $preferredCurrency,           
+            $bookingId,
+            $bookingReferenceId,           
+            $amount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
+          
+        );
+
+        // dump($xml);
+
+        try {
+            
+            // $user = auth()->user();
+            // $peaceId = $user ? $user->peace_id : null;      
+            // $guestToken = !$user ? Session::get('guest_session_token'): null;
+            // $guestToken = $request->input('guest_session_token');
+            Log::info('Reached handleTicketingSsr');
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+
+
+            if (!array_key_exists('AirTicketReservationResponse', $response)) {
+                return response()->json([
+                    'error' => true,
+                    'message' => "no new addition to ticket",
+                    'paidAmount' => $amount,
+                ], 500);
+            }        
+
+            // get the list of all the tickets 
+            $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
+            $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
+          
+            // Device::where('user_id', $user->id)->first();        
+
+            $user = auth()->user();
+            // $deviceType = $user ? $user->device_type : $deviceType;
+           
+
+            if ($this->checkArray->isAssociativeArray($ticketItemList)) {
+                $ticketItemList = [$ticketItemList];
+            }
+
+            foreach($ticketItemList as $ticketItem) {
+                // if ($ticketItem["status"] == "OK") {
+                $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                
+                if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
+                    // dump('non asvcSsr ran');
+                    
+                    Transaction::firstOrCreate([
+                        "invoice_number" => $invoice_number,                            
+                    ], [
+                        'amount' => $amount,
+                        'booking_id' => $bookingId,
+                        'transaction_type' => $transactionType,
+                        'booking_id' => $bookingId,
+                        'ticket_type' => 'ticket',
+                        'user_id' =>  $user->id,
+                        'invoice_id' => $invoiceId,
+                        'device_type' => $deviceType,
+                        'is_flight' => true,                             
+                        "payment_method" => $paymentMethod ?? "not applicable",
+                        "payment_channel" => $paymentChannel ?? "not applicable",
+                        'currency' => $preferredCurrency
+
+                    ]); 
+                    Log::info('First transaction saved successfully');                         
+                
+                }
+                else {      
+                                                
+                    Transaction::firstOrCreate([
+                        "invoice_number" => $invoice_number,                            
+                    ], [
+                        'amount' => $amount,
+                        'booking_id' => $bookingId,
+                        'transaction_type' => $transactionType,
+                        'ticket_type' => 'Ancillary',
+                        'user_id' => $user->id,
+                        'invoice_id' => $invoiceId,
+                        'device_type' => $deviceType,
+                        'is_flight' => true,
+                        "payment_method" => $paymentMethod ?? "not applicable",
+                        "payment_channel" => $paymentChannel ?? "not applicable",
+                        'currency' => $preferredCurrency
+
+                    ]); 
+
+                    Log::info('Second transaction saved successfully');
+                }                
+            }
+        
+
+            $description = "made for a payment of {$amount} for {$ssr} for flight with booking id {$bookingId}";
+            event(new UserActivityLogEvent($user, "{$ssr} Payment", $description));
+
+           
+            RecentActivity::create([
+                "title" => "{$ssr} Payment",
+                "description" => $user ? " {$user->first_name} made payment for {$ssr} for flight with booking id {$bookingId} " : "Guest made payment for {$ssr} for flight with booking Id {$bookingId}"
+            ]);
+         
+        } catch (\Throwable $th) {
+
+            Log::error($th);
+            throw $th;
+            // throw new \Exception("adding Ssr failed Pls contact Support");
+           
+        }  
     }
 
     public function selectSeat(AddSsrRequest $request) {
