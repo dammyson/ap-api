@@ -94,7 +94,7 @@ class PaymentController extends Controller
                 'bookingId' => 'required|string',
                 
             ]);
-            // return RecentActivity::orderBy('created_at', 'desc')->get();
+            
             return Transaction::with('invoice')->where('booking_id', $validated['bookingId'])->get();           
 
             

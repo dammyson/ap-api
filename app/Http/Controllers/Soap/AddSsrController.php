@@ -325,6 +325,122 @@ class AddSsrController extends Controller
         }
     }
 
+    public function addBaggages(AddSsrRequest $request, Invoice $invoice) {
+
+        $preferredCurrency = $request->input('preferredCurrency');
+        $ancillaryRequestList = $request->input('ancillaryRequestList');
+        $bookingId = $request->input('bookingReferenceIDID');
+         $passengerName = $request->input('passengerName');
+        $peaceId = $request->input('peaceId');
+        $ssrType = $request->query('ssrType');
+        $user = $request->user();
+        // dd($user->peace_id);
+
+        
+        $preferredCurrency = $request->input('preferred_currency');
+
+       
+       
+        if ($user->is_guest) {
+
+            
+            $response = $this->handleGuestUser($bookingId, $passengerName, $preferredCurrency);
+
+            if (!(isset($response['AirBookingResponse']))) {
+                return $this->unauthorizedResponse();
+            }
+
+            } else {
+                $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
+              
+                if (!$booking) {
+                return $this->unauthorizedResponse();
+                }
+        }
+
+
+        $xml = $this->addSsrBuilder->addSsr(
+            $request
+        );
+        // dd($xml);
+
+        try {
+
+            $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
+
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+            // dump($response);
+            
+            if (array_key_exists("detail", $response)) {
+                if (array_key_exists("CraneFault", $response["detail"])){
+                    if (array_key_exists("code", $response["detail"]["CraneFault"])){
+                        if ($response["detail"]["CraneFault"]["code"] == "BAGGAGE_LIMIT_ERROR") {
+                            $message = "Requested baggage weight {$response["detail"]["CraneFault"]["args"][0]} exceeds baggage limit {$response["detail"]["CraneFault"]["args"][1]}. Current baggage weight {$response["detail"]["CraneFault"]["args"][2]}";
+                        }
+                    }
+                }        
+                return response()->json([
+                    'error' => true,
+                    "message" => $message
+            
+                ], 500);
+            }
+
+            $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
+
+            [$expectedAmount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
+
+            // if user has not paid set the new invoice balance else generate a new invoice
+                
+            [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $expectedAmount, $preferredCurrency, $bookingId);
+                
+            
+            // foreach ($ancillaryRequestList as $ancillaryRequest) {
+            //     $ssrExplanation = $ancillaryRequest['ssrExplanation'];
+            //     preg_match('/\d+/', $ssrExplanation, $matches);
+    
+            //     // $matches[0] will contain the number
+            //     $quantity = $matches[0];
+
+            //     InvoiceItem::create([
+            //         'invoice_id' => $updatedInvoice->id,
+            //         'product' => 'Baggages', // baggages or ticket shopping
+            //         'quantity' => $quantity,
+            //         // total_passengers => $totalPassengers  // this field would be removed
+            //         'price' => $addedPrice
+            //     ]);
+
+            // }
+            $flights = Flight::where('booking_id', $bookingId)->get();
+
+            foreach ($flights as $flight) {
+                $flight->amount += $expectedAmount;
+                $flight->currency = $preferredCurrency;
+                $flight->is_paid = false;
+                $flight->save();
+           
+            }             
+           
+            return response()->json([
+                "error" => false,
+                "message" => "Baggages added successfully",
+                'invoice_id' => $updatedInvoice->id,
+                "amount" => $expectedAmount
+            ], 200);
+
+        } catch (\Exception $e) {
+           
+            Log::error($e->getMessage());
+
+            return response()->json([
+                'error' => true,
+                "message" => "something went wrong",
+                "actual_message" => $e->getMessage()
+        
+            ], 500);
+        }
+    }
+
     private function handleTicketingSsr($preferredCurrency, $bookingId, $bookingReferenceId, $ssr, $amount, $deviceType, $paymentMethod, $paymentChannel, $invoiceId) {
         $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
             $preferredCurrency,           
