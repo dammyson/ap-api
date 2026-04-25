@@ -248,7 +248,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
           
         
         Route::post('/add-ssr/invoice/{invoice}', [AddSsrController::class, 'addSsr']);
-        Route::post('/add-ssr/baggages/{invoice}', [AddSsrController::class, 'addSsr']);
+        Route::post('/add-ssr/baggages/{invoice}', [AddSsrController::class, 'addBaggages']);
         Route::post('/select-seat', [AddSsrController::class, 'selectSeat']);
         
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
