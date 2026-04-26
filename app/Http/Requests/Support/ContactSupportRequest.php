@@ -24,7 +24,7 @@ class ContactSupportRequest extends FormRequest
         return [
             'email' => 'required|email|max:255',
             'booking_reference' => 'sometimes|string',
-            'name_on_ticket' => 'sometimes|string',
+            'name_on_ticket' => 'sometimes|nullable|string',
             'date_of_occurence' => 'sometimes|date',
             'description' => 'sometimes|string',
             'category' => 'sometimes|in:refund,reversal,other',
