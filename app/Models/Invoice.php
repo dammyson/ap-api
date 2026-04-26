@@ -17,4 +17,8 @@ class Invoice extends Model
         'currency',
         'is_paid',
     ];
+
+    protected $casts = [
+        'is_paid' => 'boolean',
+    ];
 }
