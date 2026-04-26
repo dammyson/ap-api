@@ -78,11 +78,10 @@ class AddSsrController extends Controller
 
     }
 
-    private function updateOrCreateInvoice(Invoice $invoice, $amount, $preferredCurrency, $bookingId) {
+    private function updateOrCreateInvoice($amount, $preferredCurrency, $bookingId, $invoice = null) {
         $addedPrice = 0;
-            // dd($invoice);
            
-        if (!$invoice->is_paid) {
+        if ($invoice && !$invoice->is_paid && $invoice->type == "ssr") {
             $addedPrice = $invoice->amount - $amount;
             $addedPrice = abs($addedPrice);
 
@@ -92,6 +91,7 @@ class AddSsrController extends Controller
             $invoice = Invoice::create([
                 'amount' => $amount,
                 'booking_id' => $bookingId,
+                "type" => "ssr",
                 'currency' => $preferredCurrency,
                 'is_paid' => false
             ]);
@@ -104,15 +104,17 @@ class AddSsrController extends Controller
 
     
 
-    public function addSsr(AddSsrRequest $request, Invoice $invoice) {
+    public function addInsuranceSsr(AddSsrRequest $request, ) {
 
         $preferredCurrency = $request->input('preferredCurrency');
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         $bookingId = $request->input('bookingReferenceIDID');
-         $passengerName = $request->input('passengerName');
+        $passengerName = $request->input('passengerName');
         $peaceId = $request->input('peaceId');
         $ssrType = $request->query('ssrType');
         $user = $request->user();
+
+        $invoiceId = $request->input('invoiceId');
         // dd($user->peace_id);
 
         $request->validate([
@@ -157,7 +159,7 @@ class AddSsrController extends Controller
 
         try {
 
-            //validate verifiedRequest;
+            // validate verifiedRequest;
             if ($paymentChannel == "paystack") {
                 $new_top_request = new VerificationService($ref);
 
@@ -197,108 +199,69 @@ class AddSsrController extends Controller
             if (  $paidAmount != $expectedAmount) {
                 return response()->json([
                     "error" => true,
-                    "message" => "amount paid does not match amount from crane response",
+                    "message" => "Amount mismatch, expected amount is {$expectedAmount} but paid amount is {$paidAmount}",
                     "amount_paid" => $paidAmount,
                     "amount_expected" => $expectedAmount
                 ], 400);
             }
 
-            if ($ssrType == "insurance") {
-                if (array_key_exists("detail", $response)) {
-                    if (array_key_exists("CraneFault", $response["detail"])){
-                        if (array_key_exists("code", $response["detail"]["CraneFault"])){
-                            if ($response["detail"]["CraneFault"]["code"] == "CHECK_PAX_SSR_COUNT") {
-                            
-                                return response()->json([
-                                    "error" => true,            
-                                    "message" => "Passenger already has an insurance added"
-                                ], 400);
-                            
-                            }
-                        }  
-                    } 
-                }
-                
-                // $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
-
-                // [ $amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
-
-
-                // if user has not paid set the new invoice balance else generate a new invoice
-                
-                [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $expectedAmount, $preferredCurrency, $bookingId);
-            
-          
-                $numberOfInsurance = count($ancillaryRequestList);
-                InvoiceItem::create([
-                    'invoice_id' => $updatedInvoice->id,
-                    'product' => 'Insurance', // baggages or ticket shopping
-                    'quantity' => $numberOfInsurance,
-                    // total_passengers => $totalPassengers  // this field would be removed
-                    'price' => $addedPrice
-                ]);
-                $message = "Insurance added successfully";
-
-                $flights = Flight::where('booking_id', $bookingId)->get();
-
-                foreach ($flights as $flight) {
-                    $flight->amount += $expectedAmount;
-                    $flight->currency = $preferredCurrency;
-                    $flight->is_paid = true;
-                    $flight->save();
-                }   
-                
-            
-                
-            } else if ($ssrType == "baggages") {   
-
-                if (array_key_exists("detail", $response)) {
-                    if (array_key_exists("CraneFault", $response["detail"])){
-                        if (array_key_exists("code", $response["detail"]["CraneFault"])){
-                            if ($response["detail"]["CraneFault"]["code"] == "BAGGAGE_LIMIT_ERROR") {
-                                $message = "Requested baggage weight {$response["detail"]["CraneFault"]["args"][0]} exceeds baggage limit {$response["detail"]["CraneFault"]["args"][1]}. Current baggage weight {$response["detail"]["CraneFault"]["args"][2]}";
-                            }
+            if (array_key_exists("detail", $response)) {
+                if (array_key_exists("CraneFault", $response["detail"])){
+                    if (array_key_exists("code", $response["detail"]["CraneFault"])){
+                        if ($response["detail"]["CraneFault"]["code"] == "CHECK_PAX_SSR_COUNT") {
+                        
+                            return response()->json([
+                                "error" => true,            
+                                "message" => "Passenger already has an insurance added"
+                            ], 400);
+                        
                         }
-                    }        
-                    return response()->json([
-                        'error' => true,
-                        "message" => $message
-                
-                    ], 500);
-                }
-
-                // if user has not paid set the new invoice balance else generate a new invoice
-                    
-                [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $expectedAmount, $preferredCurrency, $bookingId);
-                    
-                
-                foreach ($ancillaryRequestList as $ancillaryRequest) {
-                    $ssrExplanation = $ancillaryRequest['ssrExplanation'];
-                    preg_match('/\d+/', $ssrExplanation, $matches);
-        
-                    // $matches[0] will contain the number
-                    $quantity = $matches[0];
-    
-                    InvoiceItem::create([
-                        'invoice_id' => $updatedInvoice->id,
-                        'product' => 'Baggages', // baggages or ticket shopping
-                        'quantity' => $quantity,
-                        // total_passengers => $totalPassengers  // this field would be removed
-                        'price' => $addedPrice
-                    ]);
-    
-                }
-                $flights = Flight::where('booking_id', $bookingId)->get();
-
-                foreach ($flights as $flight) {
-                    $flight->amount += $expectedAmount;
-                    $flight->currency = $preferredCurrency;
-                    $flight->is_paid = true;
-                    $flight->save();
-                }   
-                
-                $message = "Baggages added successfully";
+                    }  
+                } 
             }
+            
+            // $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
+
+            // [ $amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
+
+
+            // if user has not paid set the new invoice balance else generate a new invoice
+
+            // $invoice = Invoice::where('id', $invoiceId)->first();
+            
+             // get the latest ssr invoice 
+            $invoice = Invoice::where('booking_id', $bookingId)
+                ->where('type', 'ssr')
+                ->latest()
+                ->first();
+
+            [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($expectedAmount, $preferredCurrency, $bookingId, $invoice);
+        
+            $updatedInvoice->is_paid = true;
+            $updatedInvoice->save();
+
+            $numberOfInsurance = count($ancillaryRequestList);
+            InvoiceItem::create([
+                'invoice_id' => $updatedInvoice->id,
+                'product' => 'Insurance', // baggages or ticket shopping
+                'quantity' => $numberOfInsurance,
+                // total_passengers => $totalPassengers  // this field would be removed
+                'price' => $addedPrice
+            ]);
+            $message = "Insurance added successfully";
+
+            $flights = Flight::where('booking_id', $bookingId)->get();
+
+            foreach ($flights as $flight) {
+                $flight->amount += $expectedAmount;
+                $flight->currency = $preferredCurrency;
+                $flight->is_paid = true;
+                $flight->save();
+            }   
+                
+            
+                
+            
 
             // commit the ssr
             $this->handleTicketingSsr($preferredCurrency, $bookingId, $bookingReferenceId, $ssrType, $expectedAmount, $deviceType, $paymentMethod, $paymentChannel, $updatedInvoice->id);
@@ -325,12 +288,13 @@ class AddSsrController extends Controller
         }
     }
 
-    public function addBaggages(AddSsrRequest $request, Invoice $invoice) {
+    public function addBaggagesSsr(AddSsrRequest $request) {
 
         $preferredCurrency = $request->input('preferredCurrency');
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         $bookingId = $request->input('bookingReferenceIDID');
-         $passengerName = $request->input('passengerName');
+        $passengerName = $request->input('passengerName');
+        $invoiceId = $request->input('invoiceId');
         $peaceId = $request->input('peaceId');
         $ssrType = $request->query('ssrType');
         $user = $request->user();
@@ -381,7 +345,8 @@ class AddSsrController extends Controller
                 }        
                 return response()->json([
                     'error' => true,
-                    "message" => $message
+                    "message" => $message ?? "unable to add baggages for this flight"
+
             
                 ], 500);
             }
@@ -391,26 +356,33 @@ class AddSsrController extends Controller
             [$expectedAmount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
 
             // if user has not paid set the new invoice balance else generate a new invoice
-                
-            [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($invoice, $expectedAmount, $preferredCurrency, $bookingId);
+            
+            // get the latest ssr invoice 
+            $invoice = Invoice::where('booking_id', $bookingId)
+                ->where('type', 'ssr')
+                ->latest()
+                ->first();
+
+            // invoice is generated if no exist or updated if it's existing but unpaid
+            [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($expectedAmount, $preferredCurrency, $bookingId, $invoice);
                 
             
-            // foreach ($ancillaryRequestList as $ancillaryRequest) {
-            //     $ssrExplanation = $ancillaryRequest['ssrExplanation'];
-            //     preg_match('/\d+/', $ssrExplanation, $matches);
+            foreach ($ancillaryRequestList as $ancillaryRequest) {
+                $ssrExplanation = $ancillaryRequest['ssrExplanation'];
+                preg_match('/\d+/', $ssrExplanation, $matches);
     
-            //     // $matches[0] will contain the number
-            //     $quantity = $matches[0];
+                // $matches[0] will contain the number
+                $quantity = $matches[0];
 
-            //     InvoiceItem::create([
-            //         'invoice_id' => $updatedInvoice->id,
-            //         'product' => 'Baggages', // baggages or ticket shopping
-            //         'quantity' => $quantity,
-            //         // total_passengers => $totalPassengers  // this field would be removed
-            //         'price' => $addedPrice
-            //     ]);
+                InvoiceItem::create([
+                    'invoice_id' => $updatedInvoice->id,
+                    'product' => 'Baggages', // baggages or ticket shopping
+                    'quantity' => $quantity,
+                    // total_passengers => $totalPassengers  // this field would be removed
+                    'price' => $addedPrice
+                ]);
 
-            // }
+            }
             $flights = Flight::where('booking_id', $bookingId)->get();
 
             foreach ($flights as $flight) {

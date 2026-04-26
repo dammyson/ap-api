@@ -135,6 +135,7 @@ class CreateBookingController extends Controller
             $invoice = Invoice::create([
                 'amount' => $expectedAmount,
                 'booking_id' => $bookingReferenceIDList['ID'],
+                'type' => 'flight',
                 'is_paid' => false,
                 'currency' => $currency
             ]);  
