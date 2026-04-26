@@ -152,7 +152,7 @@ class AddSsrRequest extends FormRequest
             "ancillaryRequestList.*.ssrExplanation" => "required|string",
             "bookingReferenceIDID" => "required|string",
             "bookingReferenceID" => "required|string",
-            "preferredCurrency" => "required|string",
+            "preferredCurrency" => "required|string"
 
            
         ];

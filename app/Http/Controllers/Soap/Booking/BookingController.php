@@ -51,9 +51,23 @@ class BookingController extends Controller
                 ], 500);
             }
 
-            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
+            // $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
+
+            $flightInvoice = Invoice::where('booking_id', $bookingId)
+                ->where('type', 'flight')
+                ->latest()
+                ->first();
+
+            $ssrInvoice = Invoice::where('booking_id', $bookingId)
+                ->where('type', 'ssr')
+                ->latest()
+                ->first();
+            
+
+
+
             // dd($invoice);
-            if (!$invoice) {
+            if (! ($flightInvoice || $ssrInvoice)) {
                 return response()->json([
                     'error' => true,
                     'message' => "Invoice is not found for the booking"
@@ -64,7 +78,7 @@ class BookingController extends Controller
             $xml = $this->bookingBuilder->readBookingTK(
                 $bookingId, 
                 $booking->booking_reference_id,
-                $invoice->currency
+                $flightInvoice ? $flightInvoice->currency : $ssrInvoice->currency
                 // $booking->booking_reference_id
             );
 
@@ -135,11 +149,16 @@ class BookingController extends Controller
             ], 500);
         }  
 
+
         return response()->json([
             'error' => false,
-            'invoice_id' => $invoice->id,
-            "invoice_cuurency" => $invoice->currency,
-            'is_paid' => $invoice->is_paid,
+            'flight_invoice_id' => $flightInvoice ? $flightInvoice->id : null,
+            'flight_payment_status' => $flightInvoice ? $flightInvoice->is_paid : null,
+            'flight_invoice_amount' => $flightInvoice ? $flightInvoice->amount : null,
+            'ssr_payment_status' => $ssrInvoice ? $ssrInvoice->is_paid : null,
+            'ssr_invoice_id' => $ssrInvoice ? $ssrInvoice->id : null,
+            'ssr_invoice_amount' => $ssrInvoice ? $ssrInvoice->amount : null,
+            "currency" => $flightInvoice->currency,
             'booking_data' => $response
         ]);
 
@@ -205,8 +224,29 @@ class BookingController extends Controller
             
             // dd($response);
             
-            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-           
+            // $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
+             $flightInvoice = Invoice::where('booking_id', $bookingId)
+                ->where('type', 'flight')
+                ->latest()
+                ->first();
+
+            $ssrInvoice = Invoice::where('booking_id', $bookingId)
+                ->where('type', 'ssr')
+                ->latest()
+                ->first();
+            
+
+
+
+            // dd($invoice);
+            if (! ($flightInvoice || $ssrInvoice)) {
+                return response()->json([
+                    'error' => true,
+                    'message' => "Invoice is not found for the booking"
+                ]);
+            }
+
+
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
                 $this->checkArray->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
                     // dd('I ran');
@@ -256,9 +296,13 @@ class BookingController extends Controller
 
         return response()->json([
             'error' => false,
-            'invoice_id' => $invoice->id,
-            "invoice_cuurency" => $invoice->currency,
-            'is_paid' => $invoice->is_paid,
+            'flight_invoice_id' => $flightInvoice ? $flightInvoice->id : null,
+            'flight_payment_status' => $flightInvoice ? $flightInvoice->is_paid : null,
+            'flight_invoice_amount' => $flightInvoice ? $flightInvoice->amount : null,
+            'ssr_payment_status' => $ssrInvoice ? $ssrInvoice->is_paid : null,
+            'ssr_invoice_id' => $ssrInvoice ? $ssrInvoice->id : null,
+            'ssr_invoice_amount' => $ssrInvoice ? $ssrInvoice->amount : null,
+            "currency" => $flightInvoice->currency,
             'booking_data' => $response
         ]);
 
