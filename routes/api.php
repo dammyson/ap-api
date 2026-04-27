@@ -207,6 +207,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
             Route::group(["prefix" => "create-booking"], function() {
                 Route::post('/', [CreateBookingController::class, 'createBooking']);
+                Route::post('/dummy', [CreateBookingController::class, 'createBooking']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
                 Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
