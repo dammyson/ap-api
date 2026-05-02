@@ -194,9 +194,10 @@ class BookingController extends Controller
     public function readBookingWithSurname(Request $request) {
         try {
             $bookingId = $request->input('booking_id');
-            $passengerName = $request->input('surname');
+            $passengerName = $request->input('passengerSurname');
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
+       
             $booking = Booking::where('booking_id', $bookingId)->where('is_cancelled', false)->first();
 
             if (!$booking) {
@@ -217,8 +218,10 @@ class BookingController extends Controller
                 ]);
             }
 
-            // $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $invoice->currency);
-            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, "USD");
+            
+         
+            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $invoice->currency);
+            // $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, "NGN");
             // dd($xml);  
             $response = $this->craneOTASoapService->run($function, $xml);
             

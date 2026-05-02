@@ -328,7 +328,7 @@ class CreateBookingBuilder
             
               <infantWithSeatCount/>
               '.
-                $this->contactInfoListRequest($contactInfoList)
+                $this->contactInfoListRequest($contactInfoList, $airTravelerList[0])
               .'<specialRequestDetails>
                 '. 
                     $this->otherServiceInformationList($otherServiceInformationList)
@@ -379,15 +379,14 @@ class CreateBookingBuilder
             return $xml;
         }
     }
-    public function contactInfoListRequest($contactInfoList) {
-        if($contactInfoList)
-        {   
-            $xml = '';
-        
+    public function contactInfoListRequest($contactInfoList, $airTraveler) {
+    
+        $xml = '';
+        if ($contactInfoList) {
             foreach($contactInfoList as $string) {
                 $xml .= '<contactInfoList>
                             <companyInfo>
-                                <companyFullName>' . htmlspecialchars($string['companyFullName'], ENT_XML1, 'UTF-8') . '</companyFullName>
+                                <companyFullName>' . htmlspecialchars($string['companyFullName' ], ENT_XML1, 'UTF-8') . '</companyFullName>
                                 <companyLegalName>' . htmlspecialchars($string['companyLegalName'], ENT_XML1, 'UTF-8') . '</companyLegalName>
                                 <taxNumber>' . htmlspecialchars($string['taxNumber'], ENT_XML1, 'UTF-8') . '</taxNumber>
                                 <taxOffice>' . htmlspecialchars($string['taxOffice'], ENT_XML1, 'UTF-8') . '</taxOffice>
@@ -424,7 +423,7 @@ class CreateBookingBuilder
                                 <areaCode>' . htmlspecialchars($string['areaCode'], ENT_XML1, 'UTF-8') . '</areaCode>
                                 <countryCode>' . htmlspecialchars($string['phoneNumberCountryCode'], ENT_XML1, 'UTF-8') . '</countryCode>
                                 <markedForSendingRezInfo>' . htmlspecialchars($string['phoneNumberMarkedForSendingRezInfo'], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
-                                <phoneUseType>' . htmlspecialchars($string['phoneUseType'], ENT_XML1, 'UTF-8') . '</phoneUseType>
+                                <phoneUseType>' . htmlspecialchars($string['phoneUseType'] ?? 'H', ENT_XML1, 'UTF-8') . '</phoneUseType>
                                 <preferred/>
                                 <shareMarketInd/>
                                 <subscriberNumber>' . htmlspecialchars($string['subscriberNumber'], ENT_XML1, 'UTF-8') . '</subscriberNumber>
@@ -436,8 +435,63 @@ class CreateBookingBuilder
                     </contactInfoList>';
             }
 
-            return $xml;
+        } else {
+            // dd("ir an");
+
+            $xml .= '<contactInfoList>
+                        <companyInfo>
+                            <companyFullName>' . htmlspecialchars('Snow Ball Travels Ltd', ENT_XML1, 'UTF-8') . '</companyFullName>
+                            <companyLegalName>' . htmlspecialchars('Snow Ball Travels and Tours Limited', ENT_XML1, 'UTF-8') . '</companyLegalName>
+                            <taxNumber>' . htmlspecialchars('9999999888', ENT_XML1, 'UTF-8') . '</taxNumber>
+                            <taxOffice>' . htmlspecialchars('TEST Office', ENT_XML1, 'UTF-8') . '</taxOffice>
+                        </companyInfo>
+                        <adress>
+                            <addressLineList>' . htmlspecialchars('fener cad. filika sok', ENT_XML1, 'UTF-8') . '</addressLineList>
+                            <adressUseType>' . htmlspecialchars('Business', ENT_XML1, 'UTF-8') . '</adressUseType>
+                            <bldgRoom>' . htmlspecialchars('11', ENT_XML1, 'UTF-8') . '</bldgRoom>
+                            <cityCode>' . htmlspecialchars('IST', ENT_XML1, 'UTF-8') . '</cityCode>
+                            <cityName>' . htmlspecialchars('istanbu', ENT_XML1, 'UTF-8') . '</cityName>
+                            <countryCode>' . htmlspecialchars('FR', ENT_XML1, 'UTF-8') . '</countryCode>
+                            <countryName>' . htmlspecialchars('Fransa', ENT_XML1, 'UTF-8') . '</countryName>
+                            <formatted>' . htmlspecialchars('true', ENT_XML1, 'UTF-8') . '</formatted>
+                            <postalCode>' . htmlspecialchars('34256', ENT_XML1, 'UTF-8') . '</postalCode>
+                            <preferred>' . htmlspecialchars('false', ENT_XML1, 'UTF-8') . '</preferred>
+                            <shareMarketInd>' . htmlspecialchars('true', ENT_XML1, 'UTF-8') . '</shareMarketInd>
+                            <stateProvince>' . htmlspecialchars('marmara', ENT_XML1, 'UTF-8') . '</stateProvince>
+                            <streetNumber>' . htmlspecialchars('46', ENT_XML1, 'UTF-8') . '</streetNumber>
+                        </adress>
+                    
+                        <email>
+                            <email>' . htmlspecialchars($airTraveler['contactPersonEmail'], ENT_XML1, 'UTF-8') . '</email>
+                            <markedForSendingRezInfo/>
+                            <preferred/>
+                            <shareMarketInd/>
+                        </email>
+                        <markedForSendingRezInfo>' . htmlspecialchars($airTraveler['contactPersonMarkedForSendingRezInfo'], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
+                        <personName>
+                            <givenName>' . htmlspecialchars($airTraveler['airTravelerListGivenName'], ENT_XML1, 'UTF-8') . '</givenName>
+                            <shareMarketInd/>
+                            <surname>' . htmlspecialchars($airTraveler['airTravelerListSurname'], ENT_XML1, 'UTF-8') . '</surname>
+                        </personName>
+                        <phoneNumber>
+                            <areaCode>' . htmlspecialchars($airTraveler['phoneNumberAreaCode'], ENT_XML1, 'UTF-8') . '</areaCode>
+                            <countryCode>' . htmlspecialchars($airTraveler['phoneNumberCountryCode'], ENT_XML1, 'UTF-8') . '</countryCode>
+                            <markedForSendingRezInfo>' . htmlspecialchars($airTraveler['phoneNumberMarkedForSendingRezInfo'], ENT_XML1, 'UTF-8') . '</markedForSendingRezInfo>
+                            <phoneUseType>' . htmlspecialchars('H', ENT_XML1, 'UTF-8') . '</phoneUseType>
+                            <preferred/>
+                            <shareMarketInd/>
+                            <subscriberNumber>' . htmlspecialchars($airTraveler['phoneNumberSubscriberNumber'], ENT_XML1, 'UTF-8') . '</subscriberNumber>
+                        </phoneNumber>
+                    <shareContactInfo/>
+                    <shareMarketInd/>
+                    <socialSecurityNumber>' . htmlspecialchars($airTraveler['contactPersonSocialSecurityNumber'], ENT_XML1, 'UTF-8') . '</socialSecurityNumber>
+                    <useForInvoicing>' . htmlspecialchars('true', ENT_XML1, 'UTF-8') . '</useForInvoicing>
+                    </contactInfoList>';
+
         }
+
+        return $xml;
+        
     }
 
     public function otherServiceInformationList($otherServiceInformationList) {
