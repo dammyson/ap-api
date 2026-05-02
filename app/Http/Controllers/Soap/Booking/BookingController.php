@@ -194,7 +194,7 @@ class BookingController extends Controller
     public function readBookingWithSurname(Request $request) {
         try {
             $bookingId = $request->input('booking_id');
-            $passengerName = $request->input('passengerSurname');
+            $passengerName = $request->input('surname');
             $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
 
        
