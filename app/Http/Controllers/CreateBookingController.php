@@ -65,6 +65,7 @@ class CreateBookingController extends Controller
             $specialServiceRequestList
         );
 
+        // dd("i ran");
     //    dd($xml);
    
 
@@ -73,7 +74,7 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            // dump($response);
+          return $response;
 
             if (!array_key_exists('AirBookingResponse', $response)) {
                 Log::error($response);
