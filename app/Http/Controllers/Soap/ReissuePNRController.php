@@ -462,6 +462,8 @@ class ReissuePNRController extends Controller
 
     public function reissueTicketCommit (ReissuePnrPreviewRequest $request) {
         try {
+
+            dd("i got here");
            
             $transactionDescription = $request->input("transactionDescription");
             $paymentMethod = $request->input('payment_method');
