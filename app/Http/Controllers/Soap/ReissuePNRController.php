@@ -225,23 +225,23 @@ class ReissuePNRController extends Controller
             $expectedAmount = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
           
 
-            // if ($paidAmount < $expectedAmount) {
-            //     return response()->json([
-            //         "error" => true,
-            //         "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
+            if ($paidAmount < $expectedAmount) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
 
-            //     ], 400);
-            // }
+                ], 400);
+            }
 
 
-            // generate a new invoice if previous invoice has been paid for
-            // $invoice = Invoice::create([
-            //     'amount' => $paidAmount,
-            //     'booking_id' => $request->ID,
-            //     'type' => 'flight',
-            //     'is_paid' => true,
-            //     'currency' => $preferredCurrency
-            // ]); 
+            // generate a new invoice
+            $invoice = Invoice::create([
+                'amount' => $paidAmount,
+                'booking_id' => $request->ID,
+                'type' => 'flight',
+                'is_paid' => true,
+                'currency' => $preferredCurrency
+            ]); 
         
 
             // dd($invoice->amount);
