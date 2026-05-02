@@ -258,78 +258,78 @@ class ReissuePNRController extends Controller
     public function newReissueTicketCommit (ReissuePnrPreviewRequest $request) {
         try {
            
-            $transactionDescription = $request->input("transactionDescription");
-            $paymentMethod = $request->input('payment_method');
-            $paymentChannel = $request->input('payment_channel');
+            // $transactionDescription = $request->input("transactionDescription");
+            // $paymentMethod = $request->input('payment_method');
+            // $paymentChannel = $request->input('payment_channel');
             
-            $paymentRef = $request->input('payment_ref');
-            $invoiceId = $request->input('invoiceId') ?? null;
-            // $preferredCurrency = $request->input('preferredCurrency');                        
+            // $paymentRef = $request->input('payment_ref');
+            // $invoiceId = $request->input('invoiceId') ?? null;
+            // // $preferredCurrency = $request->input('preferredCurrency');                        
 
-            $user = $request->user();
+            // $user = $request->user();
 
-            // $invoice = Invoice::find($invoiceId);   
-            // dd($invoiceId);     
+            // // $invoice = Invoice::find($invoiceId);   
+            // // dd($invoiceId);     
             
-            //validate verifiedRequest;
-            if ($paymentChannel == "paystack") {
-                $new_top_request = new VerificationService($paymentRef);
+            // //validate verifiedRequest;
+            // if ($paymentChannel == "paystack") {
+            //     $new_top_request = new VerificationService($paymentRef);
 
-            } else if ($paymentChannel == "flutterwave") {
-                $new_top_request = new FlutterVerificationService($paymentRef);
-            }
-            $verified_request = $new_top_request->run();
+            // } else if ($paymentChannel == "flutterwave") {
+            //     $new_top_request = new FlutterVerificationService($paymentRef);
+            // }
+            // $verified_request = $new_top_request->run();
 
-            // dd($verified_request);
+            // // dd($verified_request);
 
-            $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
-            // dd($paidAmount);
-            if (!$paidAmount) {
-                return response()->json([
-                    "error" => "true",
-                    "message" => "payment verification failed"
-                ], 400);
-            }
-            $preferredCurrency = $verified_request['data']['currency'];
+            // $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+            // // dd($paidAmount);
+            // if (!$paidAmount) {
+            //     return response()->json([
+            //         "error" => "true",
+            //         "message" => "payment verification failed"
+            //     ], 400);
+            // }
+            // $preferredCurrency = $verified_request['data']['currency'];
 
              
-            $xml = $this->reissusePNRBuilder->reissuePnr(
-                $request
-            );
+            // $xml = $this->reissusePNRBuilder->reissuePnr(
+            //     $request
+            // );
 
-              // dd($xml);
-            $previewfunction = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
+            //   // dd($xml);
+            // $previewfunction = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
 
-            $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);
-            $preferredCurrency = $previewResponse['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
-            // check if response is true
-            // check if invoice has been previously paid for
+            // $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);
+            // $preferredCurrency = $previewResponse['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
+            // // check if response is true
+            // // check if invoice has been previously paid for
           
 
-            $expectedAmount = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+            // $expectedAmount = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
 
                
-            $invoice = Invoice::find($invoiceId);
-            if ($invoice->isPaid) {
-                // generate a new invoice if previous invoice has been paid for
-                $invoice = new Invoice();
-                $invoice->booking_id = $request->ID;
-                $invoice->amount = $paidAmount;
-                $invoice->currency = $preferredCurrency;
-                $invoice->is_paid = true;
+            // $invoice = Invoice::find($invoiceId);
+            // if ($invoice->isPaid) {
+            //     // generate a new invoice if previous invoice has been paid for
+            //     $invoice = new Invoice();
+            //     $invoice->booking_id = $request->ID;
+            //     $invoice->amount = $paidAmount;
+            //     $invoice->currency = $preferredCurrency;
+            //     $invoice->is_paid = true;
 
-            } else {
-                $invoice->amount += $paidAmount;
-                $invoice->save();
-            }
+            // } else {
+            //     $invoice->amount += $paidAmount;
+            //     $invoice->save();
+            // }
 
-            if ($paidAmount < $expectedAmount) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
+            // if ($paidAmount < $expectedAmount) {
+            //     return response()->json([
+            //         "error" => true,
+            //         "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
 
-                ], 400);
-            }
+            //     ], 400);
+            // }
 
             // dd($invoice->amount);
             
