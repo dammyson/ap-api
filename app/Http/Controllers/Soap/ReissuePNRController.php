@@ -273,25 +273,25 @@ class ReissuePNRController extends Controller
             // dd($invoiceId);     
             
             //validate verifiedRequest;
-            // if ($paymentChannel == "paystack") {
-            //     $new_top_request = new VerificationService($paymentRef);
+            if ($paymentChannel == "paystack") {
+                $new_top_request = new VerificationService($paymentRef);
 
-            // } else if ($paymentChannel == "flutterwave") {
-            //     $new_top_request = new FlutterVerificationService($paymentRef);
-            // }
-            // $verified_request = $new_top_request->run();
+            } else if ($paymentChannel == "flutterwave") {
+                $new_top_request = new FlutterVerificationService($paymentRef);
+            }
+            $verified_request = $new_top_request->run();
 
             // // dd($verified_request);
 
-            // $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
-            // // dd($paidAmount);
-            // if (!$paidAmount) {
-            //     return response()->json([
-            //         "error" => "true",
-            //         "message" => "payment verification failed"
-            //     ], 400);
-            // }
-            // $preferredCurrency = $verified_request['data']['currency'];
+            $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+            // dd($paidAmount);
+            if (!$paidAmount) {
+                return response()->json([
+                    "error" => "true",
+                    "message" => "payment verification failed"
+                ], 400);
+            }
+            $preferredCurrency = $verified_request['data']['currency'];
             // dd($preferredCurrency);
 
 
@@ -305,7 +305,7 @@ class ReissuePNRController extends Controller
 
             $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);
 
-            dd($previewResponse);
+            // dd($previewResponse);
             $preferredCurrency = $previewResponse['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
             // check if response is true
             // check if invoice has been previously paid for
