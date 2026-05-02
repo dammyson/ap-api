@@ -265,7 +265,7 @@ class ReissuePNRController extends Controller
             
             $paymentRef = $request->input('payment_ref');
             $invoiceId = $request->input('invoiceId') ?? null;
-            // $preferredCurrency = $request->input('preferredCurrency');                        
+            $preferredCurrency = $request->input('preferredCurrency');                        
 
             $user = $request->user();
 
@@ -292,6 +292,8 @@ class ReissuePNRController extends Controller
                 ], 400);
             }
             $preferredCurrency = $verified_request['data']['currency'];
+            dd($preferredCurrency);
+
 
              
             $xml = $this->reissusePNRBuilder->reissuePnr(
