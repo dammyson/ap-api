@@ -291,8 +291,8 @@ class ReissuePNRController extends Controller
                     "message" => "payment verification failed"
                 ], 400);
             }
-            $preferredCurrency = $verified_request['data']['currency'];
-            dd($preferredCurrency);
+            // $preferredCurrency = $verified_request['data']['currency'];
+            // dd($preferredCurrency);
 
 
              
