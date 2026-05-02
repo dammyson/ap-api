@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\Soap;
 
-use App\Http\Requests\Soap\Reissue\ReissuePnrPreviewRequest;
+use App\Http\Requests\Soap\Reissue\ReissuePnrRequest;
 use App\Services\Utility\FlightNotes;
 
 class ReissuePnrTestBuilder {
@@ -17,7 +17,7 @@ class ReissuePnrTestBuilder {
     }
 
     public function reissuePnr(
-        ReissuePnrPreviewRequest $request
+        ReissuePnrRequest $request
     ) {
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
@@ -463,9 +463,8 @@ class ReissuePnrTestBuilder {
       }
 
     public function reissuePnrCommit (
-       ReissuePnrPreviewRequest $request,
-       $paidAmount,
-       $preferredCurrency
+       ReissuePnrRequest $request,
+       $paidAmount
     ) {
         
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>
@@ -480,7 +479,7 @@ class ReissuePnrTestBuilder {
                         <member>false</member>
                         <password>SCINTILLA</password>
                         <userName>SCINTILLA</userName>
-                        <preferredCurrency>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</preferredCurrency>
+                        <preferredCurrency>' . htmlspecialchars($request->input('preferredCurrency'), ENT_XML1, 'UTF-8') . '</preferredCurrency>
                     </clientInformation>
                     <bookingReferenceID>
                         <companyName>
@@ -503,13 +502,13 @@ class ReissuePnrTestBuilder {
                                     <paymentCode>INV</paymentCode>
                                     <threeDomainSecurityEligible>false</threeDomainSecurityEligible>
                                     <transactionFeeApplies/>'.
-                                 $this->checkCurrency($preferredCurrency)
+                                 $this->checkCurrency($request->input('preferredCurrency'))
                               .'
                                 </miscChargeOrder>
                                 <payLater/>
                                 <paymentAmount>
                                     <currency>
-                                        <code>NGN</code>
+                                        <code>' . htmlspecialchars($request->input('preferredCurrency'), ENT_XML1, 'UTF-8') . '</code>
                                     </currency>
                                     <mileAmount/>
                                     <value>' . htmlspecialchars($paidAmount, ENT_XML1, 'UTF-8') . '</value>

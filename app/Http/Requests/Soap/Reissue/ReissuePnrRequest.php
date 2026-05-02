@@ -4,7 +4,7 @@ namespace App\Http\Requests\Soap\Reissue;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReissuePnrPreviewRequest extends FormRequest
+class ReissuePnrRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -158,7 +158,8 @@ class ReissuePnrPreviewRequest extends FormRequest
             "referenceIDTwo" => "required|string",
             "responseCodeTwo" => "required|string",
             "sequenceNumberTwo" => "required|string",
-            "statusTwo" => "required|string"
+            "statusTwo" => "required|string",
+            "preferredCurrency" => "required|string"
         ];
     }
 }
