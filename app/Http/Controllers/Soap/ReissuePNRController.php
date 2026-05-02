@@ -305,7 +305,7 @@ class ReissuePNRController extends Controller
 
             $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);
 
-            dd($previewResponse);
+            // dd($previewResponse);
             $preferredCurrency = $previewResponse['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
             // check if response is true
             // check if invoice has been previously paid for
@@ -329,13 +329,13 @@ class ReissuePNRController extends Controller
                 $invoice->save();
             }
 
-            if ($paidAmount < $expectedAmount) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
+            // if ($paidAmount < $expectedAmount) {
+            //     return response()->json([
+            //         "error" => true,
+            //         "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
 
-                ], 400);
-            }
+            //     ], 400);
+            // }
 
             // dd($invoice->amount);
             
@@ -350,7 +350,7 @@ class ReissuePNRController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrCommit';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
-            // dump($response);
+            dd($response);
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
             // $preferredCurrency = $response['ReissuePnrCommitResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
  
