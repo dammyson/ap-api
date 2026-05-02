@@ -179,7 +179,7 @@ class ReissuePNRController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
-            dump($response);
+            // dump($response);
 
             $preferredCurrency = $response['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
             // check if response is true
