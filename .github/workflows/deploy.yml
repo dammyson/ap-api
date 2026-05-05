@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           script: |
-            cd /home/user/htdocs/srv893727.hstgr.cloud
+            cd ~/home/user/htdocs/srv893727.hstgr.cloud
             if [ ! -d ".git" ]; then
               echo "Repository not found, cloning..."
               git clone git@github.com:dammyson/ap-api.git .
