@@ -249,6 +249,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
         Route::post('/add-ssr/insurance', [AddSsrController::class, 'addInsuranceSsr']);
         Route::post('/add-ssr/baggages', [AddSsrController::class, 'addBaggagesSsr']);
         Route::post('/add-ssr/select-seat', [AddSsrController::class, 'selectSeat']);
+        Route::post('/select-seat', [AddSsrController::class, 'selectSeat']);
         
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
         Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
