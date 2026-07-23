@@ -110,30 +110,33 @@ class BookingController extends Controller
                 $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'] = $filteredOptions;
 
                 foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
-                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
-                    if(array_key_exists('deiCode', $flightNotes)) {
+                    if (array_key_exists('flightNotes', $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment'])) {
+                        $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
                         $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
-                        
+                  
                     }
+                    //  else {
+                    //     $flightNotes = [];
+                    // }
+                    
                     
                 }
 
             } else if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists) && count($bookOriginDestinationOptionLists) > 1) {
                 
                 foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
-                    $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
-    
-                    if(array_key_exists('deiCode', $flightNotes)) {
+                    if (array_key_exists('flightNotes', $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment'])) {
+                        $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
                         $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+
+                    } 
                     
-                    }
                 }
 
             } else {
-                $flightNotes = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
-
-                if(array_key_exists('deiCode', $flightNotes)) {
-                    $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+               
+                if (array_key_exists('flightNotes', $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment'])) {
+                    $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
                 
                 }
             }
@@ -221,14 +224,13 @@ class BookingController extends Controller
             
          
             $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $invoice->currency);
-            // $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, "NGN");
             // dd($xml);  
             $response = $this->craneOTASoapService->run($function, $xml);
             
             // dd($response);
             
             // $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-             $flightInvoice = Invoice::where('booking_id', $bookingId)
+            $flightInvoice = Invoice::where('booking_id', $bookingId)
                 ->where('type', 'flight')
                 ->latest()
                 ->first();
@@ -278,20 +280,31 @@ class BookingController extends Controller
             } else if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists) && count($bookOriginDestinationOptionLists) > 1) {
                 
                 foreach ($bookOriginDestinationOptionLists as $index => $bookOriginDestinationOptionList) {
+
+                    if(array_key_exists('flightNotes', $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment'])) {
+                        $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
+
+                        if(array_key_exists('deiCode', $flightNotes)) {
+                            $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                        
+                        }
+                    } else {
+                        $flightNotes = [];
+                    }
                     $flightNotes = $bookOriginDestinationOptionList['bookFlightSegmentList']['flightSegment']['flightNotes'];
     
-                    if(array_key_exists('deiCode', $flightNotes)) {
-                        $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'][$index]['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
-                    
-                    }
+                   
                 }
 
             } else {
-                $flightNotes = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
 
-                if(array_key_exists('deiCode', $flightNotes)) {
-                    $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
-                
+                if (array_key_exists('flightNotes', $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment'])) {
+                    $flightNotes = $bookOriginDestinationOptionLists['bookFlightSegmentList']['flightSegment']['flightNotes'];
+
+                    if (array_key_exists('deiCode', $flightNotes)) {
+                        $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList']['bookFlightSegmentList']['flightSegment']['flightNotes'] = [$flightNotes];
+                    
+                    }
                 }
             }
             
@@ -315,7 +328,8 @@ class BookingController extends Controller
     
             return response()->json([
                 "error" => true,         
-                "message" => "something went wrong"
+                "message" => "something went wrong",
+                "actual_message"=> $th->getMessage()
             ], 500);
         }  
     }

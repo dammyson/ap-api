@@ -79,7 +79,7 @@ class SegmentBaseAvailableSpecialServicesRequest extends FormRequest
             "bookingFlightSegmentList.*.airEquipType" => 'required|string',
             "bookingFlightSegmentList.*.changeOfGauge" => 'required|string',
 
-            'bookingFlightSegmentList.*.flightNotes' => 'required|array',
+            'bookingFlightSegmentList.*.flightNotes' => 'nullable|sometimes|array',
             'bookingFlightSegmentList.*.flightNotes.*.deiCode' => 'required|string',
             'bookingFlightSegmentList.*.flightNotes.*.explanation' => 'required|string',
             'bookingFlightSegmentList.*.flightNotes.*.note' => 'required|string',

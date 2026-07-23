@@ -79,7 +79,7 @@ class GetExtraChargesAndProductRequest extends FormRequest
             "bookFlightSegmentList.*.distance" => "required|string",
             "bookFlightSegmentList.*.airEquipType" => "required|string", 
             "bookFlightSegmentList.*.changeOfGuage" => "required|string", 
-            "bookFlightSegmentList.*.flightNotes" => 'required|array',
+            "bookFlightSegmentList.*.flightNotes" => 'nullable|sometimes|array',
             "bookFlightSegmentList.*.flightNotes.*.deiCode" => "required|string",
             "bookFlightSegmentList.*.flightNotes.*.explanation" => "required|string",
             "bookFlightSegmentList.*.flightNotes.*.note" => "required|string",

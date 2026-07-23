@@ -42,7 +42,6 @@ class FlightController extends Controller
         $tripType = $request->input('trip_type');
 
         $validated = $request->validated();
-
       
         $travelerInformation = $validated["travelerInformation"];
         $travelerInformation_count = count($travelerInformation);
@@ -65,8 +64,7 @@ class FlightController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-           
-            // dd($response);
+            // return $response;
             $result = "";
 
             if ($request->input('trip_type') == "ONE_WAY") {
@@ -114,7 +112,7 @@ class FlightController extends Controller
                 $rt->departure = $result0;
                 $rt->arrival = $result1;
                 $result = $rt;
-            }else{
+            } else {
                 $availabilityRouteList = $response['Availability']['availabilityResultList']['availabilityRouteList'];
                 // dd($response);
                 $multiDirectionalFlights = $validated['multi_directional_flights'];
@@ -185,22 +183,25 @@ class FlightController extends Controller
 
             foreach ($fareComponentGroupList as $fareComponentGroupListItem) {
                 // dd($fareComponentGroupListItem);
+                if (!isset($fareComponentGroupListItem['boundList']['availFlightSegmentList']['bookingClassList'])) {
+                    continue;
+                }
                 $bookingClassList = $fareComponentGroupListItem['boundList']['availFlightSegmentList']["bookingClassList"];
-                $bookingClassList = $fareComponentGroupListItem['boundList']['availFlightSegmentList']['bookingClassList'];
 
                 // NORMALIZE bookingClassList
                 if ($this->checkArray->isAssociativeArray($bookingClassList)) {
-                    // dump("i ran");
+                  
                     $bookingClassList = [$bookingClassList];
                 }
                 $flightSegment = $fareComponentGroupListItem['boundList']['availFlightSegmentList']["flightSegment"];
 
                 
-                
-                if($this->checkArray->isAssociativeArray($flightSegment['flightNotes'])) {
-                
-                    $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
-
+                if (isset($flightSegment['flightNotes'])) {
+                    if($this->checkArray->isAssociativeArray($flightSegment['flightNotes'])) {
+                    
+                        $flightSegment['flightNotes'] = [$flightSegment['flightNotes']];
+    
+                    }
                 }
 
                 // dd($bookingClassList);

@@ -61,7 +61,7 @@ class SeatMapRequest extends FormRequest
             "distance" => "required|string", 
             "airEquipType" => "required|string", 
             "changeOfGuage" => "required|string",
-            'flightNotes' => 'required|array',
+            'flightNotes' => 'nullable|sometimes|array',
             'flightNotes.*.deiCode' => 'required|string',
             'flightNotes.*.explanation' => 'required|string',
             'flightNotes.*.note' => 'required|string',

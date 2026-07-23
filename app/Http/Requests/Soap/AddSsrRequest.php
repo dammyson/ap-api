@@ -79,7 +79,7 @@ class AddSsrRequest extends FormRequest
             "departureFlightDistance" => "required|string",
             "equipmentAirEquipType" => "required|string",
             "equipmentChangeOfGauge" => "required|string",
-            "flightNotes" => "required|array",
+            "flightNotes" => "nullable|sometimes|array",
             "flightNotes.*.deiCode" => "required|string",
             "flightNotes.*.explanation" => "required|string",
             "flightNotes.*.note" => "required|string",            

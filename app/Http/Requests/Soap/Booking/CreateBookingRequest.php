@@ -82,7 +82,7 @@ class CreateBookingRequest extends FormRequest
             'CreateBookOriginDestinationOptionList.*.airEquipType' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.changeOfGuage' => 'required|string',
             
-            'CreateBookOriginDestinationOptionList.*.flightNotes' => 'required|array',
+            'CreateBookOriginDestinationOptionList.*.flightNotes' => 'nullable|sometimes|array',
             'CreateBookOriginDestinationOptionList.*.flightNotes.*.deiCode' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.flightNotes.*.explanation' => 'required|string',
             'CreateBookOriginDestinationOptionList.*.flightNotes.*.note' => 'required|string',
@@ -204,11 +204,7 @@ class CreateBookingRequest extends FormRequest
 
             // General message for any missing subfield inside each flight segment
             'CreateBookOriginDestinationOptionList.*.required' => 'A required field is missing in flight segment details.',
-            'CreateBookOriginDestinationOptionList.*.flightNotes.required' => 'flight note is required',
-            'CreateBookOriginDestinationOptionList.*.flightNotes.*.deiCode.required' => 'flight note deiCode is required',
-            'CreateBookOriginDestinationOptionList.*.flightNotes.*.explanation.required' => 'flight note explanation is required',
-            'CreateBookOriginDestinationOptionList.*.flightNotes.*.explanation.required' => 'flight notes explanation is required',
-            'CreateBookOriginDestinationOptionList.*.flightNotes.*.note.required' => 'flight notes note is required',
+            
 
             // Optional: More specific overrides if needed
             'CreateBookOriginDestinationOptionList.*.actionCode.required' => 'Action code is missing for a flight segment.',

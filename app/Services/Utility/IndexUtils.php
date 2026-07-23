@@ -2,7 +2,20 @@
 
 namespace App\Services\Utility;
 
-class FlightNotes {
+class IndexUtils {
+
+    public function checkCurrency($preferredCurrency) {
+        if ($preferredCurrency == "NGN") {
+        return '4010027268';
+        }
+        else if ($preferredCurrency == "USD") {
+        return '4010027271';
+        }
+        else if ($preferredCurrency == "GBP") {
+        return '4010027270';
+        }
+    }
+    
     public function flightNotesArray ($flightNotes) {
         $flightNotesXml  = '';
         if (!$flightNotes || !is_array($flightNotes)) {
@@ -20,4 +33,6 @@ class FlightNotes {
 
         return $flightNotesXml;
     }
+
+    
 }

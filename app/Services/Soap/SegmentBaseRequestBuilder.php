@@ -8,10 +8,12 @@ class SegmentBaseRequestBuilder {
 
 	protected $craneUsername;
 	protected $cranePassword;
+	protected $flightNotes;
 
-	public function __construct() {
+	public function __construct(FlightNotes $flightNotes) {
 			$this->craneUsername = config('app.crane.username');		
 			$this->cranePassword = config('app.crane.password');
+			$this->flightNotes = $flightNotes;
 	}
    public function segmentBaseAvailableSpecialServices(
      $request
@@ -143,7 +145,7 @@ class SegmentBaseRequestBuilder {
 							<changeofGauge>' . htmlspecialchars($bookingFlightSegment['changeOfGauge'], ENT_XML1, 'UTF-8') . '</changeofGauge>
 						</equipment>'.
 					
-						$this->flightNotes($bookingFlightSegment['flightNotes'])
+						$this->flightNotes->flightNotesArray($bookingFlightSegment['flightNotes'])
 				
 						.'
 						<flownMileageQty>' . htmlspecialchars($bookingFlightSegment['flownMileageQty'], ENT_XML1, 'UTF-8') . '</flownMileageQty>
@@ -163,7 +165,5 @@ class SegmentBaseRequestBuilder {
       		return $xml;
    }
 
-	private function flightNotes( $flightNotes ) {
-		return (new FlightNotes())->flightNotesArray($flightNotes);
-   	}
+	
 }

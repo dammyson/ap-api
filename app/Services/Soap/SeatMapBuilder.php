@@ -3,14 +3,17 @@
 namespace App\Services\Soap;
 
 use App\Http\Requests\Soap\seatMapRequest;
+use App\Services\Utility\FlightNotes;
 
 class SeatMapBuilder {
    protected $craneUsername;
    protected $cranePassword;
+   protected $flightNotes;
 
-   public function __construct() {
+   public function __construct(FlightNotes $flightNotes) {
       $this->craneUsername = config('app.crane.username');            
       $this->cranePassword = config('app.crane.password');
+      $this->flightNotes = $flightNotes;
    }
 
    public function seatMap(
@@ -96,7 +99,7 @@ class SeatMapBuilder {
                            <changeofGauge>' . htmlspecialchars($request->input('changeOfGuage'), ENT_XML1, 'UTF-8') . '</changeofGauge>
                         </equipment>
                        
-                        ' . $this->flightNotes($request->input('flightNotes')) .'
+                        ' . $this->flightNotes->flightNotesArray($request->input('flightNotes')) .'
                         
                         <flownMileageQty>' . htmlspecialchars($request->input('flownMileageQty'), ENT_XML1, 'UTF-8') . '</flownMileageQty>
                         <groundDuration/>
@@ -134,17 +137,4 @@ class SeatMapBuilder {
       return $xml;
    } 
 
-   public function flightNotes($flightNotes) {
-      $xml = '';
-      foreach($flightNotes as $string) {
-        $xml .= '<flightNotes>
-            <deiCode>' . htmlspecialchars($string['deiCode'], ENT_XML1, 'UTF-8') . '</deiCode>
-            <explanation>' . htmlspecialchars($string['explanation'], ENT_XML1, 'UTF-8') . '</explanation>
-            <note>' . htmlspecialchars($string['note'], ENT_XML1, 'UTF-8') . '</note>
-         </flightNotes>';
-                        
-      }
-
-      return $xml;
-   }
 }
