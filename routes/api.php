@@ -190,6 +190,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
+            Route::post('/commit-test', [TicketReservationController::class, 'ticketReservationCommitTwo']);
 
         });
 
@@ -207,7 +208,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
             Route::group(["prefix" => "create-booking"], function() {
                 Route::post('/', [CreateBookingController::class, 'createBooking']);
-                Route::post('/dummy', [CreateBookingController::class, 'createBooking']);
+                // Route::post('/dummy', [CreateBookingController::class, 'createBooking']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
                 Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
@@ -229,8 +230,10 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
        
 
         Route::group(['prefix' => 'reissue-ticket-pnr'], function() {
-            Route::post('new-preview', [ReissuePNRController::class, 'newReissueTicketPNR']);
-            Route::post('new-commit', [ReissuePNRController::class, 'newReissueTicketCommit']);
+            Route::post('new-preview', [ReissuePNRController::class, 'reissueTicketPNR']);
+            Route::post('new-commit', [ReissuePNRController::class, 'reissueTicketCommit']);
+            Route::post('preview', [ReissuePNRController::class, 'reissueTicketPNR']);
+            Route::post('commit', [ReissuePNRController::class, 'reissueTicketCommit']);
             Route::post('addFlightPreview', [ReissuePNRController::class, 'reissuePnrAddFlightPreview']);
             Route::post('addFlightCommit', [ReissuePNRController::class, 'reissuePnrAddFlightCommit']);
             Route::post('reissuePnrCancelFlightPreview', [ReissuePNRController::class, 'reissuePnrCancelFlightPreview']);

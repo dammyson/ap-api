@@ -51,6 +51,7 @@ class TicketReservationController extends Controller
                 $bookingReferenceId
             );    
             
+            // dump($xml);
             $response = $this->craneOTASoapService->run($function, $xml);
 
             return $response;
@@ -288,6 +289,48 @@ class TicketReservationController extends Controller
                 "message" => $th->getMessage(),
                 
                 
+            ], 500);
+        }  
+    }
+
+    
+
+
+    public function ticketReservationCommitTwo(Request $request) {
+        $bookingId = $request->input('ID');
+        $bookingReferenceId = $request->input('referenceID');
+        $paidAmount = $request->input('value');
+        $preferredCurrency = $request->input('preferredCurrency');
+   
+        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
+            $preferredCurrency,           
+            $bookingId,
+            $bookingReferenceId,           
+            $paidAmount
+        );
+
+        // dump($xml);
+
+        try {
+            
+            // $user = auth()->user();
+            // $peaceId = $user ? $user->peace_id : null;      
+            // $guestToken = !$user ? Session::get('guest_session_token'): null;
+            // $guestToken = $request->input('guest_session_token');
+            
+            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+           
+            return $response;
+            
+        } catch (\Throwable $th) {
+            
+            Log::error($th->getMessage());
+    
+            return response()->json([
+                "error" => true, 
+                "message" => $th->getMessage(),
             ], 500);
         }  
     }

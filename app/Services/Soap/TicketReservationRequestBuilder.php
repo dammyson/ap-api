@@ -2,15 +2,20 @@
 
 namespace App\Services\Soap;
 
+use App\Services\Utility\IndexUtils;
+
 class TicketReservationRequestBuilder
    {
-
+      
+      protected $indexUtils;
       protected $craneUsername;
       protected $cranePassword;
 
-      public function __construct() {
+      public function __construct(IndexUtils $indexUtils) {
+         $this->indexUtils = $indexUtils;
          $this->craneUsername = config('app.crane.username');            
          $this->cranePassword = config('app.crane.password');
+
       }  
 
       public function ticketReservationViewOnly(
@@ -100,7 +105,7 @@ class TicketReservationRequestBuilder
                                  <paymentCode>INV</paymentCode>
                                  <threeDomainSecurityEligible>false</threeDomainSecurityEligible>
                                  <transactionFeeApplies/>
-                                 <MCONumber>' . $this->checkCurrency($preferredCurrency) . '</MCONumber>
+                                 <MCONumber>' . $this->indexUtils->checkCurrency($preferredCurrency) . '</MCONumber>
                               </miscChargeOrder>
                               <payLater/>
                               <paymentAmount>
@@ -122,18 +127,6 @@ class TicketReservationRequestBuilder
             </soapenv:Envelope>
          ';
          return $xml;
-      }
-
-      public function checkCurrency($preferredCurrency) {
-         if ($preferredCurrency == "NGN") {
-            return '4010026732';
-         }
-         else if ($preferredCurrency == "USD") {
-            return '4010026733';
-         }
-         else if ($preferredCurrency == "GBP") {
-            return '4010026734';
-         }
       }
 
    

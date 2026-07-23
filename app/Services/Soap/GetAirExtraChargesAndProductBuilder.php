@@ -18,11 +18,11 @@ class GetAirExtraChargesAndProductBuilder {
 
 		foreach($passengerList as $passenger) {
 		  $xml .=	'<passengerTypeQuantityList>
-						<hasStrecher/>
-						<passengerType>
-							<code>'. $passenger['passengerTypeCode'] .'</code>
-						</passengerType>
-						<quantity>'. $passenger['quantity'] .'</quantity>
+                     <hasStrecher/>
+                     <passengerType>
+                        <code>'. $passenger['passengerTypeCode'] .'</code>
+                     </passengerType>
+                     <quantity>'. $passenger['quantity'] .'</quantity>
 					</passengerTypeQuantityList>';
 		}
 	}

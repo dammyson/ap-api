@@ -65,16 +65,15 @@ class CreateBookingController extends Controller
             $specialServiceRequestList
         );
 
-        // dd("i ran");
-    //    dd($xml);
-   
+      
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-        //   return $response;
+            // dump($response);    
+            // AirTicketReservationResponse
 
             if (!array_key_exists('AirBookingResponse', $response)) {
                 Log::error($response);
@@ -89,8 +88,6 @@ class CreateBookingController extends Controller
                 ], 404);
 
             } 
-
-            
         
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
             $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
@@ -104,7 +101,7 @@ class CreateBookingController extends Controller
             $guestToken = $request->input('guest_session_token');
 
 
-             //// read expected amount from ticketReservation (this is the accurate amount)
+            // read expected amount from ticketReservation (this is the accurate amount)
             $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
 
             $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(

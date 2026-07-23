@@ -66,7 +66,7 @@ class ReissuePNRController extends Controller
 
   
 
-    public function newReissueTicketPNR(ReissuePnrRequest $request) {
+    public function reissueTicketPNR(ReissuePnrRequest $request) {
         try{
             // $ID = $request->input('ID');
             
@@ -79,11 +79,11 @@ class ReissuePNRController extends Controller
                 $request
             );
 
-            // dump($xml);
+
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
-            // dump($response);
+
 
             $preferredCurrency = $response['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
             // check if response is true
@@ -160,9 +160,8 @@ class ReissuePNRController extends Controller
         }  
     }
 
-    public function newReissueTicketCommit (ReissuePnrRequest $request) {
+    public function reissueTicketCommit (ReissuePnrRequest $request) {
         try {
-            // dd("i got here");
 
             $validated = $request->validate([
                 "transactionDescription" => "required|string",
@@ -180,9 +179,7 @@ class ReissuePNRController extends Controller
             $preferredCurrency = $request->input('preferredCurrency');                        
 
             $user = $request->user();
-
-            // $invoice = Invoice::find($invoiceId);   
-            // dd($invoiceId);     
+              
             
             //validate verifiedRequest;
             if ($paymentChannel == "paystack") {
@@ -193,10 +190,10 @@ class ReissuePNRController extends Controller
             }
             $verified_request = $new_top_request->run();
 
-            // // dd($verified_request);
-
+           
             $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
-            // dd($paidAmount);
+            
+
             if (!$paidAmount) {
                 return response()->json([
                     "error" => "true",
@@ -204,23 +201,15 @@ class ReissuePNRController extends Controller
                 ], 400);
             }
             $preferredCurrency = $verified_request['data']['currency'];
-            // dd($preferredCurrency);
-
-
              
             $xml = $this->reissusePNRBuilder->reissuePnr(
                 $request
             );
 
-              // dd($xml);
+           
             $previewfunction = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrPreview';
 
-            $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);
-
-            // dd($previewResponse);
-            // $preferredCurrency = $previewResponse['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
-        //   dd($preferredCurrency);
-          
+            $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);          
 
             $expectedAmount = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
           
@@ -244,12 +233,12 @@ class ReissuePNRController extends Controller
             ]); 
         
 
-            // dd($invoice->amount);
             
 
             $xml = $this->reissusePNRBuilder->reissuePnrCommit($request, $paidAmount);  
-            
+
             // dd($xml);
+            
             $user = $request->user();
 
             // if there is no authenticated user, get the guest device_type
@@ -259,7 +248,8 @@ class ReissuePNRController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrCommit';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
-            // dd($response);
+            // dump($response);
+           
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
             // $preferredCurrency = $response['ReissuePnrCommitResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
  
@@ -273,6 +263,7 @@ class ReissuePNRController extends Controller
             $data["id"] = $id;
             $data["reference_id"] = $referenceId;
             
+          
             foreach($ticketItemList as $ticketItem) {
                 $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
                 $data["amount"][] = $soap_expected_amount; 
@@ -334,7 +325,7 @@ class ReissuePNRController extends Controller
                     "flight_distance" => $newFlightDistance,
                     "flight_duration" => $newTotalHours
                 ]);
-            }               
+            } 
 
             $ticketCount = Flight::where('booking_id', $id)->count();
             // create invoice_items table
@@ -352,8 +343,8 @@ class ReissuePNRController extends Controller
                 $flight->currency = $preferredCurrency;
                 $flight->is_paid = true;
                 $flight->save();
-            }                        
-           
+            }       
+
             return response()->json([
                 "error" => false,
                 "booking_id" => $id,
@@ -375,8 +366,6 @@ class ReissuePNRController extends Controller
     }
 
    
-    
-
     public function reissuePnrAddFlightPreview(Request $request) {
         $ID = $request->input('ID');
         $referenceID = $request->input('referenceID');

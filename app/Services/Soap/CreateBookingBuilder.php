@@ -2,14 +2,18 @@
 
 namespace App\Services\Soap;
 
+use App\Services\Utility\FlightNotes;
+
 class CreateBookingBuilder
 {  
     protected $craneUsername;
+    protected $flightNotes;
     protected $cranePassword;
 
-    public function __construct() {
-			$this->craneUsername = config('app.crane.username');		
-			$this->cranePassword = config('app.crane.password');
+    public function __construct(FlightNotes $flightNotes) {
+        $this->flightNotes = $flightNotes;
+		$this->craneUsername = config('app.crane.username');		
+		$this->cranePassword = config('app.crane.password');
 	}
 
     public function CreateBookOriginDestinationOptionList($CreateBookOriginDestinationOptionList)
@@ -114,7 +118,7 @@ class CreateBookingBuilder
                     
                     '.
                         
-                    $this->flightNotes($string['flightNotes'])
+                    $this->flightNotes->flightNotesArray($string['flightNotes'])
                     
                     .'
                      <flownMileageQty>' . htmlspecialchars($string['flownMileageQty'], ENT_XML1, 'UTF-8') . '</flownMileageQty>

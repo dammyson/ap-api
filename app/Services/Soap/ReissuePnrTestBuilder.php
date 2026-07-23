@@ -3,15 +3,18 @@ namespace App\Services\Soap;
 
 use App\Http\Requests\Soap\Reissue\ReissuePnrRequest;
 use App\Services\Utility\FlightNotes;
+use App\Services\Utility\IndexUtils;
 
 class ReissuePnrTestBuilder {
 
     public $flightNotes;
+    public $indexUtils;
     protected $craneUsername;   
     protected $cranePassword;
 
-    public function __construct(FlightNotes $flightNotes) {
+    public function __construct(FlightNotes $flightNotes, IndexUtils $indexUtils) {
         $this->flightNotes = $flightNotes;
+        $this->indexUtils = $indexUtils;
         $this->craneUsername = config('app.crane.username');
         $this->cranePassword = config('app.crane.password');
     }
@@ -450,18 +453,6 @@ class ReissuePnrTestBuilder {
     }
     */
 
-    public function checkCurrency($preferredCurrency) {
-         if ($preferredCurrency == "NGN") {
-            return '<MCONumber>4010026732</MCONumber>';
-         }
-         else if ($preferredCurrency == "USD") {
-            return '<MCONumber>4010026733</MCONumber>';
-         }
-         else if ($preferredCurrency == "GBP") {
-            return '<MCONumber>4010026734</MCONumber>';
-         }
-      }
-
     public function reissuePnrCommit (
        ReissuePnrRequest $request,
        $paidAmount
@@ -501,9 +492,8 @@ class ReissuePnrTestBuilder {
                                     <capturePaymentToolNumber>false</capturePaymentToolNumber>
                                     <paymentCode>INV</paymentCode>
                                     <threeDomainSecurityEligible>false</threeDomainSecurityEligible>
-                                    <transactionFeeApplies/>'.
-                                 $this->checkCurrency($request->input('preferredCurrency'))
-                              .'
+                                    <transactionFeeApplies/>
+                                    <MCONumber>'. $this->indexUtils->checkCurrency($request->input('preferredCurrency')). '</MCONumber>
                                 </miscChargeOrder>
                                 <payLater/>
                                 <paymentAmount>
