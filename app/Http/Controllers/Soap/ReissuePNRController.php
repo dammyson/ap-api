@@ -84,6 +84,7 @@ class ReissuePNRController extends Controller
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
 
+            // dump($response);
 
             $preferredCurrency = $response['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
             // check if response is true
@@ -165,9 +166,10 @@ class ReissuePNRController extends Controller
 
             $validated = $request->validate([
                 "transactionDescription" => "required|string",
-                "payment_method" =>  "required|string",
-                "payment_channel" =>  "required|string",            
-                "payment_ref" =>  "required|string",
+                "payment_method" =>  "nullable|sometimes|string",
+                "payment_channel" =>  "nullable|sometimes|string",            
+                "payment_ref" =>  "nullable|sometimes|string",
+                
             ]);
            
             $transactionDescription = $validated["transactionDescription"];
@@ -179,29 +181,7 @@ class ReissuePNRController extends Controller
             $preferredCurrency = $request->input('preferredCurrency');                        
 
             $user = $request->user();
-              
-            
-            //validate verifiedRequest;
-            if ($paymentChannel == "paystack") {
-                $new_top_request = new VerificationService($paymentRef);
 
-            } else if ($paymentChannel == "flutterwave") {
-                $new_top_request = new FlutterVerificationService($paymentRef);
-            }
-            $verified_request = $new_top_request->run();
-
-           
-            $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
-            
-
-            if (!$paidAmount) {
-                return response()->json([
-                    "error" => "true",
-                    "message" => "payment verification failed"
-                ], 400);
-            }
-            $preferredCurrency = $verified_request['data']['currency'];
-             
             $xml = $this->reissusePNRBuilder->reissuePnr(
                 $request
             );
@@ -211,30 +191,56 @@ class ReissuePNRController extends Controller
 
             $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);          
 
+            // dd($previewResponse);
             $expectedAmount = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
           
+            $isPaymentRequired = $expectedAmount > 0;
+            
+            $paidAmount = 0;
+            if ($isPaymentRequired > 0) { 
+                 //validate verifiedRequest;
+                if ($paymentChannel == "paystack") {
+                    $new_top_request = new VerificationService($paymentRef);
 
-            if ($paidAmount < $expectedAmount) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
-
-                ], 400);
-            }
-
-
-            // generate a new invoice
-            $invoice = Invoice::create([
-                'amount' => $paidAmount,
-                'booking_id' => $request->ID,
-                'type' => 'flight',
-                'is_paid' => true,
-                'currency' => $preferredCurrency
-            ]); 
-        
+                } else if ($paymentChannel == "flutterwave") {
+                    $new_top_request = new FlutterVerificationService($paymentRef);
+                }
+                $verified_request = $new_top_request->run();
 
             
+                $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+                
 
+                if (!$paidAmount) {
+                    return response()->json([
+                        "error" => "true",
+                        "message" => "payment verification failed"
+                    ], 400);
+                }
+                $preferredCurrency = $verified_request['data']['currency'];
+                
+        
+                if ($paidAmount < $expectedAmount) {
+                    return response()->json([
+                        "error" => true,
+                        "message" => "paid amount {$paidAmount} is less than expected amount {$expectedAmount}"
+
+                    ], 400);
+                }
+
+
+                // generate a new invoice
+                $invoice = Invoice::create([
+                    'amount' => $paidAmount,
+                    'booking_id' => $request->ID,
+                    'type' => 'flight',
+                    'is_paid' => true,
+                    'currency' => $preferredCurrency
+                ]); 
+            }
+          
+
+            // $xml = $this->reissusePNRBuilder->reissuePnrCommit($request, $paidAmount);  
             $xml = $this->reissusePNRBuilder->reissuePnrCommit($request, $paidAmount);  
 
             // dd($xml);
@@ -263,31 +269,36 @@ class ReissuePNRController extends Controller
             $data["id"] = $id;
             $data["reference_id"] = $referenceId;
             
-          
-            foreach($ticketItemList as $ticketItem) {
-                $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
-                $data["amount"][] = $soap_expected_amount; 
 
-                $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
-                $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-        
-                Transaction::firstOrCreate([
-                    "invoice_number" => $invoice_number,                        
-                    'amount' => $amount,
-                ], [
-                    'transaction_type' => $transactionDescription,
-                    'ticket_type' => 'ticket',
-                    'user_id' => $user->id,
-                    'invoice_id' => $invoice->id,
-                    // 'device_type' => $userDevice->device_type,
-                    'device_type' => $deviceType,
-                    'currency' => $preferredCurrency,
-                    "payment_method" => $paymentMethod,
-                    "payment_channel" => $paymentChannel,
-                    'is_flight' => true
-                ]);
+            if ( $isPaymentRequired ) {
+                foreach($ticketItemList as $ticketItem) {
+                    $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
+                    $data["amount"][] = $soap_expected_amount; 
+
+                    $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
+                    $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                    $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+            
+                    Transaction::firstOrCreate([
+                        "invoice_number" => $invoice_number,                        
+                        'amount' => $amount,
+                    ], [
+                        'transaction_type' => $transactionDescription,
+                        'ticket_type' => 'ticket',
+                        'user_id' => $user->id,
+                        'invoice_id' =>  $invoice->id,
+                        // 'device_type' => $userDevice->device_type,
+                        'device_type' => $deviceType,
+                        'currency' => $preferredCurrency,
+                        "payment_method" => $paymentMethod,
+                        "payment_channel" => $paymentChannel,
+                        'is_flight' => true
+                    ]);
+                }
+
             }
+          
+            
 
 
             $previewbookOriginDestinationOptionLists = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
@@ -328,23 +339,27 @@ class ReissuePNRController extends Controller
             } 
 
             $ticketCount = Flight::where('booking_id', $id)->count();
-            // create invoice_items table
-            InvoiceItem::create([
-                'invoice_id' => $invoice->id,
-                'product' => 'Ticket', 
-                'quantity' => $ticketCount,
-                'price' => $amount
-            ]);
 
-            $flights = Flight::where('booking_id', $id)->get();
+            // create invoice_items table if payment is required
+            if ($isPaymentRequired) {
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'product' => 'Ticket', 
+                    'quantity' => $ticketCount,
+                    'price' => $amount
+                ]);
 
-            foreach ($flights as $flight) {
-                $flight->amount += $paidAmount;
-                $flight->currency = $preferredCurrency;
-                $flight->is_paid = true;
-                $flight->save();
-            }       
+                $flights = Flight::where('booking_id', $id)->get();
 
+                foreach ($flights as $flight) {
+                    $flight->amount += $paidAmount;
+                    $flight->currency = $preferredCurrency;
+                    $flight->is_paid = true;
+                    $flight->save();
+                }       
+
+            }
+           
             return response()->json([
                 "error" => false,
                 "booking_id" => $id,

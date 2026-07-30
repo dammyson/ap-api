@@ -283,7 +283,7 @@ class ReissuePnrTestBuilder {
     ) {
         $xml = '';
 
-        dd('iran');
+        // dd('iran');
         foreach ($airTravelerList as $string) {
             $xml .= '
             <airTravelerList>
@@ -453,6 +453,40 @@ class ReissuePnrTestBuilder {
     }
     */
 
+
+    private function isPaymentRequired($paidAmount, $preferredCurrency) {
+        if ($paidAmount <= 0) {
+            return '';
+        }
+        // dd("i ran");
+        $xml = '<fullfillment>
+                        <paymentDetails>
+                            <paymentDetailList>
+                                <miscChargeOrder>
+                                    <avsEnabled/>
+                                    <capturePaymentToolNumber>false</capturePaymentToolNumber>
+                                    <paymentCode>INV</paymentCode>
+                                    <threeDomainSecurityEligible>false</threeDomainSecurityEligible>
+                                    <transactionFeeApplies/>
+                                    <MCONumber>'. $this->indexUtils->checkCurrency($preferredCurrency). '</MCONumber>
+                                </miscChargeOrder>
+                                <payLater/>
+                                <paymentAmount>
+                                    <currency>
+                                        <code>' . htmlspecialchars($preferredCurrency, ENT_XML1, 'UTF-8') . '</code>
+                                    </currency>
+                                    <mileAmount/>
+                                    <value>' . htmlspecialchars($paidAmount, ENT_XML1, 'UTF-8') . '</value>
+                                </paymentAmount>
+                                <paymentType>MISC_CHARGE_ORDER</paymentType>
+                                <primaryPayment>true</primaryPayment>
+                            </paymentDetailList>
+                        </paymentDetails>
+                    </fullfillment>';
+            
+        return $xml;
+
+    }
     public function reissuePnrCommit (
        ReissuePnrRequest $request,
        $paidAmount
@@ -483,32 +517,9 @@ class ReissuePnrTestBuilder {
                         </companyName> 
                         <ID>' . htmlspecialchars($request->input('ID'), ENT_XML1, 'UTF-8') . '</ID>
                         <referenceID>' . htmlspecialchars($request->input('referenceID'), ENT_XML1, 'UTF-8') . '</referenceID>
-                    </bookingReferenceID>
-                    <fullfillment>
-                        <paymentDetails>
-                            <paymentDetailList>
-                                <miscChargeOrder>
-                                    <avsEnabled/>
-                                    <capturePaymentToolNumber>false</capturePaymentToolNumber>
-                                    <paymentCode>INV</paymentCode>
-                                    <threeDomainSecurityEligible>false</threeDomainSecurityEligible>
-                                    <transactionFeeApplies/>
-                                    <MCONumber>'. $this->indexUtils->checkCurrency($request->input('preferredCurrency')). '</MCONumber>
-                                </miscChargeOrder>
-                                <payLater/>
-                                <paymentAmount>
-                                    <currency>
-                                        <code>' . htmlspecialchars($request->input('preferredCurrency'), ENT_XML1, 'UTF-8') . '</code>
-                                    </currency>
-                                    <mileAmount/>
-                                    <value>' . htmlspecialchars($paidAmount, ENT_XML1, 'UTF-8') . '</value>
-                                </paymentAmount>
-                                <paymentType>MISC_CHARGE_ORDER</paymentType>
-                                <primaryPayment>true</primaryPayment>
-                            </paymentDetailList>
-                        </paymentDetails>
-                    </fullfillment>
-                    <newSegments>
+                    </bookingReferenceID>'.
+                        $this->isPaymentRequired($paidAmount, $request->input('preferredCurrency'))                   
+                   .'<newSegments>
                         <bookFlightSegment>
                             <addOnSegment/>
                             <bookingClass> 

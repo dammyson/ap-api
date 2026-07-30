@@ -64,6 +64,7 @@ class GetAirportMatrixController extends Controller
                         "destinationPortLocationCode" => $destinationPortLocationCode,
                         "destinationPortLocationName" => $destinationPortLocationName
                     ];
+                    
                 } else  {
                     foreach($destinationFlights as $destinationFlight) {
                         // dump("i ran");
@@ -85,6 +86,13 @@ class GetAirportMatrixController extends Controller
                     } 
                 }
 
+                usort($destinationFlightArray, function ($a, $b) {
+                    return strcmp(
+                        $a['destinationPortLocationCode'],
+                        $b['destinationPortLocationCode']
+                    );
+                });
+
                 $availableFlightDetails = [
                     "originAndDestinations"  => [
                         "originLocationCityCode" => $originLocationCityCode,
@@ -99,6 +107,15 @@ class GetAirportMatrixController extends Controller
 
                 $availableFlights[] = $availableFlightDetails;
             }
+
+            
+        
+            usort($availableFlights, function ($a, $b) {
+                return strcmp(
+                    $a['originAndDestinations']['originPortLocationCode'],
+                    $b['originAndDestinations']['originPortLocationCode']
+                );
+            });
 
             return response()->json([
                 "error" => "false",
