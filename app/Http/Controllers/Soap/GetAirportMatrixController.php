@@ -93,10 +93,6 @@ class GetAirportMatrixController extends Controller
                     );
                 });
 
-             
-
-               
-
                 $availableFlightDetails = [
                     "originAndDestinations"  => [
                         "originLocationCityCode" => $originLocationCityCode,
@@ -112,12 +108,7 @@ class GetAirportMatrixController extends Controller
                 $availableFlights[] = $availableFlightDetails;
             }
 
-            // usort($destinationFlightArray, function ($a, $b) {
-            //     return strcmp(
-            //         $a['destinationPortLocationCode'],
-            //         $b['destinationPortLocationCode']
-            //     );
-            // });
+            
         
             usort($availableFlights, function ($a, $b) {
                 return strcmp(
