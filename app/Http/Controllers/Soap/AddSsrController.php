@@ -171,7 +171,7 @@ class AddSsrController extends Controller
             $verified_request = $new_top_request->run();
             // dd($verified_request);
             $paidAmount = $verified_request["data"]["amount"];
-
+            
             // convert to naira (from kobo)
 
             if ($paymentChannel == "paystack") {
@@ -182,6 +182,8 @@ class AddSsrController extends Controller
             
             }
 
+            // dd($paidAmount);
+
             $paidAmount = (float) $paidAmount;
 
             
@@ -189,7 +191,7 @@ class AddSsrController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dump($response);
+            dump($response);
             $message = "";
 
             $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
