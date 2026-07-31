@@ -314,12 +314,13 @@ class AddSsrController extends Controller
                 return $this->unauthorizedResponse();
             }
 
-            } else {
-                $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
-              
-                if (!$booking) {
+        
+        } else {
+            $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
+            
+            if (!$booking) {
                 return $this->unauthorizedResponse();
-                }
+            }
         }
 
 
