@@ -304,9 +304,9 @@ class AddSsrController extends Controller
         $preferredCurrency = $request->input('preferred_currency');
 
        
-        dump(" i ran");
+       
         if ($user->is_guest) {
-            dump("user is a guest");
+
             
             $response = $this->handleGuestUser($bookingId, $passengerName, $preferredCurrency);
 
@@ -314,19 +314,13 @@ class AddSsrController extends Controller
                 return $this->unauthorizedResponse();
             }
 
-        
         } else {
-            dump("user is not a guest");
-            $booking = Booking::where('booking_id', $bookingId)->first();
-
-            dump($booking->peace_id, $peaceId);
             $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
-            
+             
             if (!$booking) {
                 return $this->unauthorizedResponse();
             }
         }
-
 
         $xml = $this->addSsrBuilder->addSsr(
             $request
