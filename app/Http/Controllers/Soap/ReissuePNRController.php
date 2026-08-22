@@ -64,7 +64,9 @@ class ReissuePNRController extends Controller
     // }
 
 
-  
+    public function transactionDetails(Request $request) {
+        return Transaction::where('booking_id', $request->input('booking_id'))->get();
+    } 
 
     public function reissueTicketPNR(ReissuePnrRequest $request) {
         try{
