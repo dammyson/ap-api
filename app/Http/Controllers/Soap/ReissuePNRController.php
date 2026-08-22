@@ -212,10 +212,7 @@ class ReissuePNRController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrCommit';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
-            // dump($response);
-            Log::error('REISSUE COMMIT RESPONSE', [
-                'response' => $response,
-            ]);
+          
 
             // dump("got here 1");
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
@@ -277,8 +274,8 @@ class ReissuePNRController extends Controller
                                 'ticketItem' => $ticketItem,
                             ]);
 
-                            Transaction::create([
-                                "invoice_number" => "Not provided by Hittit",
+                            $transaction = Transaction::create([
+                                "invoice_number" => "Not provided by external api",
                                 "amount" => $paidAmount,
                                 "booking_id" => $id,
                                 'transaction_type' => $transactionDescription,
@@ -290,6 +287,10 @@ class ReissuePNRController extends Controller
                                 "payment_method" => $paymentMethod,
                                 "payment_channel" => $paymentChannel,
                                 'is_flight' => true
+                            ]);
+
+                            Log::warning('Transactions ', [
+                                'transaction' => $transaction,
                             ]);
                         }
                     }
