@@ -99,49 +99,7 @@ class ReissuePNRController extends Controller
             if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
                 $bookOriginDestinationOptionLists = [$bookOriginDestinationOptionLists];
             }
-          
-            // foreach ($bookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
-            //     $arrival_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["arrivalDateTime"];
-            //     $departure_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["departureDateTime"];
-            //     $newOrigin = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationName'];
-            //     $newDestination = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationName'];
-            //     $newTicketType = $bookOriginDestinationOptionList["bookFlightSegmentList"]["bookingClass"]["cabin"];
-                
-            //     $newOriginCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationCode'];
-                
-            //     $newDestinationCity = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['departureAirport']['locationCode'];
-            //     $newFlightDistance = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["distance"];
-            //     $newFlightNumber = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["flightNumber"];
-            //     $newFlightDuration = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']["journeyDuration"];
-                
 
-            //     $newTotalHours = $this->getFlightHours($newFlightDuration);
-
-            //     Flight::where('booking_id', $ID)->update([
-            //         "origin" => $newOrigin,
-            //         "destination" => $newDestination,
-            //         'arrival_time' => $arrival_time, 
-            //         'departure_time'=> $departure_time,
-            //         "origin_city" => $newOriginCity,
-            //         "destination_city" => $newDestinationCity,
-            //         'ticket_type' => $newTicketType,
-            //         "flight_number" => $newFlightNumber,
-            //         "flight_distance" => $newFlightDistance,
-            //         "flight_duration" => $newTotalHours
-            //     ]);
-            // }
-
-               
-
-            // $ticketCount = Flight::where('booking_id', $ID)->count();
-            // // create invoice_items table
-            // InvoiceItem::create([
-            //     'invoice_id' => $invoice->id,
-            //     'product' => 'Ticket', 
-            //     'quantity' => $ticketCount,
-            //     'price' => $amount
-            // ]);
-            
             return response()->json([
                 "error" => false,
                 "amount" => $amount,
@@ -191,7 +149,7 @@ class ReissuePNRController extends Controller
 
             $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);          
 
-            // dd($previewResponse);
+            // dump($previewResponse);
             $expectedAmount = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
           
             $isPaymentRequired = $expectedAmount > 0;
@@ -256,6 +214,8 @@ class ReissuePNRController extends Controller
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
             // dump($response);
            
+
+            // dump("got here 1");
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
             // $preferredCurrency = $response['ReissuePnrCommitResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
  
@@ -263,17 +223,23 @@ class ReissuePNRController extends Controller
                 $ticketItemList = [$ticketItemList];
             }
 
+            
+            
             $id = $response["ReissuePnrCommitResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["ID"];
             $referenceId = $response["ReissuePnrCommitResponse"]["airBookingList"]["airReservation"]["bookingReferenceIDList"]["referenceID"];
             $data = [];
             $data["id"] = $id;
             $data["reference_id"] = $referenceId;
             
-
+            $counter = 0;
             if ( $isPaymentRequired ) {
                 foreach($ticketItemList as $ticketItem) {
+                    $counter = $counter + 1;
+                    // dump("I got here loop {$counter}");
+
                     $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
-                    $data["amount"][] = $soap_expected_amount; 
+                    // $data["amount"][] = $soap_expected_amount; 
+                    $data["amount"] = $soap_expected_amount; 
 
                     $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
                     $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
@@ -298,8 +264,7 @@ class ReissuePNRController extends Controller
 
             }
           
-            
-
+            // dump("got here 3");
 
             $previewbookOriginDestinationOptionLists = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
             
@@ -307,7 +272,9 @@ class ReissuePNRController extends Controller
                 $previewbookOriginDestinationOptionLists = [$previewbookOriginDestinationOptionLists];
             }
           
+            $newCounter = 0;
             foreach ($previewbookOriginDestinationOptionLists as $bookOriginDestinationOptionList) {
+                $newCounter += 1;
                 $arrival_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["arrivalDateTime"];
                 $departure_time = $bookOriginDestinationOptionList["bookFlightSegmentList"]["flightSegment"]["departureDateTime"];
                 $newOrigin = $bookOriginDestinationOptionList["bookFlightSegmentList"]['flightSegment']['arrivalAirport']['locationName'];
@@ -337,6 +304,7 @@ class ReissuePNRController extends Controller
                     "flight_duration" => $newTotalHours
                 ]);
             } 
+            // dump("got here 4");
 
             $ticketCount = Flight::where('booking_id', $id)->count();
 
