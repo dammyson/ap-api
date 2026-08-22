@@ -236,32 +236,87 @@ class ReissuePNRController extends Controller
             $counter = 0;
             if ( $isPaymentRequired ) {
                 foreach($ticketItemList as $ticketItem) {
-                    $counter = $counter + 1;
+                  
                     // dump("I got here loop {$counter}");
+                    $paymentDetails = $ticketItem['paymentDetails'] ?? null;
 
-                    $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
-                    // $data["amount"][] = $soap_expected_amount; 
-                    $data["amount"] = $soap_expected_amount; 
 
-                    $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
-                    $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                    $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
+                    if (is_array($paymentDetails) && isset($paymentDetails['paymentDetailList'])) {
+
+                        $paymentDetailList = $paymentDetails['paymentDetailList'];
+
+                        $soap_expected_amount = $paymentDetailList['paymentAmount']['value'] ?? 0;
+
+                        $data["amount"][] = $soap_expected_amount;
+
+                        $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
+
+                        $invoice_number = $paymentDetailList['invType']['invNumber'] ?? null;
+
+                        $amount = $paymentDetailList['paymentAmount']['value'] ?? 0;
+
+                        // Create transaction only when payment details exist
+                        if ($invoice_number) {
+                            Transaction::firstOrCreate([
+                                "invoice_number" => $invoice_number,
+                                "amount" => $amount,
+                            ], [
+                                'transaction_type' => $transactionDescription,
+                                'ticket_type' => 'ticket',
+                                'user_id' => $user->id,
+                                'invoice_id' => $invoice->id,
+                                'device_type' => $deviceType,
+                                'currency' => $preferredCurrency,
+                                "payment_method" => $paymentMethod,
+                                "payment_channel" => $paymentChannel,
+                                'is_flight' => true
+                            ]);
+                        } else {
+                            
+                            Log::warning('Payment details missing for ticket item', [
+                                'ticketItem' => $ticketItem,
+                            ]);
+
+                            Transaction::create([
+                                "invoice_number" => "Not provided by Hittit",
+                                "amount" => $paidAmount,
+                                "booking_id" => $id,
+                                'transaction_type' => $transactionDescription,
+                                'ticket_type' => 'ticket',
+                                'user_id' => $user->id,
+                                'invoice_id' => $invoice->id,
+                                'device_type' => $deviceType,
+                                'currency' => $preferredCurrency,
+                                "payment_method" => $paymentMethod,
+                                "payment_channel" => $paymentChannel,
+                                'is_flight' => true
+                            ]);
+                        }
+                    }
+                //     $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
+                //     // $data["amount"][] = $soap_expected_amount; 
+                //     $data["amount"][] = $soap_expected_amount; 
+
+                //     $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
+                //     $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
+                //     $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
             
-                    Transaction::firstOrCreate([
-                        "invoice_number" => $invoice_number,                        
-                        'amount' => $amount,
-                    ], [
-                        'transaction_type' => $transactionDescription,
-                        'ticket_type' => 'ticket',
-                        'user_id' => $user->id,
-                        'invoice_id' =>  $invoice->id,
-                        // 'device_type' => $userDevice->device_type,
-                        'device_type' => $deviceType,
-                        'currency' => $preferredCurrency,
-                        "payment_method" => $paymentMethod,
-                        "payment_channel" => $paymentChannel,
-                        'is_flight' => true
-                    ]);
+                //     Transaction::firstOrCreate([
+                //         "invoice_number" => $invoice_number,                        
+                //         'amount' => $amount,
+                //     ], [
+                //         'transaction_type' => $transactionDescription,
+                //         'ticket_type' => 'ticket',
+                //         'user_id' => $user->id,
+                //         'invoice_id' =>  $invoice->id,
+                //         // 'device_type' => $userDevice->device_type,
+                //         'device_type' => $deviceType,
+                //         'currency' => $preferredCurrency,
+                //         "payment_method" => $paymentMethod,
+                //         "payment_channel" => $paymentChannel,
+                //         'is_flight' => true
+                //     ]);
+                // }
                 }
 
             }
