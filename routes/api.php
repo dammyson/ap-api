@@ -231,6 +231,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
         Route::group(['prefix' => 'reissue-ticket-pnr'], function() {
             Route::post('preview', [ReissuePNRController::class, 'reissueTicketPNR']);
+            Route::post('get-transaction', [ReissuePNRController::class, 'transactionDetails']);
             Route::post('commit', [ReissuePNRController::class, 'reissueTicketCommit']);
             Route::post('addFlightPreview', [ReissuePNRController::class, 'reissuePnrAddFlightPreview']);
             Route::post('addFlightCommit', [ReissuePNRController::class, 'reissuePnrAddFlightCommit']);
