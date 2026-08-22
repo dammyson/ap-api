@@ -213,7 +213,9 @@ class ReissuePNRController extends Controller
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
             // dump($response);
-           
+            Log::error('REISSUE COMMIT RESPONSE', [
+                'response' => $response,
+            ]);
 
             // dump("got here 1");
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
@@ -338,7 +340,15 @@ class ReissuePNRController extends Controller
             
         } catch (\Throwable $th) {
             
-            Log::error($th->getMessage());
+            // Log::error($th->getMessage());
+
+            Log::error('REISSUE TICKET COMMIT ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
     
             return response()->json([
                 "error" => true,    
