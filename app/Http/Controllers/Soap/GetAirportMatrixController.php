@@ -86,7 +86,25 @@ class GetAirportMatrixController extends Controller
                     } 
                 }
 
+                // usort($destinationFlightArray, function ($a, $b) {
+                //     return strcmp(
+                //         $a['destinationPortLocationName'],
+                //         $b['destinationPortLocationName']
+                //     );
+                // });
+
                 usort($destinationFlightArray, function ($a, $b) {
+                    // Primary: destination port name
+                    $nameComparison = strcmp(
+                        $a['destinationPortLocationName'],
+                        $b['destinationPortLocationName']
+                    );
+
+                    if ($nameComparison !== 0) {
+                        return $nameComparison;
+                    }
+
+                    // Secondary: destination port code
                     return strcmp(
                         $a['destinationPortLocationCode'],
                         $b['destinationPortLocationCode']
@@ -110,13 +128,34 @@ class GetAirportMatrixController extends Controller
 
             
         
+            // usort($availableFlights, function ($a, $b) {
+            //     return strcmp(
+            //         $a['originAndDestinations']['originPortLocationCode'],
+            //         $b['originAndDestinations']['originPortLocationCode']
+            //     );
+            // });
+           
+
+
             usort($availableFlights, function ($a, $b) {
+                // Primary: origin city name
+                $cityComparison = strcmp(
+                    $a['originAndDestinations']['originLocationCityName'],
+                    $b['originAndDestinations']['originLocationCityName']
+                );
+
+                if ($cityComparison !== 0) {
+                    return $cityComparison;
+                }
+
+                // Secondary: origin port code
                 return strcmp(
                     $a['originAndDestinations']['originPortLocationCode'],
                     $b['originAndDestinations']['originPortLocationCode']
                 );
             });
 
+            
             return response()->json([
                 "error" => "false",
                 "message" => "available flights",
