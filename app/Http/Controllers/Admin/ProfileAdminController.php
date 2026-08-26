@@ -46,14 +46,20 @@ class ProfileAdminController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING ADMIN PROFILE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }    
+        } 
 
     }
 
@@ -85,12 +91,18 @@ class ProfileAdminController extends Controller
                 ], 200);
                }
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR CHANGING ADMIN PROFILE IMAGE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }  
         
@@ -118,14 +130,20 @@ class ProfileAdminController extends Controller
            ]);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR EDITING ADMIN PROFILE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     public function changeAdminRole(Request $request) {
@@ -148,14 +166,20 @@ class ProfileAdminController extends Controller
             ], 200);
         
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR CHANGING ADMIN ROLE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
 
@@ -183,15 +207,21 @@ class ProfileAdminController extends Controller
                 "message" => "Admin account deleted successfully"
             ], 200);
         
-        }catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR DELETING ADMIN ACCOUNT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
     }
 
     public function deactivateAdminAccount(Request $request) {
@@ -200,15 +230,6 @@ class ProfileAdminController extends Controller
         try {
 
             Gate::authorize('is-admin');
-
-            // if ($request->user('admin')->role !== "Admin") {
-            //     return response()->json([
-            //         "error" => true,
-            //         "message" => "You do not have permission to view team members.
-            //             Please contact your system administrator if you believe this is an error"
-            //     ], 403);
-    
-            // }
     
             $admin = Admin::where('email', $email)->first();
             $admin->is_deactivated = true;
@@ -220,13 +241,19 @@ class ProfileAdminController extends Controller
             ], 200);
         
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR DEACTIVATING ADMIN ACCOUNT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 }

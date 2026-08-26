@@ -27,51 +27,71 @@ class CustomerAdminController extends Controller
     }
 
     public function userInformation(Request $request, User $user) {
-        // $user = $request->user();
-        // dd($user);
-        $tierInfo = (!$user->is_guest) ? $user->currentTier() : null;
-        
-        $flightCount = Transaction::where('user_id', $user->id)->
-            where('ticket_type', 'ticket')
-            ->count();
-        //or
 
-        // $flightCount = Flight::where('peace_id', $user->peace_id)->with('invoices', function($query) {
-        //         $query->where('is_paid', false);
-        //  })
-        //  ->distinct('booking_id')->count();
+        try {
 
-        $refferalCount = ReferralActivity::where('referrer_peace_id', $user->peace_id)->count();
+            
+            // $user = $request->user();
+            // dd($user);
+            $tierInfo = (!$user->is_guest) ? $user->currentTier() : null;
+            
+            $flightCount = Transaction::where('user_id', $user->id)->
+                where('ticket_type', 'ticket')
+                ->count();
+            //or
 
-        $dateOfRegistration = $user->created_at;
+            // $flightCount = Flight::where('peace_id', $user->peace_id)->with('invoices', function($query) {
+            //         $query->where('is_paid', false);
+            //  })
+            //  ->distinct('booking_id')->count();
 
-        $lastFlight = Flight::where('peace_id', $user->peace_id)->where('departure_time', '<=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'desc')->first();
-        $upcomingFlight = Flight::where('peace_id', $user->peace_id)->where('departure_time', '>=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'asc')->first();
+            $refferalCount = ReferralActivity::where('referrer_peace_id', $user->peace_id)->count();
 
-        $userActivityLog = UserActivityLog::where('user_id', $user->id)->get();
-        
-        return response()->json([
-            "user_image_url_link" => Storage::url($user->image_url),
-            "user_firstname" => $user->first_name,
-            "user_lastname" => $user->last_name,
-            "user_phonenumber" => $user->phone_number,
-            "user_total_flight_flown" => $flightCount,
-            "user_refferal_Count" => $refferalCount,
-            "user_date_of_reg" => $dateOfRegistration,
-            "user_point" => $user->points,
-            "user_all_time_point" => $user->all_time_point,
-            "last_flight" => $lastFlight,
-            "upcoming_flight" => $upcomingFlight,
-            "user_activity" => $userActivityLog,
-            "tier_information" => [
+            $dateOfRegistration = $user->created_at;
+
+            $lastFlight = Flight::where('peace_id', $user->peace_id)->where('departure_time', '<=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'desc')->first();
+            $upcomingFlight = Flight::where('peace_id', $user->peace_id)->where('departure_time', '>=', Carbon::now()->toIso8601String())->orderBy('departure_time', 'asc')->first();
+
+            $userActivityLog = UserActivityLog::where('user_id', $user->id)->get();
+            
+            return response()->json([
+                "user_image_url_link" => Storage::url($user->image_url),
+                "user_firstname" => $user->first_name,
+                "user_lastname" => $user->last_name,
+                "user_phonenumber" => $user->phone_number,
+                "user_total_flight_flown" => $flightCount,
+                "user_refferal_Count" => $refferalCount,
+                "user_date_of_reg" => $dateOfRegistration,
                 "user_point" => $user->points,
-                "tier_name" => $user->is_guest ? "not applicable" : $tierInfo->name,
-                "tier_description" => $user->is_guest ? "not applicable" : $tierInfo->description,
-                "tier_rank" => $user->is_guest ? "not applicable" : $tierInfo->rank
-            ]
+                "user_all_time_point" => $user->all_time_point,
+                "last_flight" => $lastFlight,
+                "upcoming_flight" => $upcomingFlight,
+                "user_activity" => $userActivityLog,
+                "tier_information" => [
+                    "user_point" => $user->points,
+                    "tier_name" => $user->is_guest ? "not applicable" : $tierInfo->name,
+                    "tier_description" => $user->is_guest ? "not applicable" : $tierInfo->description,
+                    "tier_rank" => $user->is_guest ? "not applicable" : $tierInfo->rank
+                ]
 
 
-        ]);
+            ]);
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING TOTAL REVENUE FROM TICKETS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
     
     }
 
@@ -211,79 +231,103 @@ class CustomerAdminController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            Log::error($th->getMessage());
 
+            Log::error('ERROR RETRIEVING User REVENUE DATA', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
 
     public function revenueCustomerChart(Request $request, User $user) {
-        $year = Carbon::now()->year;
-        $month = Carbon::now()->month;
-        // $week = Carbon::now()->week;
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
         
-        $totalRevenue = Transaction::where('user_id', $user->id)
-            ->whereYear('created_at', $year)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
-            ->groupBy('day_name')
-            ->get();
+        try {
 
-        $totalRevenueAmount = Transaction::where('user_id', $user->id)
-            ->whereYear('created_at', $year)
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->sum('amount');
         
-        $flightBooking = Transaction::where('user_id', $user->id)
-            ->whereYear('created_at', $year)
-            ->where('ticket_type', 'ticket')
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
-            ->groupBy('day_name')
-            ->get();
-        
-        $flightBookingAmount = Transaction::where('user_id', $user->id)
-            ->whereYear('created_at', $year)
-            ->where('ticket_type', 'ticket')
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->sum('amount');    
+            $year = Carbon::now()->year;
+            $month = Carbon::now()->month;
+            // $week = Carbon::now()->week;
+            $startOfWeek = Carbon::now()->startOfWeek();
+            $endOfWeek = Carbon::now()->endOfWeek();
             
-        $appPurchase = Transaction::where('user_id', $user->id)
-            ->whereYear('created_at', $year)
-            ->where('ticket_type', 'Ancillary')
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
-            ->groupBy('day_name')
-            ->get();
-        
-        $appPurchaseAmount = Transaction::where('user_id', $user->id)
-            ->whereYear('created_at', $year)
-            ->where('ticket_type', 'Ancillary')
-            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->sum('amount'); 
+            $totalRevenue = Transaction::where('user_id', $user->id)
+                ->whereYear('created_at', $year)
+                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
+                ->groupBy('day_name')
+                ->get();
+
+            $totalRevenueAmount = Transaction::where('user_id', $user->id)
+                ->whereYear('created_at', $year)
+                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                ->sum('amount');
+            
+            $flightBooking = Transaction::where('user_id', $user->id)
+                ->whereYear('created_at', $year)
+                ->where('ticket_type', 'ticket')
+                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
+                ->groupBy('day_name')
+                ->get();
+            
+            $flightBookingAmount = Transaction::where('user_id', $user->id)
+                ->whereYear('created_at', $year)
+                ->where('ticket_type', 'ticket')
+                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                ->sum('amount');    
+                
+            $appPurchase = Transaction::where('user_id', $user->id)
+                ->whereYear('created_at', $year)
+                ->where('ticket_type', 'Ancillary')
+                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                ->select(DB::raw('DAYNAME(created_at) as day_name'), DB::raw('SUM(amount) as total_amount'))
+                ->groupBy('day_name')
+                ->get();
+            
+            $appPurchaseAmount = Transaction::where('user_id', $user->id)
+                ->whereYear('created_at', $year)
+                ->where('ticket_type', 'Ancillary')
+                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                ->sum('amount'); 
 
 
-        $totalRevenue = $this->organiseChart($totalRevenue);
-        $flightBooking = $this->organiseChart($flightBooking);
-        $appPurchase = $this->organiseChart($appPurchase);
-        
-        return response()->json([
-            "error" => false,
-                "total_flight_amount" => $flightBookingAmount,
-                "flight_booking" => $flightBooking,
-                "app_purchase_amount" => $appPurchaseAmount,
-                "app_purchase" => $appPurchase,
-                "total_revenue_amount" => $totalRevenueAmount,
-                "total_revenue" => $totalRevenue
+            $totalRevenue = $this->organiseChart($totalRevenue);
+            $flightBooking = $this->organiseChart($flightBooking);
+            $appPurchase = $this->organiseChart($appPurchase);
+            
+            return response()->json([
+                "error" => false,
+                    "total_flight_amount" => $flightBookingAmount,
+                    "flight_booking" => $flightBooking,
+                    "app_purchase_amount" => $appPurchaseAmount,
+                    "app_purchase" => $appPurchase,
+                    "total_revenue_amount" => $totalRevenueAmount,
+                    "total_revenue" => $totalRevenue
 
-        ], 200);
+            ], 200);
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING CUSTOMER REVENUE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
 
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
     }
 
     public function customerInformation(Request $request) {
@@ -298,12 +342,19 @@ class CustomerAdminController extends Controller
                 'users_table_data' => $customerCollection
             ]);
 
-        }  catch (\Throwable $th) {
-            Log::error($th->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING CUSTOMER INFORMATION', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
@@ -328,12 +379,19 @@ class CustomerAdminController extends Controller
                 'message' => "{$points} points allocated to {$user->first_name} {$user->last_name}"
             ], 200);
 
-        }  catch (\Throwable $th) {
-            Log::error($th->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR AWARDING USER POINT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
 
@@ -370,12 +428,20 @@ class CustomerAdminController extends Controller
                 'error' => false,
                 'user_activity_log' => $userActivityLog
             ]);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
 
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING USER ACTIVITY LOG', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
        

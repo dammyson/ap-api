@@ -5,39 +5,131 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Game\StoreGameCategoryRequest;
 use App\Http\Requests\Game\UpdateGameCategoryRequest;
 use App\Models\GameCategory;
+use Illuminate\Support\Facades\Log;
 
 class GameCategoryController extends Controller
 {
     public function index()
     {
-        return response()->json(GameCategory::all());
+        try {
+
+            return response()->json(GameCategory::all());
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING GAME CATEGORY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
     }
 
     public function store(StoreGameCategoryRequest $request)
     {
-        $gameCategory = GameCategory::create($request->validated());
+        try {
+            
+            $gameCategory = GameCategory::create($request->validated());
 
-        return response()->json($gameCategory, 201);
+            return response()->json($gameCategory, 201);
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR STORING GAME CATEGORY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
     }
 
     public function show(GameCategory $gameCategory)
-    {
-        return response()->json($gameCategory);
+    {   
+        try {
+            
+           return response()->json($gameCategory);
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR SHOWING GAME CATEGORY BY ID', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
+        
+        
     }
 
     public function update(UpdateGameCategoryRequest $request, GameCategory $gameCategory)
     {
-       
-        $gameCategory->update($request->validated());
+        try {
+            
+            $gameCategory->update($request->validated());
 
-        return response()->json($gameCategory);
+            return response()->json($gameCategory);
+
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR UPDATING GAME CATEGORY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
     }
 
     public function destroy(GameCategory $gameCategory)
     {
-        $gameCategory->delete();
+        try {
+            
+            $gameCategory->delete();
 
-        return response()->json(null, 204);
+            return response()->json(null, 204);
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR DELETING GAME CATEGORY BY ID', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
     }
 }
 

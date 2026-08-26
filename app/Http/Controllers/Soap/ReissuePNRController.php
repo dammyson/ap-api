@@ -15,20 +15,23 @@ use App\Services\Utility\CheckArray;
 use App\Services\Soap\ReissuePnrTestBuilder;
 use App\Services\Wallet\VerificationService;
 use App\Services\Wallet\FlutterVerificationService;
-use App\Http\Requests\Soap\Reissue\ReissuePnrPreviewRequest;
+use App\Services\Payment\Payments;
 
 class ReissuePNRController extends Controller
 {
     protected $craneReissuePnrOTAService;
     protected $reissusePNRBuilder;
     protected $checkArray;    
+    protected $payments;    
     
 
-    public function __construct(ReissuePnrTestBuilder $reissusePNRBuilder,   CheckArray $checkArray) {
+    public function __construct(Payments $payments, ReissuePnrTestBuilder $reissusePNRBuilder,   CheckArray $checkArray) {
         $this->craneReissuePnrOTAService = app('CraneReissuePnrOTAService');
         // app('CraneFareRulesService');
         $this->reissusePNRBuilder = $reissusePNRBuilder;
         $this->checkArray = $checkArray;
+        $this->payments = $payments;
+
     } 
 
     private function getFlightHours($flightDuration) {
@@ -55,18 +58,7 @@ class ReissuePNRController extends Controller
         return $totalHours;
     }
 
-    
-    // private function unauthorizedResponse() {
-    //     return response()->json([
-    //         "error" => true,
-    //         "message" => "you are not authorized to carry out this action"
-    //     ], 401);
-    // }
-
-
-    public function transactionDetails(Request $request) {
-        return Transaction::where('booking_id', $request->input('booking_id'))->get();
-    } 
+   
 
     public function reissueTicketPNR(ReissuePnrRequest $request) {
         try{
@@ -110,31 +102,41 @@ class ReissuePNRController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING SURVEYS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong",
-                "actual_error" => $th->getMessage()
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
     }
 
     public function reissueTicketCommit (ReissuePnrRequest $request) {
         try {
+
+            $id = $request->input('ID');
+            $bookingReferenceID = $request->input('referenceID');
 
             $validated = $request->validate([
                 "transactionDescription" => "required|string",
                 "payment_method" =>  "nullable|sometimes|string",
                 "payment_channel" =>  "nullable|sometimes|string",            
                 "payment_ref" =>  "nullable|sometimes|string",
+                "purpose" =>  "nullable|sometimes|string",
                 
             ]);
            
             $transactionDescription = $validated["transactionDescription"];
             $paymentMethod = $validated["payment_method"];
             $paymentChannel = $validated["payment_channel"];
+            $purpose = $validated["purpose"] ?? null;
             
             $paymentRef = $request->input('payment_ref');
             // $invoiceId = $request->input('invoiceId') ?? null;
@@ -178,6 +180,23 @@ class ReissuePNRController extends Controller
                     ], 400);
                 }
                 $preferredCurrency = $verified_request['data']['currency'];
+
+                
+
+                $payment = $this->payments->createPayment([
+                    'user_id' => $user->id,
+                    "ref" => $paymentRef,               
+                    "amount" => $paidAmount,
+                    "currency" => $preferredCurrency,
+                    'channel' => $paymentChannel,
+                    'method' => $paymentMethod,
+                    'purpose' => $purpose ?? 'Flight Upgrade|Change',
+                    'payment_status' => 'completed',
+                    'booking_api_status' => 'processing',
+                    'booking_id' => $id,
+                    'booking_reference_id' => $bookingReferenceID,
+                  
+                ]);
                 
         
                 if ($paidAmount < $expectedAmount) {
@@ -192,11 +211,14 @@ class ReissuePNRController extends Controller
                 // generate a new invoice
                 $invoice = Invoice::create([
                     'amount' => $paidAmount,
-                    'booking_id' => $request->ID,
+                    'booking_id' => $id,
                     'type' => 'flight',
                     'is_paid' => true,
                     'currency' => $preferredCurrency
                 ]); 
+
+                $payment->invoice_id = $invoice->id;
+                $payment->save();
             }
           
 
@@ -215,8 +237,13 @@ class ReissuePNRController extends Controller
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
           
+            if (array_key_exists('ReissuePnrCommitResponse', $response)) {
+                $payment->update([
+                    'booking_api_status' => 'completed',
+                ]);
+            }
+            
 
-            // dump("got here 1");
             $ticketItemList = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]["ticketItemList"];
             // $preferredCurrency = $response['ReissuePnrCommitResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
  
@@ -296,35 +323,12 @@ class ReissuePNRController extends Controller
                             ]);
                         }
                     }
-                //     $soap_expected_amount = $ticketItem["paymentDetails"]["paymentDetailList"]["paymentAmount"]["value"];
-                //     // $data["amount"][] = $soap_expected_amount; 
-                //     $data["amount"][] = $soap_expected_amount; 
-
-                //     $transactionType = $response["ReissuePnrCommitResponse"]["airBookingList"]["ticketInfo"]['pricingType'];
-                //     $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
-                //     $amount = $ticketItem['paymentDetails']['paymentDetailList']['paymentAmount']['value']; // amount paid for this transaction
-            
-                //     Transaction::firstOrCreate([
-                //         "invoice_number" => $invoice_number,                        
-                //         'amount' => $amount,
-                //     ], [
-                //         'transaction_type' => $transactionDescription,
-                //         'ticket_type' => 'ticket',
-                //         'user_id' => $user->id,
-                //         'invoice_id' =>  $invoice->id,
-                //         // 'device_type' => $userDevice->device_type,
-                //         'device_type' => $deviceType,
-                //         'currency' => $preferredCurrency,
-                //         "payment_method" => $paymentMethod,
-                //         "payment_channel" => $paymentChannel,
-                //         'is_flight' => true
-                //     ]);
-                // }
+               
                 }
 
             }
           
-            // dump("got here 3");
+            
 
             $previewbookOriginDestinationOptionLists = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
             
@@ -364,7 +368,6 @@ class ReissuePNRController extends Controller
                     "flight_duration" => $newTotalHours
                 ]);
             } 
-            // dump("got here 4");
 
             $ticketCount = Flight::where('booking_id', $id)->count();
 
@@ -398,7 +401,6 @@ class ReissuePNRController extends Controller
             
         } catch (\Throwable $th) {
             
-            // Log::error($th->getMessage());
 
             Log::error('REISSUE TICKET COMMIT ERROR', [
                 'message' => $th->getMessage(),
@@ -407,12 +409,21 @@ class ReissuePNRController extends Controller
                 'trace' => $th->getTraceAsString(),
             ]);
 
-    
+
+            if ($th->getMessage() == "Payment verification failed" || $th->getMessage() == "Payment already processed") {
+                return response()->json([
+                    "error" => true,   
+                    "message" => $th->getMessage(),                
+                ], 500);
+            }
             return response()->json([
-                "error" => true,    
-                "message" =>  $th->getMessage(),
-                "actual_message" => $th->getMessage()
+                "error" => true,   
+                "message" => "something went wrong",
+             
             ], 500);
+
+    
+           
         }  
     }
 

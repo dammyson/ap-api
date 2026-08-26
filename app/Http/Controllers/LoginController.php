@@ -47,16 +47,10 @@ class LoginController extends Controller
                 $user->firebase_token = $request->firebase_token;
                 $user->save();
             }
-
             
-
             
-            // $newpassword = $validated['password'];
-            // dd($newpassword);
             if (Hash::check($request["password"], $user->password)) {
-                $data['user'] = $user;
-                // $data['token'] = $user->createToken('Nova')->accessToken;
-            
+                $data['user'] = $user;            
 
                 $tokenResult = $user->createToken('Nova');
                 $data['token'] = $tokenResult->accessToken;
@@ -77,61 +71,10 @@ class LoginController extends Controller
                 $tokenObject->save();
 
                 $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
-
-
-                // if ($deviceType) {
-                //     $userDevice = Device::where('user_id', $user->id)->first();
-                //     $user->device_type = $deviceType;
-                //     $user->save();
-
-                //     if (!$userDevice) {
-                //         Device::create([
-                //             'user_id' => $user->id,
-                //             'device_type' => $deviceType
-                //         ]);
-                //     } else {
-                //         $userDevice->device_type = $deviceType;
-                //         $userDevice->save();
-                //     }
-                // }
-
-                // if ($screenResolution) {
-                //     $userScreenResolution = ScreenResolution::where('user_id', $user->id)->first();
-
-                //     if (!$userScreenResolution) {
-                //         ScreenResolution::create([
-                //             'user_id' => $user->id,
-                //             'screen_resolution' => $screenResolution
-                //         ]);
-                //     } else {
-                //         $userScreenResolution->screen_resolution = $screenResolution;
-                //         $userScreenResolution->save();
-                //     }
-                // }
-
-                // // $user->notify(new PasswordChanged($details));
-                // $user->last_login = now()->setTimezone('Africa/Lagos');
-                // $user->status = 'active';
-                // $user->save();
-
-                // if (!$user->is_guest) {
-                //     $details = [
-                //         'title' => 'New Message',
-                //         'body' => 'You have received a new message.',
-                //         'url' => '/messages/1'
-                //     ];
-        
-                //     $currentTier = $user->currentTier();
-        
-                //     if (!$currentTier) {
-                //         $this->tierService->assignTierWithDefaultFallback($user->id);
-                //     }   
-                    
-                //     $user->notify(new LoginNotification($details));
-                // }
+                $this->setLastLoginAndSendNotification($user);
 
                 return response()->json([
-                    'is_correct' => true,
+                    'error' => false,
                     'message' => 'Login Successful',
                     // 'deviceType' => $deviceType,
                     // 'screenResolution' => $screenResolution,
@@ -140,14 +83,18 @@ class LoginController extends Controller
             } else {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
             }
-        } catch (\Exception $e) {       
+        } catch (\Throwable $th) {       
             
-            Log::error($e->getMessage());
+           Log::error('LOGIN ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
     
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong",
-                "msg" => $e->getMessage()
+                "message" => "Something went wrong"
             ], 500);
             
         }
@@ -189,27 +136,27 @@ class LoginController extends Controller
             $data['user'] = $user;
             
             $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
+            $this->setLastLoginAndSendNotification($user);
         
 
             return response()->json([
-                'is_correct' => true,
+                'error' => false,
                 'message' => 'Login Successful',
-                // 'deviceType' => $deviceType,
-                // 'screenResolution' => $screenResolution,
                 'data' => $data
             ], 200);
 
-        } catch (\Throwable $e) {
+        } catch (\Throwable $th) {
 
-            // Log full error for developers
-            Log::error('Google signup failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+            Log::error('GOOGLE SIGNUP FAILED', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
             ]);
 
             // Return safe message to user
             return response()->json([
-                'is_correct' => false,
+                'error' => true, 
                 'message' => 'Unable to complete login at the moment. Please try again.'
             ], 500);
         }
@@ -247,7 +194,11 @@ class LoginController extends Controller
                 $userScreenResolution->save();
             }
         }
-
+       
+    }
+          
+    
+    private function setLastLoginAndSendNotification(User $user) {
         $user->last_login = now()->setTimezone('Africa/Lagos');
         $user->status = 'active';
         $user->save();
@@ -267,8 +218,6 @@ class LoginController extends Controller
             
             $user->notify(new LoginNotification($details));
         }
-
-
        
     }
 

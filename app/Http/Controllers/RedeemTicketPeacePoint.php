@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Soap\TicketReservationController;
+use App\Services\TicketReservations\TicketReservation;
+use Illuminate\Support\Facades\Log;
 
 class RedeemTicketPeacePoint extends Controller
 {
-    protected $ticketReservationController;
+    protected $ticketReservation;
 
-    public function __construct(TicketReservationController $ticketReservationController) {
-        $this->ticketReservationController = $ticketReservationController;
+    public function __construct(TicketReservation $ticketReservation, ) {
+        $this->ticketReservation = $ticketReservation;
     }
 
     public function payWithPeacePoint(Request $request) {
@@ -25,7 +26,7 @@ class RedeemTicketPeacePoint extends Controller
             $peacePoint = $user->peace_points;
     
             // convert peacepoint to naira
-            // 1000Naira = 1peace_point;
+            // 1000Naira = 1 peace_point;
             $moneyEquivalent = $peacePoint * 1000;
     
             if ($moneyEquivalent < $amount) {
@@ -45,12 +46,19 @@ class RedeemTicketPeacePoint extends Controller
             $user->save();
     
             // make payment to the soap api
-            $result =  $this->ticketReservationController->ticketReservationCommit($bookingId, $bookingReferenceID, $amount, $invoiceId, $deviceType);
-        
+            $result = $this->ticketReservation->commit([
+                'booking_id' => $bookingId,
+                'booking_reference_id' => $bookingReferenceID,
+                'paid_amount' => $amount,
+                'invoice_id' => $invoiceId,
+                'device_type' => $deviceType,
+                'payment_method' => "bank transfer",
+                'payment_channel' => "Quick teller",
+                'preferred_currency' => "NGN"
+            ]);   
             // Commit the transaction
             DB::commit();
-            // if successfully send mail with ticket information
-            //Mail::send();
+            
 
             return response()->json([
                 "error" => false,
@@ -59,13 +67,20 @@ class RedeemTicketPeacePoint extends Controller
                 "user_email" => $user->email
             ]);
         
-        } catch (\Throwable $th) {
-            // Rollback the transaction in case of an error
-            DB::rollBack();
-            return response()->json([
-                "error" => true,
-                "message" => $th->getMessage()
+        }  catch (\Throwable $th) {
+
+            Log::error('ERROR PAYING WITH PEACE POINT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
             ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
         }
        
     }

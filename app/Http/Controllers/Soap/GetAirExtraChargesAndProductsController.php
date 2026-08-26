@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\GetAirExtraChargesAndProductBuilder;
 use App\Http\Requests\Soap\GetExtraChargesAndProductRequest;
+use Illuminate\Support\Facades\Log;
+
 class GetAirExtraChargesAndProductsController extends Controller
 {
     protected $getAirExtraChargesAndProductBuilder;
@@ -21,27 +23,43 @@ class GetAirExtraChargesAndProductsController extends Controller
 
     
     public function getAirExtraChargesAndProduct(GetExtraChargesAndProductRequest $request) {
+        try {
+            $preferredCurrency = $request->input('preferredCurrency');
+            $bookFlightSegmentList = $request->input('bookFlightSegmentList');       
+            $locationCode = $request->input('locationCode');
+            $passengerTypeQuantityList = $request->input('passengerTypeQuantityList'); 
+            $tripType = $request->input('tripType');
 
-        $preferredCurrency = $request->input('preferredCurrency');
-        $bookFlightSegmentList = $request->input('bookFlightSegmentList');       
-        $locationCode = $request->input('locationCode');
-        $passengerTypeQuantityList = $request->input('passengerTypeQuantityList'); 
-        $tripType = $request->input('tripType');
+            $xml = $this->getAirExtraChargesAndProductBuilder->getExtraChargesAndProduct(
+                $preferredCurrency,
+                $bookFlightSegmentList,       
+                $locationCode,
+                $passengerTypeQuantityList,
+                $tripType
+            );
 
-        $xml = $this->getAirExtraChargesAndProductBuilder->getExtraChargesAndProduct(
-            $preferredCurrency,
-            $bookFlightSegmentList,       
-            $locationCode,
-            $passengerTypeQuantityList,
-            $tripType
-        );
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAirExtraChargesAndProducts';
-    
-
-        $response = $this->craneOTASoapService->run($function, $xml);
+            $function = 'http://impl.soap.ws.crane.hititcs.com/GetAirExtraChargesAndProducts';
         
-        return $response;
+
+            $response = $this->craneOTASoapService->run($function, $xml);
+            
+            return $response;
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING EXTRA CHARGES AND PRODUCT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
+        
     }
 
 

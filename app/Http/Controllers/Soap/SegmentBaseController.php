@@ -22,39 +22,33 @@ class SegmentBaseController extends Controller
     public function segmentBaseAvailableSpecialServices(SegmentBaseAvailableSpecialServicesRequest $request) {
         
 
-
-        $xml = $this->segmentBaseRequestBuilder->segmentBaseAvailableSpecialServices(
-            $request
-        );
-
-        // dd($xml);
-         
-
         try {
 
-            // dd("I ran");
+            $xml = $this->segmentBaseRequestBuilder->segmentBaseAvailableSpecialServices(
+                $request
+            );
+
             $function = 'http://impl.soap.ws.crane.hititcs.com/SegmentBaseAvailableSpecialServices';
 
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            return $response;
-
-            $availableSSRList = $response['SegmentBaseAvailableSpecialServicesResponse']['availSpecialServices']['availSpecialServiceList']['availableSSRList'];
             
-            return response()->json([
-                "error" => false,
-                "available_ssr_list" => $availableSSRList
-            ], 200);
+            return $response;
             
             
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING SURVEYS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
-    }
+        }
     
 }

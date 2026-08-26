@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Soap;
+namespace App\Services\TicketReservations;
+
+
 
 use App\Models\Flight;
 use App\Models\Invoice;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Soap\Booking\BookingController;
+use App\Models\Payment;
+use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Services\Utility\CheckArray;
 use App\Services\Utility\GetPointService;
-use App\Services\Soap\TicketReservationRequestBuilder;
-use App\Http\Controllers\Soap\Booking\BookingController;
-use App\Http\Requests\Soap\Ticket\TicketReservationViewOnlyRequest;
-use App\Models\Payment;
 
-class TicketReservationController extends Controller
+class TicketReservation 
 {
+
 
     protected $ticketReservationRequestBuilder;    
     protected $craneOTASoapService;
@@ -32,113 +33,86 @@ class TicketReservationController extends Controller
         $this->bookingController = $bookingController;
         $this->getPointService = $getPointService;
     }
-
-    public function ticketReservationViewOnly(TicketReservationViewOnlyRequest $request) {
-        $bookingId = $request->input('ID');
-        $bookingReferenceId = $request->input('referenceID');
-        $preferredCurrency = $request->input('preferred_currency');
-
+    
+    public function commit(array $data)
+    {   
         try {
-    
-            $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
-    
-            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                $preferredCurrency,
-                $bookingId,
-                $bookingReferenceId
-            );    
+
+            $bookingId = $data['booking_id'];
+            $bookingReferenceId = $data['booking_reference_id'];
+            $paidAmount = $data['paid_amount'];
+            $invoiceId = $data['invoice_id'];
+            $deviceType = $data['device_type'];
+            $paymentMethod = $data['payment_method'] ?? null;
+            $paymentChannel = $data['payment_channel'] ?? null;
+            $preferredCurrency = $data['preferred_currency'] ?? null;
+            $paymentId = $data['payment_id'] ?? null;
+
+
+            $user = auth()->user();
+            // dd($user->id);
+
+            // dd($preferredCurrency);
             
-            // dump($xml);
-            $response = $this->craneOTASoapService->run($function, $xml);
-
-            return $response;
-
+            $invoice = Invoice::find($invoiceId);
+            
+            if (!$invoice) {
+                    return response()->json([
+                        "error" => true,
+                        "message" => "No record of invoice"
+                    ], 404);
+                } 
             
             
-        } catch (\Throwable $th) {
+            $payment = Payment::find($paymentId);
+            
 
-            Log::error('ERROR VIEWING TICKET RESERVATION', [
-                'message' => $th->getMessage(),
-                'file' => $th->getFile(),
-                'line' => $th->getLine(),
-                'trace' => $th->getTraceAsString(),
-            ]);
+            $invoiceAmount = $invoice->amount;
 
-            // Return safe message to user
-            return response()->json([
-                'error' => true, 
-                'message' => 'something went wrong'
-            ], 500);
-        }
-
-       
-
-    }
-    
-    public function ticketReservationCommit($bookingId, $bookingReferenceId, $paidAmount, $invoiceId, $deviceType, $paymentMethod = null, $paymentChannel = null, $preferredCurrency = null, $paymentId=null) { 
-        $user = auth()->user();
-        // dd($user->id);
-
-        // dd($preferredCurrency);
         
-        $invoice = Invoice::find($invoiceId);
-        
-        if (!$invoice) {
+
+            if ($invoice->is_paid) {
                 return response()->json([
-                    "error" => true,
-                    "message" => "No record of invoice"
-                ], 404);
-            } 
+                    "error" =>  true,
+                    "message" => "Invoice already paid for"
+                ], 500);
+            }
+            
+            $invoiceAmount = $invoiceAmount + 0;
+
+            if ( $paidAmount < $invoiceAmount ) {
+                return response()->json([
+                    "error" => false,
+                    "message" => "fund payment for ticket is less than calculated"
+                ], 500);
+            }
+
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
+                $preferredCurrency,           
+                $bookingId,
+                $bookingReferenceId,           
+                $invoiceAmount, 
+            
+            );
+
+
         
-        
-        $payment = Payment::find($paymentId);
-           
-
-        $invoiceAmount = $invoice->amount;
-
-      
-
-        if ($invoice->is_paid) {
-            return response()->json([
-                "error" =>  true,
-                "message" => "Invoice already paid for"
-            ], 500);
-        }
-        
-        $invoiceAmount = $invoiceAmount + 0;
-
-        if ( $paidAmount < $invoiceAmount ) {
-            return response()->json([
-                "error" => false,
-                "message" => "fund payment for ticket is less than calculated"
-            ], 500);
-        }
-
-        $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
-            $preferredCurrency,           
-            $bookingId,
-            $bookingReferenceId,           
-            $invoiceAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
-          
-        );
-
-
-        try {
             
             
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-           
-           
-
-            if (array_key_exists('AirTicketReservationResponse', $response)) {
-                $payment->update([
-                    'booking_api_status' => 'completed',
-                ]);
-            }
 
             if (!array_key_exists('AirTicketReservationResponse', $response)) {
+
+                if ($payment) {                 
+                
+                    $payment->update([
+                        'booking_api_status' => 'failed',
+                        'failure_reason' => 'Hitit returned an invalid ticket reservation response',
+                    ]);                  
+                }
+
                 return response()->json([
                     'error' => true,
                     'message' => "no new addition to ticket",
@@ -146,6 +120,12 @@ class TicketReservationController extends Controller
                 ], 500);
             }    
 
+
+            if ($payment) {
+                $payment->update([
+                    'booking_api_status' => 'completed',
+                ]);
+            }
             // dd($response);
             $totalDistance = 0;
 
@@ -165,13 +145,8 @@ class TicketReservationController extends Controller
                 'is_paid' => true
             ]);
             
-            // dd($response);
             $invoice->is_paid = true;
             $invoice->save();
-
-            // AirTicketReservationResponse
-           
-             
 
             // get the list of all the tickets 
             $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
@@ -236,10 +211,6 @@ class TicketReservationController extends Controller
             $description = "made for a payment of {$paidAmount} for flight with booking id {$bookingId}";
             event(new UserActivityLogEvent($user, "ticket payment", $description));
 
-           
-
-
-
 
             $specialRequestDetails = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['specialRequestDetails'];
             $airTravelerList = $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airTravelerList'];
@@ -283,7 +254,7 @@ class TicketReservationController extends Controller
             
         } catch (\Throwable $th) {
 
-            if ($payment->booking_api_status !== 'completed') {
+            if ($payment && $payment->booking_api_status !== 'completed') {
                 $payment->update([
                     'booking_api_status' => 'failed',
                     'failure_reason' => $th->getMessage(),
@@ -300,13 +271,88 @@ class TicketReservationController extends Controller
     
             return response()->json([
                 "error" => true,  
-                // "message" => "something went wrong",
-                "response" => $response,
-                "message" => $th->getMessage(),
+                "message" => "something went wrong"
                 
                 
             ], 500);
         }  
-    }
     
+           
+    }
+
+
+    public function viewBaseFarePaymentInfo(array $data) {
+
+        try {
+            $routes = $data['routes'];
+            $noOfPassengers = $data['noOfPassengers'];
+            $preferredCurrency = $data['preferredCurrency'];
+            $bookingId = $data['bookingId'];
+            $bookingReferenceID = $data['bookingReferenceID'];
+
+            $user = auth()->user();
+            
+            // add a forloop here incase of multiple route
+            $redemptionPoint = 0;
+            foreach($routes as $route) {
+                $redemptionPoint += $this->getPointService->getFlightRedemptionPoints($route['route'], $route['class'], $route['type']);
+
+            }
+            
+            $totalRedemptionPoint = $redemptionPoint * $noOfPassengers; 
+            $peacePoint = $user->points;
+            // dd($totalRedemptionPoint, $peacePoint);
+        
+
+            if ($peacePoint < $totalRedemptionPoint) {
+                throw new \Exception("Insufficient Points");
+            }
+            //// read expected amount from ticketReservation (this is the accurate amount)
+            $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
+    
+            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
+                $preferredCurrency,
+                $bookingId,
+                $bookingReferenceID
+            );    
+            
+            $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
+            
+            if (!isset($ticketReservationResponse['AirTicketReservationResponse'])) {
+                throw new \Exception('Invalid ticket reservation response');
+            }
+           
+            $ticketItemList = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'];
+            
+            if ($this->checkArray->isAssociativeArray($ticketItemList)) { 
+                $ticketItemList = [$ticketItemList];
+
+            }
+            $baseFare = 0;
+
+            foreach($ticketItemList as $ticketItem) {
+                // $baseFare += $ticketItem['pricingInfo']['baseFare']['amount']['value'];
+                $baseFare += $ticketItem["pricingOverview"]["totalBaseFare"]["value"];
+            }
+
+
+            //substract base fare from expected amount to know how much the user is felt to pay
+            $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
+        
+            $amountRemaining = $expectedAmount - $baseFare;
+
+            return [
+                "amountRemaining" => $amountRemaining,
+                "expectedAmount" => $expectedAmount,
+                "baseFare" => $baseFare,
+                "redemptionPoint" => $redemptionPoint,
+                "totalRedemptionPoint" => $totalRedemptionPoint
+            ];
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
+    }
+
 }

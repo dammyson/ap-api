@@ -23,13 +23,20 @@ class SupportController extends Controller
                 "message" => "Complaint sent to support successfully"
             ], 200);
 
-        } catch(\Throwable $th) {
-            Log::error($th);
-            return [
-                "error" => true,
-                "message" => "Something went wrong",
-                "error_details" => $th->getMessage()
-            ];
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR CONTACTING SUPPORT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
         }
     }
 }

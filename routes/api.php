@@ -1,14 +1,10 @@
 <?php
 
-use Psy\Sudo;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CityController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\TierController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\PlaneController;
 
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\RewardController;
@@ -79,6 +75,7 @@ Route::group(['prefix' => 'admin/'], function () {
     Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
     Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
     
+  
     Route::middleware('auth:admin')->group(function () {  
         Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
   
@@ -128,7 +125,6 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::get('/', [SurveyController::class, 'showSurvey']);  
                 Route::post('update-survey-image', [SurveyController::class, 'updateSurveyImage']);
                 Route::patch('toogle-publish-survey', [SurveyController::class, 'tooglePublishSurvey']);
-                // Route::patch('make-survey-false', [SurveyController::class, 'surveyFalse']);
                 Route::put('edit', [SurveyController::class, 'editSurvey']);                
                 Route::delete('delete', [SurveyController::class, 'deleteSurvey']);
                 Route::get('participants', [SurveyController::class, 'surveyParticipants']);
@@ -136,21 +132,7 @@ Route::group(['prefix' => 'admin/'], function () {
                 Route::get('survey-result-gender', [SurveyController::class, 'getSurveyResultByGender']);
                 Route::put('allocate-points/{participant_id}', [SurveyController::class, 'allocatePointToParticipant']);
                 Route::delete('questions/{question}', [SurveyController::class, 'deleteQuestion']);
-                Route::delete('questions/{question}/options/{option}', [SurveyController::class, 'deleteOption']);
-
-                /*
-                Route::group(['prefix' => 'questions'], function () { 
-                    Route::group(['prefix' => '{question}'], function () {  
-                        Route::delete('delete', [SurveyController::class, 'deleteQuestion']);
-                        
-                        Route::group(['prefix' => 'options'], function () {
-                            Route::delete('{option}/delete', [SurveyController::class, 'deleteOption']);
-                        });
-
-                    });
-                });
-                */
-                
+                Route::delete('questions/{question}/options/{option}', [SurveyController::class, 'deleteOption']);                
         
             });
         });
@@ -168,9 +150,9 @@ Route::group(['prefix' => 'admin/'], function () {
             Route::patch('profile/change-password', [ChangePasswordAdminController::class, 'changeAdminPassword']);
         });
 
-        Route::post('featured-trip', [TripController::class, 'featuredTrip']);
-        Route::post('special-deals', [TripController::class, 'specialDeals']);
-        Route::post('favorite-cities-event', [TripController::class, 'favoriteCitiesEvent']);
+        // Route::post('featured-trip', [TripController::class, 'featuredTrip']);
+        // Route::post('special-deals', [TripController::class, 'specialDeals']);
+        // Route::post('favorite-cities-event', [TripController::class, 'favoriteCitiesEvent']);
 
         Route::post('admin-logout', [RegisterAdminController::class, 'logoutAdmin']);
 
@@ -190,7 +172,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
         Route::group(["prefix" => "ticket-reservation"], function() {
             Route::post('/view-only', [TicketReservationController::class, 'ticketReservationViewOnly']);
-            Route::post('/commit-test', [TicketReservationController::class, 'ticketReservationCommitTwo']);
 
         });
 
@@ -208,7 +189,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
             Route::group(["prefix" => "create-booking"], function() {
                 Route::post('/', [CreateBookingController::class, 'createBooking']);
-                // Route::post('/dummy', [CreateBookingController::class, 'createBooking']);
                 Route::post('redeem-ticket-with-peace-point', [CreateBookingController::class, 'redeemTicketWithPeacePoint']);
                 Route::post('verify-ticket-redemption-point', [CreateBookingController::class, 'verifyRedemptionPayment']);
             });
@@ -231,17 +211,16 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 
         Route::group(['prefix' => 'reissue-ticket-pnr'], function() {
             Route::post('preview', [ReissuePNRController::class, 'reissueTicketPNR']);
-            Route::post('get-transaction', [ReissuePNRController::class, 'transactionDetails']);
             Route::post('commit', [ReissuePNRController::class, 'reissueTicketCommit']);
-            Route::post('addFlightPreview', [ReissuePNRController::class, 'reissuePnrAddFlightPreview']);
-            Route::post('addFlightCommit', [ReissuePNRController::class, 'reissuePnrAddFlightCommit']);
-            Route::post('reissuePnrCancelFlightPreview', [ReissuePNRController::class, 'reissuePnrCancelFlightPreview']);
-            Route::post('reissuePnrCancelFlightCommit', [ReissuePNRController::class, 'reissuePnrCancelFlightCommit']);
+            // Route::post('addFlightPreview', [ReissuePNRController::class, 'reissuePnrAddFlightPreview']);
+            // Route::post('addFlightCommit', [ReissuePNRController::class, 'reissuePnrAddFlightCommit']);
+            // Route::post('reissuePnrCancelFlightPreview', [ReissuePNRController::class, 'reissuePnrCancelFlightPreview']);
+            // Route::post('reissuePnrCancelFlightCommit', [ReissuePNRController::class, 'reissuePnrCancelFlightCommit']);
         });
 
         Route::group(["prefix" => "cancel-booking"], function () {
-            Route::post('commit', [CancelBookingController::class, 'cancelBookingCommit']);
             Route::post('view-only', [CancelBookingController::class, 'cancelBookingViewOnly']);
+            Route::post('commit', [CancelBookingController::class, 'cancelBookingCommit']);
         });
 
        
@@ -251,7 +230,6 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
         Route::post('/add-ssr/insurance', [AddSsrController::class, 'addInsuranceSsr']);
         Route::post('/add-ssr/baggages', [AddSsrController::class, 'addBaggagesSsr']);
         Route::post('/add-ssr/select-seat', [AddSsrController::class, 'selectSeat']);
-        Route::post('/select-seat', [AddSsrController::class, 'selectSeat']);
         
         Route::post('/segment-base-available-services', [SegmentBaseController::class, 'segmentBaseAvailableSpecialServices']);
         Route::post('/seat-map', [SeatMapController::class, 'seatMap']);
@@ -278,11 +256,14 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
 
 
     Route::prefix('verify-payment')->group(function () {
-        Route::post('/ref', [PaymentController::class, 'verifyTicketRef']);
-        Route::post('/transaction-list', [PaymentController::class, 'transactionList']);
+        Route::post('/ref', [PaymentController::class, 'verifyTicketRef']);       
         Route::post('/tier-ref', [PaymentController::class, 'verifyTierRef']);
-        // Route::post('/ref-quick-teller', [PaymentController::class, 'verifyQuickTeller']);
         Route::post('/ref-quick-teller', [OnepipeController::class, 'verifyQuickTeller']);
+    });
+
+    Route::prefix('payment-transaction')->group(function () {
+        Route::post('/transaction-list', [PaymentController::class, 'transactionList']);
+        Route::post('/payment-list', [PaymentController::class, 'paymentList']);
     });
 
     
@@ -292,15 +273,12 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
 
     
     // Analytics
-    Route::group(['prefix' => 'analytics'], function() { // 
+    Route::group(['prefix' => 'analytics'], function() { 
         Route::get('total-flight', [AnalyticsUserController::class, 'totalFlight']);
         Route::get('total-referrals', [AnalyticsUserController::class, 'totalReferral']);
         Route::get('number-of-countries-visited', [AnalyticsUserController::class, 'countriesVisited']);
         Route::get('total-mile-flown', [AnalyticsUserController::class, 'totalMileFlown']);
-        Route::get('countries-and-cities-charts', [AnalyticsUserController::class, 'countriesAndCityChart']);
-        // Route::get('delete', [AnalyticsUserController::class, 'deleteFlight']); //135;
-        // Route::get('totalMileFlown')
-        
+        Route::get('countries-and-cities-charts', [AnalyticsUserController::class, 'countriesAndCityChart']);       
         
         // travel recommendation
         Route::get('travel-pattern', [TripController::class, 'travelPattern']);

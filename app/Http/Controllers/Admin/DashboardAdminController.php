@@ -4,21 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Device;
 use App\Models\Flight;
-use App\Models\Ticket;
-use App\Models\Booking;
-use App\Models\Revenue;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Models\RecentActivity;
-use App\Models\FlightTicketType;
 use App\Models\ScreenResolution;
-use Symfony\Component\Clock\now;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
+use App\Models\Payment;
 
 class DashboardAdminController extends Controller
 {
@@ -68,10 +62,7 @@ class DashboardAdminController extends Controller
                 $revenuePercentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
             }
 
-            RecentActivity::create([
-                "title" => "Performance trend",
-                "description" => $revenuePercentageChange > 0 ? "Revenue Growth: +{$revenuePercentageChange} compared to last Seven days" : "Revenue Drop: {$revenuePercentageChange} compared to last Seven days"
-            ]);
+           
 
             return response()->json([
                 "error" => false,
@@ -92,12 +83,19 @@ class DashboardAdminController extends Controller
 
             ]);
             
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR GENERATING WEEKLY ANALYSIS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
@@ -222,12 +220,19 @@ class DashboardAdminController extends Controller
                 ]
             ], 200);
 
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR GENERATING REVENUE GRAPH', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
@@ -353,14 +358,21 @@ class DashboardAdminController extends Controller
                 'tickets' => $data
             ], 200);
 
-        }  catch (\Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING TICKET VIA APP', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }       
+        }    
 
     }
 
@@ -391,12 +403,19 @@ class DashboardAdminController extends Controller
                 
             ], 200);
 
-        }  catch (\Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING USER BY DEVICE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
         
@@ -420,14 +439,21 @@ class DashboardAdminController extends Controller
                 'error' => false,
                 'users_and_screenResolution' => $screenResolutions
             ]);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING SCREEN RESOLUTION DATA', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }      
+        }   
         
     }
 
@@ -437,19 +463,28 @@ class DashboardAdminController extends Controller
                
             return new UserCollection($users);
 
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            // return response()->json([
+            //     'error' => false,
+            //     'total_registered_users' => $totalRegisteredUsers
+            // ], 200);
 
+        }  catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING TOTAL REGISTERED USERS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
 
-        return response()->json([
-            'error' => false,
-            'total_registered_users' => $totalRegisteredUsers
-        ], 200);
+        
     }
 
     public function totalPurchasedTicketTable(Request $request) {
@@ -458,25 +493,31 @@ class DashboardAdminController extends Controller
             $ticketPurchased = Transaction::where('is_flight', true)->with(['user' => function ($query) {
                 $query->select('id', 'first_name', 'last_name', 'email');
             }])->get();
-
-        
+            
+            return response()->json([
+                'error' => false,
+                'tickets_info' => $ticketPurchased
+            ], 200);
 
             // $ticketPurchased = Transaction::with('user')->get();
             // $tickets = Ticket::with(['flight_ticket_types', 'users']);
 
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING TOTAL PURCHASED TICKETS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
 
-        return response()->json([
-            'error' => false,
-            'tickets_info' => $ticketPurchased
-        ], 200);
     }
 
     public function totalRevenueTicketTable(Request $request) {
@@ -493,84 +534,174 @@ class DashboardAdminController extends Controller
                 'revenue_purchased' => $revenuePurchased
             ], 200);
             
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING TOTAL REVENUE FROM TICKETS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
 
     public function totalRevenueTableDashboard(Request $request) {
-        // $revenuePurchased = Transaction::with(['user' => function ($query) {
-        //     $query->select('id', 'first_name', 'last_name', 'email');
-        // }])->get();
 
-        $revenuePurchased = Transaction::with('user')->get();
+        try {
+            // $revenuePurchased = Transaction::with(['user' => function ($query) {
+            //     $query->select('id', 'first_name', 'last_name', 'email');
+            // }])->get();
 
-        return response()->json([
-            'error' => false,
-            'revenue_purchased' => $revenuePurchased
-        ], 200);
+            $revenuePurchased = Transaction::with('user')->get();
+
+            return response()->json([
+                'error' => false,
+                'revenue_purchased' => $revenuePurchased
+            ], 200);
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING TOTAL REVENUE FROM TICKETS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
+       
 
     }
 
 
     public function recentActivitiesTable(Request $request) {
-        $sixHoursAgo = now()->subHours(6);
-        $twelveHoursAgo = now()->subHours(12);
-        // $users = User::where('created_at', "<=", $sixHoursAgo)->get();
-        $users = User::whereBetween('created_at', [$sixHoursAgo, now()])->get();
-        $flights = Flight::whereBetween('created_at', [$sixHoursAgo, now()])->with('user')->get();
-        // $bookings = Booking::where('created_at', "<=", $sixHoursAgo)->get();
 
-        // return $flights;
+        try {
 
-        $recentActivities = [];
+            $sixHoursAgo = now()->subHours(6);
+            $twelveHoursAgo = now()->subHours(12);
+            // $users = User::where('created_at', "<=", $sixHoursAgo)->get();
+            $users = User::whereBetween('created_at', [$sixHoursAgo, now()])->get();
+            $flights = Flight::whereBetween('created_at', [$sixHoursAgo, now()])->with('user')->get();
+          
+            $payments = Payment::whereBetween('created_at', [$sixHoursAgo, now()])->with('user')->get();
+           
 
-        foreach ($users as $user) {
-            $recentActivities[] = [
-                "title" => "New User Registeration",
-                "details" => "{$user->first_name} {$user->last_name} ({$user->email})",
-                "created_at" => $user->created_at
+            $recentActivities = [];
+
+            $currentDate = Carbon::now();
+            $date7DaysAgo = Carbon::now()->subDays(7);
+            $date14DaysAgo= Carbon::now()->subDays(14);
+
+
+            // total-revenue
+
+            $total7daysRevenue = Transaction::whereBetween('created_at', [$date7DaysAgo, $currentDate])->sum('amount');
+            $total14daysRevenue = Transaction::whereBetween('created_at', [$date14DaysAgo, $date7DaysAgo])->sum('amount');
+
+            if ($total14daysRevenue > 0) { 
+                $revenuePercentageChange = (($total7daysRevenue - $total14daysRevenue) / $total14daysRevenue) * 100;
+
+            } else {
+                $revenuePercentageChange = $total7daysRevenue > 0 ? 100 : 0; // Handle edge cases
+            }
+
+            $recentActivities[]  = [
+                "title" => "Performance trend",
+                "description" => $revenuePercentageChange > 0 ? "Revenue Growth: +{$revenuePercentageChange}% compared to last Seven days" : "Revenue Drop: {$revenuePercentageChange}% compared to last Seven days"
             ];
+
+            foreach ($payments as $payment) {
+                $recentActivities[] = [
+                    "title" => "{$payment->purpose} Payment",
+                    "details" => !$payment->user->is_guest ?
+                        "{$payment->user->first_name} made payment for {$payment->purpose}"
+                            . ($payment->booking_id
+                                ? " for flight with PNR {$payment->booking_id}"
+                                : "")
+                        : "Guest made payment for {$payment->purpose}"
+                            . ($payment->booking_id
+                        ? " for flight with booking ID {$payment->booking_id}"
+                        : ""),
+                    "created_at" => $payment->created_at
+                ];
+            }
+
+
+
+            foreach ($users as $user) {
+
+                $recentActivities[] = [
+                    "title" => "New User Registeration",
+                    "details" => "{$user->first_name} {$user->last_name} ({$user->email})",
+                    "created_at" => $user->created_at
+                ];
+            }
+
+            foreach ($flights as $flight) {
+                
+                $recentActivities[] = [
+                    "title" => "Recent Flight booking",
+                    "details" => "{$flight->origin} to {$flight->destination} ({$flight->user->email})",
+                    "created_at" => $flight->created_at
+                ];   
+            }
+
+            $total6hrsRevenue = Transaction::whereBetween('created_at', [$sixHoursAgo, now()])->sum('amount');
+            $total12hrsRevenue = Transaction::whereBetween('created_at', [$twelveHoursAgo, $sixHoursAgo])->sum('amount');
+
+
+            if ($total12hrsRevenue > 0) { 
+                $revenuePercentageChange = (($total6hrsRevenue - $total12hrsRevenue) / $total12hrsRevenue) * 100;
+
+            } else {
+                $revenuePercentageChange = $total6hrsRevenue > 0 ? 100 : 0; // Handle edge cases
+            }
+
+            if ($revenuePercentageChange != 0) {
+                $recentActivities[] = [
+                    "title" => "Perfomance trend",
+                    "details" => $revenuePercentageChange > 0 ? "Revenue increased by {$revenuePercentageChange} in the last 6 hours" : "Revenue decreased by {$revenuePercentageChange} in the last 6 hours",
+                    // "created_at" => now();
+                ];   
+            }
+
+            return response()->json([
+                "error" => false,
+                "recent_activities" => $recentActivities
+            ]);
+
+        }  catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING RECENT ACTIVITIES', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
         }
-
-        foreach ($flights as $flight) {
-            $user = 
-            $recentActivities[] = [
-                "title" => "Recent Flight booking",
-                "details" => "{$flight->origin} to {$flight->destination} ({$flight->user->email})",
-                "created_at" => $flight->created_at
-            ];   
-        }
-
-        $total6hrsRevenue = Transaction::whereBetween('created_at', [$sixHoursAgo, now()])->sum('amount');
-        $total12hrsRevenue = Transaction::whereBetween('created_at', [$twelveHoursAgo, $sixHoursAgo])->sum('amount');
-
-
-        if ($total12hrsRevenue > 0) { 
-            $revenuePercentageChange = (($total6hrsRevenue - $total12hrsRevenue) / $total12hrsRevenue) * 100;
-
-        } else {
-            $revenuePercentageChange = $total6hrsRevenue > 0 ? 100 : 0; // Handle edge cases
-        }
-
-        if ($revenuePercentageChange != 0) {
-            $recentActivities[] = [
-                "title" => "Perfomance trend",
-                "details" => $revenuePercentageChange > 0 ? "Revenue increased by {$revenuePercentageChange} in the last 6 hours" : "Revenue decreased by {$revenuePercentageChange} in the last 6 hours",
-                // "created_at" => now();
-            ];   
-        }
+        
       
 
-        return response()->json([
-            "error" => false,
-            "recent_activities" => $recentActivities
-        ]);
+       
+
+
     }
 
     public function activeUserTable(Request $request) {

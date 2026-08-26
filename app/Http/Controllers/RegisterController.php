@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Models\Device;
 use App\Mail\ForgotPassword;
 use Illuminate\Http\Request;
-use App\Models\RecentActivity;
 use App\Models\ReferralActivity;
 use App\Models\ScreenResolution;
 use Illuminate\Support\Facades\Log;
@@ -24,6 +23,7 @@ use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Notifications\ForgotPassword as NotificationsForgotPassword;
 use App\Notifications\SignUpNotification;
 use Google\Service\Walletobjects\SignUpInfo;
+use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -41,136 +41,130 @@ class RegisterController extends Controller
     {
 
         try {
-            // $peace_id =  $this->createPeaceId->generateUniquePeaceId();
-            $points = 50;
-            $deviceType = $request->input('device_type');
-            $screenResolution = $request->input('screen_resolution');
-            $tier = Tier::where('rank', 1)->first();
-           
-            $create = User::create([
-                'first_name' => $request->input('first_name'),
-                'last_name' => $request->input('last_name'),
-                'email' => $request->input('email'),
-                'phone_number' => $request->input('phone_number'),
-                'peace_id' => $request->input('peace_id'),
-                // 'peace_id' => $peace_id,
-                'password' => Hash::make($request->input('password')),
-                // 'status' => $request->input('status') ?? null,
-                'status' => 'active',
-                'device_type' => $deviceType,
-                'points' => 50, // allocate appropriate pointts once decided
-                "firebase_token" => $request->firebase_token,
-                'tier_id' => $tier->id,
-                'last_login' => now()->setTimezone('Africa/Lagos')
+            $data = DB::transaction(function () use ($request) {
+
+                // $peace_id =  $this->createPeaceId->generateUniquePeaceId();
+                $points = 50;
+                $deviceType = $request->input('device_type');
+                $screenResolution = $request->input('screen_resolution');
+                $tier = Tier::where('rank', 1)->first();
             
-            ]);
-
-            // dd($us)
-
-            if ($deviceType) {
-                Device::create([
-                    'user_id' => $create->id,
-                    'device_type' => $deviceType
+                $user = User::create([
+                    'first_name' => $request->input('first_name'),
+                    'last_name' => $request->input('last_name'),
+                    'email' => $request->input('email'),
+                    'phone_number' => $request->input('phone_number'),
+                    'peace_id' => $request->input('peace_id'),
+                    // 'peace_id' => $peace_id,
+                    'password' => Hash::make($request->input('password')),
+                    // 'status' => $request->input('status') ?? null,
+                    'status' => 'active',
+                    'device_type' => $deviceType,
+                    'points' => 50, // allocate appropriate pointts once decided
+                    "firebase_token" => $request->firebase_token,
+                    'tier_id' => $tier->id,
+                    'last_login' => now()->setTimezone('Africa/Lagos')
+                
                 ]);
 
-            }
+                // dd($us)
 
-            if ($screenResolution) {
-                ScreenResolution::create([
-                    'user_id' => $create->id,
-                    'screen_resolution' => $screenResolution
-                ]);
-            }
-
-            $currentTier = $create->currentTier();
-            if(!$currentTier) {
-                $this->tierService->assignTierWithDefaultFallback($create->id);
-            }
-            
-            $referrer_peace_id = $request->input('referrer_peace_id');
-            
-            if ($referrer_peace_id) {
-                $referrer_points_earned = 20;
-                $referrer = User::where('peace_id', $referrer_peace_id)->first();
-                // dd($referrer);
-                if ($referrer) {
-                    $referrer->points += $referrer_points_earned;
-                    $referrer->save();
-
-                    $referee = $create;
-                    
-                    $referrer_user_name = $referrer->first_name . ' '. $referrer->last_name;
-                    $referee_user_name = $referee->first_name . ' '. $referee->last_name;
-
-    
-                    ReferralActivity::create([
-                        "referrer_peace_id" => $referrer_peace_id,
-                        "referrer_user_name" => $referrer_user_name,
-                        "referrer_points_earned" => $referrer_points_earned,
-                        "referee_peace_id" => $referee->peace_id,
-                        "referee_user_name" => $referee_user_name,
-                        
+                if ($deviceType) {
+                    Device::create([
+                        'user_id' => $user->id,
+                        'device_type' => $deviceType
                     ]);
 
-                }            
-            }
+                }
 
-            if (!$create->is_guest) {
+                if ($screenResolution) {
+                    ScreenResolution::create([
+                        'user_id' => $user->id,
+                        'screen_resolution' => $screenResolution
+                    ]);
+                }
+
+                $currentTier = $user->currentTier();
+                if(!$currentTier) {
+                    $this->tierService->assignTierWithDefaultFallback($user->id);
+                }
+                
+                $referrer_peace_id = $request->input('referrer_peace_id');
+                
+                if ($referrer_peace_id) {
+                    $referrer_points_earned = 20;
+                    $referrer = User::where('peace_id', $referrer_peace_id)->first();
+                    // dd($referrer);
+                    if ($referrer) {
+                        $referrer->points += $referrer_points_earned;
+                        $referrer->save();
+                        
+                        $referrer_user_name = $referrer->first_name . ' '. $referrer->last_name;
+                        $referee_user_name = $user->first_name . ' '. $user->last_name;
+
+        
+                        ReferralActivity::create([
+                            "referrer_peace_id" => $referrer_peace_id,
+                            "referrer_user_name" => $referrer_user_name,
+                            "referrer_points_earned" => $referrer_points_earned,
+                            "referee_peace_id" => $user->peace_id,
+                            "referee_user_name" => $referee_user_name,
+                            
+                        ]);
+
+                    }            
+                }
+
+                return $user;
+            });
+
+            if (!$data->is_guest) {
                 $details = [
                     'title' => 'New Message',
                     'body' => 'You have received a new message.',
                     'url' => '/messages/1'
                 ];
     
-                $create->notify(new SignUpNotification($details));
+                $data->notify(new SignUpNotification($details));
 
             }
 
-
-            // RecentActivity::create([
-            //     "title" => "New user registration",
-            //     "description" => "{$create->first_name} {$create->last_name} ({$create->email})"
-            // ]);
-
-            // $userAgent = $request->header('User-Agent');
-                
-            // $deviceType = $this->checkDevice->checkDeviceType($userAgent, $create);
-            // $screenResolution = $this->checkDevice->saveScreenSize($create, $request->screen_resolution);
-          
-        
-
-            $data['user'] =  $create;
-            // $data['token'] =  $create->createToken('Nova')->accessToken;
-            // $tokenResult =  $create->createToken('Nova');
-            // $token = $tokenResult->token;
-
-            $tokenResult = $create->createToken('Nova');
-            $data['token'] = $tokenResult->accessToken;
+            $tokenResult = $data->createToken('Nova');
             $tokenObject = $tokenResult->token;
 
             if ($request->remember_me) {
                 $tokenObject->expires_at = now()->addDays(30); // Customize duration as needed
             }
 
-            $data['token_type'] = 'Bearer';
-            $data['expires_at'] = $tokenObject->expires_at;
+            
+
+            $responseData = [
+                'user' => $data,
+                'token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'expires_at' => $tokenObject->expires_at,
+            ];
 
             return response()->json([
                 'error' => false, 
                 'message' => 'Client registration successful. Verification code sent to your email.', 
-                'data' => $data,
+                'data' => $responseData,
                 // 'device_type' => $deviceType,
                 // 'screen_resolution' => $screenResolution
             ], 201);
 
-        } catch (\Exception $e) {       
+        } catch (\Throwable $th) {       
             
-            Log::error($e->getMessage());
+           Log::error('ACCOUNT CREATION ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
     
             return response()->json([
                 "error" => true,            
-                "message" => "Something went wrong",
-                "message_err" => $e->getMessage()
+                "message" => "Something went wrong"
             ], 500);
             
         }
@@ -204,13 +198,18 @@ class RegisterController extends Controller
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
            
 
-        } catch (\Exception $e) {       
+        } catch (\Throwable $th) {       
             
-            Log::error($e->getMessage());
-
+           Log::error('ACCOUNT CREATION ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+    
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => "Something went wrong"
             ], 500);
             
         }
@@ -218,18 +217,18 @@ class RegisterController extends Controller
     }
 
     protected function sendMail($to_name, $to_email, $otp) {
-         $data = ['name' => $to_name, 'body' => 'Airpeace Otp', 'otp' => $otp];
+        $data = ['name' => $to_name, 'body' => 'Airpeace Otp', 'otp' => $otp];
 
-         Mail::send('sendmail', $data, 
-         function($message) use($to_name, $to_email) {
-             $message->to($to_email, $to_name);
-             $message->subject('Reset Password mail');
-             // This line below might not be necessary as they are 
-             // already configured from our config/mail.php script
-             $message->from('Ocelot Group', 'Mail to reset password');
-         }
+        Mail::send('sendmail', $data, 
+            function($message) use($to_name, $to_email) {
+                $message->to($to_email, $to_name);
+                $message->subject('Reset Password mail');
+                // This line below might not be necessary as they are 
+                // already configured from our config/mail.php script
+                $message->from('Airpeace', 'Mail to reset password');
+            }
 
-     );
+        );
     }
 
     protected function generateOtp() {
@@ -244,139 +243,53 @@ class RegisterController extends Controller
     }
 
 
-    // public function forgotPassword(ForgotPasswordRequest $request) {
 
-    //     $user = User::where('email', $request->email)->first();
+    // forget password implementation
+    public function forgotPassword(ForgotPasswordRequest $request) {        
+        try {
 
-    //     if (!$user) {
-    //         return response()->json([
-    //             "error" => "true",
-    //             "message" => "user not found"
-    //         ], 404);
-    //     }
-
-    //     $otp = $this->generateOtp();
-
-    //     // $user->notify(new NotificationsForgotPassword($otp));
-    //     $this->sendMail($user->user_name, $user->email, $otp);
-    //     $user->otp = $otp;
-    //     $user->save();
-
-    //     return response()->json([
-    //         "error" => false,
-    //         "message" => "otp sent to email successfully"
-    //     ]);
-    // }
-
-    // public function verifyOtp(VerifyOtpRequest $request) {
-
-    //     try {
-            
-    //         $user = User::where('email', $request->input('email'))->firstOrFail();
-
-    //         if ( $user->otp !== $request->otp ) {
-    //             return response()->json([
-    //                 'error' => 'true',
-    //                 "message" => "otp verification failed"
-    //             ]);
-    //         }
-
-    //         // $user->can_change_password = true;
-    //         $user->save();
-            
-    //         return response()->json([
-    //             'error' => 'false',
-    //             "message" => "You've been verified",
-    //             "user" => $user
-    //         ]);
-        
-    //     } catch (\Exception $e) {       
-            
-    //         Log::error($e->getMessage());
-
-    //         return response()->json([
-    //             "error" => true,            
-    //             "message" => "something went wrong"
-    //         ], 500);
-            
-    //     }
-
-    // }
-
-    // public function resetPassword(ResetPasswordRequest $request) {
-    //     try {
-             
-    //         $user = User::where('email', $request->email)->first();
-            
-    //         if (!$user) {
-    //                 return response()->json([
-    //                         "error" => "true",
-    //                         "message" => "user not found"
-    //                     ], 404);
-    //                 }
+            $user = User::where('email', $request->email)->first();
     
-    //         // if (!$user->can_change_password) {
-    //         //     return response()->json(['error' => true, 'message' => 'please verify otp first'], 500);
-    
-    //         // }
-    
-    
-    //         $user->password =  $request->input("new_password");
-    //         $user->save();
-    
-    //         return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
-           
+            if (!$user) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "We couldn't find an account associated with that email address."
+                ], 404);
+            }
 
-    //     } catch (\Exception $e) {       
+            // generateOtp
+            $otp = random_int(1000, 9999);
+
+            Mail::to($user->email)->send(new ForgotPassword($user->first_name, $otp));
             
-    //         Log::error($e->getMessage());
-
-    //         return response()->json([
-    //             "error" => true,            
-    //             "message" => "something went wrong"
-    //         ], 500);
-            
-    //     }
-
-    // }
-
-
-    //// new forget password implementation
-    public function forgotPassword(ForgotPasswordRequest $request) {
-
-        $user = User::where('email', $request->email)->first();
+            $user->otp_expires_at = Carbon::now()->addMinutes(10); 
  
-        if (!$user) {
+            $user->otp = $otp;
+    
+            $user->save();
+    
+            return response()->json([
+                "error" => false,
+                "message" => "otp sent to email successfully",
+                
+            ], 200);
+         
+         } catch (\Throwable $th) {
+            
+            Log::error('FORGOT PASSWORD ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
             return response()->json([
                 "error" => true,
-                "message" => "We couldn't find an account associated with that email address."
-            ], 404);
-        }
- 
-        // generateOtp
-        $otp = random_int(1000, 9999);
-        
-         try {
-             Mail::to($user->email)->send(new ForgotPassword($user->first_name, $otp));
-         
-         } catch (\Exception $e) {
-             return response()->json([
-                 "error" => true,
-                 "message" => "Failed to send OTP email. Please try again."
-             ], 500);
+                "message" => "Failed to send OTP email. Please try again."
+            ], 500);
          }
- 
-         $user->otp_expires_at = Carbon::now()->addMinutes(10); 
- 
-         $user->otp = $otp;
- 
-         $user->save();
- 
-         return response()->json([
-             "error" => false,
-             "message" => "otp sent to email successfully",
-            
-         ], 200);
+        
+        
     }
  
     public function verifyOtp(VerifyOtpRequest $request) {
@@ -403,10 +316,21 @@ class RegisterController extends Controller
                 "user" => $user
             ], 200);
         
-        } catch (\Throwable $throwable) {
-            return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
-        
-        }   
+        } catch (\Throwable $th) {       
+            
+           Log::error('OTP VERIFICATION ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "Something went wrong"
+            ], 500);
+            
+        }
  
     }
  
@@ -443,9 +367,21 @@ class RegisterController extends Controller
             return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $user], 200);
            
  
-         } catch (\Throwable $throwable) {
-             return response()->json(['error' => true, "message" => $throwable->getMessage()], 500);
-         }
+        } catch (\Throwable $th) {       
+            
+           Log::error('OTP VERIFICATION ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+    
+            return response()->json([
+                "error" => true,            
+                "message" => "Something went wrong"
+            ], 500);
+            
+        }
  
     }
 
@@ -460,13 +396,18 @@ class RegisterController extends Controller
                 'message' => 'Successfully logged out'
             ], 200);
 
-        } catch (\Exception $e) {       
+        } catch (\Throwable $th) {       
             
-            Log::error($e->getMessage());
-
+           Log::error('ERROR LOGING USER OUT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+    
             return response()->json([
                 "error" => true,            
-                "message" => "something went wrong"
+                "message" => "Something went wrong"
             ], 500);
             
         }

@@ -12,13 +12,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RedeemPeacePoint\RedeemPeacePointCommitRequest;
+use App\Http\Requests\RedeemPeacePoint\RedeemPeacePointViewRequest;
 use App\Http\Requests\Soap\Booking\CreateBookingRequest;
+use App\Services\Payment\Payments;
 use App\Services\Utility\CheckArray;
 use App\Services\Utility\GetPointService;
 use App\Services\Soap\CreateBookingBuilder;
 use App\Services\Wallet\VerificationService;
 use App\Services\Wallet\FlutterVerificationService;
 use App\Services\Soap\TicketReservationRequestBuilder;
+use App\Services\TicketReservations\TicketReservation;
+use Exception;
 
 class CreateBookingController extends Controller
 {
@@ -28,8 +33,10 @@ class CreateBookingController extends Controller
     protected $checkArray;
     protected $ticketReservationRequestBuilder;
     protected $getPointService;
+    protected $payments;
+    protected $ticketReservationService;
 
-    public function __construct(CreateBookingBuilder $createBookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray, GetPointService $getPointService) {
+    public function __construct( Payments $payments, TicketReservation $ticketReservationService, CreateBookingBuilder $createBookingBuilder, TicketReservationRequestBuilder $ticketReservationRequestBuilder, CheckArray $checkArray, GetPointService $getPointService) {
         $this->createBookingBuilder = $createBookingBuilder;
 
         $this->craneOTASoapService = app('CraneOTASoapService');
@@ -37,6 +44,8 @@ class CreateBookingController extends Controller
         $this->checkArray = $checkArray;
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->getPointService = $getPointService;
+        $this->ticketReservationService = $ticketReservationService;
+        $this->payments = $payments;
     }
 
 
@@ -72,11 +81,13 @@ class CreateBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            // dump($response);    
-            // AirTicketReservationResponse
+            
 
             if (!array_key_exists('AirBookingResponse', $response)) {
-                Log::error($response);
+
+               Log::error('ERROR CREATING BOOKING WITH EXTERNAL API', [
+                    'message' => $response,
+                ]);
 
                 // $stringResponse = json_encode($response, JSON_PRETTY_PRINT);
 
@@ -242,123 +253,75 @@ class CreateBookingController extends Controller
                 // "response" => $response
             ], 200);
 
-        } catch (\Exception $e) {
-            
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR CREATING BOOKING', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,   
-                "actual_message" => $e->getMessage(),         
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
 
-    public function redeemTicketWithPeacePoint(Request $request) {
+    public function redeemTicketWithPeacePoint(RedeemPeacePointViewRequest $request) {
 
         try {
             $preferredCurrency = $request->input('preferred_currency');
             $routes = $request->input('routes');
            // domestic, regional, international
-            $noOfPassengers = $request->input('passenger_length');
+            $passengerLength = $request->input('passenger_length');
             // we should be able to retrieve the booking id and reference using the Booking model
             $bookingId = $request->input('booking_id');
             $bookingReferenceID = $request->input('booking_reference_id');
           
     
             $user = $request->user();
-    
-          
-            // add a forloop here incase of multiple route
-            $redemptionPoint = 0;
-            foreach($routes as $route) {
-                $redemptionPoint += $this->getPointService->getFlightRedemptionPoints($route['route'], $route['class'], $route['type']);
-    
-            }
-            
-            $totalRedemptionPoint = $redemptionPoint * $noOfPassengers; 
-            $peacePoint = $user->points;
-            // dd($totalRedemptionPoint, $peacePoint);
-            
-    
-            if ($peacePoint < $totalRedemptionPoint) {
-                return response()->json([
-                    "error" => true,
-                    "message" => "insufficient point"
-                ], 500);
-            }
-            //// read expected amount from ticketReservation (this is the accurate amount)
-            $ticketReservationFunction = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';            
-    
-            $xml = $this->ticketReservationRequestBuilder->ticketReservationViewOnly(
-                    $preferredCurrency,
-                    $bookingId,
-                    $bookingReferenceID
-            );    
-            
-            $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
-            
-            //substract base fare from expected amount to know how much the user is felt to pay
-            $baseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-            $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-            $peacePointBalance = $peacePoint - $redemptionPoint;
-            // dd($expectedAmount);
-            // dd($baseFare);
-    
-            //dd($peacePointBalance);
-            $ticketItemList = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'];
-            
-           $baseFare = 0;
-          
-            if ($this->checkArray->isAssociativeArray($ticketItemList)) {
-                // $baseFare = $ticketItemList['pricingInfo']['baseFare']['amount']['value'];
-                
-                $baseFare = $ticketItemList["pricingOverview"]["totalBaseFare"]["value"];
-                // ["pricingOverview"]["totalAmount"]["value"];
-    
-            } else {
-               foreach($ticketItemList as $ticketItem) {
-                    // $baseFare += $ticketItem['pricingInfo']['baseFare']['amount']['value'];
-                    $baseFare += $ticketItem["pricingOverview"]["totalBaseFare"]["value"];
-                }
-    
-           }
-    
-    
-           $amountRemaining = $expectedAmount - $baseFare;
-    
-        //    $totatBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingInfo']['equivBaseFare']['value'];
-        //    $totalBaseFare = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]['ticketInfo']['ticketItemList'][index]['couponInfoList']['pricingOverview']['totalBaseFare']['value'];
-    
-            $invoice = Invoice::create([
-                "booking_id" => $bookingId,
-                "amount" => $amountRemaining,
-                "is_paid" => false,
-                "currency" => $preferredCurrency   
+
+
+            $data = $this->ticketReservationService->viewBaseFarePaymentInfo([
+                'routes' => $routes,
+                'noOfPassengers' => $passengerLength,
+                'preferredCurrency' => $preferredCurrency,
+                'bookingId' => $bookingId,
+                'bookingReferenceID' => $bookingReferenceID
             ]);
-            // $invoice->save();
-    
+          
+              
     
             return response()->json([
-                "amount_remaining" => $amountRemaining,
-                "expected_amount" => $expectedAmount,
-                "redemption_point" => $redemptionPoint,
-                "base_fare" => $baseFare,
+                "routes" => $routes,
+                "passenger_length" => $passengerLength,
+                "amount_remaining" => $data['amountRemaining'],
+                "expected_amount" => $data['expectedAmount'],
+                "redemption_point" => $data['redemptionPoint'],
+                "total_redemption_point" => $data['totalRedemptionPoint'],
+                "base_fare" => $data['baseFare'],
                 "booking_id" => $bookingId,
                 "booking_reference_id" => $bookingReferenceID,
-                "invoice_id" => $invoice->id,
                 'preferred_currency' => $preferredCurrency
     
             ], 200);
         
-        } catch (\Exception $e) {
-            
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR REDEEMING TICKET WITH PEACE POINT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,    
-                "actual_error" => $e->getMessage(),        
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
        
@@ -366,54 +329,103 @@ class CreateBookingController extends Controller
     }
 
 
-    public function verifyRedemptionPayment(Request $request) {
+    public function verifyRedemptionPayment(RedeemPeacePointCommitRequest $request) {
         try {
           
             $ref = $request->input('ref_id');
-            $invoiceId = $request->input('invoice_id');
             $preferredCurrency = $request->input('preferred_currency');
+            $routes = $request->input('routes');
+            $passengerLength = $request->input('passenger_length');
             // $expectedAmount = $request->input('expected_amount');
             $bookingId = $request->input('booking_id');
             $bookingReferenceID = $request->input('booking_reference_id');
-            $expectedAmount = $request->input('expected_amount');
             $userDevice = $request->input('device_type');
-            $redemptionPoint = $request->input('redemption_point');
             $paymentChannel = $request->input('payment_channel');
             $paymentMethod = $request->input('payment_method');
             
             $user = $request->user();
 
-            $invoice = Invoice::find($invoiceId);
 
-            $invoiceAmount = $invoice->amount + 0;
-            $paidAmount = 0;
 
+            $data = $this->ticketReservationService->viewBaseFarePaymentInfo([
+                'routes' => $routes,
+                'noOfPassengers' => $passengerLength,
+                'preferredCurrency' => $preferredCurrency,
+                'bookingId' => $bookingId,
+                'bookingReferenceID' => $bookingReferenceID
+            ]);
+    
+            $amountRemaining = $data['amountRemaining'];
             
-            // for economy ticket redeemed with peace point, the amount_remaining is 0, hence no need to make payment
-            if (!($ref == "not_applicable")) {
+            $expectedAmount = $data['expectedAmount'];
+            $redemptionPoint = $data['redemptionPoint'];
+            $totalRedemptionPoint = $data['totalRedemptionPoint'];
+           
 
-                if ($paymentChannel == "paystack") {
-                    $new_top_request = new VerificationService($ref);
+            if ($amountRemaining > 0) {
+        
+                $paidAmount = 0;
 
-                } else if ($paymentChannel == "flutterwave") {
-                    $new_top_request = new FlutterVerificationService($ref);
+                $payment = null;
+                // for economy ticket redeemed with peace point, the amount_remaining is 0, hence no need to make payment
+                if (!($ref == "not_applicable")) {
+
+                    if ($paymentChannel == "paystack") {
+                        $new_top_request = new VerificationService($ref);
+
+                    } else if ($paymentChannel == "flutterwave") {
+                        $new_top_request = new FlutterVerificationService($ref);
+                    } else {
+                        throw new Exception("Invalid payment channel");
+                    }
+                    
+                    $verified_request = $new_top_request->run();
+                    $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
+                    
+                    $currency = $verified_request["data"]["currency"];
+                   
+                    $invoice = Invoice::create([
+                        "booking_id" => $bookingId,
+                        "amount" => $paidAmount,
+                        "type" => "flight",
+                        "is_paid" => true,
+                        "currency" => $preferredCurrency   
+                    ]); 
+
+                    InvoiceItem::create([
+                        'invoice_id' => $invoice->id,
+                        'product' => 'ticket', 
+                        'quantity' => '1',
+                        'price' => $paidAmount
+                    ]);
+                  
+                    $payment = $this->payments->createPayment([
+                        'user_id' => $user->id,
+                        'ref' => $ref,
+                        'amount' => $paidAmount,
+                        'currency' => $currency,
+                        'channel' => $paymentChannel,
+                        'method' => $paymentMethod,
+                        'purpose' => 'flight booking',
+                        'payment_status' => 'completed',
+                        'booking_api_status' => 'processing',
+                        'booking_id' => $bookingId,
+                        'booking_reference_id' => $bookingReferenceID,
+                        'invoice_id' => $invoice->id,
+                    ]);
+                    
+                    if ( $paidAmount < $amountRemaining ) {
+                        // Log::error($throwable->getMessage());
+
+                        return response()->json([
+                            "error" => false,
+                            "message" => "fund payment for ticket is less than calculated"
+                        ], 500);
+                    }
+
                 }
-                
-                $verified_request = $new_top_request->run();
-                $paidAmount = $paymentChannel == "paystack" ? $verified_request["data"]["amount"] / 100 : $verified_request["data"]["amount"];
-
-                if ( $paidAmount < $invoiceAmount ) {
-                    // Log::error($throwable->getMessage());
-
-                    return response()->json([
-                        "error" => false,
-                        "message" => "fund payment for ticket is less than calculated"
-                    ], 500);
-                }
-
             }
-             /////////////////////
-            // dd("i got here");
+            
             $xml = $this->ticketReservationRequestBuilder->ticketReservationCommit(
                 $preferredCurrency,           
                 $bookingId,
@@ -421,15 +433,10 @@ class CreateBookingController extends Controller
                 $expectedAmount, // later on we would substract our own profit from paidAmount and return the send the rest to the SOAP
               
             );
-                
-            $peaceId = $user->peace_id;          
 
-            
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-
-            // dump($response);
 
             if (!array_key_exists('AirTicketReservationResponse', $response)) {
                 
@@ -441,23 +448,25 @@ class CreateBookingController extends Controller
                     'paidAmount' => $paidAmount,
                     "response" => $response
                 ], 500);
-            }           
-            
-            $user->points -= $redemptionPoint;
+            }   
+
+            if ($payment) {
+                $payment->update([
+                    'booking_api_status' => 'completed'
+                ]);
+            }
+
+            $user->points -= $totalRedemptionPoint;
             $user->save();
 
-
-            
             $invoice->is_paid = true;
             $invoice->save();
 
-
-            
             // get the list of all the tickets 
             $transactionType = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['pricingType'];
             $ticketItemList = $response['AirTicketReservationResponse']['airBookingList']['ticketInfo']['ticketItemList'];
            
-            // $userDevice = Device::where('user_id', $user->id)->first();
+          
 
            
             // if (array_key_exists('couponInfoList', $ticketItemList)) {
@@ -551,23 +560,33 @@ class CreateBookingController extends Controller
             event(new UserActivityLogEvent($user, "ticket payment", $description));
 
             
-            ///////////////////////////
-            InvoiceItem::create([
-                'invoice_id' => $invoice->id,
-                'product' => 'ticket', 
-                'quantity' => '1',
-                'price' => $paidAmount
-            ]);
 
             return response()->json([
                 "error" => false,
                 "message" => "payment for flight successful"
             ]);
 
-        } catch (\Throwable $throwable) {
-            Log::error($throwable->getMessage());
-        
-            return response()->json(['status' => false, 'actual_error' => $throwable->getMessage(), 'message' => "something went wrong"], 500);
+        }  catch (\Throwable $th) {
+
+            Log::error('ERROR VERIFYING REDEMPTION WITH PAYMENT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            if ($th->getMessage() == "Invalid payment channel" || $th->getMessage() == "Payment already processed") {
+                return response()->json([
+                    'error' => true, 
+                    'message' => $th->getMessage()
+                ], 500);
+            }
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
         }
     }
 
