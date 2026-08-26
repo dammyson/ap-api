@@ -134,14 +134,20 @@ class TripController extends Controller
             ], 200);
             
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING TRAVEL PATTERN MILES FLOWN', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     
     }
 
@@ -185,46 +191,70 @@ class TripController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING BUSIEST MONTH', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     public function averageFlightDuration(Request $request) {
-        $user = $request->user();
+        try {
 
-        $ranges =  [
-            '0-3' => ['0', '3'],
-            '4-6' => ['4', '6'],
-            '7-8' => ['7', '8'],
-            '9-12' => ['9', '12'],
-            '13-14' => ['13', '14'],
-            '15-17' => ['15', '17'],
-        ];
-
-        $data = [];
-        foreach($ranges as $range => [$min, $max]) {
-            $numOfFlights = Flight::where('peace_id', $user->peace_id)
-                ->whereBetween(DB::raw('CAST(flight_duration AS DECIMAL(5,2))'), [$min, $max])->count();
             
-            $data[$range] = $numOfFlights;
-        }
+            $user = $request->user();
 
-        return response()->json([
-            'error' => false,
-            'average_trip_data' => $data
-        ]);
+            $ranges =  [
+                '0-3' => ['0', '3'],
+                '4-6' => ['4', '6'],
+                '7-8' => ['7', '8'],
+                '9-12' => ['9', '12'],
+                '13-14' => ['13', '14'],
+                '15-17' => ['15', '17'],
+            ];
+
+            $data = [];
+            foreach($ranges as $range => [$min, $max]) {
+                $numOfFlights = Flight::where('peace_id', $user->peace_id)
+                    ->whereBetween(DB::raw('CAST(flight_duration AS DECIMAL(5,2))'), [$min, $max])->count();
+                
+                $data[$range] = $numOfFlights;
+            }
+
+            return response()->json([
+                'error' => false,
+                'average_trip_data' => $data
+            ]);
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING AVERAGE FLIGHT DURATION', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
     }
 
     public function listCountries(Request $request) {
-        $user = $request->user();
-
         try {
+            $user = $request->user();
+
             $listOfCountries = Flight::where('peace_id', $user->peace_id)->select('origin', 'destination')->get();
             
             return response()->json([
@@ -234,14 +264,20 @@ class TripController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING COUNTRY LIST', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     

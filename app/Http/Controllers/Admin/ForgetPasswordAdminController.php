@@ -21,44 +21,49 @@ class ForgetPasswordAdminController extends Controller
 {
 
    public function forgotPassword(ForgotPasswordRequest $request) {
-
-       $admin = Admin::where('email', $request->email)->first();
-
-       if (!$admin) {
-           return response()->json([
-               "error" => true,
-               "message" => "pls enter correct email"
-           ], 404);
-       }
-
-       // generateOtp
-       $otp = random_int(1000, 9999);
-       
         try {
+
+            $admin = Admin::where('email', $request->email)->first();
+
+            if (!$admin) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "pls enter correct email"
+                ], 404);
+            }
+
+            // generateOtp
+            $otp = random_int(1000, 9999);
             $admin->notify(new ForgotPassword($otp));
-            // Mail::to($admin->email)->send(new ForgotPassword($admin->user_name, $otp));
-        
-        } catch (\Exception $e) {       
-            
-            Log::error($e->getMessage());
-    
+
+            $admin->otp_expires_at = Carbon::now()->addMinutes(10); 
+
+            $admin->otp = $otp;
+
+            $admin->save();
+
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
-            ], 500);
+                "error" => false,
+                "message" => "otp sent to email successfully",
             
+            ], 200);
+        
+        } catch (\Throwable $th) {
+
+            Log::error('FORGOT PASSWORD FAILED', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
         }
-        $admin->otp_expires_at = Carbon::now()->addMinutes(10); 
-
-        $admin->otp = $otp;
-
-        $admin->save();
-
-        return response()->json([
-            "error" => false,
-            "message" => "otp sent to email successfully",
-           
-        ], 200);
+      
    }
 
    public function verifyOtp(VerifyAdminOtpRequest $request) {
@@ -86,16 +91,21 @@ class ForgetPasswordAdminController extends Controller
                "user" => $admin
            ], 200);
        
-       } catch (\Exception $e) {       
-            
-        Log::error($e->getMessage());
+       } catch (\Throwable $th) {
 
-        return response()->json([
-            "error" => true,            
-            "message" => "something went wrong"
-        ], 500);
-        
-    }
+            Log::error('OTP VERIFICATION FAILED', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
 
    }
 
@@ -134,15 +144,20 @@ class ForgetPasswordAdminController extends Controller
            return response()->json(['error' => false, 'message' => 'password updated successfully', 'user' => $admin], 200);
           
 
-        } catch (\Exception $e) {       
-            
-            Log::error($e->getMessage());
-    
+        } catch (\Throwable $th) {
+
+            Log::error('RESET PASSWORD FAILED', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-            
         }
    }
 }

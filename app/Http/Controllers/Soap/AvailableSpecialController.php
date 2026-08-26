@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Soap;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Soap\AvailableSpecial\AvailableSpecialServiceRequest;
 use App\Services\Soap\AvailableSpecialServiceBuilder;
+use Illuminate\Support\Facades\Log;
 
 class AvailableSpecialController extends Controller
 {
@@ -19,27 +20,33 @@ class AvailableSpecialController extends Controller
    
 
     public function AvailableSpecialService(AvailableSpecialServiceRequest $request) {
+        try {
 
-        $xml = $this->availableSpecialServiceBuilder->AvailableSpecialService(
-          $request
-        );
+            $xml = $this->availableSpecialServiceBuilder->AvailableSpecialService(
+              $request
+            );
+    
+            $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+    
+            $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
+    
+            return $response;
+        } catch (\Throwable $th) {
 
-        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+            Log::error('ERROR RETRIEVING SURVEYS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
 
-        $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
-
-        return $response;
-        // $availableSSRList = $response["AirAvailSpecialServicesResponse"]["availSpecialServices"]["availSpecialServiceList"]["availableSSRList"];
-
-        // $baggageData = '';
-        // foreach($availableSSRList as $availableSSR) {
-        //     if ($availableSSR["code"] == "XBAG") {
-        //         $baggageData = $availableSSR;
-        //         break;
-        //     }
-        // }
-
-        // return $baggageData;
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
+       
     }
 
   

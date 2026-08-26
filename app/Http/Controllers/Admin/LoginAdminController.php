@@ -19,8 +19,6 @@ class LoginAdminController extends Controller
             
             $admin = Admin::where('email', $request->email)->first();
 
-            // dd($admin);
-
             if (is_null($admin)) {
                 return response()->json([
                     'error' => true,
@@ -48,9 +46,14 @@ class LoginAdminController extends Controller
                 ], 401);
             }
 
-        } catch (\Exception $e) {       
+        } catch (\Throwable $th) {       
             
-            Log::error($e->getMessage());
+            Log::error('LOGIN ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
     
             return response()->json([
                 "error" => true,            

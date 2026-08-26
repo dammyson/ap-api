@@ -19,12 +19,10 @@ class SeatMapController extends Controller
     }
 
     public function seatMap(SeatMapRequest $request) {
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/GetSeatMap';
-
-        $xml = $this->seatMapBuilder->seatMap($request);
-
         try {
+            $function = 'http://impl.soap.ws.crane.hititcs.com/GetSeatMap';
+    
+            $xml = $this->seatMapBuilder->seatMap($request);
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
             // return $response;
             // Check if there's a SOAP fault in the response
@@ -60,13 +58,19 @@ class SeatMapController extends Controller
                 "seatArray" => $seatArray
             ]);
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR SELECTING SEAT MAP', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "seat selection unavailable, please try again later"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }    
 }

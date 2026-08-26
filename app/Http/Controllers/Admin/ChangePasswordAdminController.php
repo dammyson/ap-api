@@ -36,20 +36,28 @@ class ChangePasswordAdminController extends Controller
             $admin->password = Hash::make($newPassword);
             $admin->save();
 
-        } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
-            ], 500);
-        }      
-        
-        return response()->json([
-            'error' => false,
-            'message' => 'Your password has been updated. Remember to use the new password on your next log in'
+                'error' => false,
+                'message' => 'Your password has been updated. Remember to use the new password on your next log in'
 
-        ], 200);
+            ], 200);
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR CHANGING ADMIN PASSWORD', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }  
+        
+        
     }
 }

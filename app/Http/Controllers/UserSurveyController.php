@@ -15,14 +15,7 @@ class UserSurveyController extends Controller
         try {
     
 
-            // $surveys = Survey::whereRaw('DATE_ADD(created_at, INTERVAL duration_of_survey MINUTE) >= ?', [now()])
-            // ->with('questions.options') // Eager load questions and their options
-            // ->get();
-
             
-            // $surveys = Survey::all();
-            // return $surveys;
-           // return $surveys;
            $activeExpiredSurvey = Survey::where('is_active', true)->where('end_time', '<=', now())->first();
 
            if ($activeExpiredSurvey) {
@@ -44,45 +37,43 @@ class UserSurveyController extends Controller
             ]);
             
 
-        }catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING SURVEYS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
     public function allSurvey() {
         try {
     
-
-            // $surveys = Survey::whereRaw('DATE_ADD(created_at, INTERVAL duration_of_survey MINUTE) >= ?', [now()])
-            // ->with('questions.options') // Eager load questions and their options
-            // ->get();
-
-            
             $surveys = Survey::all();
             return $surveys;
-            
-
-            return response()->json([
-                'error' => false,
-                'message' => 'list of surveys',
-                'surveys' => $surveys
-            ]);
-            
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING SURVEYS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
     }
 
     public function showSurvey($surveyId) {
@@ -99,14 +90,20 @@ class UserSurveyController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING SURVEY BY ID', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     public function fillSurvey(FillSurveyRequest $request) {
@@ -134,20 +131,26 @@ class UserSurveyController extends Controller
                 }
             }
 
-        // Return success response
-        return response()->json([
-            'error' => false,
-            'message' => 'Survey responses saved successfully'
-        ], 201);
+            // Return success response
+            return response()->json([
+                'error' => false,
+                'message' => 'Survey responses saved successfully'
+            ], 201);
 
         }catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR FILLING SURVEY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
     }   
 }

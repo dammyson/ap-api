@@ -8,15 +8,24 @@ use App\Models\Booking;
 use Illuminate\Support\Facades\Http;
 use App\Services\AutoGenerate\GenerateRandom;
 use App\Http\Controllers\Soap\TicketReservationController;
+use App\Models\Invoice;
+use App\Models\Payment;
+use App\Services\Payment\Payments;
+use App\Services\TicketReservations\TicketReservation;
+use Illuminate\Support\Facades\Log;
 
 class OnepipeController extends Controller
 {
     protected $generateRandom;
     protected $ticketReservationController;
+    protected $payments;
 
-    public function __construct(GenerateRandom $generateRandom, TicketReservationController $ticketReservationController) {
+    protected $ticketReservation;
+    public function __construct(Payments $payments, TicketReservation $ticketReservation, GenerateRandom $generateRandom, TicketReservationController $ticketReservationController) {
         $this->generateRandom = $generateRandom;
+        $this->ticketReservation = $ticketReservation;
         $this->ticketReservationController = $ticketReservationController;
+        $this->payments = $payments;
     }
 
     public function generateVirtualAccount(Request $request) {
@@ -34,11 +43,9 @@ class OnepipeController extends Controller
             $bookingId = $request['booking_id'];
             $timeLimit = $request['time_limit'];
             $bookingCreatedAt = $request['booking_created_at'];
+            $amount = $request['amount'];
             $transactionRef =  $this->generateRandom->generateRandomNumber();
 
-            
-            // dd($secret, $bearerKey, $url);
-            // dd(env('ONE_PIPE_SECRET'), env('ONE_PIPE_TRANSACT_URL'));
         
             $response = Http::withHeaders([
                 'Authorization' =>  'Bearer ' . $bearerKey, // move this to env once test is complete
@@ -59,7 +66,7 @@ class OnepipeController extends Controller
                     "transaction_ref"=> $transactionRef,
                     "transaction_desc"=> "Account creation",
                     "transaction_ref_parent"=> null,
-                    "amount"=> $request['amount'],
+                    "amount"=> $amount,
                     "customer"=> [
                         "customer_ref"=> $user->id,
                         "firstname"=> $user->first_name,
@@ -93,11 +100,6 @@ class OnepipeController extends Controller
 
                 $booking->request_ref = $requestRef;
                 $booking->save();
-                // Booking::create([
-                //     'booking_id' => $pnr,
-                //     'request_ref' => $request_ref
-                // ]);
-
 
             // dd($response->body());
         } catch(\Throwable $th) {
@@ -106,8 +108,7 @@ class OnepipeController extends Controller
                 "actual_error" => $th->getMessage(),
                 "message" => "something went wrong"
             ], 500);
-        }
-        
+        }        
       
         return response()->json([
             "error" => false,
@@ -120,7 +121,8 @@ class OnepipeController extends Controller
     }
 
     public function queryPaymentStatus(Request $request) {
-
+        
+        $user = $request->user();
         $secret = config('app.one_pipe.secret');
         $bearerKey = config('app.one_pipe.bearer_key');
         $url = config('app.one_pipe.query_url');
@@ -131,8 +133,8 @@ class OnepipeController extends Controller
         $bookingId = $request->input('booking_id');
         $signature = md5("{$request->input('request_ref')};{$secret}");
 
-        $booking = Booking::where('request_ref', $requestRef)
-            ->where('booking_id', $bookingId)->first();
+
+        $booking = Booking::where('booking_id', $bookingId)->first();
 
         if(!$booking) {
             return response()->json([
@@ -142,7 +144,7 @@ class OnepipeController extends Controller
         }
 
 
-        // dd($bearerKey, $signature, $requestRef, $request->input('transaction_ref'));
+        // dump($bearerKey, $signature, $requestRef, $request->input('transaction_ref'));
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearerKey, // move this to env once test is complete
@@ -161,10 +163,6 @@ class OnepipeController extends Controller
                 'transaction_ref' => $request->input('transaction_ref')
             ]
         ]);
-        
-    //    return $response->json();
-        // dd($response->json()); 
-        // return $response;
      
         $status = $response["status"];
 
@@ -196,10 +194,46 @@ class OnepipeController extends Controller
         $paymentAmount = $response["data"]["provider_response"]["meta"]["payment_amount"];
         $deviceType = $request['device_type'];
 
-        // dd($bookingAmount, $paymentAmount);
-      
-        return  $this->ticketReservationController->ticketReservationCommit($pnr,$booking->booking_reference_id, $bookingAmount, $booking->invoice_id, $deviceType, "bank transfer", $bankName ,  $currency);
+        // dd($currency);  
+        
+        $flightInvoice = Invoice::where('booking_id', $bookingId)
+            ->where('type', 'flight')
+            ->latest()
+            ->first();
 
+            
+
+        if (!$flightInvoice) {
+            throw new \Exception("Flight invoice not found");
+        }
+
+        $payment = $this->payments->createPayment([
+            'user_id' => $user->id,
+            'ref' => $request->input('transaction_ref'),
+            'amount' => $paymentAmount,
+            'currency' => $currency,
+            'channel' => "Quickteller",
+            'method' => "Bank Transfer",
+            'purpose' => $purpose ?? 'flight booking',
+            'payment_status' => 'completed',
+            'booking_api_status' => 'processing',
+            'booking_id' => $bookingId,
+            'invoice_id' => $flightInvoice->id,
+            'booking_reference_id' => $booking->booking_reference_id
+        ]);
+
+       
+        return $this->ticketReservation->commit([
+            'booking_id' => $bookingId,
+            'booking_reference_id' => $booking->booking_reference_id,
+            'paid_amount' => $bookingAmount,
+            'invoice_id' => $flightInvoice->id,
+            'device_type' => $deviceType,
+            'payment_method' => "bank transfer",
+            'payment_channel' => "Quick teller",
+            'preferred_currency' => $currency,
+            'payment_id' => $payment->id,
+        ]);   
     }
 
     public function paymentTransferCallback(Request $request) {
@@ -275,12 +309,17 @@ class OnepipeController extends Controller
             $amount = $request->input('amount');
             $bookingId = $request->input('booking_id');
             $deviceType = $request->input('device_type');
+            $purpose = $request->input('purpose');
 
             $url = config('app.quick_teller.url');
             $bearer = $this->getInterswitchToken();
+
+
+            // dd($bookingId);
           
 
             $booking = Booking::where('booking_id', $bookingId)->first();
+            $user = $request->user();
 
             if(!$booking) {
                 return response()->json([
@@ -325,18 +364,47 @@ class OnepipeController extends Controller
                 $amount = $amount / 100;
             }
 
-         
 
-            // dd(["currency" => $currency, "pnr" => $pnr, "amount" => $amount, "bookingReference" => $booking->booking_reference_id, "invoice_id" => $booking->invoice_id, "deviceType" => $deviceType]);
-                                
-            return  $this->ticketReservationController->ticketReservationCommit("bank transfer", "Quick teller" , $currency, $pnr, $booking->booking_reference_id, $amount, $booking->invoice_id, $deviceType);
-        
-        } catch(\Throwable $th) {
-            return response()->json([
-                "error" => false,
-                "message" => "something went wrong",
-                "actual_message" => $th->getMessage()
+            $payment = $this->payments->createPayment([
+                'user_id' => $user->id,
+                'ref' => $transactionReference,
+                'amount' => $amount,
+                'currency' => $currency,
+                'channel' => "Quickteller",
+                'method' => "Bank Transfer",
+                'purpose' => $purpose ?? 'flight booking|baggages',
+                'payment_status' => 'completed',
+                'booking_api_status' => 'processing',
+                'booking_id' => $bookingId,
+                'booking_reference_id' => $booking->booking_reference_id
             ]);
+
+            return $this->ticketReservation->commit([
+                'booking_id' => $pnr,
+                'booking_reference_id' => $booking->booking_reference_id,
+                'paid_amount' => $amount,
+                'invoice_id' => $booking->invoice_id,
+                'device_type' => $deviceType,
+                'payment_method' => "bank transfer",
+                'payment_channel' => "Quick teller",
+                'preferred_currency' => $currency,
+                'payment_id' => $payment->id,
+            ]);   
+        
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR VERIFYING QUICK TELLER', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
         }
     }
 }

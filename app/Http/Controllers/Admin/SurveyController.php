@@ -97,23 +97,30 @@ class SurveyController extends Controller
 
             $survey = new SurveyResource($survey);
 
-            
+            return response()->json([
+                'error' => false,
+                'message' => 'survey created successfully',
+                'survey' => $survey
+
+            ]);
 
         } catch (\Throwable $th) {
-            Log::error($th->getMessage());
 
+            Log::error('ERROR CREATING SURVEY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
         
-        return response()->json([
-            'error' => false,
-            'message' => 'survey created successfully',
-            'survey' => $survey
-
-        ]);
+       
         
     }
 
@@ -142,12 +149,18 @@ class SurveyController extends Controller
 
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
 
+            Log::error('ERROR DEACTIVATING SURVEY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
@@ -171,12 +184,18 @@ class SurveyController extends Controller
             }
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
 
+            Log::error('ERROR CREATING SURVEY BANNER', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
@@ -206,13 +225,18 @@ class SurveyController extends Controller
                     ], 200);
                }
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
 
+            Log::error('ERROR UPDATING SURVEY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong",
-                "actual_message" => $th->getMessage()
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
         
@@ -266,15 +290,21 @@ class SurveyController extends Controller
                 'surveyTable' => Survey::get()
             ], 200);
 
-        }  catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING SURVEY DATA', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }      
+        }    
 
     }
 
@@ -311,13 +341,6 @@ class SurveyController extends Controller
 
             $survey->is_completed = false;
             $survey->save();
-
-
-            
-            
-            
-
-            // $survey->is_published = !$survey->is_published;
             
             // if survey is not published then it is in draft
            
@@ -337,25 +360,23 @@ class SurveyController extends Controller
                 'survey_table' =>  $surveyAll
             ], 200);
 
-        }  catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR CHANGING SURVEY STATUS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
 
     }
-
-    public function surveyFalse(Survey $survey) {
-         
-        $survey->is_completed = false;
-        $survey->save();
-        return $survey;
-    }
-
 
     public function getSurveyResults(Survey $survey) {
         try {
@@ -412,13 +433,19 @@ class SurveyController extends Controller
                 'results' => $results
             ]);
 
-        }  catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR RETRIEVING SURVEY RESULTS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
@@ -426,54 +453,57 @@ class SurveyController extends Controller
 
     public function getSurveyResultByGender(Survey $survey) {
 
-        $totalResultCount = SurveyUserResponse::where("survey_id", $survey->id)->count();
+        try {
+            
+            $totalResultCount = SurveyUserResponse::where("survey_id", $survey->id)->count();
 
-        // Return zero percentages if there are no responses
-        if ($totalResultCount === 0) {
+            // Return zero percentages if there are no responses
+            if ($totalResultCount === 0) {
+                return response()->json([
+                    "error" => false,
+                    "male_percentage" => 0,
+                    "female_percentage" => 0
+                ]);
+            }
+
+            $maleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
+                $query->where('gender', 'Male');
+            })->count();
+
+            $femaleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
+                $query->where('gender', 'Female');
+            })->count(); 
+
+            $malePercentage = ($maleResultCount / $totalResultCount) * 100;
+
+            $femalePercentage = ($femaleResultCount / $totalResultCount) * 100;
+
             return response()->json([
                 "error" => false,
-                "male_percentage" => 0,
-                "female_percentage" => 0
+                "male_percentage" => $malePercentage,
+                "female_percentage" => $femalePercentage
             ]);
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING SURVEY BY GENDER RESULTS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
         }
-        
-        // Count responses by gender in a single query to improve performance
-        // $genderCounts = SurveyUserResponse::where("survey_id", $survey->id)
-        //     ->whereHas('user', function($query) {
-        //         $query->whereIn('gender', ['Male', 'Female']);
-        //     })
-        //     ->selectRaw("SUM(CASE WHEN users.gender = 'Male' THEN 1 ELSE 0 END) as male_count")
-        //     ->selectRaw("SUM(CASE WHEN users.gender = 'Female' THEN 1 ELSE 0 END) as female_count")
-        //     ->first();
-
-        // $malePercentage = ($genderCounts->male_count / $totalResultCount) * 100;
-        // $femalePercentage = ($genderCounts->female_count / $totalResultCount) * 100;
-
-        
-        $maleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
-            $query->where('gender', 'Male');
-        })->count();
-
-        $femaleResultCount = SurveyUserResponse::where("survey_id", $survey->id)->whereHas('user', function($query) {
-            $query->where('gender', 'Female');
-        })->count(); 
-
-        $malePercentage = ($maleResultCount / $totalResultCount) * 100;
-
-        $femalePercentage = ($femaleResultCount / $totalResultCount) * 100;
-
-        
-
-        return response()->json([
-            "error" => false,
-            "male_percentage" => $malePercentage,
-            "female_percentage" => $femalePercentage
-        ]);
         
     }
 
     public function editSurvey (Request $request, Survey $survey) {      
-       try { 
+        try { 
             $title = $request->input('title');
             $duration_of_survey = $request->input('duration_of_survey');
             $points_awarded = $request->input('points_awarded');
@@ -556,14 +586,20 @@ class SurveyController extends Controller
             );
 
        } catch (\Throwable $th) {
-            
-        Log::error($th->getMessage());
 
-        return response()->json([
-            "error" => true,            
-            "message" => "something went wrong"
-        ], 500);
-    }
+            Log::error('ERROR EDITING SURVEY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
         
     
     }
@@ -587,14 +623,20 @@ class SurveyController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING SURVEY BY ID', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }      
+        }   
 
     }
 
@@ -611,14 +653,20 @@ class SurveyController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING SURVEY PARTICIPANTS RESULTS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
     }
 
     public function deleteSurvey(Request $request, Survey $survey) {
@@ -648,14 +696,20 @@ class SurveyController extends Controller
 
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR DELETING SURVEY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     public function allocatePointToParticipant(Request $request, Survey $survey, $participantId) {
@@ -707,14 +761,20 @@ class SurveyController extends Controller
             ], 200);
             
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR ALLOCATING POINT TO SURVEY PARTICIPANT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }          
+        }     
     }
 
     //////////// move the below to question controller
@@ -740,14 +800,20 @@ class SurveyController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR DELETING QUESTION', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     public function deleteOption(Request $request, Survey $survey, Question $question, Option $option) {
@@ -770,13 +836,19 @@ class SurveyController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR DELETING OPTION', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
     }
 }

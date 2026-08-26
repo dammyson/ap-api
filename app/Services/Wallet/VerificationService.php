@@ -23,7 +23,9 @@ class VerificationService implements BaseServiceInterface
 
     public function storeCategories()
     {
-         $result = array();
+
+        $bearer = config('app.paystack.bearer_key');
+        $result = array();
         //The parameter after verify/ is the transaction reference to be verified
         $url = 'https://api.paystack.co/transaction/verify/'. $this->ref_number;
         
@@ -32,7 +34,7 @@ class VerificationService implements BaseServiceInterface
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt(
           $ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer sk_test_7229ffee506b0c463beafbd03f13bd5091132a10']
+            'Authorization: Bearer ' . $bearer]
         );
         $request = curl_exec($ch);
         if(curl_error($ch)){

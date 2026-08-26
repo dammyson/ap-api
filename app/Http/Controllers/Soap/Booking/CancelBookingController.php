@@ -28,24 +28,15 @@ class CancelBookingController extends Controller
     }
 
     public function cancelBookingCommit(CancelBookingCommitRequest $request) {
-        // $response = '';
         try {
 
-            //  Transaction::where('booking_id', $ID)->update([
-            //     'is_cancelled' => true,
-            //     'status' => "cancelled",
-            //     "is_refunded" => false,
-            // ]);
             $user =  $request->user();
 
             $ID = $request->input('ID'); 
             $referenceID = $request->input('referenceID');
 
             
-            // $tx = Transaction::where('booking_id', $ID)->get();
-            // dd($tx);
-
-            // dd('I ran');
+           
             $xml = $this->cancelBookingBuilder->cancelBookingCommit(            
                 $ID, 
                 $referenceID,
@@ -54,8 +45,7 @@ class CancelBookingController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/CancelBooking';
     
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
-            // $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
+           
             $userBooking = Booking::where('booking_id', $ID)->where('peace_id', $user->peace_id)->where('is_cancelled', false)->first();
               
             if (!$userBooking) {
@@ -94,15 +84,21 @@ class CancelBookingController extends Controller
             } 
 
 
-        } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+        }catch (\Throwable $th) {
+
+            Log::error('ERROR CANCELLING BOOKING', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
        
         
     }
@@ -140,8 +136,6 @@ class CancelBookingController extends Controller
                 }
             }
 
-            // display response of voiding a ticket to user
-            // dd($totalPenalty);
 
             return response()->json([
                 "total_penalty" => $totalPenalty,
@@ -149,13 +143,19 @@ class CancelBookingController extends Controller
                 "response" => $response
             ]);
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING SURVEYS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 }

@@ -86,13 +86,6 @@ class GetAirportMatrixController extends Controller
                     } 
                 }
 
-                // usort($destinationFlightArray, function ($a, $b) {
-                //     return strcmp(
-                //         $a['destinationPortLocationName'],
-                //         $b['destinationPortLocationName']
-                //     );
-                // });
-
                 usort($destinationFlightArray, function ($a, $b) {
                     // Primary: destination port name
                     $nameComparison = strcmp(
@@ -124,17 +117,7 @@ class GetAirportMatrixController extends Controller
                 ];
 
                 $availableFlights[] = $availableFlightDetails;
-            }
-
-            
-        
-            // usort($availableFlights, function ($a, $b) {
-            //     return strcmp(
-            //         $a['originAndDestinations']['originPortLocationCode'],
-            //         $b['originAndDestinations']['originPortLocationCode']
-            //     );
-            // });
-           
+            }          
 
 
             usort($availableFlights, function ($a, $b) {
@@ -163,17 +146,20 @@ class GetAirportMatrixController extends Controller
             ], 200);
         
         }  catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
-            return response()->json([
-                "error" => true,            
-                "message" => "something went wrong",
-                "actual_message" => $th->getMessage()
-            ], 500);
-        }  
 
-      
+            Log::error('ERROR RETRIEVING AIRPORT MATRIX', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
 
     }
 }

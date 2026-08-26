@@ -30,38 +30,39 @@ class FlightController extends Controller
 
     public function searchFlights(SearchFlightRequest $request)
     {
-
-        $departureDateTime = $request->input('departure_date');
-        $ArrivalDateTime = $request->input('arrival_date');
-        $destinationLocationCode = $request->input('arrival_airport');
-        $originLocationCode = $request->input('departure_airport');
-        $preferredCurrency = $request->input('preferred_currency');
-
-        $quantity = $request->input('passengers');
         
-        $tripType = $request->input('trip_type');
-
-        $validated = $request->validated();
-      
-        $travelerInformation = $validated["travelerInformation"];
-        $travelerInformation_count = count($travelerInformation);
-
-      
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
-
-        if ($request->input('trip_type') == "ONE_WAY") {
-            $xml = $this->soapRequestBuilder->GetFlightOneWay($preferredCurrency, $departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType);
-            // dd($xml);
-        } else  if ($request->input('trip_type') == "ROUND_TRIP") {
-            $xml = $this->soapRequestBuilder->GetFlightRoundTrip($preferredCurrency, $departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType,  $ArrivalDateTime);
-        } else {
-            $multiDirectionalFlights = $validated['multi_directional_flights'];
-
-            $xml = $this->soapRequestBuilder->GetFlightMultiCity($preferredCurrency, $multiDirectionalFlights, $travelerInformation, $tripType);
-        }
-        // dump($xml);
         try {
+            
+            $departureDateTime = $request->input('departure_date');
+            $ArrivalDateTime = $request->input('arrival_date');
+            $destinationLocationCode = $request->input('arrival_airport');
+            $originLocationCode = $request->input('departure_airport');
+            $preferredCurrency = $request->input('preferred_currency');
+
+            $quantity = $request->input('passengers');
+            
+            $tripType = $request->input('trip_type');
+
+            $validated = $request->validated();
+        
+            $travelerInformation = $validated["travelerInformation"];
+            $travelerInformation_count = count($travelerInformation);
+
+        
+
+            $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailability';
+
+            if ($request->input('trip_type') == "ONE_WAY") {
+                $xml = $this->soapRequestBuilder->GetFlightOneWay($preferredCurrency, $departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType);
+                // dd($xml);
+            } else  if ($request->input('trip_type') == "ROUND_TRIP") {
+                $xml = $this->soapRequestBuilder->GetFlightRoundTrip($preferredCurrency, $departureDateTime, $destinationLocationCode, $originLocationCode, $travelerInformation, $tripType,  $ArrivalDateTime);
+            } else {
+                $multiDirectionalFlights = $validated['multi_directional_flights'];
+
+                $xml = $this->soapRequestBuilder->GetFlightMultiCity($preferredCurrency, $multiDirectionalFlights, $travelerInformation, $tripType);
+            }
+
 
             $response = $this->craneOTASoapService->run($function, $xml);
             // return $response;
@@ -145,13 +146,19 @@ class FlightController extends Controller
             }
            
             return response()->json($result);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR SEARCHING FLIGHTS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong",
-                "actual_message" => $e->getMessage()
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }

@@ -29,14 +29,20 @@ class AnalyticsUserController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING TOTAL FLIGHT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     
@@ -63,15 +69,20 @@ class AnalyticsUserController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
-            return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
-            ], 500);
-        }  
 
+            Log::error('ERROR RETRIEVING TOTAL REFERRAL', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
     }
 
     public function countriesVisited(Request $request) {
@@ -86,15 +97,21 @@ class AnalyticsUserController extends Controller
                 "number_of_countries_visted" => $numberOfCountriesVisited
             ], 200);
 
-        } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+        }  catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING COUNTRIES VISITED', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
 
@@ -110,22 +127,28 @@ class AnalyticsUserController extends Controller
                 "total_flight_distance" => $totalFlightDistance
             ]);
 
-        }  catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR TOTAL MILES FLOWN', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     public function countriesAndCityChart(Request $request) {
-        $user = $request->user();
-        $year = Carbon::now()->year;
-
         try {
+
+            $user = $request->user();
+            $year = Carbon::now()->year;
 
             $userTickets = Transaction::where('peace_id', $user->peace_id)
                 ->whereYear('created_at', $year)
@@ -141,15 +164,21 @@ class AnalyticsUserController extends Controller
                 "user_tickets" => $organisedUserTickets
             ], 200);
         
-        }  catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING COUNTRIES AND CITY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
         
     }
 
@@ -189,27 +218,27 @@ class AnalyticsUserController extends Controller
                 ->where('is_paid', true)
                 ->get();
 
-                // $tripHistory =  $flights = DB::table('flights as f1')
-                // ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
-                // ->where('f1.peace_id', $user->peace_id)
-                // ->where('f1.departure_time', '<=', Carbon::now()->toIso8601String())
-                // // ->where('f1.departure_time', '>', Carbon::now()->toDateTimeString())
-                // ->get();
-    
+              
             return response()->json([
                 "error" => false,
                 "trip_history" => $tripHistory
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING TRIP HISTORY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     public function guestTripHistory(Request $request) {
@@ -237,14 +266,20 @@ class AnalyticsUserController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING GUEST TRIPS HISTORY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
     public function upcomingTrips(Request $request) {
@@ -266,14 +301,6 @@ class AnalyticsUserController extends Controller
                 ->get();
             
             $upComingTrip = $unPaidUpcomingTrips->merge($paidUpcomingTrips)->values();
-          
-
-          
-            // $flights =  $flights = DB::table('flights as f1')
-            //     ->join(DB::raw('(SELECT MIN(id) as min_id, booking_id FROM flights GROUP BY booking_id) as f2'), 'f1.id', '=', 'f2.min_id')
-            //     ->where('f1.peace_id', $user->peace_id)
-            //     ->where('f1.departure_time', '>', Carbon::now()->toIso8601String())
-            //     ->get();
             
             return response()->json([
                 "error" => false,
@@ -282,28 +309,21 @@ class AnalyticsUserController extends Controller
             ], 200);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
-            return response()->json([
-                "error" => true,            
-                "message" => "something went wrong",
-                "error_message" => $th->getMessage()
 
+            Log::error('ERROR UPCOMING TRIPS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
    
 
-    
-
-    // public function deleteFlight() {
-    //     $Flight = Flight::find(135);
-    //     $Flight->delete();
-
-    //     response()->json([
-    //         'error' => false,
-    //         'message' => 'flight deleted successfully'
-    //     ]);
-    // }
 }

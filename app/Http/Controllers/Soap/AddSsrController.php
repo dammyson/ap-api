@@ -19,7 +19,7 @@ use App\Services\Utility\CheckArray;
 use App\Services\Wallet\FlutterVerificationService;
 use App\Services\Wallet\VerificationService;
 use App\Services\Soap\TicketReservationRequestBuilder;
-
+use App\Services\Payment\Payments;
 class AddSsrController extends Controller
 {
     protected $addSsrBuilder;
@@ -28,8 +28,10 @@ class AddSsrController extends Controller
     protected $bookingBuilder;
     protected $checkArray;
     protected $ticketReservationRequestBuilder;    
+    protected $payments;    
 
-    public function __construct(AddSsrBuilder $addSsrBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray, TicketReservationRequestBuilder $ticketReservationRequestBuilder) {
+    public function __construct(Payments $payments, AddSsrBuilder $addSsrBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray, TicketReservationRequestBuilder $ticketReservationRequestBuilder) {
+        $this->payments = $payments;
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->addSsrBuilder = $addSsrBuilder;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
@@ -108,14 +110,21 @@ class AddSsrController extends Controller
 
         $preferredCurrency = $request->input('preferredCurrency');
         $ancillaryRequestList = $request->input('ancillaryRequestList');
-        $bookingId = $request->input('bookingReferenceIDID');
         $passengerName = $request->input('passengerName');
         $peaceId = $request->input('peaceId');
         $ssrType = $request->query('ssrType');
+        $ref = $request->input('ref');
+        $paymentMethod = $request->input('payment_method');
+        $paymentChannel = $request->input('payment_channel');
+        $preferredCurrency = $request->input('preferred_currency');
+        $deviceType = $request->input('device_type');
+        $bookingId = $request->input('bookingReferenceIDID');
+        $bookingReferenceId = $request->input('bookingReferenceID');
+        $invoiceId = $request->input('invoiceId');
+
+
         $user = $request->user();
 
-        $invoiceId = $request->input('invoiceId');
-        // dd($user->peace_id);
 
         $request->validate([
             "ref" => "required|string",
@@ -124,13 +133,6 @@ class AddSsrController extends Controller
             "device_type" => "required|string"
         ]);
         
-        $ref = $request->input('ref');
-        $paymentMethod = $request->input('payment_method');
-        $paymentChannel = $request->input('payment_channel');
-        $preferredCurrency = $request->input('preferred_currency');
-        $deviceType = $request->input('device_type');
-
-        $bookingReferenceId = "";
        
         if ($user->is_guest) {
 
@@ -141,11 +143,13 @@ class AddSsrController extends Controller
                 return $this->unauthorizedResponse();
             }
 
-            $bookingReferenceId = data_get($response, 'AirBookingResponse.airBookingList.bookingReferenceIDList.referenceID', '');
+            // $bookingReferenceId = data_get($response, 'AirBookingResponse.airBookingList.bookingReferenceIDList.referenceID', '');
 
         } else {
             $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
-            $bookingReferenceId = $booking->booking_reference_id;
+           
+          
+            // $bookingReferenceId = $booking->booking_reference_id;
             if (!$booking) {
                return $this->unauthorizedResponse();
             }
@@ -171,6 +175,7 @@ class AddSsrController extends Controller
             $verified_request = $new_top_request->run();
             // dd($verified_request);
             $paidAmount = $verified_request["data"]["amount"];
+            $paidCurrency = $verified_request['data']['currency'];
             
             // convert to naira (from kobo)
 
@@ -182,11 +187,23 @@ class AddSsrController extends Controller
             
             }
 
-            // dd($paidAmount);
+
+            $payment = $this->payments->createPayment([
+                'user_id' => $user->id,
+                'ref' => $ref,
+                'amount' => $paidAmount,
+                'currency' => $paidCurrency,
+                'channel' => $paymentChannel,
+                'method' => $paymentMethod,
+                'purpose' => "Insurance",
+                'payment_status' => 'completed',
+                'booking_api_status' => 'processing',
+                'booking_id' => $bookingId,
+                'booking_reference_id' => $bookingReferenceId,
+            ]);
+
 
             $paidAmount = (float) $paidAmount;
-
-            
 
             $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
@@ -222,20 +239,17 @@ class AddSsrController extends Controller
                 } 
             }
             
-            // $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
-
-            // [ $amount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
-
-
-            // if user has not paid set the new invoice balance else generate a new invoice
-
-            // $invoice = Invoice::where('id', $invoiceId)->first();
+         
             
              // get the latest ssr invoice 
             $invoice = Invoice::where('booking_id', $bookingId)
                 ->where('type', 'ssr')
                 ->latest()
                 ->first();
+            
+            $payment->update([
+                'invoice_id' => $invoice ? $invoice->id : null
+            ]);
 
             [ $updatedInvoice, $addedPrice ] = $this->updateOrCreateInvoice($expectedAmount, $preferredCurrency, $bookingId, $invoice);
         
@@ -260,11 +274,7 @@ class AddSsrController extends Controller
                 $flight->is_paid = true;
                 $flight->save();
             }   
-                
-            
-                
-            
-
+   
             // commit the ssr
             $this->handleTicketingSsr($preferredCurrency, $bookingId, $bookingReferenceId, $ssrType, $expectedAmount, $deviceType, $paymentMethod, $paymentChannel, $updatedInvoice->id);
 
@@ -277,17 +287,45 @@ class AddSsrController extends Controller
                 "amount" => $expectedAmount
             ], 200);
 
-        } catch (\Exception $e) {
-           
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
+            
+            Log::error('ADD INSURANCE ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            if ($th->getMessage() == "Payment verification failed" || $th->getMessage() == "Payment already processed") {
+                 if ($th->getMessage() == "Payment verification failed") {
+                    $payment = $this->payments->createPayment([
+                        'user_id' => $user->id,
+                        'ref' => $ref,
+                        'amount' => $paidAmount,
+                        'currency' => $paidCurrency,
+                        'channel' => $paymentChannel,
+                        'method' => $paymentMethod,
+                        'purpose' => $purpose ?? 'flight booking|baggages',
+                        'payment_status' => 'failed',
+                        'booking_api_status' => 'processing',
+                        'booking_id' => $bookingId,
+                        'booking_reference_id' => $bookingReferenceId,
+                        'invoice_id' => $invoiceId,
+                    ]);
+                }
+
+                return response()->json([
+                    "error" => true,   
+                    "message" => $th->getMessage(),                
+                ], 500);
+            }
 
             return response()->json([
-                'error' => true,
+                "error" => true,   
                 "message" => "something went wrong",
-                "actual_message" => $e->getMessage()
-        
+             
             ], 500);
-        }
+        }  
     }
 
     public function addBaggagesSsr(AddSsrRequest $request) {
@@ -303,9 +341,7 @@ class AddSsrController extends Controller
         // dd($user->peace_id);
 
         
-        $preferredCurrency = $request->input('preferred_currency');
-
-       
+        $preferredCurrency = $request->input('preferred_currency');       
        
         if ($user->is_guest) {
 
@@ -401,15 +437,19 @@ class AddSsrController extends Controller
                 "amount" => $expectedAmount
             ], 200);
 
-        } catch (\Exception $e) {
-           
-            Log::error($e->getMessage());
+        } catch (\Throwable $th) {
 
+            Log::error('ERROR ADDING BAGGAGES', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                'error' => true,
-                "message" => "something went wrong",
-                "actual_message" => $e->getMessage()
-        
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
         }
     }
@@ -423,15 +463,9 @@ class AddSsrController extends Controller
           
         );
 
-        // dump($xml);
 
         try {
-            
-            // $user = auth()->user();
-            // $peaceId = $user ? $user->peace_id : null;      
-            // $guestToken = !$user ? Session::get('guest_session_token'): null;
-            // $guestToken = $request->input('guest_session_token');
-            Log::info('Reached handleTicketingSsr');
+           
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
@@ -483,7 +517,7 @@ class AddSsrController extends Controller
                         'currency' => $preferredCurrency
 
                     ]); 
-                    Log::info('First transaction saved successfully');                         
+                                          
                 
                 }
                 else {      
@@ -505,7 +539,6 @@ class AddSsrController extends Controller
 
                     ]); 
 
-                    Log::info('Second transaction saved successfully');
                 }                
             }
         
@@ -514,10 +547,6 @@ class AddSsrController extends Controller
             event(new UserActivityLogEvent($user, "{$ssr} Payment", $description));
 
            
-            RecentActivity::create([
-                "title" => "{$ssr} Payment",
-                "description" => $user ? " {$user->first_name} made payment for {$ssr} for flight with booking id {$bookingId} " : "Guest made payment for {$ssr} for flight with booking Id {$bookingId}"
-            ]);
          
         } catch (\Throwable $th) {
 
@@ -529,63 +558,82 @@ class AddSsrController extends Controller
     }
 
     public function selectSeat(AddSsrRequest $request) {
-        $bookingId = $request->input('bookingReferenceIDID');
-        $passengerName = $request->input('passengerName');
-        $peaceId = $request->input('peaceId');
-        $user = $request->user();
-        
-        if ($user->is_guest) {            
-            $response = $this->handleGuestUser($bookingId, $passengerName, "NGN");
 
-            if (!(isset($response['AirBookingResponse']))) {
+        try {
+            
+            $bookingId = $request->input('bookingReferenceIDID');
+            $passengerName = $request->input('passengerName');
+            $peaceId = $request->input('peaceId');
+            $user = $request->user();
+            
+            if ($user->is_guest) {            
+                $response = $this->handleGuestUser($bookingId, $passengerName, "NGN");
+
+                if (!(isset($response['AirBookingResponse']))) {
+                    return $this->unauthorizedResponse();
+                }
+
+            } else {
+                $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
+                if (!$booking) {
                 return $this->unauthorizedResponse();
-            }
-
-        } else {
-            $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
-            if (!$booking) {
-               return $this->unauthorizedResponse();
-            }
-        }
-
-
-        $xml = $this->addSsrBuilder->addSsr(
-            $request
-        );
-        // dd($xml);
-
-        $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
-
-        $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dd($response);
-
-        if (array_key_exists("detail", $response)) {
-            if (array_key_exists("CraneFault", $response["detail"])){
-                if (array_key_exists("code", $response["detail"]["CraneFault"])){
-                    if ($response["detail"]["CraneFault"]["code"] == "ASR_ADDING_SEAT_NOT_ALLOWED") {
-                        $message = "You are not allowed to add more seat for this passenger";
-                        return response()->json([
-                            "error" => true,            
-                            "message" => $message
-                        ], 400);
-                    
-                    }
                 }
             }
 
-            return response()->json([
-                "error" => true,            
-                "message" => "unable to select seat"
-            ], 400);
-        }
-                
-        
 
-        return response()->json([
-            "error" => false,
-            "message" => "Seat select successfully"
-           
-        ], 200);
+            $xml = $this->addSsrBuilder->addSsr(
+                $request
+            );
+            // dd($xml);
+
+            $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
+
+            $response = $this->craneAncillaryOTASoapService->run($function, $xml);
+                // dd($response);
+
+            if (array_key_exists("detail", $response)) {
+                if (array_key_exists("CraneFault", $response["detail"])){
+                    if (array_key_exists("code", $response["detail"]["CraneFault"])){
+                        if ($response["detail"]["CraneFault"]["code"] == "ASR_ADDING_SEAT_NOT_ALLOWED") {
+                            $message = "You are not allowed to add more seat for this passenger";
+                            return response()->json([
+                                "error" => true,            
+                                "message" => $message
+                            ], 400);
+                        
+                        }
+                    }
+                }
+
+                return response()->json([
+                    "error" => true,            
+                    "message" => "unable to select seat"
+                ], 400);
+            }
+                    
+            
+
+            return response()->json([
+                "error" => false,
+                "message" => "Seat select successfully"
+            
+            ], 200);
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR SELECTING SEAT', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
+       
 
     }
     

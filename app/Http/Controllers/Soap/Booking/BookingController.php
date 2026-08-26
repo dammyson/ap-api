@@ -169,28 +169,64 @@ class BookingController extends Controller
 
 
     public function retrievePNRHistory(RetrievePNRHistoryRequest $request) {
-        $id = $request->input('ID');
+        try {
+            $id = $request->input('ID');
        
-        $xml = $this->bookingBuilder->retrievePNRHistory($id);
+            $xml = $this->bookingBuilder->retrievePNRHistory($id);
 
-        $function = "http://impl.soap.ws.crane.hititcs.com/GetAirBookingHistory";
-        $response = $this->craneOTASoapService->run($function, $xml);
+            $function = "http://impl.soap.ws.crane.hititcs.com/GetAirBookingHistory";
+            $response = $this->craneOTASoapService->run($function, $xml);
 
-        return $response;
+            return $response;
+        
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING PNR HISTORY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
+        
 
     }   
 
 
     public function RetrieveTicketHistory(RetrieveTicketHistoryRequest $request) {
-        $bookingReferenceID = $request->input('bookingReferenceID');
+        try {
+            $bookingReferenceID = $request->input('bookingReferenceID');
 
-        $xml = $this->bookingBuilder->RetrieveTicketHistory($bookingReferenceID);
-        // dd($xml);
+            $xml = $this->bookingBuilder->RetrieveTicketHistory($bookingReferenceID);
+            // dd($xml);
 
-        $function = "http://impl.soap.ws.crane.hititcs.com/GetTicketHistory";
-        $response = $this->craneOTASoapService->run($function, $xml);
+            $function = "http://impl.soap.ws.crane.hititcs.com/GetTicketHistory";
+            $response = $this->craneOTASoapService->run($function, $xml);
 
-        return $response;
+            return $response;
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING TICKET HISTORY', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => 'something went wrong'
+            ], 500);
+        }
+       
 
     }
 
@@ -210,26 +246,6 @@ class BookingController extends Controller
                 ], 500);
             }
 
-            $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
-
-       
-
-            if (!$invoice) {
-                return response()->json([
-                    'error' => true,
-                    'message' => "Invoice is not found for the booking"
-                ]);
-            }
-
-            
-         
-            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $invoice->currency);
-            // dd($xml);  
-            $response = $this->craneOTASoapService->run($function, $xml);
-            
-            // dd($response);
-            
-            // $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
             $flightInvoice = Invoice::where('booking_id', $bookingId)
                 ->where('type', 'flight')
                 ->latest()
@@ -239,10 +255,7 @@ class BookingController extends Controller
                 ->where('type', 'ssr')
                 ->latest()
                 ->first();
-            
-
-
-
+   
             // dd($invoice);
             if (! ($flightInvoice || $ssrInvoice)) {
                 return response()->json([
@@ -250,8 +263,13 @@ class BookingController extends Controller
                     'message' => "Invoice is not found for the booking"
                 ]);
             }
-
-
+            
+         
+            $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $flightInvoice->currency);
+            // dd($xml);  
+            $response = $this->craneOTASoapService->run($function, $xml);
+            
+         
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
                 $this->checkArray->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
                     // dd('I ran');
@@ -323,15 +341,20 @@ class BookingController extends Controller
         ]);
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING BOOKING WITH SURNAME', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,         
-                "message" => "something went wrong",
-                "actual_message"=> $th->getMessage()
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 
 
@@ -420,14 +443,20 @@ class BookingController extends Controller
 
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING BOOKING WITH BOOKING ID AND REFERENCE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        } 
        
     }
        

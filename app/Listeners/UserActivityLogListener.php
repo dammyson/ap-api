@@ -35,9 +35,5 @@ class UserActivityLogListener
             ]);
         }
 
-        // RecentActivity::create([
-        //     'title' => $activityType,
-        //     'description' => $description
-        // ]);
     }
 }

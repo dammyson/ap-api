@@ -19,23 +19,30 @@ class GetAvailabilityController extends Controller
     }
 
     public function getAvailabilityGeneralParameters() {
-        $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailabilityGeneralParameters';
-        $xml = $this->getAvailabilityBuilder->getAvailabilityGeneralParameters();
         try {
+            
+            $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailabilityGeneralParameters';
+            $xml = $this->getAvailabilityBuilder->getAvailabilityGeneralParameters();
+       
 
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
-            return $response;
-           
+
+            return $response;           
 
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING GENERAL AVAILABILITY PARAMETERS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
     }
 }

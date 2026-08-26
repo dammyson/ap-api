@@ -41,15 +41,20 @@ class ProfileController extends Controller
             ], 200);
             
         } catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+
+            Log::error('ERROR RETRIEVING USER PROFILE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,            
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
-       
+        }
     }
 
 
@@ -73,13 +78,6 @@ class ProfileController extends Controller
                 $path = Storage::disk('cloudinary')->putFile('uploads', $file);
                 $url = Storage::disk('cloudinary')->url($path);
 
-
-                // $path = $request->file('image_url')->store('users-images-folder', 'public');
-                // $path = "test/"."emeka.".$request->file('image_url')->getClientOriginalExtension();
-                
-                // Storage::disk("public")->put($path, file_get_contents($request->file('image_url')));
-                // store the path to the image in the image_url column
-                // dd($path);
                 $user->image_url = $url;
                 $user->save();
 
@@ -104,22 +102,24 @@ class ProfileController extends Controller
                 ], 200);
             }
 
-            // $path = Storage::disk('cloudinary')->putFile('uploads', $file);
-            // $url = Storage::disk('cloudinary')->url($path);
-
-            // return $url;
+           
         
 
-        }  catch (\Throwable $th) {
-            
-            Log::error($th->getMessage());
-    
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR UPDATING USER IMAGE', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
             return response()->json([
-                "error" => true,  
-                "error_message" => $th->getMessage(),          
-                "message" => "something went wrong"
+                'error' => true, 
+                'message' => 'something went wrong'
             ], 500);
-        }  
+        }
 
         
     }

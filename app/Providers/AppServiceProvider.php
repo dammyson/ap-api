@@ -19,9 +19,9 @@ use Illuminate\Support\ServiceProvider;
 use App\Listeners\AdminCustomerListener;
 use Illuminate\Cache\RateLimiting\Limit;
 use App\Listeners\UserActivityLogListener;
+use App\Services\Payment\Payments;
 use App\Services\Transaction\Transactions;
 use Illuminate\Support\Facades\RateLimiter;
-use App\Services\Ticket\PassengerTicketService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,9 +33,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(Transactions::class, function ($app) {
             return new Transactions();
         });
-
-        $this->app->singleton(PassengerTicketService::class, function ($app) {
-            return new PassengerTicketService($app->make(Transactions::class));
+        $this->app->singleton(Payments::class, function ($app) {
+            return new Payments();
         });
     }
 
