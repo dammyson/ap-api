@@ -34,7 +34,7 @@ class LoginAdminController extends Controller
                 
                 return response()->json(
                     [
-                        'is_correct' => true,
+                        'error' => false,
                         'message' => 'Admin login successfully',
                         'data' => $data
                     ], 200

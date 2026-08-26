@@ -74,7 +74,7 @@ class LoginController extends Controller
                 $this->setLastLoginAndSendNotification($user);
 
                 return response()->json([
-                    'is_correct' => true,
+                    'error' => false,
                     'message' => 'Login Successful',
                     // 'deviceType' => $deviceType,
                     // 'screenResolution' => $screenResolution,
@@ -141,7 +141,6 @@ class LoginController extends Controller
 
             return response()->json([
                 'error' => false,
-                'is_correct' => true,
                 'message' => 'Login Successful',
                 'data' => $data
             ], 200);
@@ -158,7 +157,6 @@ class LoginController extends Controller
             // Return safe message to user
             return response()->json([
                 'error' => true, 
-                'is_correct' => false,
                 'message' => 'Unable to complete login at the moment. Please try again.'
             ], 500);
         }
