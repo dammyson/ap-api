@@ -4,17 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Device;
 use App\Models\Flight;
-use App\Models\Ticket;
-use App\Models\Booking;
-use App\Models\Revenue;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Models\RecentActivity;
-use App\Models\FlightTicketType;
 use App\Models\ScreenResolution;
-use Symfony\Component\Clock\now;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;

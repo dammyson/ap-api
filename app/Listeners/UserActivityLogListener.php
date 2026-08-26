@@ -4,9 +4,6 @@ namespace App\Listeners;
 
 use App\Models\UserActivityLog;
 use App\Events\UserActivityLogEvent;
-use App\Models\RecentActivity;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UserActivityLogListener
 {

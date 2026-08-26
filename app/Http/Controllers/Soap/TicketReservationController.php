@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Soap;
 use App\Models\Flight;
 use App\Models\Invoice;
 use App\Models\Transaction;
-use Illuminate\Http\Request;
-use App\Models\RecentActivity;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Controller;
@@ -16,8 +14,6 @@ use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Http\Controllers\Soap\Booking\BookingController;
 use App\Http\Requests\Soap\Ticket\TicketReservationViewOnlyRequest;
 use App\Models\Payment;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\ReservationNotification;
 
 class TicketReservationController extends Controller
 {

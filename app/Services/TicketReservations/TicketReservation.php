@@ -2,13 +2,11 @@
 
 namespace App\Services\TicketReservations;
 
-use Illuminate\Support\Facades\DB;
 
 
 use App\Models\Flight;
 use App\Models\Invoice;
 use App\Models\Transaction;
-use App\Models\RecentActivity;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
 use App\Http\Controllers\Soap\Booking\BookingController;

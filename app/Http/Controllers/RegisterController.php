@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Models\Device;
 use App\Mail\ForgotPassword;
 use Illuminate\Http\Request;
-use App\Models\RecentActivity;
 use App\Models\ReferralActivity;
 use App\Models\ScreenResolution;
 use Illuminate\Support\Facades\Log;
