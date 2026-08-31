@@ -50,5 +50,6 @@ class SegmentBaseController extends Controller
                 'message' => 'something went wrong'
             ], 500);
         }
-    
+        
+    }
 }
