@@ -36,8 +36,6 @@ class LoginController extends Controller
                 $query->where('email', $request->credential)
                     ->orWhere('peace_id', $request->peace_id);
             })->first();
-
-            // dd($user);
             
             if (!$user) {
                 return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
@@ -109,7 +107,7 @@ class LoginController extends Controller
             $user = User::where('email', $request->email)->first();
             if (!$user) {
                 $peace_id = (new GenerateRandom())->generateUniquePeaceId();
-                // dd($peace_id);
+                
                 $tier = Tier::where('rank', 1)->first();
                 $user = User::create([
                     'first_name' => $request->input('first_name'),

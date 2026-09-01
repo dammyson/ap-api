@@ -35,9 +35,7 @@ class GetAirExtraChargesAndProductBuilder {
 
 
   	private function bookFlightSegmentList($bookFlightSegmentList)
-    {
-        //dd($CreateBookOriginDestinationOptionList[0]['flightSegmeneSequence'] );
-
+   {
         $xml = '';
 
         foreach ($bookFlightSegmentList as $string) {

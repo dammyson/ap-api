@@ -69,7 +69,6 @@ class ProfileController extends Controller
                 if ($user->image_url) {
                     $oldPath = $user->image_url;
                     Storage::delete($oldPath);
-                    // dd(" I got here");
                    
 
                 }
@@ -82,7 +81,6 @@ class ProfileController extends Controller
                 $user->save();
 
                 $tierDetails = $user->currentTier();
-                // dd($imageUrlLink);
 
                 if (!$path) {
                     return response()->json([

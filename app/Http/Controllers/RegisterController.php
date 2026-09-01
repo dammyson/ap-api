@@ -67,7 +67,6 @@ class RegisterController extends Controller
                 
                 ]);
 
-                // dd($us)
 
                 if ($deviceType) {
                     Device::create([
@@ -94,7 +93,7 @@ class RegisterController extends Controller
                 if ($referrer_peace_id) {
                     $referrer_points_earned = 20;
                     $referrer = User::where('peace_id', $referrer_peace_id)->first();
-                    // dd($referrer);
+                 
                     if ($referrer) {
                         $referrer->points += $referrer_points_earned;
                         $referrer->save();

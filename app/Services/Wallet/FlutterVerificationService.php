@@ -26,16 +26,13 @@ class FlutterVerificationService implements BaseServiceInterface
 
     public function verify()
     { 
-        // dd("verify ran");
         $result = array();
-        // dd($this->ref_number);
-
         
         $bearer = config('app.flutterwave.bearer_key');
         //The parameter after verify/ is the transaction reference to be verified
         $url = 'https://api.flutterwave.com/v3/transactions/'. $this->ref_number .'/verify';
         
-        // dump($bearer);
+  
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -55,12 +52,11 @@ class FlutterVerificationService implements BaseServiceInterface
           $result = json_decode($request, true);
         
         }
-
-        // dd($result);
         
         if (array_key_exists('data', $result) && array_key_exists('status', $result['data']) && ($result['data']['status'] === 'successful')) {
             return $result;
+        } else{
+            throw new \Exception("Payment verification failed");
         }
-        return $result;
     }
 }

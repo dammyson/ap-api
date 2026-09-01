@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
+use App\Exceptions\HititException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -31,6 +32,22 @@ class PenaltyRulesController extends Controller
 
          
             return $response;
+
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR RETRIEVING PENALTY RULES', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
 
         } catch (\Throwable $th) {
 

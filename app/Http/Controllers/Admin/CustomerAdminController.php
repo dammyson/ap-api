@@ -31,8 +31,6 @@ class CustomerAdminController extends Controller
         try {
 
             
-            // $user = $request->user();
-            // dd($user);
             $tierInfo = (!$user->is_guest) ? $user->currentTier() : null;
             
             $flightCount = Transaction::where('user_id', $user->id)->

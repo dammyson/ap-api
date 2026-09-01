@@ -18,7 +18,7 @@ class LastLogin
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            // dd(new DateTime());
+            
             Auth::user()->update(['last_login' => now()->setTimezone('Africa/Lagos')]);
             // $user = $request->user();
             // $user->last_login = now();

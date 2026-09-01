@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap\Booking;
 
+use App\Exceptions\HititException;
 use stdClass;
 use App\Models\Booking;
 use App\Models\Invoice;
@@ -43,15 +44,13 @@ class BookingController extends Controller
         try {
 
             $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->where('is_cancelled', false)->first();
-            // dd($booking);
+          
             if (!$booking) {
                 return response()->json([
                     'error' => true,
                     'message' => 'PNR not found'
                 ], 500);
             }
-
-            // $invoice = Invoice::where('booking_id', $bookingId)->orderBy('created_at', 'desc')->first();
 
             $flightInvoice = Invoice::where('booking_id', $bookingId)
                 ->where('type', 'flight')
@@ -66,7 +65,7 @@ class BookingController extends Controller
 
 
 
-            // dd($invoice);
+           
             if (! ($flightInvoice || $ssrInvoice)) {
                 return response()->json([
                     'error' => true,
@@ -85,17 +84,11 @@ class BookingController extends Controller
             
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            // dd($response);
-
-            // return response()->json([
-            //     "error" => false,
-            //     "response" => $response
-            // ]);
-
+           
        
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
                 $this->checkArray->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
-                    // dd('I ran');
+                   
                     $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'] = 
                     [$response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']];
             }
@@ -140,10 +133,43 @@ class BookingController extends Controller
                 
                 }
             }
+
+            return response()->json([
+                'error' => false,
+                'flight_invoice_id' => $flightInvoice ? $flightInvoice->id : null,
+                'flight_payment_status' => $flightInvoice ? $flightInvoice->is_paid : null,
+                'flight_invoice_amount' => $flightInvoice ? $flightInvoice->amount : null,
+                'ssr_payment_status' => $ssrInvoice ? $ssrInvoice->is_paid : null,
+                'ssr_invoice_id' => $ssrInvoice ? $ssrInvoice->id : null,
+                'ssr_invoice_amount' => $ssrInvoice ? $ssrInvoice->amount : null,
+                "currency" => $flightInvoice->currency,
+                'booking_data' => $response
+            ]);
             
+        } catch (HititException $e) {
+            Log::error('HITIT ERROR READING BOOKING WITH PNR AND REFERENCE ID', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
             
-            Log::error($th->getMessage());
+              Log::error('ERROR READING BOOKING WITH PNR AND REFERENCE ID', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
     
             return response()->json([
                 "error" => true,            
@@ -151,19 +177,6 @@ class BookingController extends Controller
                 "actual_message"=> $th->getMessage()
             ], 500);
         }  
-
-
-        return response()->json([
-            'error' => false,
-            'flight_invoice_id' => $flightInvoice ? $flightInvoice->id : null,
-            'flight_payment_status' => $flightInvoice ? $flightInvoice->is_paid : null,
-            'flight_invoice_amount' => $flightInvoice ? $flightInvoice->amount : null,
-            'ssr_payment_status' => $ssrInvoice ? $ssrInvoice->is_paid : null,
-            'ssr_invoice_id' => $ssrInvoice ? $ssrInvoice->id : null,
-            'ssr_invoice_amount' => $ssrInvoice ? $ssrInvoice->amount : null,
-            "currency" => $flightInvoice->currency,
-            'booking_data' => $response
-        ]);
 
     }
 
@@ -179,6 +192,22 @@ class BookingController extends Controller
 
             return $response;
         
+        } catch (HititException $e) {
+            Log::error('HITIT ERROR RETRIEVING PNR HISTORY', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
             Log::error('ERROR RETRIEVING PNR HISTORY', [
@@ -204,12 +233,27 @@ class BookingController extends Controller
             $bookingReferenceID = $request->input('bookingReferenceID');
 
             $xml = $this->bookingBuilder->RetrieveTicketHistory($bookingReferenceID);
-            // dd($xml);
 
             $function = "http://impl.soap.ws.crane.hititcs.com/GetTicketHistory";
             $response = $this->craneOTASoapService->run($function, $xml);
 
             return $response;
+
+        } catch (HititException $e) {
+            Log::error('HITIT ERROR RETRIEVING TICKET HISTORY', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
 
         } catch (\Throwable $th) {
 
@@ -256,7 +300,7 @@ class BookingController extends Controller
                 ->latest()
                 ->first();
    
-            // dd($invoice);
+          
             if (! ($flightInvoice || $ssrInvoice)) {
                 return response()->json([
                     'error' => true,
@@ -266,13 +310,13 @@ class BookingController extends Controller
             
          
             $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $flightInvoice->currency);
-            // dd($xml);  
+            
             $response = $this->craneOTASoapService->run($function, $xml);
             
          
             if (isset($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']) &&
                 $this->checkArray->isAssociativeArray($response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'])) {
-                    // dd('I ran');
+                    
                     $response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList'] = 
                     [$response['AirBookingResponse']['airBookingList']['airReservation']['airTravelerList']];
             }
@@ -328,17 +372,33 @@ class BookingController extends Controller
             
        
 
-        return response()->json([
-            'error' => false,
-            'flight_invoice_id' => $flightInvoice ? $flightInvoice->id : null,
-            'flight_payment_status' => $flightInvoice ? $flightInvoice->is_paid : null,
-            'flight_invoice_amount' => $flightInvoice ? $flightInvoice->amount : null,
-            'ssr_payment_status' => $ssrInvoice ? $ssrInvoice->is_paid : null,
-            'ssr_invoice_id' => $ssrInvoice ? $ssrInvoice->id : null,
-            'ssr_invoice_amount' => $ssrInvoice ? $ssrInvoice->amount : null,
-            "currency" => $flightInvoice->currency,
-            'booking_data' => $response
-        ]);
+            return response()->json([
+                'error' => false,
+                'flight_invoice_id' => $flightInvoice ? $flightInvoice->id : null,
+                'flight_payment_status' => $flightInvoice ? $flightInvoice->is_paid : null,
+                'flight_invoice_amount' => $flightInvoice ? $flightInvoice->amount : null,
+                'ssr_payment_status' => $ssrInvoice ? $ssrInvoice->is_paid : null,
+                'ssr_invoice_id' => $ssrInvoice ? $ssrInvoice->id : null,
+                'ssr_invoice_amount' => $ssrInvoice ? $ssrInvoice->amount : null,
+                "currency" => $flightInvoice->currency,
+                'booking_data' => $response
+            ]);
+
+        } catch (HititException $e) {
+            Log::error('HITIT  RETRIEVING BOOKING WITH SURNAME', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
 
         } catch (\Throwable $th) {
 
@@ -388,11 +448,10 @@ class BookingController extends Controller
             
             
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
+            
             
             $routes = [];
             $bookOriginDestinationOptionLists = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
-            // dd($bookOriginDestinationOptionLists);
             
 
             if (!$this->checkArray->isAssociativeArray($bookOriginDestinationOptionLists)) {
@@ -441,6 +500,22 @@ class BookingController extends Controller
             }
             return $routes;
 
+
+        } catch (HititException $e) {
+            Log::error('HITIT ERROR RETRIEVING BOOKING WITH BOOKING ID AND REFERENCE', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
 
         } catch (\Throwable $th) {
 

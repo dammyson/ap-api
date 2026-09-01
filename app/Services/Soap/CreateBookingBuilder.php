@@ -440,7 +440,6 @@ class CreateBookingBuilder
             }
 
         } else {
-            // dd("ir an");
 
             $xml .= '<contactInfoList>
                         <companyInfo>

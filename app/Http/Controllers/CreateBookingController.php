@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
+use App\Exceptions\HititException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RedeemPeacePoint\RedeemPeacePointCommitRequest;
 use App\Http\Requests\RedeemPeacePoint\RedeemPeacePointViewRequest;
@@ -50,7 +51,7 @@ class CreateBookingController extends Controller
 
 
     public function createBooking(CreateBookingRequest $request){
-        // dd(auth()->user()->id);
+   
         $validated = $request->validated();
         $CreateBookOriginDestinationOptionList = $validated["CreateBookOriginDestinationOptionList"];
         $airTravelerList = $validated["airTravelerList"];
@@ -62,7 +63,7 @@ class CreateBookingController extends Controller
         $tripType = $request->input('trip_type');
         $preferredCurrency = $request->input('preferred_currency');
         
-        // dd($CreateBookOriginDestinationOptionList);
+       
         $xml = $this->createBookingBuilder->createBooking(
             $preferredCurrency,
             $CreateBookOriginDestinationOptionList,
@@ -80,25 +81,6 @@ class CreateBookingController extends Controller
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
-
-            
-
-            if (!array_key_exists('AirBookingResponse', $response)) {
-
-               Log::error('ERROR CREATING BOOKING WITH EXTERNAL API', [
-                    'message' => $response,
-                ]);
-
-                // $stringResponse = json_encode($response, JSON_PRETTY_PRINT);
-
-                return response()->json([
-                    "error" => true,
-                    "message" => "booking is no longer available for this flight",
-                    // "message" =>  "error {$stringResponse}",
-                   
-                ], 404);
-
-            } 
         
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
             $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
@@ -122,15 +104,14 @@ class CreateBookingController extends Controller
             );    
              
             $ticketReservationResponse = $this->craneOTASoapService->run($ticketReservationFunction, $xml);
-            // dump($ticketReservationResponse);
+           
             $expectedAmount = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
             $currency = $ticketReservationResponse["AirTicketReservationResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]['currency']["code"];
             
 
             $ticketItemList = $response['AirBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'];
             $bookOriginDestinationOptionList = $response['AirBookingResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
-            // $amount = $response["AirBookingResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
-
+           
             if ($this->checkArray->isAssociativeArray($bookOriginDestinationOptionList)) {
                 $bookOriginDestinationOptionList = [$bookOriginDestinationOptionList];
             }
@@ -242,16 +223,30 @@ class CreateBookingController extends Controller
                 "timeLimitUTC" => Carbon::parse($timeLimitUTC)->format('Y-m-d-H-i-s')
             ];
 
-            // dump($bookingDetails);
-            // dd($response);
+          
             return response()->json([
                 "error" => false,
                 "message" => "Flight booked successfully",
                 "amount" => $expectedAmount,
                 "trip_type" => $tripType,
                 "bookingDetails" => $bookingDetails,
-                // "response" => $response
             ], 200);
+
+        } catch (HititException $e) {
+
+            Log::error('HITIT ERROR CREATING BOOKING', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
 
         } catch (\Throwable $th) {
 
@@ -265,7 +260,7 @@ class CreateBookingController extends Controller
             // Return safe message to user
             return response()->json([
                 'error' => true, 
-                'message' => 'something went wrong'
+                'message' => 'something went wrong',
             ], 500);
         }
     }
@@ -309,9 +304,25 @@ class CreateBookingController extends Controller
     
             ], 200);
         
+        } catch (HititException $e) {
+
+            Log::error('HITIT ERROR VIEWING PAYMENT INFO FOR FLIGHT', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
-            Log::error('ERROR REDEEMING TICKET WITH PEACE POINT', [
+            Log::error('ERROR VIEWING PAYMENT INFO FOR FLIGHT WITH PEACE POINT', [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),
@@ -436,19 +447,7 @@ class CreateBookingController extends Controller
 
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
-            $response = $this->craneOTASoapService->run($function, $xml);
-
-            if (!array_key_exists('AirTicketReservationResponse', $response)) {
-                
-                Log::error($response);
-
-                return response()->json([
-                    'error' => true,
-                    'message' => "no new addition to ticket",
-                    'paidAmount' => $paidAmount,
-                    "response" => $response
-                ], 500);
-            }   
+            $response = $this->craneOTASoapService->run($function, $xml);  
 
             if ($payment) {
                 $payment->update([
@@ -518,7 +517,6 @@ class CreateBookingController extends Controller
                     $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
                   
                     if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
-                        // dump('non asvcSsr ran');
                                                   
                         Transaction::firstOrCreate([
                             "invoice_number" => $invoice_number,                            
@@ -566,7 +564,23 @@ class CreateBookingController extends Controller
                 "message" => "payment for flight successful"
             ]);
 
-        }  catch (\Throwable $th) {
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR VERIFYING PAYMENT INFO FOR FLIGHT', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
+        } catch (\Throwable $th) {
 
             Log::error('ERROR VERIFYING REDEMPTION WITH PAYMENT', [
                 'message' => $th->getMessage(),

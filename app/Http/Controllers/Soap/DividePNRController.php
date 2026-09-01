@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
+use App\Exceptions\HititException;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\DividePNRBuilder;
@@ -131,6 +132,22 @@ class DividePNRController extends Controller
 
         try {
             dd($xml);
+
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR DIVIDING PNR', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
 
         } catch (\Throwable $th) {
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\HititException;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Models\Booking;
@@ -33,7 +34,7 @@ class OnepipeController extends Controller
         try {
 
             $user = $request->user();
-            // dd(now());
+            
             $requestRef = $this->generateRandom->generateRandomNumber();
             $secret = config('app.one_pipe.secret');
             $bearerKey = config('app.one_pipe.bearer_key');
@@ -100,8 +101,7 @@ class OnepipeController extends Controller
 
                 $booking->request_ref = $requestRef;
                 $booking->save();
-
-            // dd($response->body());
+        
         } catch(\Throwable $th) {
             return response()->json([
                 "error" => true,
@@ -127,8 +127,6 @@ class OnepipeController extends Controller
         $bearerKey = config('app.one_pipe.bearer_key');
         $url = config('app.one_pipe.query_url');
 
-        // dd($secret, $bearerKey, $url);
-        // $secret = env('ONE_PIPE_SECRET');
         $requestRef = $request->input('request_ref');
         $bookingId = $request->input('booking_id');
         $signature = md5("{$request->input('request_ref')};{$secret}");
@@ -142,9 +140,6 @@ class OnepipeController extends Controller
                 "message" => "request ref does not match record"
             ], 400);
         }
-
-
-        // dump($bearerKey, $signature, $requestRef, $request->input('transaction_ref'));
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearerKey, // move this to env once test is complete
@@ -188,13 +183,11 @@ class OnepipeController extends Controller
         }
 
         $currency = $response["data"]["provider_response"]["meta"]["account"]["currency_code"];
-        $bankName = $response["data"]["provider_response"]["meta"]["account"]["bank_name"];
-        $pnr = $response["data"]["provider_response"]["meta"]["pnr"];
         $bookingAmount = $response["data"]["provider_response"]["meta"]["booking_amount"];
         $paymentAmount = $response["data"]["provider_response"]["meta"]["payment_amount"];
         $deviceType = $request['device_type'];
 
-        // dd($currency);  
+ 
         
         $flightInvoice = Invoice::where('booking_id', $bookingId)
             ->where('type', 'flight')
@@ -286,7 +279,7 @@ class OnepipeController extends Controller
 
         $token = base64_encode($merchantId . ':' . $merchantSecret);
 
-        // dd($token);
+      
 
         $response = Http::asForm()->withHeaders([
                     'Authorization' => 'Basic '. $token,
@@ -294,10 +287,10 @@ class OnepipeController extends Controller
                     'grant_type' => 'client_credentials',
                 ]);
 
-        // dd( $response->json()['access_token']);
+       
         return $response->json()['access_token'];
         
-        // return $response;
+      
     }
 
     public function verifyQuickTeller(Request $request) {
@@ -313,9 +306,6 @@ class OnepipeController extends Controller
 
             $url = config('app.quick_teller.url');
             $bearer = $this->getInterswitchToken();
-
-
-            // dd($bookingId);
           
 
             $booking = Booking::where('booking_id', $bookingId)->first();
@@ -332,7 +322,6 @@ class OnepipeController extends Controller
             //convert amount to kobo
             $amount = $amount * 100;
 
-            // $bearer = config('app.quick_teller.bearer_key');
             $url = config('app.quick_teller.url');
 
             $response = Http::withHeaders([
@@ -343,8 +332,6 @@ class OnepipeController extends Controller
             
         
             $responseCode = $response["ResponseCode"];
-
-            
 
             if ($responseCode == "00" ) {
                 $currency = "NGN";
@@ -391,7 +378,23 @@ class OnepipeController extends Controller
                 'payment_id' => $payment->id,
             ]);   
         
-        } catch (\Throwable $th) {
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR WITH TICKET RESERVATION', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
+        }  catch (\Throwable $th) {
 
             Log::error('ERROR VERIFYING QUICK TELLER', [
                 'message' => $th->getMessage(),

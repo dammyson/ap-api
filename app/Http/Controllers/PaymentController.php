@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\HititException;
 use Carbon\Carbon;
 use App\Models\Tier;
 use App\Models\Wallet;
@@ -75,14 +76,12 @@ class PaymentController extends Controller
                 throw new \Exception("Invalid payment channel");
             }
             $verified_request = $new_top_request->run();
-            // dd($verified_request);
             
             $amount = $verified_request["data"]["amount"];
             $paidCurrency = $verified_request['data']['currency'];
 
             // convert to naira (from kobo)
             $amount = $paymentChannel == "paystack" ? $amount / 100 : $amount;
-
         
             $payment = $this->payments->createPayment([
                 'user_id' => $user->id,
@@ -112,6 +111,22 @@ class PaymentController extends Controller
                 'payment_id' => $payment->id,
             ]);
 
+        } catch (HititException $e) {
+            Log::error('HITIT TICKET VERIFICATION ERROR', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
             
             Log::error('TICKET VERIFICATION ERROR', [
@@ -135,7 +150,6 @@ class PaymentController extends Controller
             return response()->json([
                 "error" => true,   
                 "message" => "something went wrong",
-                    "cmessage" => $th->getMessage(),   
              
             ], 500);
         }  
@@ -222,7 +236,6 @@ class PaymentController extends Controller
                 throw new \Exception("Invalid payment channel");
             }
             $verified_request = $new_top_request->run();
-            // dd($new_top_request);
             
             $amount = $verified_request["data"]["amount"];
             $currency = $verified_request["data"]["currency"];

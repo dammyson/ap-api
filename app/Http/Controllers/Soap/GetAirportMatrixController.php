@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
+use App\Exceptions\HititException;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\GetAirportMatrixBuilder;
@@ -24,7 +25,7 @@ class GetAirportMatrixController extends Controller
 
         try {
             $response = $this->craneOTASoapService->run($function, $xml);
-            // dd($response);
+           
             if(!array_key_exists('AirPortMatrixResponse', $response)) {
                 return response()->json([
                     'error' => true,
@@ -55,7 +56,7 @@ class GetAirportMatrixController extends Controller
                     $destinationPortLocationCode = $destinationFlights['port']['locationCode'];
                     $destinationPortLocationName = $destinationFlights['port']['locationName'];
                     
-                    // dd("I ran");
+
                     $destinationFlightArray[] = [
                         "destinationCityLocationCode" => $destinationCityLocationCode,
                         "destinationCityLocationName" => $destinationCityLocationName,
@@ -67,7 +68,6 @@ class GetAirportMatrixController extends Controller
                     
                 } else  {
                     foreach($destinationFlights as $destinationFlight) {
-                        // dump("i ran");
                         $destinationCityLocationCode = $destinationFlight['city']['locationCode'];
                         $destinationCityLocationName = $destinationFlight['city']['locationName'];
                         $destinationCountryLocationCode = $destinationFlight['country']['locationCode'];
@@ -145,6 +145,22 @@ class GetAirportMatrixController extends Controller
                 "availableFlights" => $availableFlights
             ], 200);
         
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR RETRIEVING AIRPORT MATRIX', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         }  catch (\Throwable $th) {
 
             Log::error('ERROR RETRIEVING AIRPORT MATRIX', [

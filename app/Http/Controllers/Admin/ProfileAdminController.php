@@ -73,7 +73,6 @@ class ProfileAdminController extends Controller
                 if ($admin->image_url) {
                     $oldPath = $admin->image_url;
                     Storage::delete($oldPath);
-                    // dd(" I got here");
                 }
 
                 $file = $request->file('image_url');

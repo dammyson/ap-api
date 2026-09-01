@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
+use App\Exceptions\HititException;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\SeatMapBuilder;
@@ -57,9 +58,25 @@ class SeatMapController extends Controller
                 "error" => false,
                 "seatArray" => $seatArray
             ]);
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR RETRIEVING SEAT MAP', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
-            Log::error('ERROR SELECTING SEAT MAP', [
+            Log::error('ERROR RETRIEVING SEAT MAP', [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),
