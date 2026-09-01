@@ -283,7 +283,6 @@ class ReissuePnrTestBuilder {
     ) {
         $xml = '';
 
-        // dd('iran');
         foreach ($airTravelerList as $string) {
             $xml .= '
             <airTravelerList>
@@ -458,7 +457,7 @@ class ReissuePnrTestBuilder {
         if ($paidAmount <= 0) {
             return '';
         }
-        // dd("i ran");
+
         $xml = '<fullfillment>
                         <paymentDetails>
                             <paymentDetailList>
@@ -818,7 +817,6 @@ class ReissuePnrTestBuilder {
 
     ) {
 
-        // dd($flightNotesOne);
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:impl="http://impl.soap.ws.crane.hititcs.com/">
         <soapenv:Header/>

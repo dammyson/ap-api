@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
+use App\Exceptions\HititException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Soap\GetAirExtraChargesAndProductBuilder;
@@ -44,9 +45,25 @@ class GetAirExtraChargesAndProductsController extends Controller
             $response = $this->craneOTASoapService->run($function, $xml);
             
             return $response;
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR RETRIEVING EXTRA CHARGES AND PRODUCTS', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
-            Log::error('ERROR RETRIEVING EXTRA CHARGES AND PRODUCT', [
+            Log::error('ERROR RETRIEVING EXTRA CHARGES AND PRODUCTS', [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),

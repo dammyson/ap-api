@@ -181,17 +181,12 @@ class GetPointService
 
         $routeOptions = [$route, $routeReverse];
        
-        // dd($routeList);
         foreach ($routeOptions as $routeOption) {
             foreach ($routeList as $defineRoute) {
-                if (strpos($defineRoute, $routeOption) !== false) {
-                    // dd("found equal");
+                if (strpos($defineRoute, $routeOption) !== false) {                 
                     foreach ($pointsList as $flightClass => $points) {
-                        if ($class == $flightClass) {
-                            // dd($class, $points);
+                        if ($class == $flightClass) {                            
                             return $points;
-                                // "class" => $class,
-                                // "points" => $points
                             
                         }
                     }
@@ -202,7 +197,6 @@ class GetPointService
 
     public function getFlightRedemptionPoints($route, $class, $type) {
         if ($type == "DOMESTIC") {
-            // dump("domestic ran");
             return $this->calculateRedemptionFlightPoints($route, $class, $this->DomesticRoutes, $this->redeemDomesticFlight());
             
         } else if ($type == "REGIONAL") {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap\Booking;
 
+use App\Exceptions\HititException;
 use App\Models\Booking;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -66,7 +67,7 @@ class CancelBookingController extends Controller
             ]);
 
             if (array_key_exists('ticketInfo', $response['AirCancelBookingResponse']['airBookingList'])){
-                // dd("if ran");
+
                
                 return response()->json([
                     "error" => false,
@@ -76,7 +77,7 @@ class CancelBookingController extends Controller
                
             } else {
 
-                // dd("else ran");s
+             
                 return response()->json([
                     "error" => false,
                     "message" => "booking cancelled successfully"
@@ -84,7 +85,23 @@ class CancelBookingController extends Controller
             } 
 
 
-        }catch (\Throwable $th) {
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR CANCELLING BOOKING', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
+        } catch (\Throwable $th) {
 
             Log::error('ERROR CANCELLING BOOKING', [
                 'message' => $th->getMessage(),
@@ -119,13 +136,12 @@ class CancelBookingController extends Controller
 
             $response = $this->craneOTASoapService->run($function, $xml);
 
-            // dd($response);
+           
             
             $totalPenalty = 0;
 
             if (isset($response['AirCancelBookingResponse']['airBookingList']['ticketInfo'])) {
                 if ($this->checkArray->isAssociativeArray($response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList'])) {
-                    // dd($response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['couponInfoList']);
                     $totalPenalty = $response['AirCancelBookingResponse']['airBookingList']['ticketInfo']['ticketItemList']['couponInfoList']['pricingOverview']['totalPenalty'];
 
                 } else {
@@ -142,9 +158,25 @@ class CancelBookingController extends Controller
                 "message" => "A fee of {$totalPenalty} wil be deducted from your refund",
                 "response" => $response
             ]);
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR VIEWING CANCEL BOOKING', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
-            Log::error('ERROR RETRIEVING SURVEYS', [
+            Log::error('ERROR VIEWING CANCEL BOOKING', [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),

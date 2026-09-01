@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
+use App\Exceptions\HititException;
 use App\Models\Flight;
 use App\Models\Booking;
 use App\Models\Invoice;
@@ -78,7 +79,6 @@ class ReissuePNRController extends Controller
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
 
-            // dump($response);
 
             $preferredCurrency = $response['ReissuePnrPreviewResponse']['airBookingList']['ticketInfo']['totalAmount']['currency']['code'];
             // check if response is true
@@ -101,9 +101,25 @@ class ReissuePNRController extends Controller
                 "response" => $response
             ], 200);
 
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR RETRIEVING VIEW REISSUE PNR', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
-            Log::error('ERROR RETRIEVING SURVEYS', [
+            Log::error('ERROR RETRIEVING VIEW REISSUE PNR', [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),
@@ -153,7 +169,6 @@ class ReissuePNRController extends Controller
 
             $previewResponse = $this->craneReissuePnrOTAService->run($previewfunction, $xml);          
 
-            // dump($previewResponse);
             $expectedAmount = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["ticketInfo"]["totalAmount"]["value"];
           
             $isPaymentRequired = $expectedAmount > 0;
@@ -224,23 +239,23 @@ class ReissuePNRController extends Controller
 
             // $xml = $this->reissusePNRBuilder->reissuePnrCommit($request, $paidAmount);  
             $xml = $this->reissusePNRBuilder->reissuePnrCommit($request, $paidAmount);  
-
-            // dd($xml);
             
             $user = $request->user();
 
             // if there is no authenticated user, get the guest device_type
             $deviceType = $user ? $user->device_type : $request->input('device_type');
         
-            // dd($xml);
             $function = 'http://impl.soap.ws.crane.hititcs.com/ReissuePnrCommit';
 
             $response = $this->craneReissuePnrOTAService->run($function, $xml);
           
             if (array_key_exists('ReissuePnrCommitResponse', $response)) {
-                $payment->update([
-                    'booking_api_status' => 'completed',
-                ]);
+
+                if ($isPaymentRequired && isset($payment)) {
+                    $payment->update([
+                        'booking_api_status' => 'completed',
+                    ]);
+                }
             }
             
 
@@ -263,7 +278,6 @@ class ReissuePNRController extends Controller
             if ( $isPaymentRequired ) {
                 foreach($ticketItemList as $ticketItem) {
                   
-                    // dump("I got here loop {$counter}");
                     $paymentDetails = $ticketItem['paymentDetails'] ?? null;
 
 
@@ -327,7 +341,6 @@ class ReissuePNRController extends Controller
                 }
 
             }
-          
             
 
             $previewbookOriginDestinationOptionLists = $previewResponse["ReissuePnrPreviewResponse"]["airBookingList"]["airReservation"]["airItinerary"]["bookOriginDestinationOptions"]["bookOriginDestinationOptionList"];
@@ -395,14 +408,28 @@ class ReissuePNRController extends Controller
                 "error" => false,
                 "booking_id" => $id,
                 "booking_reference" => $referenceId,
-                "data" => $data,
-                // "response" => $response
+                "data" => $data
             ], 200);
             
-        } catch (\Throwable $th) {
+        } catch (HititException $e) {
             
+            Log::error('HITIT ERROR REISSUE TICKET COMMIT', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
-            Log::error('REISSUE TICKET COMMIT ERROR', [
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
+        } catch (\Throwable $th) {            
+
+            Log::error('ERROR REISSUE TICKET COMMIT', [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),
@@ -416,14 +443,13 @@ class ReissuePNRController extends Controller
                     "message" => $th->getMessage(),                
                 ], 500);
             }
+
             return response()->json([
                 "error" => true,   
                 "message" => "something went wrong",
              
             ], 500);
 
-    
-           
         }  
     }
 

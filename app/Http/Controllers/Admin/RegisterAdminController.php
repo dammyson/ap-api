@@ -28,7 +28,6 @@ class RegisterAdminController extends Controller
     
     public function registerAdmin(CreateAdminRequest $request) {
         try {
-            // $admin = $request->user('admin');
             
             Gate::authorize('is-admin');            
     
@@ -38,13 +37,12 @@ class RegisterAdminController extends Controller
             $role = $request->input('role');
             
             $temporaryPassword = $this->generateRandom->generateTemporaryPassword();
-            // dump($temporaryPassword);
+    
             $admin = Admin::withTrashed()->where('email', $email)->first();
             
             $createdAdmin = DB::transaction(function () use ($admin, $temporaryPassword, $username, $email, $role) {
                 if ($admin) {
                     if ($admin->trashed()) {
-                        // dd("I ran");
                         $admin->restore();
                         $admin->password = Hash::make($temporaryPassword);
                         $admin->save();
@@ -78,8 +76,7 @@ class RegisterAdminController extends Controller
 
             return response()->json(['error' => false, 
                 'message' => 'Client registration successful. Verification code sent to your email.',
-                'data' => $data,
-                'temporary_password' => $temporaryPassword
+                'data' => $data
             ], 201);
           
         } catch (\Throwable $th) {

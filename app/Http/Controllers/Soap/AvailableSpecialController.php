@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Soap;
 
+use App\Exceptions\HititException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Soap\AvailableSpecial\AvailableSpecialServiceRequest;
 use App\Services\Soap\AvailableSpecialServiceBuilder;
@@ -31,9 +32,26 @@ class AvailableSpecialController extends Controller
             $response  =  $this->craneAncillaryOTASoapService->run($function, $xml);
     
             return $response;
-        } catch (\Throwable $th) {
+        
+            } catch (HititException $e) {
+            
+                Log::error('HITIT ERROR RETRIEVING AVAILABLE SPECIAL SERVICES', [
+                    'message' => $e->getMessage(),
+                    'code' => $e->hititCode,
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
 
-            Log::error('ERROR RETRIEVING SURVEYS', [
+                return response()->json([
+                    'error' => true,
+                    'message' => $e->getMessage(),
+                    'code' => $e->hititCode,
+                ], 400);
+
+            } catch (\Throwable $th) {
+
+            Log::error('ERROR RETRIEVING AVAILABLE SPECIAL SERVICES', [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),

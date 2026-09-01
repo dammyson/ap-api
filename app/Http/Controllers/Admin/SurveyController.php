@@ -169,7 +169,7 @@ class SurveyController extends Controller
     public function createSurveyBanner(Request $request) {
 
         try {
-            // dd($request->file('image_url'));
+ 
             if ($request->file('image_url')) {
                 $path = $request->file('image_url')->store('survey-images');
     
@@ -249,7 +249,6 @@ class SurveyController extends Controller
             $from_date = $request->input('from_date');
             $to_date = $request->input('to_date');
             $title = $request->input('title');
-            // dd(now()->addMinutes(30));
             // return $surveys;    
 
             Survey::where('is_active', true)
@@ -546,14 +545,13 @@ class SurveyController extends Controller
                 } else {
                     $question = new Question();
                     
-                    // dump('i ')
                 }
 
-                // dd($requestQuestion);
+                
                 $question->question_text = $requestQuestion['question_text'];
                 $question->is_multiple_choice =  $requestQuestion['is_multiple_choice'];
                 $question->survey_id = $survey->id;
-                // dd($question);
+               
                 $question->save();
 
                 foreach($requestQuestion['options'] as $requestOption) {

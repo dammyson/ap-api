@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Soap;
 
 use App\Events\UserActivityLogEvent;
+use App\Exceptions\HititException;
 use App\Models\Booking;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
@@ -49,7 +50,7 @@ class AddSsrController extends Controller
     private function handleGuestUser($bookingId, $passengerName, $preferredCurrency) {
         $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
         $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $preferredCurrency);
-        // dd($xml);
+      
 
         return $this->craneOTASoapService->run($function, $xml);
     }
@@ -120,46 +121,44 @@ class AddSsrController extends Controller
         $bookingReferenceId = $request->input('bookingReferenceID');
         $invoiceId = $request->input('invoiceId');
 
-
-        $user = $request->user();
-
-
-        $request->validate([
-            "ref" => "required|string",
-            "payment_method" => "required|string",
-            "payment_channel" => "required|string",
-            "device_type" => "required|string"
-        ]);
-        
-       
-        if ($user->is_guest) {
-
-            
-            $response = $this->handleGuestUser($bookingId, $passengerName, $preferredCurrency);
-
-            if (!(isset($response['AirBookingResponse']))) {
-                return $this->unauthorizedResponse();
-            }
-
-            // $bookingReferenceId = data_get($response, 'AirBookingResponse.airBookingList.bookingReferenceIDList.referenceID', '');
-
-        } else {
-            $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
-           
-          
-            // $bookingReferenceId = $booking->booking_reference_id;
-            if (!$booking) {
-               return $this->unauthorizedResponse();
-            }
-        }
-
-
-        $xml = $this->addSsrBuilder->addSsr(
-            $request
-        );
-        // dd($xml);
-
         try {
+
+            $user = $request->user();
+
+            $request->validate([
+                "ref" => "required|string",
+                "payment_method" => "required|string",
+                "payment_channel" => "required|string",
+                "device_type" => "required|string"
+            ]);
+            
+        
+            if ($user->is_guest) {
+
+                
+                $response = $this->handleGuestUser($bookingId, $passengerName, $preferredCurrency);
+
+                if (!(isset($response['AirBookingResponse']))) {
+                    return $this->unauthorizedResponse();
+                }
+
+                // $bookingReferenceId = data_get($response, 'AirBookingResponse.airBookingList.bookingReferenceIDList.referenceID', '');
+
+            } else {
+                $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
+            
+            
+                // $bookingReferenceId = $booking->booking_reference_id;
+                if (!$booking) {
+                return $this->unauthorizedResponse();
+                }
+            }
+
+       
+
+            $xml = $this->addSsrBuilder->addSsr(
+                $request
+            );
 
             // validate verifiedRequest;
             if ($paymentChannel == "paystack") {
@@ -171,7 +170,7 @@ class AddSsrController extends Controller
             }
 
             $verified_request = $new_top_request->run();
-            // dd($verified_request);
+      
             $paidAmount = $verified_request["data"]["amount"];
             $paidCurrency = $verified_request['data']['currency'];
             
@@ -206,7 +205,7 @@ class AddSsrController extends Controller
             $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dump($response);
+           
             $message = "";
 
             $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
@@ -275,8 +274,6 @@ class AddSsrController extends Controller
    
             // commit the ssr
             $this->handleTicketingSsr($preferredCurrency, $bookingId, $bookingReferenceId, $ssrType, $expectedAmount, $deviceType, $paymentMethod, $paymentChannel, $updatedInvoice->id);
-
-           
       
             return response()->json([
                 "error" => false,
@@ -285,9 +282,25 @@ class AddSsrController extends Controller
                 "amount" => $expectedAmount
             ], 200);
 
+        } catch (HititException $e) {
+            
+                Log::error('HITIT ERROR ADDING INSURANCE', [
+                    'message' => $e->getMessage(),
+                    'code' => $e->hititCode,
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+
+                return response()->json([
+                    'error' => true,
+                    'message' => $e->getMessage(),
+                    'code' => $e->hititCode,
+                ], 400);
+
         } catch (\Throwable $th) {
             
-            Log::error('ADD INSURANCE ERROR', [
+            Log::error('ERROR ADDING INSURANCE', [
                 'message' => $th->getMessage(),
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),
@@ -332,43 +345,37 @@ class AddSsrController extends Controller
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         $bookingId = $request->input('bookingReferenceIDID');
         $passengerName = $request->input('passengerName');
-        $invoiceId = $request->input('invoiceId');
         $peaceId = $request->input('peaceId');
-        $ssrType = $request->query('ssrType');
         $user = $request->user();
-        // dd($user->peace_id);
-
-        
         $preferredCurrency = $request->input('preferred_currency');       
-       
-        if ($user->is_guest) {
-
-            
-            $response = $this->handleGuestUser($bookingId, $passengerName, $preferredCurrency);
-
-            if (!(isset($response['AirBookingResponse']))) {
-                return $this->unauthorizedResponse();
-            }
-
-        } else {
-            $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
-             
-            if (!$booking) {
-                return $this->unauthorizedResponse();
-            }
-        }
-
-        $xml = $this->addSsrBuilder->addSsr(
-            $request
-        );
-        // dd($xml);
+        
 
         try {
+
+            if ($user->is_guest) {
+
+                
+                $response = $this->handleGuestUser($bookingId, $passengerName, $preferredCurrency);
+
+                if (!(isset($response['AirBookingResponse']))) {
+                    return $this->unauthorizedResponse();
+                }
+
+            } else {
+                $booking = Booking::where('booking_id', $bookingId)->where('peace_id', $peaceId)->first();
+                
+                if (!$booking) {
+                    return $this->unauthorizedResponse();
+                }
+            }
+
+            $xml = $this->addSsrBuilder->addSsr(
+                $request
+            );
 
             $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-            // dump($response);
             
             if (array_key_exists("detail", $response)) {
                 if (array_key_exists("CraneFault", $response["detail"])){
@@ -435,6 +442,22 @@ class AddSsrController extends Controller
                 "amount" => $expectedAmount
             ], 200);
 
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR ADDING BAGGAGES', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
             Log::error('ERROR ADDING BAGGAGES', [
@@ -492,11 +515,11 @@ class AddSsrController extends Controller
             }
 
             foreach($ticketItemList as $ticketItem) {
-                // if ($ticketItem["status"] == "OK") {
+
                 $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
                 
                 if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
-                    // dump('non asvcSsr ran');
+         
                     
                     Transaction::firstOrCreate([
                         "invoice_number" => $invoice_number,                            
@@ -582,12 +605,11 @@ class AddSsrController extends Controller
             $xml = $this->addSsrBuilder->addSsr(
                 $request
             );
-            // dd($xml);
+           
 
             $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
             $response = $this->craneAncillaryOTASoapService->run($function, $xml);
-                // dd($response);
 
             if (array_key_exists("detail", $response)) {
                 if (array_key_exists("CraneFault", $response["detail"])){
@@ -616,6 +638,22 @@ class AddSsrController extends Controller
                 "message" => "Seat select successfully"
             
             ], 200);
+        } catch (HititException $e) {
+            
+            Log::error('HITIT ERROR SELECTING SEAT', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
             Log::error('ERROR SELECTING SEAT', [

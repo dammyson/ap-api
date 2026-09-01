@@ -38,7 +38,6 @@ class FirebaseChannel
     {
         $fcmService = new FCMService();
         $accessToken = $fcmService->getValidAccessToken();
-        // dd($accessToken);
      
         try {
             $httpClient = new HttpClient();

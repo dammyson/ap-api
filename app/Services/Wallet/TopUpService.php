@@ -3,10 +3,8 @@
 namespace App\Services\Wallet;
 
 use App\Models\Wallet;
-use App\Models\WalletTopupTransaction;
 use App\Services\BaseServiceInterface;
-use DB;
-
+use Illuminate\Support\Facades\DB;
 
 class TopUpService implements BaseServiceInterface
 {
@@ -26,7 +24,7 @@ class TopUpService implements BaseServiceInterface
 
     private function processTopup()
     {
-       // dd( $this->wallet );
+       
         return DB::transaction(function () {
             // $wallet_transaction = WalletTopupTransaction::create([
             //     'company_id' => $this->wallet[0]->company_id,

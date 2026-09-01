@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Log;
 use App\Events\UserActivityLogEvent;
+use App\Exceptions\HititException;
 use App\Http\Controllers\Soap\Booking\BookingController;
 use App\Models\Payment;
 use App\Services\Soap\TicketReservationRequestBuilder;
@@ -50,9 +51,7 @@ class TicketReservation
 
 
             $user = auth()->user();
-            // dd($user->id);
-
-            // dd($preferredCurrency);
+           
             
             $invoice = Invoice::find($invoiceId);
             
@@ -95,30 +94,10 @@ class TicketReservation
             
             );
 
-
-        
-            
-            
             $function = 'http://impl.soap.ws.crane.hititcs.com/TicketReservation';
 
             $response = $this->craneOTASoapService->run($function, $xml);
-
-            if (!array_key_exists('AirTicketReservationResponse', $response)) {
-
-                if ($payment) {                 
-                
-                    $payment->update([
-                        'booking_api_status' => 'failed',
-                        'failure_reason' => 'Hitit returned an invalid ticket reservation response',
-                    ]);                  
-                }
-
-                return response()->json([
-                    'error' => true,
-                    'message' => "no new addition to ticket",
-                    'paidAmount' => $paidAmount,
-                ], 500);
-            }    
+            
 
 
             if ($payment) {
@@ -126,7 +105,6 @@ class TicketReservation
                     'booking_api_status' => 'completed',
                 ]);
             }
-            // dd($response);
             $totalDistance = 0;
 
             $bookOriginDestinationOptionLists =  $response['AirTicketReservationResponse']['airBookingList']['airReservation']['airItinerary']['bookOriginDestinationOptions']['bookOriginDestinationOptionList'];
@@ -165,7 +143,6 @@ class TicketReservation
                 $invoice_number = $ticketItem['paymentDetails']['paymentDetailList']['invType']['invNumber'];
                 
                 if (!array_key_exists('asvcSsr', $ticketItem['couponInfoList'])) {
-                    // dump('non asvcSsr ran');
                     
                     Transaction::firstOrCreate([
                         "invoice_number" => $invoice_number,                            
@@ -222,7 +199,6 @@ class TicketReservation
                 $specialRequestDetails = [$specialRequestDetails];
             }
 
-            // dd($ticketItemList);
             
             foreach($ticketItemList as $index => $ticketItem) {
                 if (isset($ticketItem['couponInfoList']) && $this->checkArray->isAssociativeArray($ticketItem['couponInfoList'])) {
@@ -231,8 +207,7 @@ class TicketReservation
             }
 
             if (!$user->is_guest) {
-                $routes = $this->bookingController->readBooking($bookingId, $bookingReferenceId);
-                // dump($response);     
+                $routes = $this->bookingController->readBooking($bookingId, $bookingReferenceId);    
                 
                 $totalPoint = 0;
                 foreach($routes as $route) {
@@ -252,6 +227,22 @@ class TicketReservation
                 "message" => "transaction successfully recorded"
             ], 200); 
             
+        }  catch (HititException $e) {
+            Log::error('HITIT TICKET VERIFICATION ERROR', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
+
         } catch (\Throwable $th) {
 
             if ($payment && $payment->booking_api_status !== 'completed') {
@@ -301,7 +292,6 @@ class TicketReservation
             
             $totalRedemptionPoint = $redemptionPoint * $noOfPassengers; 
             $peacePoint = $user->points;
-            // dd($totalRedemptionPoint, $peacePoint);
         
 
             if ($peacePoint < $totalRedemptionPoint) {

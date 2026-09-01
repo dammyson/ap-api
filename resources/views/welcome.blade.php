@@ -46,7 +46,7 @@
       FlutterwaveCheckout({
         public_key: 'FLWPUBK_TEST-247c539860787c8d4869e9b3dba2d3b3-X',
         tx_ref: 'titanic-48981487343MDI0NzMux',
-        amount: 100,
+        amount: 122100,
         currency: 'NGN',
         payment_options:  'card, banktransfer, mpesa, mobilemoneyghana',
         // redirect_url: 'https://glaciers.titanic.com/handle-flutterwave-payment',
