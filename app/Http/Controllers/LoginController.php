@@ -29,7 +29,7 @@ class LoginController extends Controller
         $this->tierService = $tierService;
     }
 
-    public function refreshToken()
+    public function refresh()
     {
         try {
             $token = auth('api')->refresh();
