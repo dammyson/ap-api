@@ -38,12 +38,13 @@ class CreateUserRequest extends FormRequest
                 'regex:/[@$_!%*#?&]/', // Must contain at least one special character
                 'confirmed', // Must match password confirmation
             ],
-            'status' => 'sometimes|string',
-            'peace_id' => 'required|unique:users,peace_id',           
+            'status' => 'sometimes|string',       
             "referrer_peace_id" => 'sometimes|exists:users,peace_id',
             "device_type" => 'sometimes|string',            
             'screen_resolution' => 'sometimes|string',
-            "firebase_token" => "nullable|string"
+            "firebase_token" => "nullable|string",
+            'accepted_terms_and_conditions' => 'accepted',
+            'terms_id' => 'required|exists:terms_and_conditions,id'
         ];
     }
 
@@ -65,6 +66,8 @@ class CreateUserRequest extends FormRequest
             'peace_id.required' => 'Peace ID is required.',
             'peace_id.unique' => 'Peace ID is already taken.',
             'referrer_peace_id.exists' => 'Referrer Peace ID does not exist.',
+            'accepted_terms_and_conditions.accepted' => "Terms and conditions must be accepted"
+            
         ];
     }
 

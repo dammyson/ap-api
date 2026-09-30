@@ -26,7 +26,7 @@ class AvailableSpecialServiceBuilder {
                     <member>false</member>
                     <password>' . htmlspecialchars($this->cranePassword, ENT_XML1, 'UTF-8') . '</password>
                     <userName>' . htmlspecialchars($this->craneUsername, ENT_XML1, 'UTF-8') . '</userName>
-                    <preferredCurrency>' . htmlspecialchars($request->input('prefferedCurrency'), ENT_XML1, 'UTF-8') . '</preferredCurrency>
+                    <preferredCurrency>' . htmlspecialchars($request['prefferedCurrency'], ENT_XML1, 'UTF-8') . '</preferredCurrency>
                  </clientInformation>
                  <bookingReferenceID>
                      <companyName>
@@ -37,12 +37,12 @@ class AvailableSpecialServiceBuilder {
                         <companyShortName>SCINTILLA</companyShortName>
                         <countryCode>NG</countryCode>
                      </companyName>
-                     <ID>' . htmlspecialchars($request->input('ID'), ENT_XML1, 'UTF-8') . '</ID>
-                     <referenceID>' . htmlspecialchars($request->input('referenceID'), ENT_XML1, 'UTF-8') . '</referenceID>
+                     <ID>' . htmlspecialchars($request['ID'], ENT_XML1, 'UTF-8') . '</ID>
+                     <referenceID>' . htmlspecialchars($request['referenceID'], ENT_XML1, 'UTF-8') . '</referenceID>
                  </bookingReferenceID>
                  <cabinUpgradeAvailable/>
                  <frequentFlyerRedemption/>
-                  <ssrGroupCode>' . htmlspecialchars($request->input('ssrGroupCode'), ENT_XML1, 'UTF-8') . '</ssrGroupCode>
+                  <ssrGroupCode>' . htmlspecialchars($request['ssrGroupCode'], ENT_XML1, 'UTF-8') . '</ssrGroupCode>
 
                  </AncillaryOtaSsrAvailRequest>
               </impl:GetAvailableSpecialServices>
@@ -50,5 +50,7 @@ class AvailableSpecialServiceBuilder {
            </soapenv:Envelope>';
          
          return $xml;
-     }
+   }
+   
+   
 }

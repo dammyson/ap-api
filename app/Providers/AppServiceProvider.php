@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\Admin;
 use Illuminate\Http\Request;
-use Laravel\Passport\Passport;
 use App\Events\AdminLoginEvent;
 use App\Events\AdminSurveyEvent;
 use App\Observers\AdminObserver;
@@ -83,9 +82,7 @@ class AppServiceProvider extends ServiceProvider
         );
         
         // Set Passport token expiration logic here
-        Passport::tokensExpireIn(now()->addHours(2)); // Access token expiration (2 hours)
-    
-        Passport::refreshTokensExpireIn(now()->addHours(2)); 
+        
     }
 
     

@@ -10,10 +10,14 @@ use Illuminate\Http\Request;
 use App\Models\ScreenResolution;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use App\Notifications\LoginNotification;
 use App\Services\Point\TierPointService;
 use App\Http\Requests\Auth\UserLoginRequest;
+use App\Models\TermsAndCondition;
 use App\Services\AutoGenerate\GenerateRandom;
+use App\Services\TermsAndConditions\StoreUserTermsAndConditions;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -30,57 +34,44 @@ class LoginController extends Controller
         try {
 
             $deviceType = $request->input('device_type');
-            $screenResolution = $request->input('screen_resolution');
+            $screenResolution = $request->input('screen_resolution');           
+            
+            $credentials = $request->only('email', 'password');
 
-            $user = User::where(function ($query) use ($request) {
-                $query->where('email', $request->credential)
-                    ->orWhere('peace_id', $request->peace_id);
-            })->first();
+            if (!$token = auth('api')->attempt($credentials)) {
+                return response()->json([
+                    'message' => 'Invalid credentials'
+                ], 401);
+            }
+
+            $user = User::where('email', $request->email)
+                ->first();
             
             if (!$user) {
-                return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
+                return response()->json(['error' => true, 'message' => 'User not found'], 401);
             }
 
             if ($request->has('firebase_token')) {
                 $user->firebase_token = $request->firebase_token;
                 $user->save();
             }
+
+            $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
+            $this->setLastLoginAndSendNotification($user);
+
+            $data = [
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'expires_in' => auth('api')->factory()->getTTL() * 60,
+            ];
             
+            return response()->json([
+                'error' => false,
+                'message' => 'Login successful',
+                'data' => $data
+            ]);
             
-            if (Hash::check($request["password"], $user->password)) {
-                $data['user'] = $user;            
-
-                $tokenResult = $user->createToken('Nova');
-                $data['token'] = $tokenResult->accessToken;
-                $tokenObject = $tokenResult->token;
-        
-                // Set expiration for refresh token based on remember_me flag
-                if ($request->remember_me) {
-                    // Extend refresh token expiration to 30 days
-                    $tokenObject->expires_at = now()->addDays(30);
-                }
-                 else {
-                    // Set refresh token expiration to 2 days
-                    $tokenObject->expires_at = now()->addMinute();
-                }
-        
-                $data['expires_at'] = $tokenObject->expires_at;
-                // Save the token
-                $tokenObject->save();
-
-                $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
-                $this->setLastLoginAndSendNotification($user);
-
-                return response()->json([
-                    'error' => false,
-                    'message' => 'Login Successful',
-                    // 'deviceType' => $deviceType,
-                    // 'screenResolution' => $screenResolution,
-                    'data' => $data
-                ], 200);
-            } else {
-                return response()->json(['error' => true, 'message' => 'Invalid credentials'], 401);
-            }
+           
         } catch (\Throwable $th) {       
             
            Log::error('LOGIN ERROR', [
@@ -101,37 +92,77 @@ class LoginController extends Controller
     public function googleVerify(Request $request)
     {    
         try {    
+           
             $deviceType = $request->input('device_type');
             $screenResolution = $request->input('screen_resolution');
             
+            
             $user = User::where('email', $request->email)->first();
             if (!$user) {
-                $peace_id = (new GenerateRandom())->generateUniquePeaceId();
+
+                $request->validate(
+                    [
+                        'accepted_terms_and_conditions' => 'accepted',
+                        'terms_id' => 'required|exists:terms_and_conditions,id'
+                    ],
+                    [
+                        'accepted_terms_and_conditions.accepted' => 'Terms and conditions must be accepted.',
+                        'terms_id.required' => 'Terms and conditions are required.',
+                        'terms_id.exists' => 'The selected terms and conditions are invalid.',
+                    ]
+                );
+
                 
-                $tier = Tier::where('rank', 1)->first();
-                $user = User::create([
-                    'first_name' => $request->input('first_name'),
-                    'last_name' => $request->input('last_name'),
-                    'email' => $request->input('email'),
-                    'phone_number' => "000000000",
-                    'peace_id' => $peace_id,
-                    // 'peace_id' => $peace_id,
-                    'password' => Hash::make(Str::random(16)),
-                    // 'status' => $request->input('status') ?? null,
-                    'status' => 'active',
-                    'device_type' => $deviceType,
-                    'points' => 50, // allocate appropriate pointts once decided
-                    "firebase_token" => $request->firebase_token,
-                    'tier_id' => $tier->id,
-                    'last_login' => now()->setTimezone('Africa/Lagos')
-                ]);
+               
+
+                $user = DB::transaction(function () use ($request, $deviceType, $screenResolution) {
+                    $peace_id = (new GenerateRandom())->generateUniquePeaceId();
+                
+                    $tier = Tier::where('rank', 1)->first();
+                    
+
+                    $user = User::create([
+                        'first_name' => $request->input('first_name'),
+                        'last_name' => $request->input('last_name'),
+                        'email' => $request->input('email'),
+                        'phone_number' => "000000000",
+                        'peace_id' => $peace_id,
+                        // 'peace_id' => $peace_id,
+                        'password' => Hash::make(Str::random(16)),
+                        // 'status' => $request->input('status') ?? null,
+                        'status' => 'active',
+                        'device_type' => $deviceType,
+                        'points' => 50, // allocate appropriate pointts once decided
+                        "firebase_token" => $request->firebase_token,
+                        'tier_id' => $tier->id,
+                        'last_login' => now()->setTimezone('Africa/Lagos')
+                    ]);
+
+               
+
+                    (new StoreUserTermsAndConditions())->run(
+                        [
+                            'user_id' => $user->id,
+                            'terms_id' => $request->terms_id,
+                            'accepted_at' => now(),
+                            'ip_address' => $request->ip(),
+                            'user_agent' => $request->userAgent()
+                        ]
+                    );
+
+                    return $user;
+
+                });
 
             }
 
             
-            $tokenResult = $user->createToken('Nova');
-            $data['token'] = $tokenResult->accessToken;
+            // Log the user in if they already exist
+            $token = auth('api')->login($user);
+
+            $data['token'] = $token;
             $data['user'] = $user;
+        
             
             $this->setDeviceAndScreenResolution($user, $deviceType, $screenResolution);
             $this->setLastLoginAndSendNotification($user);
@@ -143,7 +174,16 @@ class LoginController extends Controller
                 'data' => $data
             ], 200);
 
-        } catch (\Throwable $th) {
+        } catch (ValidationException $e) {
+
+            return response()->json([
+                'error' => true,
+                'message' => $e->validator->errors()->first(),
+                'errors' => $e->validator->errors(),
+            ], 422);
+
+        } 
+        catch (\Throwable $th) {
 
             Log::error('GOOGLE SIGNUP FAILED', [
                 'message' => $th->getMessage(),
@@ -155,12 +195,11 @@ class LoginController extends Controller
             // Return safe message to user
             return response()->json([
                 'error' => true, 
-                'message' => 'Unable to complete login at the moment. Please try again.'
+                'message' => 'Unable to complete login at the moment. Please try again.',
+                'actual_message' => $th->getMessage()
             ], 500);
         }
-    }
-
-          
+    }          
     
     private function setDeviceAndScreenResolution(User $user, $deviceType = null, $screenResolution = null) {
         if ($deviceType) {

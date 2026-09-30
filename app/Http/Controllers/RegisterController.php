@@ -20,41 +20,53 @@ use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Models\TermsAndCondition;
+use App\Models\UserTermsAcceptance;
 use App\Notifications\ForgotPassword as NotificationsForgotPassword;
 use App\Notifications\SignUpNotification;
+use App\Services\AutoGenerate\GenerateRandom;
+use App\Services\TermsAndConditions\StoreUserTermsAndConditions;
 use Google\Service\Walletobjects\SignUpInfo;
 use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
-    // public $checkDevice;
 
     protected $tierService;
 
     public function __construct(TierPointService $tierService)
     {
-        // $this->checkDevice = $checkDevice;
         $this->tierService = $tierService;
+    }
+
+    public function getCurrentAndCondition() {
+        return TermsAndCondition::select([
+                'id',
+                'content',
+            ])
+            ->where('effective_at', '<=', now())
+            ->orderByDesc('effective_at')
+            ->first();
     }
     
     public function userRegister(CreateUserRequest $request)
     {
-
         try {
-            $data = DB::transaction(function () use ($request) {
+            $user = DB::transaction(function () use ($request) {
 
-                // $peace_id =  $this->createPeaceId->generateUniquePeaceId();
                 $points = 50;
                 $deviceType = $request->input('device_type');
                 $screenResolution = $request->input('screen_resolution');
+                $peace_id = (new GenerateRandom())->generateUniquePeaceId();
                 $tier = Tier::where('rank', 1)->first();
+
             
                 $user = User::create([
                     'first_name' => $request->input('first_name'),
                     'last_name' => $request->input('last_name'),
                     'email' => $request->input('email'),
                     'phone_number' => $request->input('phone_number'),
-                    'peace_id' => $request->input('peace_id'),
+                    'peace_id' => $peace_id,
                     // 'peace_id' => $peace_id,
                     'password' => Hash::make($request->input('password')),
                     // 'status' => $request->input('status') ?? null,
@@ -66,6 +78,18 @@ class RegisterController extends Controller
                     'last_login' => now()->setTimezone('Africa/Lagos')
                 
                 ]);
+
+
+                (new StoreUserTermsAndConditions())->run(
+                    [
+                        'user_id' => $user->id,
+                        'terms_id' => $request->input('terms_id'),
+                        'accepted_at' => now(),
+                        'ip_address' => $request->ip(),
+                        'user_agent' => $request->userAgent()
+                    ]
+                );
+               
 
 
                 if ($deviceType) {
@@ -84,6 +108,7 @@ class RegisterController extends Controller
                 }
 
                 $currentTier = $user->currentTier();
+
                 if(!$currentTier) {
                     $this->tierService->assignTierWithDefaultFallback($user->id);
                 }
@@ -117,31 +142,31 @@ class RegisterController extends Controller
                 return $user;
             });
 
-            if (!$data->is_guest) {
+            if (!$user->is_guest) {
                 $details = [
                     'title' => 'New Message',
                     'body' => 'You have received a new message.',
                     'url' => '/messages/1'
                 ];
     
-                $data->notify(new SignUpNotification($details));
+                $user->notify(new SignUpNotification($details));
 
             }
 
-            $tokenResult = $data->createToken('Nova');
-            $tokenObject = $tokenResult->token;
+            $token = auth('api')->login($user);
 
-            if ($request->remember_me) {
-                $tokenObject->expires_at = now()->addDays(30); // Customize duration as needed
-            }
-
-            
+            if (!$token) {
+                return [
+                    "error" => true,
+                    "message" => "invalid user token"
+                ];
+            }            
 
             $responseData = [
-                'user' => $data,
-                'token' => $tokenResult->accessToken,
+                'user' => $user,
+                'token' => $token,
                 'token_type' => 'Bearer',
-                'expires_at' => $tokenObject->expires_at,
+                'expires_at' => auth('api')->factory()->getTTL() * 60
             ];
 
             return response()->json([

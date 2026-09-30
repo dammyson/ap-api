@@ -11,9 +11,9 @@
         "econea/nusoap": "^0.9.17",
         "google/apiclient": "^2.18",
         "laravel/framework": "^11.0",
-        "laravel/passport": "^12.0",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "php-open-source-saver/jwt-auth": "^2.8"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
