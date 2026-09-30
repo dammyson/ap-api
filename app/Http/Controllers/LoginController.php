@@ -28,6 +28,35 @@ class LoginController extends Controller
     {
         $this->tierService = $tierService;
     }
+
+    public function refreshToken()
+    {
+        try {
+            $token = auth('api')->refresh();
+
+            return response()->json([
+                'error' => false,
+                'message' => 'Token refreshed successfully',
+                'data' => [
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                    'expires_in' => auth('api')->factory()->getTTL() * 60,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+
+            Log::error('TOKEN REFRESH ERROR', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            return response()->json([
+                'error' => true,
+                'message' => 'Unable to refresh token',
+            ], 401);
+        }
+    }
     //
     public function login(UserLoginRequest $request)
     {

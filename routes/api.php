@@ -58,7 +58,7 @@ Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {
 
 Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware('auth:api');
 Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware('auth:api');
-
+Route::post('/auth/refresh', [LoginController::class, 'refreshToken']);
 Route::group(['prefix' => 'user'], function ()  {
     Route::get('terms-and-condition', [RegisterController::class, 'getCurrentAndCondition']);
     Route::post('register', [RegisterController::class, 'userRegister']);
