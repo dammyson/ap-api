@@ -42,12 +42,12 @@ return [
         ],
 
         'api' => [
-            'driver' => 'passport',
+            'driver' => 'jwt',
             'provider' => 'users',
         ],
 
         'admin' => [
-            'driver' => 'passport', // Using Passport for API tokens
+            'driver' => 'jwt', // Using Passport for API tokens
             'provider' => 'admins',
         ],
     ],

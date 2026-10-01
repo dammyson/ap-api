@@ -22,7 +22,7 @@ class UserLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'credential' => 'required|email',
+            'email' => 'sometimes|email',
             'password' => 'required',
             'device_type' => 'sometimes|string',
             'screen_resolution' => 'sometimes|string'

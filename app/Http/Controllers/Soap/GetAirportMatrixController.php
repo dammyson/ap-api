@@ -22,9 +22,11 @@ class GetAirportMatrixController extends Controller
     public function GetAirportMatrix() {
         $function = 'http://impl.soap.ws.crane.hititcs.com/GetAirPortMatrix';
         $xml = $this->getAirportBuilder->GetAirportMatrix();
-
+        // dd($xml);
         try {
             $response = $this->craneOTASoapService->run($function, $xml);
+
+            // dd($response);
            
             if(!array_key_exists('AirPortMatrixResponse', $response)) {
                 return response()->json([

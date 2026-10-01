@@ -385,7 +385,7 @@ class BookingController extends Controller
             ]);
 
         } catch (HititException $e) {
-            Log::error('HITIT  RETRIEVING BOOKING WITH SURNAME', [
+            Log::error('HITIT  RETRIEVING BOOKING WITH SURNAME', [ 
                 'message' => $e->getMessage(),
                 'code' => $e->hititCode,
                 'file' => $e->getFile(),

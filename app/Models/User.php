@@ -11,11 +11,11 @@ use Illuminate\Notifications\Notifiable;
 // use Laravel\Sanctum\HasApiTokens;
 use Laravel\Passport\HasApiTokens;
 use Carbon\Carbon;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use  HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -68,6 +68,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the identifier that will be stored in the JWT subject claim.
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return custom claims to be added to the JWT.
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    public function termsAcceptances()
+    {
+        return $this->hasMany(UserTermsAcceptance::class);
     }
 
     public function surveyUserResponses()

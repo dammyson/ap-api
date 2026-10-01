@@ -19,6 +19,8 @@ use App\Services\Wallet\FlutterVerificationService;
 use App\Services\Wallet\VerificationService;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Services\Payment\Payments;
+use App\Services\Soap\AvailableSpecialServiceBuilder;
+
 class AddSsrController extends Controller
 {
     protected $addSsrBuilder;
@@ -26,15 +28,18 @@ class AddSsrController extends Controller
     protected $craneOTASoapService;
     protected $bookingBuilder;
     protected $checkArray;
-    protected $ticketReservationRequestBuilder;    
+    protected $ticketReservationRequestBuilder; 
+    protected $availableSpecialServiceBuilder;   
     protected $payments;    
 
-    public function __construct(Payments $payments, AddSsrBuilder $addSsrBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray, TicketReservationRequestBuilder $ticketReservationRequestBuilder) {
+    public function __construct(Payments $payments, AddSsrBuilder $addSsrBuilder, BookingBuilder $bookingBuilder, CheckArray $checkArray, TicketReservationRequestBuilder $ticketReservationRequestBuilder, AvailableSpecialServiceBuilder $availableSpecialServiceBuilder) {
         $this->payments = $payments;
         $this->ticketReservationRequestBuilder = $ticketReservationRequestBuilder;
         $this->addSsrBuilder = $addSsrBuilder;
         $this->craneAncillaryOTASoapService = app('CraneAncillaryOTASoapService');
         $this->craneOTASoapService = app("CraneOTASoapService");
+        $this->availableSpecialServiceBuilder = $availableSpecialServiceBuilder;
+      
         $this->bookingBuilder = $bookingBuilder;
         $this->checkArray = $checkArray;
         
@@ -49,8 +54,9 @@ class AddSsrController extends Controller
 
     private function handleGuestUser($bookingId, $passengerName, $preferredCurrency) {
         $function = "http://impl.soap.ws.crane.hititcs.com/ReadBooking";
+
+        // dd($bookingId, $passengerName, $preferredCurrency);
         $xml = $this->bookingBuilder->readBooking($bookingId, $passengerName, $preferredCurrency);
-      
 
         return $this->craneOTASoapService->run($function, $xml);
     }
@@ -115,7 +121,6 @@ class AddSsrController extends Controller
         $ref = $request->input('ref');
         $paymentMethod = $request->input('payment_method');
         $paymentChannel = $request->input('payment_channel');
-        $preferredCurrency = $request->input('preferred_currency');
         $deviceType = $request->input('device_type');
         $bookingId = $request->input('bookingReferenceIDID');
         $bookingReferenceId = $request->input('bookingReferenceID');
@@ -131,13 +136,12 @@ class AddSsrController extends Controller
                 "payment_channel" => "required|string",
                 "device_type" => "required|string"
             ]);
-            
+         
         
             if ($user->is_guest) {
-
-                
+               
                 $response = $this->handleGuestUser($bookingId, $passengerName, $preferredCurrency);
-
+                // dd($response);
                 if (!(isset($response['AirBookingResponse']))) {
                     return $this->unauthorizedResponse();
                 }
@@ -155,10 +159,6 @@ class AddSsrController extends Controller
             }
 
        
-
-            $xml = $this->addSsrBuilder->addSsr(
-                $request
-            );
 
             // validate verifiedRequest;
             if ($paymentChannel == "paystack") {
@@ -201,6 +201,41 @@ class AddSsrController extends Controller
 
 
             $paidAmount = (float) $paidAmount;
+            
+
+            $availableSpecialServicePayload = [
+                'prefferedCurrency' => $preferredCurrency,
+                'ID' => $bookingId,
+                'referenceID' => $bookingReferenceId,
+                'ssrGroupCode' => 'INSU'
+
+            ];
+
+            $availableSpecialServiceXml = $this->availableSpecialServiceBuilder->AvailableSpecialService(
+              $availableSpecialServicePayload
+            );
+    
+            $function = 'http://impl.soap.ws.crane.hititcs.com/GetAvailableSpecialServices';
+    
+            $availableInsuranePriceResponse  =  $this->craneAncillaryOTASoapService->run($function, $availableSpecialServiceXml);
+
+
+            $insuranceExpectedAmount = $availableInsuranePriceResponse['AirAvailSpecialServicesResponse']['availSpecialServices']['availSpecialServiceList']['availableSSRList']['price']['value'];
+            // return $insuranceExpectedAmount;
+
+
+            if ( $paidAmount != $insuranceExpectedAmount ) {
+                return response()->json([
+                    "error" => true,
+                    "message" => "Amount mismatch, expected amount is {$insuranceExpectedAmount} but paid amount is {$paidAmount}",
+                    "amount_paid" => $paidAmount,
+                    "amount_expected" => $insuranceExpectedAmount
+                ], 400);
+            }
+
+            $xml = $this->addSsrBuilder->addSsr(
+                $request
+            );
 
             $function = 'http://impl.soap.ws.crane.hititcs.com/AddSsr';
 
@@ -210,9 +245,9 @@ class AddSsrController extends Controller
 
             $ticketInfo = data_get($response, 'AddSsrResponse.airBookingList.ticketInfo', []);
 
-            [$expectedAmount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
+            [ $expectedAmount, $preferredCurrency ] = $this->parseAmountFromResponse($ticketInfo);
 
-            if (  $paidAmount != $expectedAmount) {
+            if ( $paidAmount != $expectedAmount) {
                 return response()->json([
                     "error" => true,
                     "message" => "Amount mismatch, expected amount is {$expectedAmount} but paid amount is {$paidAmount}",
@@ -284,19 +319,19 @@ class AddSsrController extends Controller
 
         } catch (HititException $e) {
             
-                Log::error('HITIT ERROR ADDING INSURANCE', [
-                    'message' => $e->getMessage(),
-                    'code' => $e->hititCode,
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
+            Log::error('HITIT ERROR ADDING INSURANCE', [
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
-                return response()->json([
-                    'error' => true,
-                    'message' => $e->getMessage(),
-                    'code' => $e->hititCode,
-                ], 400);
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'code' => $e->hititCode,
+            ], 400);
 
         } catch (\Throwable $th) {
             

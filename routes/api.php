@@ -5,7 +5,6 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\TierController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\LoginController;
-
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\WalletController;
@@ -59,14 +58,16 @@ Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {
 
 Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware('auth:api');
 Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware('auth:api');
-
+Route::post('/auth/refresh', [LoginController::class, 'refresh']);
 Route::group(['prefix' => 'user'], function ()  {
+    Route::get('terms-and-condition', [RegisterController::class, 'getCurrentAndCondition']);
     Route::post('register', [RegisterController::class, 'userRegister']);
     Route::post('forgot-password', [RegisterController::class, 'forgotPassword']);
     Route::post('verify/otp', [RegisterController::class, 'verifyOtp']);
     Route::post('reset/password', [RegisterController::class, 'resetPassword']);
     Route::post('login', [LoginController::class, 'login']);
     Route::post('google-verify', [LoginController::class, 'googleVerify']);
+
 });
 
 Route::group(['prefix' => 'admin/'], function () {
@@ -78,8 +79,9 @@ Route::group(['prefix' => 'admin/'], function () {
   
     Route::middleware('auth:admin')->group(function () {  
         Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
-  
+        
         Route::group(['prefix' => 'dashboard'], function () {
+            Route::post('terms-and-condition', [DashboardAdminController::class, 'createTermsAndConditions']);
             Route::get('weekly-analysis', [DashboardAdminController::class, 'weeklyAnalysis']);
             Route::get('revenue-graph/{filter}', [DashboardAdminController::class, 'revenueGraph']);
             Route::get('user-by-device', [DashboardAdminController::class, 'userByDevice']);

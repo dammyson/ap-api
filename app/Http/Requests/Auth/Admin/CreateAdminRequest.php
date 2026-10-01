@@ -11,7 +11,7 @@ class CreateAdminRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class CreateAdminRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_name' => 'required|string',
+            'email' => 'required|email',
+            'role' => 'required|string'
         ];
     }
 }

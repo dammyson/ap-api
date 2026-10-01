@@ -22,64 +22,66 @@ class GuestLoginController extends Controller
 
     public function continueAsGuest(Request $request) {
         try {
-         $deviceType = $request->input('device_type');
-         $screenResolution = $request->input('screen_resolution');
-         
-        $autogenerate = new GenerateRandom();
+            $deviceType = $request->input('device_type');
+            $screenResolution = $request->input('screen_resolution');
+            
+            $autogenerate = new GenerateRandom();
 
-        $guestPassword = $autogenerate->generateTemporaryPassword();
-        $create = User::create([
-             'first_name' => $autogenerate->generateName(),
-             'last_name' => $autogenerate->generateName(),
-             'email' => $autogenerate->generateUniqueEmail(),
-             'phone_number' => $autogenerate->generateUniquePhoneNo(),
-             'peace_id' => $autogenerate->generateUniquePeaceId(),
-             // 'peace_id' => $peace_id,
-             'password' => $guestPassword,
-             'status' => $request->input('status') ?? null,
-             'device_type' => $deviceType,
-             'is_guest' => true
-         
-         ]);
+            $guestPassword = $autogenerate->generateTemporaryPassword();
+            $user = User::create([
+                'first_name' => $autogenerate->generateName(),
+                'last_name' => $autogenerate->generateName(),
+                'email' => $autogenerate->generateUniqueEmail(),
+                'phone_number' => $autogenerate->generateUniquePhoneNo(),
+                'peace_id' => $autogenerate->generateUniquePeaceId(),
+                // 'peace_id' => $peace_id,
+                'password' => $guestPassword,
+                'status' => $request->input('status') ?? null,
+                'device_type' => $deviceType,
+                'is_guest' => true
+            
+            ]);
 
-         if ($deviceType) {
-             Device::create([
-                 'user_id' => $create->id,
-                 'device_type' => $deviceType
-             ]);
+            if ($deviceType) {
+                Device::create([
+                    'user_id' => $user->id,
+                    'device_type' => $deviceType
+                ]);
 
-         }
+            }
 
-         if ($screenResolution) {
-             ScreenResolution::create([
-                 'user_id' => $create->id,
-                 'screen_resolution' => $screenResolution
-             ]);
-         }
+            if ($screenResolution) {
+                ScreenResolution::create([
+                    'user_id' => $user->id,
+                    'screen_resolution' => $screenResolution
+                ]);
+            }
+
+            $data = [
+                'user' => $user,
+                'token' => auth('api')->login($user)
+            ];
+
+            return response()->json([
+                'error' => false, 
+                'message' => 'Client registration successful. Verification code sent to your email.', 
+                'data' => $data,
+                // 'device_type' => $deviceType,
+                // 'screen_resolution' => $screenResolution
+            ], 201);
         
        
-     } catch (\Exception $e) {       
+        } catch (\Exception $e) {       
+                
+            Log::error($e->getMessage());
+
+            return response()->json([
+                "error" => true,            
+                "message" => "something went wrong",
+                "actual_message" => $e->getMessage()
+            ], 500);
             
-        Log::error($e->getMessage());
-
-        return response()->json([
-            "error" => true,            
-            "message" => "something went wrong",
-            "actual_message" => $e->getMessage()
-        ], 500);
-        
-    }
-
-     $data['user'] =  $create;
-     $data['token'] =  $create->createToken('Nova')->accessToken;
-
-    return response()->json([
-        'error' => false, 
-        'message' => 'Client registration successful. Verification code sent to your email.', 
-        'data' => $data,
-        // 'device_type' => $deviceType,
-        // 'screen_resolution' => $screenResolution
-    ], 201);
+        }   
     
     }
 

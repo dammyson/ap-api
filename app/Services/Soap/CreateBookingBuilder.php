@@ -3,6 +3,7 @@
 namespace App\Services\Soap;
 
 use App\Services\Utility\FlightNotes;
+use Illuminate\Support\Facades\Log;
 
 class CreateBookingBuilder
 {  
@@ -439,7 +440,10 @@ class CreateBookingBuilder
                     </contactInfoList>';
             }
 
-        } else {
+        } 
+        else {
+
+        
 
             $xml .= '<contactInfoList>
                         <companyInfo>

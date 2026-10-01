@@ -75,12 +75,14 @@ class CreateBookingController extends Controller
             $specialServiceRequestList
         );
 
+
       
 
         $function = 'http://impl.soap.ws.crane.hititcs.com/CreateBooking';
         try {
 
             $response = $this->craneOTASoapService->run($function, $xml);
+
         
             $bookingReferenceIDList = $response['AirBookingResponse']['airBookingList']['airReservation']["bookingReferenceIDList"];
             $timeLimit = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimit"];
@@ -192,9 +194,6 @@ class CreateBookingController extends Controller
             }
             
             $surname = $ticketItemList[0]['airTraveler']["personName"]["surname"];
-        
-
-            // }    
 
             Booking::create([
                 'peace_id' => $user ? $user->peace_id : null,
