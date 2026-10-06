@@ -54,8 +54,8 @@ use App\Http\Middleware\LastLogin;
       
 Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
 
-Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware(['auth:api']);
-Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware(['auth:api']);
+Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware('auth:api');
+Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware('auth:api');
 Route::post('/auth/refresh', [LoginController::class, 'refresh']);
   
 Route::group(['prefix' => 'user'], function ()  {
