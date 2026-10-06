@@ -51,31 +51,34 @@ use App\Http\Controllers\Soap\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Soap\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\SupportController;
 use App\Http\Middleware\LastLogin;
+      
+Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
 
-Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {        
-    Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
-});
-
-Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware('auth:api');
-Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware('auth:api');
+Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware(['auth:api']);
+Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware(['auth:api']);
 Route::post('/auth/refresh', [LoginController::class, 'refresh']);
+  
 Route::group(['prefix' => 'user'], function ()  {
     Route::get('terms-and-condition', [RegisterController::class, 'getCurrentAndCondition']);
-    Route::post('register', [RegisterController::class, 'userRegister']);
-    Route::post('forgot-password', [RegisterController::class, 'forgotPassword']);
-    Route::post('verify/otp', [RegisterController::class, 'verifyOtp']);
-    Route::post('reset/password', [RegisterController::class, 'resetPassword']);
-    Route::post('login', [LoginController::class, 'login']);
-    Route::post('google-verify', [LoginController::class, 'googleVerify']);
+    
+    Route::group(['middleware' => 'throttle:auth-sensitive'], function ()  {           
+        Route::post('register', [RegisterController::class, 'userRegister']);
+        Route::post('forgot-password', [RegisterController::class, 'forgotPassword']);
+        Route::post('verify/otp', [RegisterController::class, 'verifyOtp']);
+        Route::post('reset/password', [RegisterController::class, 'resetPassword']);
+        Route::post('login', [LoginController::class, 'login']);
+        Route::post('google-verify', [LoginController::class, 'googleVerify']);
+    });
 
 });
 
 Route::group(['prefix' => 'admin/'], function () {
-    Route::post('admin-login', [LoginAdminController::class, 'loginAdmin']);
-    Route::post('forgot-password', [ForgetPasswordAdminController::class, 'forgotPassword']);
-    Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
-    Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
-    
+    Route::group(['middleware' => 'throttle:auth-sensitive'], function ()  {  
+        Route::post('admin-login', [LoginAdminController::class, 'loginAdmin']);
+        Route::post('forgot-password', [ForgetPasswordAdminController::class, 'forgotPassword']);
+        Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
+        Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
+    });
   
     Route::middleware('auth:admin')->group(function () {  
         Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
@@ -242,7 +245,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 });
 
 
-Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastLogin::class]], function () {    
+Route::group(["middleware" => ["auth:api", LastLogin::class]], function () {    
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
