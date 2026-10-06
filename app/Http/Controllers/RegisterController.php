@@ -26,6 +26,7 @@ use App\Notifications\ForgotPassword as NotificationsForgotPassword;
 use App\Notifications\SignUpNotification;
 use App\Services\AutoGenerate\GenerateRandom;
 use App\Services\TermsAndConditions\StoreUserTermsAndConditions;
+use App\Services\Utility\PhoneNumberService;
 use Google\Service\Walletobjects\SignUpInfo;
 use Illuminate\Support\Facades\DB;
 
@@ -33,10 +34,12 @@ class RegisterController extends Controller
 {
 
     protected $tierService;
+    protected $phoneNumberService;
 
-    public function __construct(TierPointService $tierService)
+    public function __construct(TierPointService $tierService, PhoneNumberService $phoneNumberService)
     {
         $this->tierService = $tierService;
+        $this->phoneNumberService = $phoneNumberService;
     }
 
     public function getCurrentAndCondition() {
@@ -57,6 +60,7 @@ class RegisterController extends Controller
                 $points = 50;
                 $deviceType = $request->input('device_type');
                 $screenResolution = $request->input('screen_resolution');
+                $phoneNumber = $this->phoneNumberService->normalize($request->phone_number);
                 $peace_id = (new GenerateRandom())->generateUniquePeaceId();
                 $tier = Tier::where('rank', 1)->first();
 
@@ -65,14 +69,12 @@ class RegisterController extends Controller
                     'first_name' => $request->input('first_name'),
                     'last_name' => $request->input('last_name'),
                     'email' => $request->input('email'),
-                    'phone_number' => $request->input('phone_number'),
+                    'phone_number' => $phoneNumber,
                     'peace_id' => $peace_id,
-                    // 'peace_id' => $peace_id,
                     'password' => Hash::make($request->input('password')),
-                    // 'status' => $request->input('status') ?? null,
                     'status' => 'active',
                     'device_type' => $deviceType,
-                    'points' => 50, // allocate appropriate pointts once decided
+                    'points' => 50, // allocate appropriate points once decided
                     "firebase_token" => $request->firebase_token,
                     'tier_id' => $tier->id,
                     'last_login' => now()->setTimezone('Africa/Lagos')

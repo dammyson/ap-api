@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\ValidPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
     use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -28,7 +29,12 @@ class CreateUserRequest extends FormRequest
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'required|numeric|digits:11',
+            // 'phone_number' => 'required|numeric|digits:11',
+            'phone_number' => [
+                'required',
+                'string',
+                new ValidPhoneNumber(), // Custom validation rule for phone number
+            ],
             'password' => [
                 'required',
                 'string',

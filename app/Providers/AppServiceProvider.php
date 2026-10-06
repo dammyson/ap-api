@@ -44,9 +44,37 @@ class AppServiceProvider extends ServiceProvider
     {   
 
         RateLimiter::for('global-rate-limiter', function (Request $request) {
-            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip())->response(function (Request $request, array $headers) {
-                return response('Amount of request per minute exceeded', 429, $headers);
-            });
+            $limits = [
+                Limit::perMinute(60)
+                    ->by('ip:' . $request->ip())
+                    ->response(function (Request $request, array $headers) {
+                        return response()->json([
+                            'message' => 'Too many requests. Please try again later.',
+                        ], 429, $headers);
+                    }),
+            ];
+
+            if ($user = $request->user()) {
+                $limits[] = Limit::perMinute(120)
+                    ->by('user:' . $user->id)
+                    ->response(function (Request $request, array $headers) {
+                        return response()->json([
+                            'message' => 'Too many requests. Please try again later.',
+                        ], 429, $headers);
+                    });
+            }
+
+            return $limits;
+        });
+
+        RateLimiter::for('auth-sensitive', function (Request $request) {
+            return Limit::perMinute(5)
+                ->by('login-ip:' . $request->ip())
+                ->response(function (Request $request, array $headers) {
+                    return response()->json([
+                        'message' => 'Too many attempts. Please try again later.',
+                    ], 429, $headers);
+                });
         });
 
         Gate::define('is-admin', function(Admin $admin) {
