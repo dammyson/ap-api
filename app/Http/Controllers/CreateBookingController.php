@@ -66,12 +66,12 @@ class CreateBookingController extends Controller
         $otherServiceInformationList = $validated['otherServiceInformationList'];
         $tripType = $request->input('trip_type');
         $preferredCurrency = $request->input('preferred_currency');
-        $isInsuranceAccepted = $request->input('is_insurance_accepted');
+        $acceptedInsurance = $request->input('accepted_insurance');
        
         
         $user = $request->user();
 
-        if ($isInsuranceAccepted) {
+        if ($acceptedInsurance) {
 
             (new StoreUserTermsAndConditions())->storeUserInsuranceTerms(
                     [
