@@ -59,7 +59,7 @@ Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus
 Route::post('/auth/refresh', [LoginController::class, 'refresh']);
   
 Route::group(['prefix' => 'user'], function ()  {
-    Route::get('terms-and-condition', [TermsAndConditionController::class, 'getSignUpTermsAndCondition']);
+    Route::get('signup-terms-and-condition', [TermsAndConditionController::class, 'getSignUpTermsAndCondition']);
  
     
     Route::group(['middleware' => 'throttle:auth-sensitive'], function ()  {           
@@ -85,7 +85,7 @@ Route::group(['prefix' => 'admin/'], function () {
         Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
         
         Route::group(['prefix' => 'dashboard'], function () {
-            Route::post('terms-and-condition', [DashboardAdminController::class, 'createTermsAndConditions']);
+            Route::post('create-signup-terms-and-condition', [DashboardAdminController::class, 'createTermsAndConditions']);
             Route::post('insurance-terms-and-condition', [DashboardAdminController::class, 'createInsuranceTermsAndConditions']);
             Route::get('weekly-analysis', [DashboardAdminController::class, 'weeklyAnalysis']);
             Route::get('revenue-graph/{filter}', [DashboardAdminController::class, 'revenueGraph']);
