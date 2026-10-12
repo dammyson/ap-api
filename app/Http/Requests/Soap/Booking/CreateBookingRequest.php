@@ -192,7 +192,12 @@ class CreateBookingRequest extends FormRequest
             "otherServiceInformationList" => 'sometimes|array',
             "otherServiceInformationList.*.code" => "required|string",
             "otherServiceInformationList.*.explanation" => "required|string",
-            
+            'is_insurance_accepted' => 'required|boolean',
+            'insurance_terms_id' => [
+                'nullable',
+                'required_if:is_insurance_accepted,true',
+                'exists:insu_terms_and_conds,id',
+            ]
         ];
     }
 

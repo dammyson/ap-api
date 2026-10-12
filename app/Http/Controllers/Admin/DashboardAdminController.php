@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
+use App\Models\InsuTermsAndConds;
 use App\Models\Payment;
 use App\Models\TermsAndCondition;
 
@@ -104,13 +105,15 @@ class DashboardAdminController extends Controller
     public function createTermsAndConditions(Request $request) {
         try {
 
-            TermsAndCondition::create([
+            $data = TermsAndCondition::create([
                 'version' => $request->version,
                 'title' => $request->title,
                 'content'=> $request->content,
                 'effective_at' => $request->effective_at,
                 
             ]);
+
+            return $data;
 
         } catch (\Throwable $th) {
 
@@ -125,6 +128,38 @@ class DashboardAdminController extends Controller
             return response()->json([
                 'error' => true, 
                 'message' => "ERROR CREATING TERMS AND CONDITION : {$th->getMessage()}"
+            ], 500);
+        }
+
+       
+    }
+
+    public function createInsuranceTermsAndConditions(Request $request) {
+        try {
+
+            $data = InsuTermsAndConds::create([
+                'version' => $request->version,
+                'title' => $request->title,
+                'content'=> $request->content,
+                'effective_at' => $request->effective_at,
+                
+            ]);
+
+            return $data;
+
+        } catch (\Throwable $th) {
+
+            Log::error('ERROR CREATING INSURANCE TERMS AND CONDITIONS', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+
+            // Return safe message to user
+            return response()->json([
+                'error' => true, 
+                'message' => "ERROR CREATING INSURANCE TERMS AND CONDITION : {$th->getMessage()}"
             ], 500);
         }
 

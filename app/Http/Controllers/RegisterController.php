@@ -42,15 +42,7 @@ class RegisterController extends Controller
         $this->phoneNumberService = $phoneNumberService;
     }
 
-    public function getCurrentAndCondition() {
-        return TermsAndCondition::select([
-                'id',
-                'content',
-            ])
-            ->where('effective_at', '<=', now())
-            ->orderByDesc('effective_at')
-            ->first();
-    }
+   
     
     public function userRegister(CreateUserRequest $request)
     {
@@ -150,10 +142,12 @@ class RegisterController extends Controller
                     'body' => 'You have received a new message.',
                     'url' => '/messages/1'
                 ];
-    
-                $user->notify(new SignUpNotification($details));
 
+                $user->notify(
+                    (new SignUpNotification($details))->afterCommit()
+                );
             }
+
 
             $token = auth('api')->login($user);
 

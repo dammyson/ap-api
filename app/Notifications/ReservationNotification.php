@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-class ReservationNotification extends Notification
+class ReservationNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

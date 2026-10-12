@@ -47,9 +47,9 @@ use App\Http\Controllers\OnepipeController;
 use App\Http\Controllers\Soap\AddSsrController;
 use App\Http\Controllers\Soap\Booking\CancelBookingController;
 use App\Http\Controllers\Soap\Booking\BookingController;
-use App\Http\Controllers\Soap\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Soap\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\TermsAndConditionController;
 use App\Http\Middleware\LastLogin;
       
 Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
@@ -59,7 +59,8 @@ Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus
 Route::post('/auth/refresh', [LoginController::class, 'refresh']);
   
 Route::group(['prefix' => 'user'], function ()  {
-    Route::get('terms-and-condition', [RegisterController::class, 'getCurrentAndCondition']);
+    Route::get('terms-and-condition', [TermsAndConditionController::class, 'getSignUpTermsAndCondition']);
+ 
     
     Route::group(['middleware' => 'throttle:auth-sensitive'], function ()  {           
         Route::post('register', [RegisterController::class, 'userRegister']);
@@ -85,6 +86,7 @@ Route::group(['prefix' => 'admin/'], function () {
         
         Route::group(['prefix' => 'dashboard'], function () {
             Route::post('terms-and-condition', [DashboardAdminController::class, 'createTermsAndConditions']);
+            Route::post('insurance-terms-and-condition', [DashboardAdminController::class, 'createInsuranceTermsAndConditions']);
             Route::get('weekly-analysis', [DashboardAdminController::class, 'weeklyAnalysis']);
             Route::get('revenue-graph/{filter}', [DashboardAdminController::class, 'revenueGraph']);
             Route::get('user-by-device', [DashboardAdminController::class, 'userByDevice']);
@@ -273,6 +275,8 @@ Route::group(["middleware" => ["auth:api", LastLogin::class]], function () {
 
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']); 
+
+    Route::get('/insurance-terms-and-conditions', [TermsAndConditionController::class, 'getInsuranceTermsAndCondition']);
 
     Route::post('/contact-support', [SupportController::class, 'contactSupport']);
 

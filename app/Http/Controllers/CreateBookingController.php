@@ -16,6 +16,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RedeemPeacePoint\RedeemPeacePointCommitRequest;
 use App\Http\Requests\RedeemPeacePoint\RedeemPeacePointViewRequest;
 use App\Http\Requests\Soap\Booking\CreateBookingRequest;
+use App\Models\InsuTermsAndConds;
+use App\Models\UserInsuTermsAcceptance;
 use App\Services\Payment\Payments;
 use App\Services\Utility\CheckArray;
 use App\Services\Utility\GetPointService;
@@ -23,8 +25,10 @@ use App\Services\Soap\CreateBookingBuilder;
 use App\Services\Wallet\VerificationService;
 use App\Services\Wallet\FlutterVerificationService;
 use App\Services\Soap\TicketReservationRequestBuilder;
+use App\Services\TermsAndConditions\StoreUserTermsAndConditions;
 use App\Services\TicketReservations\TicketReservation;
 use Exception;
+use Illuminate\Support\Facades\Hash;
 
 class CreateBookingController extends Controller
 {
@@ -62,6 +66,25 @@ class CreateBookingController extends Controller
         $otherServiceInformationList = $validated['otherServiceInformationList'];
         $tripType = $request->input('trip_type');
         $preferredCurrency = $request->input('preferred_currency');
+        $isInsuranceAccepted = $request->input('is_insurance_accepted');
+       
+        
+        $user = $request->user();
+
+        if ($isInsuranceAccepted) {
+
+            (new StoreUserTermsAndConditions())->storeUserInsuranceTerms(
+                    [
+                        'user_id' => $user->id,
+                        'insurance_terms_id' => $request->input('insurance_terms_id'),
+                        'accepted_at' => now(),
+                        'ip_address' => $request->ip(),
+                        'user_agent' => $request->userAgent()
+                    ]
+                );
+           
+
+        }       
         
        
         $xml = $this->createBookingBuilder->createBooking(
@@ -89,7 +112,7 @@ class CreateBookingController extends Controller
             $timeLimitUTC = $response["AirBookingResponse"]["airBookingList"]["airReservation"]["ticketTimeLimitUTC"];
             $bookingId = $bookingReferenceIDList['ID'];
             $bookingReferenceID = $bookingReferenceIDList['referenceID'];
-            $user = $request->user();
+          
             
             $surname = '';
             $guestToken = !$user ? $request->session()->get('guest_session_token') : null;
