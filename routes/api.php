@@ -47,41 +47,46 @@ use App\Http\Controllers\OnepipeController;
 use App\Http\Controllers\Soap\AddSsrController;
 use App\Http\Controllers\Soap\Booking\CancelBookingController;
 use App\Http\Controllers\Soap\Booking\BookingController;
-use App\Http\Controllers\Soap\GetAirExtraChargesAndProductController;
 use App\Http\Controllers\Soap\GetAirExtraChargesAndProductsController;
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\TermsAndConditionController;
 use App\Http\Middleware\LastLogin;
-
-Route::group(["middleware" => ["throttle:global-rate-limiter"]], function () {        
-    Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
-});
+      
+Route::post('guest/continue-as-guest', [GuestLoginController::class, 'continueAsGuest']);
 
 Route::post("generate-virtual-account", [OnepipeController::class, 'generateVirtualAccount'])->middleware('auth:api');
 Route::post("queryPaymentStatus", [OnepipeController::class, 'queryPaymentStatus'])->middleware('auth:api');
 Route::post('/auth/refresh', [LoginController::class, 'refresh']);
+  
 Route::group(['prefix' => 'user'], function ()  {
-    Route::get('terms-and-condition', [RegisterController::class, 'getCurrentAndCondition']);
-    Route::post('register', [RegisterController::class, 'userRegister']);
-    Route::post('forgot-password', [RegisterController::class, 'forgotPassword']);
-    Route::post('verify/otp', [RegisterController::class, 'verifyOtp']);
-    Route::post('reset/password', [RegisterController::class, 'resetPassword']);
-    Route::post('login', [LoginController::class, 'login']);
-    Route::post('google-verify', [LoginController::class, 'googleVerify']);
+    Route::get('signup-terms-and-condition', [TermsAndConditionController::class, 'getSignUpTermsAndCondition']);
+ 
+    
+    Route::group(['middleware' => 'throttle:auth-sensitive'], function ()  {           
+        Route::post('register', [RegisterController::class, 'userRegister']);
+        Route::post('forgot-password', [RegisterController::class, 'forgotPassword']);
+        Route::post('verify/otp', [RegisterController::class, 'verifyOtp']);
+        Route::post('reset/password', [RegisterController::class, 'resetPassword']);
+        Route::post('login', [LoginController::class, 'login']);
+        Route::post('google-verify', [LoginController::class, 'googleVerify']);
+    });
 
 });
 
 Route::group(['prefix' => 'admin/'], function () {
-    Route::post('admin-login', [LoginAdminController::class, 'loginAdmin']);
-    Route::post('forgot-password', [ForgetPasswordAdminController::class, 'forgotPassword']);
-    Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
-    Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
-    
+    Route::group(['middleware' => 'throttle:auth-sensitive'], function ()  {  
+        Route::post('admin-login', [LoginAdminController::class, 'loginAdmin']);
+        Route::post('forgot-password', [ForgetPasswordAdminController::class, 'forgotPassword']);
+        Route::post('verify/otp', [ForgetPasswordAdminController::class, 'verifyOtp']);
+        Route::post('reset/password', [ForgetPasswordAdminController::class, 'resetPassword']);
+    });
   
     Route::middleware('auth:admin')->group(function () {  
         Route::post('admin-register', [RegisterAdminController::class, 'registerAdmin']);
         
         Route::group(['prefix' => 'dashboard'], function () {
-            Route::post('terms-and-condition', [DashboardAdminController::class, 'createTermsAndConditions']);
+            Route::post('create-signup-terms-and-condition', [DashboardAdminController::class, 'createTermsAndConditions']);
+            Route::post('insurance-terms-and-condition', [DashboardAdminController::class, 'createInsuranceTermsAndConditions']);
             Route::get('weekly-analysis', [DashboardAdminController::class, 'weeklyAnalysis']);
             Route::get('revenue-graph/{filter}', [DashboardAdminController::class, 'revenueGraph']);
             Route::get('user-by-device', [DashboardAdminController::class, 'userByDevice']);
@@ -242,7 +247,7 @@ Route::group(["middleware" => ["auth:api"], LastLogin::class], function() {
 });
 
 
-Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastLogin::class]], function () {    
+Route::group(["middleware" => ["auth:api", LastLogin::class]], function () {    
     Route::group(["prefix" => 'user'], function() {
         Route::post('change/password', [RegisterController::class, 'changePassword']);
         Route::get('profile', [ProfileController::class, 'getProfile']);
@@ -270,6 +275,8 @@ Route::group(["middleware" => ["auth:api", "throttle:global-rate-limiter", LastL
 
     
     Route::post('/search-flights', [FlightController::class, 'searchFlights']); 
+
+    Route::get('/insurance-terms-and-conditions', [TermsAndConditionController::class, 'getInsuranceTermsAndCondition']);
 
     Route::post('/contact-support', [SupportController::class, 'contactSupport']);
 
