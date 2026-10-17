@@ -20,6 +20,7 @@ use App\Services\Wallet\VerificationService;
 use App\Services\Soap\TicketReservationRequestBuilder;
 use App\Services\Payment\Payments;
 use App\Services\Soap\AvailableSpecialServiceBuilder;
+use App\Services\TermsAndConditions\StoreUserTermsAndConditions;
 
 class AddSsrController extends Controller
 {
@@ -112,7 +113,15 @@ class AddSsrController extends Controller
     
 
     public function addInsuranceSsr(AddSsrRequest $request, ) {
-
+        $request->validate([
+                'insurance_id' => 'required|exists:insu_terms_and_conds,id',
+                "ref" => "required|string",
+                "payment_method" => "required|string",
+                "payment_channel" => "required|string",
+                "device_type" => "required|string"
+            ]);
+        
+        $insuranceId = $request->input('insurance_id');
         $preferredCurrency = $request->input('preferredCurrency');
         $ancillaryRequestList = $request->input('ancillaryRequestList');
         $passengerName = $request->input('passengerName');
@@ -126,16 +135,22 @@ class AddSsrController extends Controller
         $bookingReferenceId = $request->input('bookingReferenceID');
         $invoiceId = $request->input('invoiceId');
 
+       
         try {
 
             $user = $request->user();
 
-            $request->validate([
-                "ref" => "required|string",
-                "payment_method" => "required|string",
-                "payment_channel" => "required|string",
-                "device_type" => "required|string"
-            ]);
+            
+            
+            (new StoreUserTermsAndConditions())->storeUserInsuranceTerms(
+                    [
+                        'user_id' => $user->id,
+                        'insurance_terms_id' => $insuranceId,
+                        'accepted_at' => now(),
+                        'ip_address' => $request->ip(),
+                        'user_agent' => $request->userAgent()
+                    ]
+                );
          
         
             if ($user->is_guest) {
