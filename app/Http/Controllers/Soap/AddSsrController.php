@@ -113,30 +113,32 @@ class AddSsrController extends Controller
     
 
     public function addInsuranceSsr(AddSsrRequest $request, ) {
-        $request->validate([
-                'insurance_id' => 'required|exists:insu_terms_and_conds,id',
-                "ref" => "required|string",
-                "payment_method" => "required|string",
-                "payment_channel" => "required|string",
-                "device_type" => "required|string"
-            ]);
-        
-        $insuranceId = $request->input('insurance_id');
-        $preferredCurrency = $request->input('preferredCurrency');
-        $ancillaryRequestList = $request->input('ancillaryRequestList');
-        $passengerName = $request->input('passengerName');
-        $peaceId = $request->input('peaceId');
-        $ssrType = $request->query('ssrType');
-        $ref = $request->input('ref');
-        $paymentMethod = $request->input('payment_method');
-        $paymentChannel = $request->input('payment_channel');
-        $deviceType = $request->input('device_type');
-        $bookingId = $request->input('bookingReferenceIDID');
-        $bookingReferenceId = $request->input('bookingReferenceID');
-        $invoiceId = $request->input('invoiceId');
+        try {
+            
+            $request->validate([
+                    'insurance_id' => 'required|exists:insu_terms_and_conds,id',
+                    "ref" => "required|string",
+                    "payment_method" => "required|string",
+                    "payment_channel" => "required|string",
+                    "device_type" => "required|string"
+                ]);
+            
+            $insuranceId = $request->input('insurance_id');
+            $preferredCurrency = $request->input('preferredCurrency');
+            $ancillaryRequestList = $request->input('ancillaryRequestList');
+            $passengerName = $request->input('passengerName');
+            $peaceId = $request->input('peaceId');
+            $ssrType = $request->query('ssrType');
+            $ref = $request->input('ref');
+            $paymentMethod = $request->input('payment_method');
+            $paymentChannel = $request->input('payment_channel');
+            $deviceType = $request->input('device_type');
+            $bookingId = $request->input('bookingReferenceIDID');
+            $bookingReferenceId = $request->input('bookingReferenceID');
+            $invoiceId = $request->input('invoiceId');
 
        
-        try {
+       
 
             $user = $request->user();
 
