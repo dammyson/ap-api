@@ -114,16 +114,16 @@ class AddSsrController extends Controller
 
     public function addInsuranceSsr(AddSsrRequest $request, ) {
         try {
-            
+
             $request->validate([
-                    'insurance_id' => 'required|exists:insu_terms_and_conds,id',
+                    'insurance_terms_id' => 'required|exists:insu_terms_and_conds,id',
                     "ref" => "required|string",
                     "payment_method" => "required|string",
                     "payment_channel" => "required|string",
                     "device_type" => "required|string"
                 ]);
             
-            $insuranceId = $request->input('insurance_id');
+            $insurance_terms_id = $request->input('insurance_terms_id');
             $preferredCurrency = $request->input('preferredCurrency');
             $ancillaryRequestList = $request->input('ancillaryRequestList');
             $passengerName = $request->input('passengerName');
@@ -147,7 +147,7 @@ class AddSsrController extends Controller
             (new StoreUserTermsAndConditions())->storeUserInsuranceTerms(
                     [
                         'user_id' => $user->id,
-                        'insurance_terms_id' => $insuranceId,
+                        'insurance_terms_id' => $insurance_terms_id,
                         'accepted_at' => now(),
                         'ip_address' => $request->ip(),
                         'user_agent' => $request->userAgent()
